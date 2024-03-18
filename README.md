@@ -4,17 +4,17 @@ If you want to donate or need a help about plugin, you can contact me in discord
 
 Discord nickname: schwarper
 
-Discord link : [cs2-store discord](https://discord.gg/JZ5HGa2Nfk)
+Discord link : [cs2-store discord](https://discord.gg/4zQfUzjk36)
 
 ## FAQ
 
 ### What is the store plugin?
 Store plugin, designed to enhance your gameplay by providing a dynamic credit system that allows you to purchase essential items directly from the store.
 
-### What features are available? **
+### What features are available?
 For now, the features are armor, godmode, gravity, health, playerskin, respawn, colored smoke, speed, trail, weapon. You can also add features using the API system. Also New features will also be added in the future based on your feedback.
 
-### What commands are included in the plugin? **
+### What commands are included in the plugin?
 The commands can be changed in the config file. For example, by default you can see your credits with !credits. You can change it to !tl, !dollar, !euro if you would like.
 
 ```json
