@@ -45,7 +45,7 @@ public class StoreConfig : BasePluginConfig
     };
 
     [JsonPropertyName("menu")]
-    public Dictionary<string, object> Menu { get; set; } = new Dictionary<string, object>
+    public Dictionary<string, string> Menu { get; set; } = new Dictionary<string, string>
     {
         { "enable_selling", "1" },
         { "vip_flag", "@css/root" }

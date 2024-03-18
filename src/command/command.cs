@@ -6,9 +6,9 @@ using static Store.Store;
 
 namespace Store;
 
-internal static class Command
+public static class Command
 {
-    internal static void Load()
+    public static void Load()
     {
         StoreConfig config = Instance.Config;
 
@@ -21,7 +21,7 @@ internal static class Command
         AddCommands(config.Commands["resetdatabase"], "Reset database", Command_ResetDatabase);
     }
 
-    internal static void AddCommands(IEnumerable<string> commands, string description, CommandInfo.CommandCallback commandAction)
+    public static void AddCommands(IEnumerable<string> commands, string description, CommandInfo.CommandCallback commandAction)
     {
         foreach (string command in commands)
         {

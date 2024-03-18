@@ -7,9 +7,9 @@ using static Store.Store;
 
 namespace Store;
 
-internal static class Menu
+public static class Menu
 {
-    internal static void DisplayStore(CCSPlayerController player, bool inventory)
+    public static void DisplayStore(CCSPlayerController player, bool inventory)
     {
         bool isVip = new StoreAPI().IsPlayerVIP(player);
 
@@ -40,7 +40,7 @@ internal static class Menu
         }
     }
 
-    internal static void DisplayItems(CCSPlayerController player, string key, Dictionary<string, Store_Item> items, bool inventory, bool isVip)
+    public static void DisplayItems(CCSPlayerController player, string key, Dictionary<string, Store_Item> items, bool inventory, bool isVip)
     {
         Dictionary<string, Store_Item> playerSkinItems = items.Where(p => p.Value.Type == "playerskin" && p.Value.Enable).ToDictionary(p => p.Key, p => p.Value);
 
@@ -86,7 +86,7 @@ internal static class Menu
         }
     }
 
-    internal static void DisplayItem(CCSPlayerController player, bool inventory, bool isVip, string key, Dictionary<string, Store_Item> items)
+    public static void DisplayItem(CCSPlayerController player, bool inventory, bool isVip, string key, Dictionary<string, Store_Item> items)
     {
         CenterHtmlMenu menu = new(key);
 
@@ -124,7 +124,7 @@ internal static class Menu
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
     }
 
-    internal static void DisplayItemOption(CCSPlayerController player, Store_Item item, bool isVip)
+    public static void DisplayItemOption(CCSPlayerController player, Store_Item item, bool isVip)
     {
         CenterHtmlMenu menu = new(item.Name);
 
@@ -163,7 +163,7 @@ internal static class Menu
             }
         }
 
-        if (Instance.Config.Menu.TryGetValue("enable_selling", out object? enableSellingObject) && Convert.ToBoolean(enableSellingObject) == true && !isVip)
+        if (Instance.Config.Menu["enable_selling"] == "1" && !isVip)
         {
             Server.PrintToChatAll("Girdin");
             using (new WithTemporaryCulture(player.GetLanguage()))

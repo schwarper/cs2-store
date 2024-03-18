@@ -7,7 +7,7 @@ namespace Store;
 
 public partial class Store : BasePlugin
 {
-    private void Playerskin_OnPluginStart()
+    public void Playerskin_OnPluginStart()
     {
         new StoreAPI().RegisterType("playerskin", Playerskin_OnMapStart, Playerskin_OnEquip, Playerskin_OnUnequip, true, true);
 
@@ -31,18 +31,7 @@ public partial class Store : BasePlugin
 
             if (item == null)
             {
-                string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels["ct"] : Config.DefaultModels["t"];
-                int maxIndex = modelsArray.Length;
-
-                if (maxIndex > 0)
-                {
-                    int randomnumber = random.Next(0, maxIndex - 1);
-
-                    Server.NextFrame(() =>
-                    {
-                        playerPawn.SetModel(modelsArray[randomnumber]);
-                    });
-                }
+                SetDefaultModel(player);
             }
             else
             {
@@ -52,7 +41,7 @@ public partial class Store : BasePlugin
             return HookResult.Continue;
         });
     }
-    private void Playerskin_OnMapStart()
+    public void Playerskin_OnMapStart()
     {
         IEnumerable<string> playerSkinItems = Config.Items
         .SelectMany(wk => wk.Value)
@@ -67,7 +56,7 @@ public partial class Store : BasePlugin
             }
         });
     }
-    private bool Playerskin_OnEquip(CCSPlayerController player, Store_Item item)
+    public bool Playerskin_OnEquip(CCSPlayerController player, Store_Item item)
     {
         if (player.PawnIsAlive && player.TeamNum == item.Slot)
         {
@@ -79,83 +68,29 @@ public partial class Store : BasePlugin
 
         return true;
     }
-    private bool Playerskin_OnUnequip(CCSPlayerController player, Store_Item item)
+    public bool Playerskin_OnUnequip(CCSPlayerController player, Store_Item item)
     {
         if (player.PawnIsAlive && player.TeamNum == item.Slot)
         {
-            string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels["ct"] : Config.DefaultModels["t"];
-            int maxIndex = modelsArray.Length;
-
-            if (maxIndex > 0)
-            {
-                int randomnumber = random.Next(0, maxIndex - 1);
-
-                Server.NextFrame(() =>
-                {
-                    player.PlayerPawn.Value?.SetModel(modelsArray[randomnumber]);
-                });
-            }
+            SetDefaultModel(player);
         }
 
         return true;
     }
 
-    /*
-    private void PlayerSkins_ChangeColor(CCSPlayerController player)
+    public void SetDefaultModel(CCSPlayerController player)
     {
-        //GlobalPlayerSkinGlowTickrate
-        GlobalPlayerSkinGlowTickrate[player.Slot]++;
+        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels["ct"] : Config.DefaultModels["t"];
+        int maxIndex = modelsArray.Length;
 
-        if (GlobalPlayerSkinGlowTickrate[player.Slot] % 5 != 0)
+        if (maxIndex > 0)
         {
-            return;
-        }
+            int randomnumber = random.Next(0, maxIndex - 1);
 
-        var item = GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum && p.UniqueId.StartsWith("colorfulmodel"));
-
-        if (item == null)
-        {
-            return;
-        }
-
-        Random random = new();
-        KnownColor? randomColorName = (KnownColor?)Enum.GetValues(typeof(KnownColor)).GetValue(random.Next(Enum.GetValues(typeof(KnownColor)).Length));
-
-        if (randomColorName.HasValue)
-        {
-            Color color = Color.FromKnownColor(randomColorName.Value);
-
-            CCSPlayerPawn? pawn = player.PlayerPawn.Value;
-
-            if (pawn != null)
+            Server.NextFrame(() =>
             {
-                pawn.RenderMode = RenderMode_t.kRenderTransColor;
-                pawn.Render = color;
-                Utilities.SetStateChanged(pawn, "CBaseModelEntity", "m_clrRender");
-            }
+                player.PlayerPawn.Value?.SetModel(modelsArray[randomnumber]);
+            });
         }
     }
-
-    
-        RegisterListener<OnTick>(() =>
-        {
-            GlobalTick++;
-
-            if (GlobalTick % 5 != 0)
-            {
-                return;
-            }
-
-            foreach (CCSPlayerController player in Utilities.GetPlayers())
-            {
-                if (!player.Valid || !player.PawnIsAlive)
-                {
-                    continue;
-                }
-
-                CreateTrail(player);
-                PlayerSkins_ChangeColor(player);
-            }
-        });
-    */
 }

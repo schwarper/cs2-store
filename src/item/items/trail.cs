@@ -18,7 +18,7 @@ public partial class Store : BasePlugin
             TrailVector[i] = new();
         }
 
-        new StoreAPI().RegisterType("trail", Trail_OnMapStart, Trail_OnEquip, Trail_OnUnequip, false, true);
+        new StoreAPI().RegisterType("trail", Trail_OnMapStart, Trail_OnEquip, Trail_OnUnequip, true, true);
 
         RegisterListener<OnTick>(() =>
         {

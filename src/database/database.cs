@@ -6,24 +6,24 @@ using static Store.Store;
 
 namespace Store;
 
-internal static class Database
+public static class Database
 {
-    internal static string GlobalDatabaseConnectionString { get; set; } = string.Empty;
+    public static string GlobalDatabaseConnectionString { get; set; } = string.Empty;
 
-    internal static MySqlConnection Connect()
+    public static MySqlConnection Connect()
     {
         MySqlConnection connection = new(GlobalDatabaseConnectionString);
         connection.Open();
         return connection;
     }
 
-    internal static async Task ExecuteAsync(string query, object? parameters)
+    public static async Task ExecuteAsync(string query, object? parameters)
     {
         using MySqlConnection connection = Connect();
         await connection.ExecuteAsync(query, parameters);
     }
 
-    internal static void CreateDatabase(StoreConfig config)
+    public static void CreateDatabase(StoreConfig config)
     {
         if (string.IsNullOrWhiteSpace(config.Database["host"]) ||
             string.IsNullOrWhiteSpace(config.Database["name"]) ||
@@ -127,7 +127,7 @@ internal static class Database
         });
     }
 
-    internal static async Task LoadPlayer(CCSPlayerController player)
+    public static async Task LoadPlayer(CCSPlayerController player)
     {
         try
         {
@@ -162,7 +162,7 @@ internal static class Database
         }
     }
 
-    internal static async Task InsertNewPlayer(CCSPlayerController player)
+    public static async Task InsertNewPlayer(CCSPlayerController player)
     {
         await ExecuteAsync(@"
                 INSERT INTO store_players (
@@ -181,7 +181,7 @@ internal static class Database
             });
     }
 
-    internal static async Task SavePlayer(CCSPlayerController player, string playername)
+    public static async Task SavePlayer(CCSPlayerController player, string playername)
     {
         await ExecuteAsync(@$"
                 UPDATE
@@ -201,7 +201,7 @@ internal static class Database
             });
     }
 
-    internal static async Task SavePlayerItem(CCSPlayerController player, Store_PlayerItem item)
+    public static async Task SavePlayerItem(CCSPlayerController player, Store_PlayerItem item)
     {
         await ExecuteAsync(@"
                 INSERT INTO store_items (
@@ -221,7 +221,7 @@ internal static class Database
                 DateOfPurchase = DateTime.Now
             });
     }
-    internal static async Task RemovePlayerItem(CCSPlayerController player, Store_PlayerItem item)
+    public static async Task RemovePlayerItem(CCSPlayerController player, Store_PlayerItem item)
     {
         await ExecuteAsync(@"
                 DELETE
@@ -237,7 +237,7 @@ internal static class Database
                 item.UniqueId
             });
     }
-    internal static async Task SavePlayerEquipment(CCSPlayerController player, Store_PlayerItem item)
+    public static async Task SavePlayerEquipment(CCSPlayerController player, Store_PlayerItem item)
     {
         await ExecuteAsync(@$"
                 REPLACE INTO store_equipments (
@@ -256,7 +256,7 @@ internal static class Database
                 item.Color
             });
     }
-    internal static async Task RemovePlayerEquipment(CCSPlayerController player, string UniqueId)
+    public static async Task RemovePlayerEquipment(CCSPlayerController player, string UniqueId)
     {
         await ExecuteAsync(@"
                 DELETE FROM store_equipments WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
@@ -269,7 +269,7 @@ internal static class Database
             });
     }
 
-    internal static void ResetDatabase()
+    public static void ResetDatabase()
     {
         using MySqlConnection connection = Connect();
 

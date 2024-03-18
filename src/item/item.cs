@@ -5,9 +5,10 @@ using static Store.Store;
 
 namespace Store;
 
-internal static class Item
+
+public static class Item
 {
-    internal static void Purchase(CCSPlayerController player, Store_Item item)
+    public static void Purchase(CCSPlayerController player, Store_Item item)
     {
         if (Credits.Get(player) < item.Price)
         {
@@ -61,9 +62,13 @@ internal static class Item
                 });
             });
         }
+        else
+        {
+            type.Equip(player, item);
+        }
     }
 
-    internal static void Equip(CCSPlayerController player, Store_Item item)
+    public static void Equip(CCSPlayerController player, Store_Item item)
     {
         Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item.Type);
 
@@ -107,7 +112,7 @@ internal static class Item
         });
     }
 
-    internal static void Unequip(CCSPlayerController player, Store_Item item)
+    public static void Unequip(CCSPlayerController player, Store_Item item)
     {
         Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item.Type);
 
@@ -132,7 +137,7 @@ internal static class Item
         });
     }
 
-    internal static void Sell(CCSPlayerController player, Store_Item item)
+    public static void Sell(CCSPlayerController player, Store_Item item)
     {
         Store_PlayerItem? playeritem = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.UniqueId == item.UniqueId);
 
@@ -152,7 +157,7 @@ internal static class Item
         }
     }
 
-    internal static bool PlayerHas(CCSPlayerController player, string UniqueId)
+    public static bool PlayerHas(CCSPlayerController player, string UniqueId)
     {
         string? selectedItem = Instance.Config.Items.SelectMany(category => category.Value.Values)?.FirstOrDefault(item => item.UniqueId == UniqueId)?.Flag;
 
@@ -161,19 +166,19 @@ internal static class Item
         return Instance.GlobalStorePlayerItems.Any(p => p.SteamID == player.SteamID && p.UniqueId == UniqueId) || flag;
     }
 
-    internal static bool PlayerUsing(CCSPlayerController player, string UniqueId)
+    public static bool PlayerUsing(CCSPlayerController player, string UniqueId)
     {
         return Instance.GlobalStorePlayerEquipments.Any(p => p.SteamID == player.SteamID && p.UniqueId == UniqueId);
     }
 
-    internal static bool IsInJson(string type, string UniqueId)
+    public static bool IsInJson(string type, string UniqueId)
     {
         return Instance.Config.Items.Values
             .SelectMany(dict => dict.Values)
             .Any(item => item.Type == type && item.UniqueId == UniqueId);
     }
 
-    internal static Store_Item? FindItemByUniqueId(string UniqueId)
+    public static Store_Item? FindItemByUniqueId(string UniqueId)
     {
         return Instance.Config.Items.Values
             .SelectMany(dict => dict.Values)

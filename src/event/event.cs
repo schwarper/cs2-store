@@ -6,9 +6,9 @@ using static Store.Store;
 
 namespace Store;
 
-internal static class Event
+public static class Event
 {
-    internal static void Load()
+    public static void Load()
     {
         Instance.RegisterListener<OnMapStart>((mapname) =>
         {
@@ -32,9 +32,13 @@ internal static class Event
                 await Database.LoadPlayer(player);
             });
 
-            Instance.GlobalDictionaryPlayer.Add(player, new Player());
+            if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
+            {
+                value = new Player();
+                Instance.GlobalDictionaryPlayer.Add(player, value);
+            }
 
-            Instance.GlobalDictionaryPlayer[player].CreditIntervalTimer = Instance.AddTimer(Instance.Config.Credits["interval_active_inactive"], () =>
+            value.CreditIntervalTimer = Instance.AddTimer(Instance.Config.Credits["interval_active_inactive"], () =>
             {
                 CsTeam Team = player.Team;
 
@@ -85,9 +89,6 @@ internal static class Event
                 await Database.SavePlayer(player, playername);
             });
 
-            /* TO DO
-             * Null easier if you don't add anything else
-            */
             if (Instance.GlobalDictionaryPlayer.ContainsKey(player) && Instance.GlobalDictionaryPlayer[player] != null)
             {
                 Instance.GlobalDictionaryPlayer[player].CreditIntervalTimer?.Kill();
@@ -101,7 +102,7 @@ internal static class Event
             CCSPlayerController victim = @event.Userid;
             CCSPlayerController attacker = @event.Attacker;
 
-            if (!victim.Valid() || attacker.Valid() || victim == attacker)
+            if (!victim.Valid() || !attacker.Valid() || victim == attacker)
             {
                 return HookResult.Continue;
             }

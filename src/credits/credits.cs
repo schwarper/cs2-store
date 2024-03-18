@@ -3,14 +3,14 @@ using static Store.Store;
 
 namespace Store;
 
-internal static class Credits
+public static class Credits
 {
-    internal static int Get(CCSPlayerController player)
+    public static int Get(CCSPlayerController player)
     {
         return Instance.GlobalStorePlayers.Single(p => p.SteamID == player.SteamID).Credits;
     }
 
-    internal static void Set(CCSPlayerController player, int credits)
+    public static void Set(CCSPlayerController player, int credits)
     {
         if (credits < 0)
         {
@@ -20,7 +20,7 @@ internal static class Credits
         Instance.GlobalStorePlayers.Single(p => p.SteamID == player.SteamID).Credits = credits;
     }
 
-    internal static void Give(CCSPlayerController player, int credits)
+    public static void Give(CCSPlayerController player, int credits)
     {
         Instance.GlobalStorePlayers.Single(p => p.SteamID == player.SteamID).Credits += credits;
     }

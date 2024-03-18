@@ -17,7 +17,7 @@ public partial class Store : BasePlugin
 
     public readonly Random random = new();
 
-    private static readonly Dictionary<string, TargetType> TargetTypeMap = new(StringComparer.OrdinalIgnoreCase)
+    public static readonly Dictionary<string, TargetType> TargetTypeMap = new(StringComparer.OrdinalIgnoreCase)
     {
         { "@all", TargetType.GroupAll },
         { "@bots", TargetType.GroupBots },

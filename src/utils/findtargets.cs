@@ -6,7 +6,7 @@ namespace Store;
 
 public partial class Store : BasePlugin
 {
-    internal (List<CCSPlayerController> players, string targetname) FindTarget
+    public (List<CCSPlayerController> players, string targetname) FindTarget
         (
             CommandInfo command,
             int minArgCount,

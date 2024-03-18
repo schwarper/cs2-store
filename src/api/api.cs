@@ -39,10 +39,7 @@ public class StoreAPI : IStoreAPI
     }
     public bool IsPlayerVIP(CCSPlayerController player)
     {
-        string vip = Instance.Config.Menu.TryGetValue("vip_flag", out object? vipObject)
-            && vipObject is string vipString
-            ? vipString
-            : string.Empty;
+        string vip = Instance.Config.Menu["vip_flag"];
 
         return !string.IsNullOrEmpty(vip) && AdminManager.PlayerHasPermissions(player, vip);
     }
