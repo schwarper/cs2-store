@@ -51,6 +51,13 @@ public class StoreConfig : BasePluginConfig
         { "vip_flag", "@css/root" }
     };
 
+    [JsonPropertyName("settings")]
+    public Dictionary<string, string> Settings { get; set; } = new Dictionary<string, string>
+    {
+        { "max_health", "0" },
+        { "max_armor", "0" }
+    };
+
     [JsonPropertyName("items")]
     public Dictionary<string, Dictionary<string, Store_Item>> Items { get; set; } = new();
 }

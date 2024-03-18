@@ -35,10 +35,6 @@ public static class Item
             return;
         }
 
-        Credits.Give(player, -item.Price);
-
-        player.PrintToChatMessage("Purchase Succeeded", item.Name);
-
         if (type.Equipable)
         {
             Store_PlayerItem playeritem = new()
@@ -64,8 +60,15 @@ public static class Item
         }
         else
         {
-            type.Equip(player, item);
+            if(!type.Equip(player, item))
+            {
+                return;
+            }
         }
+
+        Credits.Give(player, -item.Price);
+
+        player.PrintToChatMessage("Purchase Succeeded", item.Name);
     }
 
     public static void Equip(CCSPlayerController player, Store_Item item)
@@ -77,11 +80,6 @@ public static class Item
             return;
         }
 
-        if (type.Equip(player, item) == false)
-        {
-            return;
-        }
-
         Store_PlayerItem? currentitem = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item.Type && p.Slot == item.Slot);
 
         if (currentitem != null)
@@ -89,6 +87,11 @@ public static class Item
             Store_Item citem = FindItemByUniqueId(currentitem.UniqueId)!;
 
             Unequip(player, citem);
+        }
+
+        if (type.Equip(player, item) == false)
+        {
+            return;
         }
 
         Store_PlayerItem playeritem = new()

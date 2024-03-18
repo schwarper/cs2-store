@@ -1,4 +1,6 @@
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using static Dapper.SqlMapper;
 
 namespace Store;
 
@@ -25,12 +27,45 @@ public partial class Store : BasePlugin
             return false;
         }
 
+        if (!int.TryParse(Instance.Config.Settings["max_armor"], out int maxarmor))
+        {
+            return false;
+        }
+
+        if (maxarmor > 0)
+        {
+            if (playerPawn.ArmorValue >= maxarmor)
+            {
+                return false;
+            }
+
+            if (playerPawn.ArmorValue + armor > maxarmor)
+            {
+                armor = maxarmor - playerPawn.ArmorValue;
+            }
+        }
+
+        if (maxarmor > 0)
+        {
+            if (playerPawn.ArmorValue == maxarmor)
+            {
+                return false;
+            }
+
+            if (playerPawn.ArmorValue + armor > maxarmor)
+            {
+                armor = maxarmor - playerPawn.ArmorValue;
+            }
+        }
+
         if (playerPawn.ItemServices != null)
         {
             new CCSPlayer_ItemServices(playerPawn.ItemServices.Handle).HasHelmet = true;
         }
 
         playerPawn.ArmorValue += armor;
+
+        Utilities.SetStateChanged(playerPawn, "CCSPlayerPawnBase", "m_ArmorValue");
 
         return true;
     }

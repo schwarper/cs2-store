@@ -1,3 +1,4 @@
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using System.Text;
@@ -19,5 +20,34 @@ public static class PlayerUtils
             builder.AppendFormat(Instance.Localizer[message], args);
             player.PrintToChat(builder.ToString());
         }
+    }
+    static public void ChangeModel(this CCSPlayerPawn pawn, string model)
+    {
+        Server.NextFrame(() =>
+        {
+            pawn.SetModel(model);
+        });
+    }
+    static public int GetHealth(this CCSPlayerPawn pawn)
+    {
+        return pawn.Health;
+    }
+    static public void SetHealth(this CCSPlayerController player, int health)
+    {
+        if (player.PlayerPawn == null || player.PlayerPawn.Value == null)
+        {
+            return;
+        }
+
+        player.Health = health;
+        player.PlayerPawn.Value.Health = health;
+
+        if (health > 100)
+        {
+            player.MaxHealth = health;
+            player.PlayerPawn.Value.MaxHealth = health;
+        }
+
+        Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseEntity", "m_iHealth");
     }
 }

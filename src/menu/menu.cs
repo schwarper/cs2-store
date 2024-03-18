@@ -165,7 +165,6 @@ public static class Menu
 
         if (Instance.Config.Menu["enable_selling"] == "1" && !isVip)
         {
-            Server.PrintToChatAll("Girdin");
             using (new WithTemporaryCulture(player.GetLanguage()))
             {
                 StringBuilder builder = new();
@@ -180,10 +179,6 @@ public static class Menu
                     MenuManager.CloseActiveMenu(player);
                 });
             }
-        }
-        else
-        {
-            Server.PrintToChatAll("Giremedin.");
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);

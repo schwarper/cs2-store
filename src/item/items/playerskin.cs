@@ -27,7 +27,7 @@ public partial class Store : BasePlugin
                 return HookResult.Continue;
             }
 
-            Store_PlayerItem? item = GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum && !p.UniqueId.StartsWith("colorfulmodel"));
+            Store_PlayerItem? item = GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
 
             if (item == null)
             {
@@ -35,7 +35,7 @@ public partial class Store : BasePlugin
             }
             else
             {
-                playerPawn.SetModel(item.UniqueId);
+                playerPawn.ChangeModel(item.UniqueId);
             }
 
             return HookResult.Continue;
@@ -56,14 +56,12 @@ public partial class Store : BasePlugin
             }
         });
     }
+
     public bool Playerskin_OnEquip(CCSPlayerController player, Store_Item item)
     {
         if (player.PawnIsAlive && player.TeamNum == item.Slot)
         {
-            Server.NextFrame(() =>
-            {
-                player.PlayerPawn.Value?.SetModel(item.UniqueId);
-            });
+            player.PlayerPawn.Value?.ChangeModel(item.UniqueId);
         }
 
         return true;
@@ -87,10 +85,7 @@ public partial class Store : BasePlugin
         {
             int randomnumber = random.Next(0, maxIndex - 1);
 
-            Server.NextFrame(() =>
-            {
-                player.PlayerPawn.Value?.SetModel(modelsArray[randomnumber]);
-            });
+            player.PlayerPawn.Value?.ChangeModel(modelsArray[randomnumber]);
         }
     }
 }

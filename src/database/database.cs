@@ -44,8 +44,6 @@ public static class Database
 
         GlobalDatabaseConnectionString = builder.ConnectionString;
 
-        Connect();
-
         _ = Task.Run(async () =>
         {
             using MySqlConnection connection = Connect();
@@ -57,7 +55,7 @@ public static class Database
                     CREATE TABLE IF NOT EXISTS store_players (
                         id INT NOT NULL AUTO_INCREMENT,
                         SteamID BIGINT UNSIGNED NOT NULL,
-                        PlayerName varchar(128) NOT NULL,
+                        PlayerName VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                         Credits INT NOT NULL,
                         DateOfJoin TIMESTAMP NOT NULL,
                         DateOfLastJoin TIMESTAMP NOT NULL,
@@ -111,11 +109,11 @@ public static class Database
 
                 IEnumerable<Store_PlayerItem> storeEquipments = await connection.QueryAsync<Store_PlayerItem>("SELECT * FROM store_equipments;");
 
-                foreach (Store_PlayerItem item in storeItems)
+                foreach (Store_PlayerItem equipments in storeEquipments)
                 {
-                    if (Item.IsInJson(item.Type, item.UniqueId))
+                    if (Item.IsInJson(equipments.Type, equipments.UniqueId))
                     {
-                        Instance.GlobalStorePlayerEquipments.Add(item);
+                        Instance.GlobalStorePlayerEquipments.Add(equipments);
                     }
                 }
             }

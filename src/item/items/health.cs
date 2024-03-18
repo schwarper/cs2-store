@@ -19,34 +19,40 @@ public partial class Store : BasePlugin
             return false;
         }
 
-        SetHealth(player, GetHealth(player) + health);
+        CCSPlayerPawn? playerPawn = player.PlayerPawn.Value;
+
+        if (playerPawn == null)
+        {
+            return false;
+        }
+
+        if (!int.TryParse(Instance.Config.Settings["max_health"], out int maxhealth))
+        {
+            return false;
+        }
+
+        int currentHealth = playerPawn.GetHealth();
+
+        if (maxhealth > 0)
+        {
+            if (currentHealth >= maxhealth)
+            {
+                return false;
+            }
+
+            if (currentHealth + health > maxhealth)
+            {
+                health = maxhealth - currentHealth;
+            }
+        }
+
+        player.SetHealth(currentHealth + health);
 
         return true;
     }
+
     private bool Health_OnUnequip(CCSPlayerController player, Store_Item item)
     {
         return true;
-    }
-    private static void SetHealth(CCSPlayerController player, int health)
-    {
-        if (player.PlayerPawn == null || player.PlayerPawn.Value == null)
-        {
-            return;
-        }
-
-        player.Health = health;
-        player.PlayerPawn.Value.Health = health;
-
-        if (health > 100)
-        {
-            player.MaxHealth = health;
-            player.PlayerPawn.Value.MaxHealth = health;
-        }
-
-        Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseEntity", "m_iHealth");
-    }
-    private static int GetHealth(CCSPlayerController player)
-    {
-        return player.PlayerPawn?.Value?.Health ?? 0;
     }
 }
