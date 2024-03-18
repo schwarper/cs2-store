@@ -115,7 +115,7 @@ The commands can be changed in the config file. For example, by default you can 
       "amount_kill": 1
     },
     "menu": {
-      "enable_selling": true,
+      "enable_selling": "1",
       "vip_flag": "@css/root"
     },
     "items": {
