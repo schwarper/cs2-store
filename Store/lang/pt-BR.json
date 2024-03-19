@@ -1,0 +1,61 @@
+{
+    "Prefix": "{red}[Loja] ",
+
+    "No matching client": "{white}Não há nenhum cliente correspondente",
+    "More than one client matched": "{white>Há mais de um cliente correspondente",
+    "Must be an integer": "{white}O valor inserido deve ser um número inteiro",
+    "Buyable only alive": "{white}Este item só pode ser comprado por jogadores vivos.",
+    "Unknown Reason": "{white}Motivo desconhecido",
+    "No Credits Enough": "{white}Você não possui créditos suficientes.",
+    "Purchase Failed": "{white}Falha na compra. Motivo: {0}",
+    "You are not alive": "{white}Você só pode comprar quando estiver vivo.",
+    "You are alive": "{white}Você só pode comprar quando estiver morto.",
+    "Value is not correct": "{white}O valor do item não está correto.",
+    "No gift yourself": "{white}Você não pode presentear a si mesmo.",
+    "No type found": "{white}Nenhum tipo encontrado.",
+
+    "t Slot players": "{green}Jogadores de Slot t{white}",
+    "ct Slot players": "{green}Jogadores de Slot ct{white}",
+    "alive players": "{green}jogadores vivos{white}",
+    "all players": "{green}todos os jogadores{white}",
+    "dead players": "{green}jogadores mortos{white}",
+    "Console": "Console",
+
+    "Purchase Succeeded": "{white}Você comprou {green}{0}{white}.",
+    "Purchase Equip": "{white}Você equipou {green}{0}{white}.",
+    "Purchase UnEquip": "{white}Você desequipou {green}{0}{white}.",
+    "Item Sell": "{white}Você vendeu {green}{0}{white}.",
+    "Godmode expired": "{white}Seu tempo de godmode expirou.",
+    "Speed expired": "{white}Seu tempo de velocidade expirou.",
+
+    "menu_store<title>": "Loja",
+
+    "menu_store<playerskins>": "Skins de Jogadores",
+    "menu_store<weapons>": "Armas",
+    "menu_store<features>": "Recursos",
+    "menu_store<gravity>": "Gravidade",
+    "menu_store<speed>": "Velocidade",
+    "menu_store<godmode>": "Godmode",
+    "menu_store<smoke>": "Fumaça",
+    "menu_store<trail>": "Rastro",
+
+    "menu_store<t_title>": "Modelos T",
+    "menu_store<ct_title>": "Modelos CT",
+    "menu_store<purchase>": "{0} - [{1}]",
+    "menu_store<equip>": "{0} [EQUIPAR]",
+    "menu_store<unequip>": "{0} [DESEQUIPAR]",
+    "menu_store<sell>": "{0} [VENDER]",
+
+    "css_credits": "{white}Você possui {green}{0} {white}créditos.",
+    "css_givecredits<player>": "{blue}{0} {white}deu {green}{2} créditos {white}para {green}{1}{white}.",
+    "css_givecredits<multiple>": "{blue}{0} {white}deu {green}{2} créditos {white}para {green}{1}{white}.",
+
+    "css_gift<player>": "{white}Você enviou {green}{1} {white}créditos para {blue}{0}{white}.",
+    "css_gift<target>": "{blue}{0} {white}enviou {green}{1} {white}créditos para você.",
+
+    "css_reset": "{blue}{0}{white} redefiniu os dados da loja de {green}{1}{white}.",
+
+    "credits_earned<active>": "{white}Você ganhou {green}{0} créditos {white}por estar ativo no servidor.",
+    "credits_earned<inactive>": "{white}Você ganhou {green}{0} créditos {white}por estar inativo no servidor.",
+    "credits_earned<kill>": "{white}Você ganhou {green}{0} créditos {white}por matar um jogador."
+}

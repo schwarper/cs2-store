@@ -1,0 +1,61 @@
+{
+    "Prefix": "{red}[Магазин] ",
+
+    "No matching client": "{white}Не знайдено відповідного клієнта",
+	"More than one client matched": "{white}Знайдено більше одного відповідного клієнта",
+	"Must be an integer": "{white}Введене значення повинно бути цілим числом",
+	"Buyable only alive": "{white}Цей предмет можна купити лише для живих гравців.",
+	"Unknown Reason": "{white}Невідома причина",
+	"No Credits Enough": "{white}У вас недостатньо кредитів.",
+	"Purchase Failed": "{white}Покупка не вдалася. Причина: {0}",
+	"You are not alive": "{white}Ви можете купити це лише тоді, коли ви живі.",
+	"You are alive": "{white}Ви можете купити це лише тоді, коли ви мертві.",
+	"Value is not correct": "{white}Некоректне значення предмета.",
+	"No gift yourself": "{white}Ви не можете подарувати кредити самому собі.",
+	"No type found": "{white}Тип не знайдено.",
+
+	"t Slot players": "{green}Гравці {white}у команді t Slot",
+	"ct Slot players": "{green}Гравці {white}у команді ct Slot",
+	"alive players": "{green}Живі {white}гравці",
+	"all players": "{green}Всі {white}гравці",
+	"dead players": "{green}Мертві {white}гравці",
+	"Console": "Консоль",
+
+	"Purchase Succeeded": "{white}Ви {white}купили {green}{0}{white}.",
+	"Purchase Equip": "{white}Ви {white}екіпіровали {green}{0}{white}.",
+	"Purchase UnEquip": "{white}Ви {white}зняли екіпіровку з {green}{0}{white}.",
+	"Item Sell": "{white}Ви {white}продали {green}{0}{white}.",
+	"Godmode expired": "{white}Час вашого богомоду закінчився.",
+	"Speed expired": "{white}Час вашої швидкості закінчився.",
+
+	"menu_store<title>": "Магазин",
+
+	"menu_store<playerskins>": "Скіни гравців",
+	"menu_store<weapons>": "Зброя",
+	"menu_store<features>": "Особливості",
+	"menu_store<gravity>": "Гравітація",
+	"menu_store<speed>": "Швидкість",
+	"menu_store<godmode>": "Режим Бога",
+	"menu_store<smoke>": "Дим",
+	"menu_store<trail>": "Слід",
+
+	"menu_store<t_title>": "Моделі t",
+	"menu_store<ct_title>": "Моделі ct",
+	"menu_store<purchase>": "{0} - [{1}]",
+	"menu_store<equip>": "{0} [ЕКІПІРОВАТИ]",
+	"menu_store<unequip>": "{0} [ЗНЯТИ]",
+	"menu_store<sell>": "{0} [ПРОДАТИ]",
+
+	"css_credits": "{white}У вас {green}{0} {white}кредитів.",
+	"css_givecredits<player>": "{blue}{0} {white}передав {green}{2} кредитів {white}{green}{1}{white}.",
+	"css_givecredits<multiple>": "{blue}{0} {white}передали {green}{2} кредитів {white}гравцям: {green}{1}{white}.",
+
+	"css_gift<player>": "{white}Ви відправили {green}{1} кредитів {white}гравцю {blue}{0}{white}.",
+	"css_gift<target>": "{blue}{0} {white}передав вам {green}{1} кредитів{white}.",
+
+	"css_reset": "{blue}{0}{white} скинув дані магазину для {green}{1}{white}.",
+
+	"credits_earned<active>": "{white}Ви заробили {green}{0} кредитів {white}за активну присутність на сервері.",
+	"credits_earned<inactive>": "{white}Ви заробили {green}{0} кредитів {white}за неактивну присутність на сервері.",
+	"credits_earned<kill>": "{white}Ви заробили {green}{0} кредитів {white}за вбивство гравця."
+}

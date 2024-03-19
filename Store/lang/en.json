@@ -1,0 +1,61 @@
+{
+    "Prefix": "{red}[Store] ",
+
+    "No matching client": "{white}There is no matching client",
+    "More than one client matched": "{white}There are more than one client matched",
+    "Must be an integer": "{white}The value you entered must be an integer",
+    "Buyable only alive": "{white}This item is buyable only for alive players.",
+    "Unknown Reason": "{white}Unknown reason",
+    "No Credits Enough": "{white}You do not have enough credits.",
+    "Purchase Failed": "{white}Purchase failed. Reason: {0}",
+    "You are not alive": "{white}You can buy it only when you are alive.",
+    "You are alive": "{white}You can buy it only when you are dead.",
+    "Value is not correct": "{white}Item value is not correct.",
+    "No gift yourself": "{white}You cannot gift credits to yourself.",
+    "No type found": "{white}No type found.",
+
+    "t Slot players": "{green}t Slot {white}players",
+    "ct Slot players": "{green}ct Slot {white}players",
+    "alive players": "{green}alive {white}players",
+    "all players": "{green}all {white}players",
+    "dead players": "{green}dead {white}players",
+    "Console": "Console",
+
+    "Purchase Succeeded": "{white}You {white}bought {green}{0}{white}.",
+    "Purchase Equip": "{white}You {white}equipped {green}{0}{white}.",
+    "Purchase UnEquip": "{white}You {white}unequipped {green}{0}{white}.",
+    "Item Sell": "{white}You {white}sold {green}{0}{white}.",
+    "Godmode expired": "{white}Your godmode time is expired.",
+    "Speed expired": "{white}Your speed time is expired.",
+
+    "menu_store<title>": "Store",
+
+    "menu_store<playerskins>": "Player skins",
+    "menu_store<weapons>": "Weapons",
+    "menu_store<features>": "Features",
+    "menu_store<gravity>": "Gravity",
+    "menu_store<speed>": "Speed",
+    "menu_store<godmode>": "Godmode",
+    "menu_store<smoke>": "Smoke",
+    "menu_store<trail>": "Trail",
+
+    "menu_store<t_title>": "T Models",
+    "menu_store<ct_title>": "CT Models",
+    "menu_store<purchase>": "{0} - [{1}]",
+    "menu_store<equip>": "{0} [EQUIP]",
+    "menu_store<unequip>": "{0} [UNEQUIP]",
+    "menu_store<sell>": "{0} [SELL]",
+
+    "css_credits": "{white}You have {green}{0} {white}credits.",
+    "css_givecredits<player>": "{blue}{0} {white}gave {green}{2} credits {white}to {green}{1}{white}.",
+    "css_givecredits<multiple>": "{blue}{0} {white}gave {green}{2} credits {white}to {green}{1}{white}.",
+
+    "css_gift<player>": "{white}You have sent {green}{1}{white}credits to {blue}{0}{white}.",
+    "css_gift<target>": "{blue}{0} {white}sent you {green}{1} {white}credits.",
+
+    "css_reset": "{blue}{0}{white} resetted {green}{1}{white}'s store datas.",
+
+    "credits_earned<active>": "{white}You earned {green}{0} credits {white}for being active on the server.",
+    "credits_earned<inactive>": "{white}You earned {green}{0} credits {white}for being inactive on the server.",
+    "credits_earned<kill>": "{white}You earned {green}{0} credits {white}for killing a player."
+}
