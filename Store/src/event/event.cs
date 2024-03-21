@@ -1,3 +1,4 @@
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
@@ -19,6 +20,27 @@ public static class Event
             });
         });
 
+        Instance.RegisterListener<OnTick>(() =>
+        {
+            Instance.GlobalTickrate++;
+
+            if (Instance.GlobalTickrate % 10 != 0)
+            {
+                return;
+            }
+
+            foreach (CCSPlayerController player in Utilities.GetPlayers())
+            {
+                if (!player.Valid() || !player.PawnIsAlive)
+                {
+                    continue;
+                }
+
+                Instance.OnTick_CreateTrail(player);
+                Instance.OnTick_ColoredSkin(player);
+            }
+        });
+
         Instance.RegisterEventHandler<EventPlayerConnectFull>((@event, info) =>
         {
             CCSPlayerController? player = @event.Userid;
@@ -28,7 +50,7 @@ public static class Event
                 return HookResult.Continue;
             }
 
-            Task.Run(() =>  Database.LoadPlayer(player));
+            Task.Run(() => Database.LoadPlayer(player));
 
             if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
             {
@@ -38,6 +60,11 @@ public static class Event
 
             value.CreditIntervalTimer = Instance.AddTimer(Instance.Config.Credits["interval_active_inactive"], () =>
             {
+                if (GameRules.IgnoreWarmUp())
+                {
+                    return;
+                }
+
                 CsTeam Team = player.Team;
 
                 switch (Team)
@@ -94,6 +121,11 @@ public static class Event
 
         Instance.RegisterEventHandler<EventPlayerDeath>((@event, info) =>
         {
+            if (GameRules.IgnoreWarmUp())
+            {
+                return HookResult.Continue;
+            }
+
             CCSPlayerController victim = @event.Userid;
             CCSPlayerController attacker = @event.Attacker;
 

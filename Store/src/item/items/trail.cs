@@ -1,7 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
-using System.Drawing;
 using static CounterStrikeSharp.API.Core.Listeners;
 using static StoreApi.Store;
 
@@ -9,40 +8,24 @@ namespace Store;
 
 public partial class Store
 {
-    private static int TrailTickrate = 0;
-    readonly Vector[] TrailVector = new Vector[64];
-
     private void Trail_OnPluginStart()
     {
-        for (int i = 0; i < 64; i++)
-        {
-            TrailVector[i] = new();
-        }
-
-        new StoreAPI().RegisterType("trail", Trail_OnMapStart, Trail_OnEquip, Trail_OnUnequip, true, true);
-
-        RegisterListener<OnTick>(() =>
-        {
-            TrailTickrate++;
-
-            if (TrailTickrate % 5 != 0)
-            {
-                return;
-            }
-
-            foreach (CCSPlayerController player in Utilities.GetPlayers())
-            {
-                if (!player.Valid() || !player.PawnIsAlive)
-                {
-                    continue;
-                }
-
-                CreateTrail(player);
-            }
-        });
+        new StoreAPI().RegisterType("trail", Trail_OnMapStart, Trail_OnEquip, Trail_OnUnequip, true, null);
     }
     private void Trail_OnMapStart()
     {
+        IEnumerable<string> playerTrails = Config.Items
+        .SelectMany(wk => wk.Value)
+        .Where(kvp => kvp.Value.Type == "trail")
+        .Select(kvp => kvp.Value.UniqueId);
+
+        RegisterListener<OnServerPrecacheResources>((manifest) =>
+        {
+            foreach (string UniqueId in playerTrails)
+            {
+                manifest.AddResource(UniqueId);
+            }
+        });
     }
     private bool Trail_OnEquip(CCSPlayerController player, Store_Item item)
     {
@@ -52,7 +35,7 @@ public partial class Store
     {
         return true;
     }
-    private void CreateTrail(CCSPlayerController player)
+    public void OnTick_CreateTrail(CCSPlayerController player)
     {
         Store_PlayerItem? playertrail = GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "trail");
 
@@ -61,9 +44,9 @@ public partial class Store
             return;
         }
 
-        CBeam? beam = Utilities.CreateEntityByName<CBeam>("env_beam");
+        CParticleSystem? entity = Utilities.CreateEntityByName<CParticleSystem>("info_particle_system");
 
-        if (beam == null)
+        if (entity == null || !entity.IsValid)
         {
             return;
         }
@@ -80,57 +63,16 @@ public partial class Store
             return;
         }
 
-        if (TrailVector[player.Slot].X == 0.0 && TrailVector[player.Slot].Y == 0.0 && TrailVector[player.Slot].Z == 0.0)
-        {
-            TrailVector[player.Slot].X = playerPawn.AbsOrigin.X;
-            TrailVector[player.Slot].Y = playerPawn.AbsOrigin.Y;
-            TrailVector[player.Slot].Z = playerPawn.AbsOrigin.Z;
-
-            return;
-        }
-
-        Color color;
-
-        if (playertrail.UniqueId == "colortrail")
-        {
-            Random random = new();
-            KnownColor? randomColorName = (KnownColor?)Enum.GetValues(typeof(KnownColor)).GetValue(random.Next(Enum.GetValues(typeof(KnownColor)).Length));
-
-            if (!randomColorName.HasValue)
-            {
-                return;
-            }
-
-            color = Color.FromKnownColor(randomColorName.Value);
-        }
-        else
-        {
-            string[] colorString = playertrail.Color.Split(' ');
-
-            color = Color.FromArgb(int.Parse(colorString[0]), int.Parse(colorString[1]), int.Parse(colorString[2]));
-        }
-
-        beam.RenderMode = RenderMode_t.kRenderTransColor;
-        beam.Width = 1.0f;
-        beam.Render = color;
-
-        beam.Teleport(playerPawn.AbsOrigin, new QAngle(), new Vector());
-
-        beam.EndPos.X = TrailVector[player.Slot].X;
-        beam.EndPos.Y = TrailVector[player.Slot].Y;
-        beam.EndPos.Z = TrailVector[player.Slot].Z;
-
-        Utilities.SetStateChanged(beam, "CBeam", "m_vecEndPos");
-
-        TrailVector[player.Slot].X = playerPawn.AbsOrigin.X;
-        TrailVector[player.Slot].Y = playerPawn.AbsOrigin.Y;
-        TrailVector[player.Slot].Z = playerPawn.AbsOrigin.Z;
+        entity.EffectName = playertrail.UniqueId;
+        entity.DispatchSpawn();
+        entity.Teleport(playerPawn.AbsOrigin, new QAngle(90, 0, 0), new Vector());
+        entity.AcceptInput("Start");
 
         AddTimer(1.3f, () =>
         {
-            if (beam != null && beam.DesignerName == "env_beam")
+            if (entity != null && entity.IsValid)
             {
-                beam.Remove();
+                entity.Remove();
             }
         });
     }

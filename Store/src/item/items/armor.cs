@@ -1,6 +1,5 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using static Dapper.SqlMapper;
 using static StoreApi.Store;
 
 namespace Store;

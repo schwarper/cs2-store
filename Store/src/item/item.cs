@@ -9,12 +9,12 @@ namespace Store;
 
 public static class Item
 {
-    public static void Purchase(CCSPlayerController player, Store_Item item)
+    public static bool Purchase(CCSPlayerController player, Store_Item item)
     {
         if (Credits.Get(player) < item.Price)
         {
             player.PrintToChatMessage("No Credits Enough");
-            return;
+            return false;
         }
 
         Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item.Type);
@@ -22,18 +22,18 @@ public static class Item
         if (type == null)
         {
             player.PrintToChatMessage("No type found");
-            return;
+            return false;
         }
 
         if (type.Alive == true && !player.PawnIsAlive)
         {
             player.PrintToChatMessage("You are not alive");
-            return;
+            return false;
         }
         else if (type.Alive == false && player.PawnIsAlive)
         {
             player.PrintToChatMessage("You are alive");
-            return;
+            return false;
         }
 
         if (type.Equipable)
@@ -58,24 +58,26 @@ public static class Item
         }
         else
         {
-            if(!type.Equip(player, item))
+            if (!type.Equip(player, item))
             {
-                return;
+                return false;
             }
         }
 
         Credits.Give(player, -item.Price);
 
         player.PrintToChatMessage("Purchase Succeeded", item.Name);
+
+        return true;
     }
 
-    public static void Equip(CCSPlayerController player, Store_Item item)
+    public static bool Equip(CCSPlayerController player, Store_Item item)
     {
         Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item.Type);
 
         if (type == null)
         {
-            return;
+            return false;
         }
 
         Store_PlayerItem? currentitem = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item.Type && p.Slot == item.Slot);
@@ -89,7 +91,7 @@ public static class Item
 
         if (type.Equip(player, item) == false)
         {
-            return;
+            return false;
         }
 
         Store_PlayerItem playeritem = new()
@@ -108,20 +110,22 @@ public static class Item
         {
             Database.SavePlayerEquipment(player, playeritem);
         });
+
+        return true;
     }
 
-    public static void Unequip(CCSPlayerController player, Store_Item item)
+    public static bool Unequip(CCSPlayerController player, Store_Item item)
     {
         Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item.Type);
 
         if (type == null)
         {
-            return;
+            return false;
         }
 
         if (type.Unequip(player, item) == false)
         {
-            return;
+            return false;
         }
 
         Instance.GlobalStorePlayerEquipments.RemoveAll(p => p.SteamID == player.SteamID && p.UniqueId == item.UniqueId);
@@ -130,23 +134,29 @@ public static class Item
         {
             Database.RemovePlayerEquipment(player, item.UniqueId);
         });
+
+        return true;
     }
 
-    public static void Sell(CCSPlayerController player, Store_Item item)
+    public static bool Sell(CCSPlayerController player, Store_Item item)
     {
         Store_PlayerItem? playeritem = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.UniqueId == item.UniqueId);
 
-        if (playeritem != null)
+        if (playeritem == null)
         {
-            Unequip(player, item);
-
-            Instance.GlobalStorePlayerItems.Remove(playeritem);
-
-            Server.NextFrame(() =>
-            {
-                Database.RemovePlayerItem(player, playeritem);
-            });
+            return false;
         }
+
+        Unequip(player, item);
+
+        Instance.GlobalStorePlayerItems.Remove(playeritem);
+
+        Server.NextFrame(() =>
+        {
+            Database.RemovePlayerItem(player, playeritem);
+        });
+
+        return true;
     }
 
     public static bool PlayerHas(CCSPlayerController player, string UniqueId)
@@ -175,5 +185,15 @@ public static class Item
         return Instance.Config.Items.Values
             .SelectMany(dict => dict.Values)
             .FirstOrDefault(item => item.UniqueId == UniqueId);
+    }
+
+    public static List<Store_PlayerItem> GetPlayerItems(CCSPlayerController player)
+    {
+        return Instance.GlobalStorePlayerItems.Where(item => item.SteamID == player.SteamID).ToList();
+    }
+
+    public static List<Store_PlayerItem> GetPlayerEquipments(CCSPlayerController player)
+    {
+        return Instance.GlobalStorePlayerEquipments.Where(item => item.SteamID == player.SteamID).ToList();
     }
 }

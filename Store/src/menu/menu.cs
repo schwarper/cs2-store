@@ -1,4 +1,3 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Menu;
@@ -12,7 +11,7 @@ public static class Menu
 {
     public static void DisplayStore(CCSPlayerController player, bool inventory)
     {
-        var isVip = new StoreAPI().IsPlayerVip(player);
+        bool isVip = new StoreAPI().IsPlayerVip(player);
 
         using (new WithTemporaryCulture(player.GetLanguage()))
         {

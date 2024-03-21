@@ -30,7 +30,7 @@ public static class Database
             string.IsNullOrWhiteSpace(config.Database["name"]) ||
             string.IsNullOrWhiteSpace(config.Database["user"]))
         {
-            throw new Exception("[cs2-market] Database credentials in config must not be empty!");
+            throw new Exception("Database credentials in config must not be empty!");
         }
 
         MySqlConnectionStringBuilder builder = new()

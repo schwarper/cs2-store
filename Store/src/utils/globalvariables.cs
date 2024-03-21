@@ -1,7 +1,5 @@
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Capabilities;
 using CounterStrikeSharp.API.Modules.Commands.Targeting;
-using StoreApi;
 using static StoreApi.Store;
 
 namespace Store;
@@ -14,6 +12,7 @@ public partial class Store
     public List<Store_PlayerItem> GlobalStorePlayerEquipments { get; set; } = new();
     public List<Store_Item_Types> GlobalStoreItemTypes { get; set; } = new();
     public Dictionary<CCSPlayerController, Player> GlobalDictionaryPlayer { get; set; } = new();
+    public int GlobalTickrate { get; set; } = 0;
     public static Store Instance { get; set; } = new();
 
     public readonly Random random = new();

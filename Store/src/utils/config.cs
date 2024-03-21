@@ -1,6 +1,5 @@
 using CounterStrikeSharp.API.Core;
 using System.Text.Json.Serialization;
-using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
@@ -38,6 +37,7 @@ public class StoreConfig : BasePluginConfig
     [JsonPropertyName("credits")]
     public Dictionary<string, int> Credits { get; set; } = new Dictionary<string, int>
     {
+        {"ignore_warmup", 1 },
         {"start", 0 },
         {"interval_active_inactive", 60 },
         {"amount_active", 10 },

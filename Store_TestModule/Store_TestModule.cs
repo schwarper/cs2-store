@@ -19,6 +19,14 @@ public class Store_TestModule : BasePlugin
             return;
         }
 
+        /*
+         * Type
+         * OnMapStart
+         * Equip
+         * Unequip
+         * Equipable (If the item is equipable make this true, if not make it false.)
+         * Alive (If the item is equipable, make it null. If not, make it true if it can be picked up alive, false if it can be picked up dead, or null if it doesn't matter.)
+        */
         storeApi.RegisterType("test", OnMapStart, Equip, Unequip, true, true);
     }
 

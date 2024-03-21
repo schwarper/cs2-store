@@ -7,7 +7,7 @@ public partial class Store
 {
     private void Respawn_OnPluginStart()
     {
-        new StoreAPI().RegisterType("respawn", Respawn_OnMapStart, Respawn_OnEquip, Respawn_OnUnequip, false, true);
+        new StoreAPI().RegisterType("respawn", Respawn_OnMapStart, Respawn_OnEquip, Respawn_OnUnequip, false, false);
     }
     private void Respawn_OnMapStart()
     {

@@ -22,6 +22,15 @@ public static class Credits
 
     public static void Give(CCSPlayerController player, int credits)
     {
-        Instance.GlobalStorePlayers.Single(p => p.SteamID == player.SteamID).Credits += credits;
+        int playercredits = Get(player);
+
+        if (playercredits + credits < 0)
+        {
+            Instance.GlobalStorePlayers.Single(p => p.SteamID == player.SteamID).Credits = 0;
+        }
+        else
+        {
+            Instance.GlobalStorePlayers.Single(p => p.SteamID == player.SteamID).Credits += credits;
+        }
     }
 }

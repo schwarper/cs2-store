@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
+using System.Drawing;
 using System.Text;
 using static Store.Store;
 
@@ -27,6 +28,13 @@ public static class PlayerUtils
         {
             pawn.SetModel(model);
         });
+    }
+
+    static public void Color(this CCSPlayerPawn pawn, Color color)
+    {
+        pawn.RenderMode = RenderMode_t.kRenderTransColor;
+        pawn.Render = color;
+        Utilities.SetStateChanged(pawn, "CBaseModelEntity", "m_clrRender");
     }
     static public int GetHealth(this CCSPlayerPawn pawn)
     {

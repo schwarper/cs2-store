@@ -1,4 +1,3 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using static CounterStrikeSharp.API.Core.Listeners;
@@ -10,7 +9,7 @@ public partial class Store
 {
     public void Playerskin_OnPluginStart()
     {
-        new StoreAPI().RegisterType("playerskin", Playerskin_OnMapStart, Playerskin_OnEquip, Playerskin_OnUnequip, true, true);
+        new StoreAPI().RegisterType("playerskin", Playerskin_OnMapStart, Playerskin_OnEquip, Playerskin_OnUnequip, true, null);
 
         RegisterEventHandler<EventPlayerSpawn>((@event, info) =>
         {
@@ -86,7 +85,12 @@ public partial class Store
         {
             int randomnumber = random.Next(0, maxIndex - 1);
 
-            player.PlayerPawn.Value?.ChangeModel(modelsArray[randomnumber]);
+            string model = modelsArray[randomnumber];
+
+            if (model != null)
+            {
+                player.PlayerPawn.Value?.ChangeModel(model);
+            }
         }
     }
 }

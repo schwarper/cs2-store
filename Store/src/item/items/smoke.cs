@@ -9,7 +9,7 @@ public partial class Store
 {
     private void Smoke_OnPluginStart()
     {
-        new StoreAPI().RegisterType("smoke", Smoke_OnMapStart, Smoke_OnEquip, Smoke_OnUnequip, true, true);
+        new StoreAPI().RegisterType("smoke", Smoke_OnMapStart, Smoke_OnEquip, Smoke_OnUnequip, true, null);
 
         RegisterListener<OnEntitySpawned>((CEntityInstance entity) =>
         {
@@ -44,14 +44,7 @@ public partial class Store
 
         Server.NextFrame(() =>
         {
-            CCSPlayerPawn? thrower = smokeGrenadeEntity.Thrower.Value;
-
-            if (thrower == null)
-            {
-                return;
-            }
-
-            CBasePlayerController? player = thrower.Controller.Value;
+            CBasePlayerController? player = smokeGrenadeEntity.Thrower.Value?.Controller.Value;
 
             if (player == null)
             {

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store", "Store\cs2-store.csproj", "{6E4C86F8-8E8E-4E22-9815-339EED9BCC7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreApi", "StoreApi\StoreApi.csproj", "{3FB0AFB3-316A-4D08-9CB3-63CFD720AC3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store_TestModule", "Store_TestModule\Store_TestModule.csproj", "{90E35C74-4FFC-43A4-B21C-90487C825F7C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E4C86F8-8E8E-4E22-9815-339EED9BCC7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E4C86F8-8E8E-4E22-9815-339EED9BCC7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E4C86F8-8E8E-4E22-9815-339EED9BCC7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E4C86F8-8E8E-4E22-9815-339EED9BCC7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FB0AFB3-316A-4D08-9CB3-63CFD720AC3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FB0AFB3-316A-4D08-9CB3-63CFD720AC3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FB0AFB3-316A-4D08-9CB3-63CFD720AC3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FB0AFB3-316A-4D08-9CB3-63CFD720AC3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90E35C74-4FFC-43A4-B21C-90487C825F7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90E35C74-4FFC-43A4-B21C-90487C825F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90E35C74-4FFC-43A4-B21C-90487C825F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90E35C74-4FFC-43A4-B21C-90487C825F7C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
