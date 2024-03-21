@@ -29,6 +29,19 @@ The commands can be changed in the config file. For example, by default you can 
 }
 ```
 
+### Where should I install the files?
+- Begin by downloading the cs2-store plugin and place it in the correct directory within the folder:
+  
+    `addons/counterstrikesharp/plugins/cs2-store/`
+
+- Copy the StoreApi library files to the following directory:
+  
+    `addons/counterstrikesharp/shared/StoreApi/`
+
+- To modify the store settings:
+
+    `addons/counterstrikesharp/configs/plugins/cs2-store/cs2-store.json`
+
 ## Features
 
 - Armor
@@ -108,6 +121,7 @@ The commands can be changed in the config file. For example, by default you can 
       ]
     },
     "credits": {
+      "ignore_warmup": 1,
       "start": 0,
       "interval_active_inactive": 60,
       "amount_active": 10,
@@ -192,6 +206,13 @@ The commands can be changed in the config file. For example, by default you can 
                 "Name": "10 Armor",
                 "UniqueId": "10",
                 "Type": "armor",
+                "Price": 0,
+                "Enable": true
+            },
+            "4": {
+              	"Name": "Colored Skin",
+                "UniqueId": "coloredskin",
+                "Type": "coloredskin",
                 "Price": 0,
                 "Enable": true
             }
@@ -304,37 +325,9 @@ The commands can be changed in the config file. For example, by default you can 
         },
         "trail": {
             "1": {
-                "Name": "Colorful",
-                "UniqueId": "colortrail",
+                "Name": "Energycirc",
+                "UniqueId": "particles/ui/status_levels/ui_status_level_8_energycirc.vpcf",
                 "Type": "trail",
-                "Color": "255 0 0",
-                "Price": 0,
-                "Slot": 1,
-                "Enable": true
-            },
-            "2": {
-                "Name": "Red",
-                "UniqueId": "redtrail",
-                "Type": "trail",
-                "Color": "255 0 0",
-                "Price": 0,
-                "Slot": 1,
-                "Enable": true
-            },
-            "3": {
-                "Name": "Green",
-                "UniqueId": "greentrail",
-                "Type": "trail",
-                "Color": "0 255 0",
-                "Price": 0,
-                "Slot": 1,
-                "Enable": true
-            },
-            "4": {
-                "Name": "Blue",
-                "UniqueId": "bluetrail",
-                "Type": "trail",
-                "Color": "0 0 255",
                 "Price": 0,
                 "Slot": 1,
                 "Enable": true
