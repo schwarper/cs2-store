@@ -7,11 +7,11 @@ namespace Store;
 
 public partial class Store
 {
-    public void Playerskin_OnPluginStart()
+    public static void Playerskin_OnPluginStart()
     {
         new StoreAPI().RegisterType("playerskin", Playerskin_OnMapStart, Playerskin_OnEquip, Playerskin_OnUnequip, true, null);
 
-        RegisterEventHandler<EventPlayerSpawn>((@event, info) =>
+        Instance.RegisterEventHandler<EventPlayerSpawn>((@event, info) =>
         {
             CCSPlayerController player = @event.Userid;
 
@@ -27,7 +27,7 @@ public partial class Store
                 return HookResult.Continue;
             }
 
-            Store_PlayerItem? item = GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
+            Store_PlayerItem? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
 
             if (item == null)
             {
@@ -41,14 +41,14 @@ public partial class Store
             return HookResult.Continue;
         });
     }
-    public void Playerskin_OnMapStart()
+    public static void Playerskin_OnMapStart()
     {
-        IEnumerable<string> playerSkinItems = Config.Items
+        IEnumerable<string> playerSkinItems = Instance.Config.Items
         .SelectMany(wk => wk.Value)
         .Where(kvp => kvp.Value.Type == "playerskin")
         .Select(kvp => kvp.Value.UniqueId);
 
-        RegisterListener<OnServerPrecacheResources>((manifest) =>
+        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
             foreach (string UniqueId in playerSkinItems)
             {
@@ -57,18 +57,18 @@ public partial class Store
         });
     }
 
-    public bool Playerskin_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Playerskin_OnEquip(CCSPlayerController player, Store_Item item)
     {
-        if (player.PawnIsAlive && player.TeamNum == item.Slot)
+        if (player.TeamNum == item.Slot)
         {
             player.PlayerPawn.Value?.ChangeModel(item.UniqueId);
         }
 
         return true;
     }
-    public bool Playerskin_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Playerskin_OnUnequip(CCSPlayerController player, Store_Item item)
     {
-        if (player.PawnIsAlive && player.TeamNum == item.Slot)
+        if (player.TeamNum == item.Slot)
         {
             SetDefaultModel(player);
         }
@@ -76,21 +76,18 @@ public partial class Store
         return true;
     }
 
-    public void SetDefaultModel(CCSPlayerController player)
+    public static void SetDefaultModel(CCSPlayerController player)
     {
-        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels["ct"] : Config.DefaultModels["t"];
+        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels["ct"] : Instance.Config.DefaultModels["t"];
         int maxIndex = modelsArray.Length;
 
         if (maxIndex > 0)
         {
-            int randomnumber = random.Next(0, maxIndex - 1);
+            int randomnumber = Instance.random.Next(0, maxIndex - 1);
 
             string model = modelsArray[randomnumber];
 
-            if (model != null)
-            {
-                player.PlayerPawn.Value?.ChangeModel(model);
-            }
+            player.PlayerPawn.Value?.ChangeModel(model);
         }
     }
 }

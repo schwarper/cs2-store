@@ -5,14 +5,14 @@ namespace Store;
 
 public partial class Store
 {
-    private void Speed_OnPluginStart()
+    public static void Speed_OnPluginStart()
     {
         new StoreAPI().RegisterType("speed", Speed_OnMapStart, Speed_OnEquip, Speed_OnUnequip, false, true);
     }
-    private void Speed_OnMapStart()
+    public static void Speed_OnMapStart()
     {
     }
-    private bool Speed_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Speed_OnEquip(CCSPlayerController player, Store_Item item)
     {
         if (!float.TryParse(item.UniqueId, out float speed))
         {
@@ -28,7 +28,7 @@ public partial class Store
 
         if (speed > 0.0)
         {
-            AddTimer(speed, () =>
+            Instance.AddTimer(speed, () =>
             {
                 playerPawn.VelocityModifier = 1.0f;
 
@@ -40,7 +40,7 @@ public partial class Store
 
         return true;
     }
-    private bool Speed_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Speed_OnUnequip(CCSPlayerController player, Store_Item item)
     {
         return true;
     }

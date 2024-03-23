@@ -8,7 +8,7 @@ namespace Store;
 public partial class Store : BasePlugin, IPluginConfig<StoreConfig>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "0.0.5";
+    public override string ModuleVersion => "0.0.6";
     public override string ModuleAuthor => "schwarper";
 
     public override void Load(bool hotReload)
@@ -24,11 +24,15 @@ public partial class Store : BasePlugin, IPluginConfig<StoreConfig>
         ColoredSkin_OnPluginStart();
         Godmode_OnPluginStart();
         Gravity_OnPluginStart();
+        GrenadeTrail_OnPluginStart();
         Health_OnPluginStart();
+        Open_OnPluginStart();
         Playerskin_OnPluginStart();
         Respawn_OnPluginStart();
         Smoke_OnPluginStart();
+        Sound_OnPluginStart();
         Speed_OnPluginStart();
+        Tracer_OnPluginStart();
         Trail_OnPluginStart();
         Weapon_OnPluginStart();
 

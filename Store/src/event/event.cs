@@ -36,9 +36,16 @@ public static class Event
                     continue;
                 }
 
-                Instance.OnTick_CreateTrail(player);
-                Instance.OnTick_ColoredSkin(player);
+                OnTick_CreateTrail(player);
+                OnTick_ColoredSkin(player);
+                OnTick_GrenadeTrail();
             }
+        });
+
+        Instance.RegisterListener<OnEntityCreated>((entity) =>
+        {
+            OnEntityCreated_Smoke(entity);
+            OnEntityCreated_GrenadeTrail(entity);
         });
 
         Instance.RegisterEventHandler<EventPlayerConnectFull>((@event, info) =>

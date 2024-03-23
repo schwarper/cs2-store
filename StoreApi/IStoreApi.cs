@@ -23,5 +23,5 @@ public interface IStoreApi
     public List<Store_PlayerItem> GetPlayerEquipments(CCSPlayerController player);
     public bool IsPlayerVip(CCSPlayerController player);
     public void RegisterType(string type, Action mapStart, Func<CCSPlayerController, Store_Item, bool> equip, Func<CCSPlayerController, Store_Item, bool> unequip, bool equipable, bool? alive = false);
-    
+
 }

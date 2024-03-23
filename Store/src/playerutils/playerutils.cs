@@ -26,6 +26,11 @@ public static class PlayerUtils
     {
         Server.NextFrame(() =>
         {
+            if (pawn.OriginalController.Value?.PawnIsAlive == false)
+            {
+                return;
+            }
+
             pawn.SetModel(model);
         });
     }

@@ -1,0 +1,42 @@
+using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Core;
+using static StoreApi.Store;
+
+namespace Store;
+
+public partial class Store
+{
+    static readonly string[] DoorNames =
+    {
+        "func_door",
+        "func_movelinear",
+        "func_door_rotating",
+        "prop_door_rotating"
+    };
+
+    public static void Open_OnPluginStart()
+    {
+        new StoreAPI().RegisterType("open", Open_OnMapStart, Open_OnEquip, Open_OnUnequip, false, null);
+    }
+    public static void Open_OnMapStart()
+    {
+    }
+    public static bool Open_OnEquip(CCSPlayerController player, Store_Item item)
+    {
+        foreach (string doorname in DoorNames)
+        {
+            IEnumerable<CBaseEntity> target = Utilities.FindAllEntitiesByDesignerName<CBaseEntity>(doorname);
+
+            foreach (CBaseEntity entity in target)
+            {
+                entity.AcceptInput("Open");
+            }
+        }
+
+        return true;
+    }
+    public static bool Open_OnUnequip(CCSPlayerController player, Store_Item item)
+    {
+        return true;
+    }
+}

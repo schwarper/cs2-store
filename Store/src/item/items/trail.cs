@@ -8,18 +8,18 @@ namespace Store;
 
 public partial class Store
 {
-    private void Trail_OnPluginStart()
+    public static void Trail_OnPluginStart()
     {
         new StoreAPI().RegisterType("trail", Trail_OnMapStart, Trail_OnEquip, Trail_OnUnequip, true, null);
     }
-    private void Trail_OnMapStart()
+    public static void Trail_OnMapStart()
     {
-        IEnumerable<string> playerTrails = Config.Items
+        IEnumerable<string> playerTrails = Instance.Config.Items
         .SelectMany(wk => wk.Value)
         .Where(kvp => kvp.Value.Type == "trail")
         .Select(kvp => kvp.Value.UniqueId);
 
-        RegisterListener<OnServerPrecacheResources>((manifest) =>
+        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
             foreach (string UniqueId in playerTrails)
             {
@@ -27,17 +27,17 @@ public partial class Store
             }
         });
     }
-    private bool Trail_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Trail_OnEquip(CCSPlayerController player, Store_Item item)
     {
         return true;
     }
-    private bool Trail_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Trail_OnUnequip(CCSPlayerController player, Store_Item item)
     {
         return true;
     }
-    public void OnTick_CreateTrail(CCSPlayerController player)
+    public static void OnTick_CreateTrail(CCSPlayerController player)
     {
-        Store_PlayerItem? playertrail = GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "trail");
+        Store_PlayerItem? playertrail = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "trail");
 
         if (playertrail == null)
         {
@@ -68,7 +68,7 @@ public partial class Store
         entity.Teleport(playerPawn.AbsOrigin, new QAngle(90, 0, 0), new Vector());
         entity.AcceptInput("Start");
 
-        AddTimer(1.3f, () =>
+        Instance.AddTimer(1.3f, () =>
         {
             if (entity != null && entity.IsValid)
             {

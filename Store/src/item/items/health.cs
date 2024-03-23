@@ -5,14 +5,14 @@ namespace Store;
 
 public partial class Store
 {
-    private void Health_OnPluginStart()
+    public static void Health_OnPluginStart()
     {
         new StoreAPI().RegisterType("health", Health_OnMapStart, Health_OnEquip, Health_OnUnequip, false, true);
     }
-    private void Health_OnMapStart()
+    public static void Health_OnMapStart()
     {
     }
-    private bool Health_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Health_OnEquip(CCSPlayerController player, Store_Item item)
     {
         if (!int.TryParse(item.UniqueId, out int health))
         {
@@ -51,7 +51,7 @@ public partial class Store
         return true;
     }
 
-    private bool Health_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Health_OnUnequip(CCSPlayerController player, Store_Item item)
     {
         return true;
     }

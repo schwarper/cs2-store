@@ -6,14 +6,14 @@ namespace Store;
 
 public partial class Store : BasePlugin
 {
-    private void Armor_OnPluginStart()
+    public static void Armor_OnPluginStart()
     {
         new StoreAPI().RegisterType("armor", Armor_OnMapStart, Armor_OnEquip, Armor_OnUnequip, false, true);
     }
-    private void Armor_OnMapStart()
+    public static void Armor_OnMapStart()
     {
     }
-    private bool Armor_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Armor_OnEquip(CCSPlayerController player, Store_Item item)
     {
         if (!int.TryParse(item.UniqueId, out int armor))
         {
@@ -69,7 +69,7 @@ public partial class Store : BasePlugin
 
         return true;
     }
-    private bool Armor_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Armor_OnUnequip(CCSPlayerController player, Store_Item item)
     {
         return true;
     }

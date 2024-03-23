@@ -13,7 +13,7 @@ public static class Item
     {
         if (Credits.Get(player) < item.Price)
         {
-            player.PrintToChatMessage("No Credits Enough");
+            player.PrintToChatMessage("No credits enough");
             return false;
         }
 

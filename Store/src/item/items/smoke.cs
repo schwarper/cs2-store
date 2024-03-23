@@ -1,57 +1,50 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using static CounterStrikeSharp.API.Core.Listeners;
 using static StoreApi.Store;
 
 namespace Store;
 
 public partial class Store
 {
-    private void Smoke_OnPluginStart()
+    public static void Smoke_OnPluginStart()
     {
         new StoreAPI().RegisterType("smoke", Smoke_OnMapStart, Smoke_OnEquip, Smoke_OnUnequip, true, null);
-
-        RegisterListener<OnEntitySpawned>((CEntityInstance entity) =>
-        {
-            ChangeSmokeColor(entity);
-        });
     }
-    private void Smoke_OnMapStart()
+    public static void Smoke_OnMapStart()
     {
     }
-    private bool Smoke_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Smoke_OnEquip(CCSPlayerController player, Store_Item item)
     {
         return true;
     }
-    private bool Smoke_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Smoke_OnUnequip(CCSPlayerController player, Store_Item item)
     {
         return true;
     }
-
-    private void ChangeSmokeColor(CEntityInstance entity)
+    public static void OnEntityCreated_Smoke(CEntityInstance entity)
     {
         if (entity.DesignerName != "smokegrenade_projectile")
         {
             return;
         }
 
-        CSmokeGrenadeProjectile smokeGrenadeEntity = new(entity.Handle);
+        CSmokeGrenadeProjectile grenade = new(entity.Handle);
 
-        if (smokeGrenadeEntity.Handle == IntPtr.Zero)
+        if (grenade.Handle == IntPtr.Zero)
         {
             return;
         }
 
         Server.NextFrame(() =>
         {
-            CBasePlayerController? player = smokeGrenadeEntity.Thrower.Value?.Controller.Value;
+            CBasePlayerController? player = grenade.Thrower.Value?.Controller.Value;
 
             if (player == null)
             {
                 return;
             }
 
-            Store_PlayerItem? item = GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "smoke");
+            Store_PlayerItem? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "smoke");
 
             if (item == null)
             {
@@ -60,17 +53,17 @@ public partial class Store
 
             if (item.UniqueId == "colorsmoke")
             {
-                smokeGrenadeEntity.SmokeColor.X = Random.Shared.NextSingle() * 255.0f;
-                smokeGrenadeEntity.SmokeColor.Y = Random.Shared.NextSingle() * 255.0f;
-                smokeGrenadeEntity.SmokeColor.Z = Random.Shared.NextSingle() * 255.0f;
+                grenade.SmokeColor.X = Random.Shared.NextSingle() * 255.0f;
+                grenade.SmokeColor.Y = Random.Shared.NextSingle() * 255.0f;
+                grenade.SmokeColor.Z = Random.Shared.NextSingle() * 255.0f;
             }
             else
             {
                 string[] colorValues = item.Color.Split(' ');
 
-                smokeGrenadeEntity.SmokeColor.X = float.Parse(colorValues[0]);
-                smokeGrenadeEntity.SmokeColor.Y = float.Parse(colorValues[1]);
-                smokeGrenadeEntity.SmokeColor.Z = float.Parse(colorValues[2]);
+                grenade.SmokeColor.X = float.Parse(colorValues[0]);
+                grenade.SmokeColor.Y = float.Parse(colorValues[1]);
+                grenade.SmokeColor.Z = float.Parse(colorValues[2]);
             }
         });
     }

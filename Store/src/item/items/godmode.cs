@@ -5,14 +5,14 @@ namespace Store;
 
 public partial class Store
 {
-    private void Godmode_OnPluginStart()
+    public static void Godmode_OnPluginStart()
     {
         new StoreAPI().RegisterType("godmode", Godmode_OnMapStart, Godmode_OnEquip, Godmode_OnUnequip, false, true);
     }
-    private void Godmode_OnMapStart()
+    public static void Godmode_OnMapStart()
     {
     }
-    private bool Godmode_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Godmode_OnEquip(CCSPlayerController player, Store_Item item)
     {
         if (!float.TryParse(item.UniqueId, out float godmode))
         {
@@ -28,7 +28,7 @@ public partial class Store
 
         if (godmode > 0.0)
         {
-            AddTimer(godmode, () =>
+            Instance.AddTimer(godmode, () =>
             {
                 playerPawn.TakesDamage = true;
 
@@ -40,7 +40,7 @@ public partial class Store
 
         return true;
     }
-    private bool Godmode_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Godmode_OnUnequip(CCSPlayerController player, Store_Item item)
     {
         return true;
     }

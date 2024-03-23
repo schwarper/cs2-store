@@ -9,6 +9,17 @@ namespace Store;
 
 public static class Menu
 {
+    public static void AddMenuOption(CCSPlayerController player, CenterHtmlMenu menu, Action<CCSPlayerController, ChatMenuOption> onSelect, string display, params object[] args)
+    {
+        using (new WithTemporaryCulture(player.GetLanguage()))
+        {
+            StringBuilder builder = new();
+            builder.AppendFormat(Instance.Localizer[display, args]);
+
+            menu.AddMenuOption(builder.ToString(), onSelect);
+        }
+    }
+
     public static void DisplayStore(CCSPlayerController player, bool inventory)
     {
         bool isVip = new StoreAPI().IsPlayerVip(player);
@@ -16,7 +27,7 @@ public static class Menu
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
             StringBuilder builder = new();
-            builder.AppendFormat(Instance.Localizer["menu_store<title>"]);
+            builder.AppendFormat(Instance.Localizer["menu_store<title>", Credits.Get(player)]);
 
             CenterHtmlMenu menu = new(builder.ToString());
 
@@ -65,6 +76,7 @@ public static class Menu
                 }
                 else if (!inventory)
                 {
+
                     using (new WithTemporaryCulture(player.GetLanguage()))
                     {
                         StringBuilder builder = new();
@@ -101,23 +113,19 @@ public static class Menu
 
             if (Item.PlayerHas(player, item.UniqueId) || isVip && item.Slot != 0)
             {
-                menu.AddMenuOption(item.Name, (CCSPlayerController player, ChatMenuOption option) =>
+                AddMenuOption(player, menu, (player, option) =>
                 {
                     DisplayItemOption(player, item, isVip);
-                });
+                }, item.Name);
             }
             else if (!inventory)
             {
-                using (new WithTemporaryCulture(player.GetLanguage()))
+                AddMenuOption(player, menu, (player, option) =>
                 {
-                    StringBuilder builder = new();
-                    builder.AppendFormat(Instance.Localizer["menu_store<purchase>", item.Name, item.Price]);
+                    Item.Purchase(player, item);
 
-                    menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
-                    {
-                        Item.Purchase(player, item);
-                    });
-                }
+                    MenuManager.CloseActiveMenu(player);
+                }, "menu_store<purchase>", item.Name, item.Price);
             }
         }
 
@@ -130,55 +138,37 @@ public static class Menu
 
         if (Item.PlayerUsing(player, item.UniqueId))
         {
-            using (new WithTemporaryCulture(player.GetLanguage()))
+            AddMenuOption(player, menu, (player, option) =>
             {
-                StringBuilder builder = new();
-                builder.AppendFormat(Instance.Localizer["menu_store<unequip>", item.Name]);
+                Item.Unequip(player, item);
 
-                menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
-                {
-                    Item.Unequip(player, item);
+                player.PrintToChatMessage("Purchase UnEquip", item.Name);
 
-                    player.PrintToChatMessage("Purchase UnEquip", item.Name);
-
-                    MenuManager.CloseActiveMenu(player);
-                });
-            }
+                MenuManager.CloseActiveMenu(player);
+            }, "menu_store<unequip>");
         }
         else
         {
-            using (new WithTemporaryCulture(player.GetLanguage()))
+            AddMenuOption(player, menu, (player, option) =>
             {
-                StringBuilder builder = new();
-                builder.AppendFormat(Instance.Localizer["menu_store<equip>", item.Name]);
+                Item.Equip(player, item);
 
-                menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
-                {
-                    Item.Equip(player, item);
+                player.PrintToChatMessage("Purchase Equip", item.Name);
 
-                    player.PrintToChatMessage("Purchase Equip", item.Name);
-
-                    MenuManager.CloseActiveMenu(player);
-                });
-            }
+                MenuManager.CloseActiveMenu(player);
+            }, "menu_store<equip>");
         }
 
         if (Instance.Config.Menu["enable_selling"] == "1" && !isVip)
         {
-            using (new WithTemporaryCulture(player.GetLanguage()))
+            AddMenuOption(player, menu, (player, option) =>
             {
-                StringBuilder builder = new();
-                builder.AppendFormat(Instance.Localizer["menu_store<sell>", item.Name]);
+                Item.Sell(player, item);
 
-                menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
-                {
-                    Item.Sell(player, item);
+                player.PrintToChatMessage("Item Sell", item.Name);
 
-                    player.PrintToChatMessage("Item Sell", item.Name);
-
-                    MenuManager.CloseActiveMenu(player);
-                });
-            }
+                MenuManager.CloseActiveMenu(player);
+            }, "menu_store<sell>");
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
