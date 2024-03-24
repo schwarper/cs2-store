@@ -14,7 +14,18 @@ public partial class Store
     }
     public static bool Weapon_OnEquip(CCSPlayerController player, Store_Item item)
     {
-        player.GiveNamedItem(item.UniqueId);
+        switch (PlayerUtils.IsPistolRound())
+        {
+            case true:
+                if (item.Slot != 1)
+                {
+                    player.GiveNamedItem(item.UniqueId);
+                }
+                break;
+            default:
+                player.GiveNamedItem(item.UniqueId);
+                break;
+        }
 
         return true;
     }

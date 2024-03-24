@@ -13,6 +13,18 @@ public static class PlayerUtils
     {
         return player.IsValid && player.SteamID.ToString().Length == 17;
     }
+    static public bool IsPistolRound()
+    {
+        var gamerules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules")
+            .First().GameRules;
+        var halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
+        var maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
+
+        if (gamerules == null) return false;
+        return gamerules.TotalRoundsPlayed == 0 ||
+               (halftime && maxrounds / 2 == gamerules.TotalRoundsPlayed) ||
+               gamerules.GameRestart;
+    }
     static public void PrintToChatMessage(this CCSPlayerController player, string message, params object[] args)
     {
         using (new WithTemporaryCulture(player.GetLanguage()))
