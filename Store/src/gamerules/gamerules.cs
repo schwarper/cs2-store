@@ -12,4 +12,14 @@ public static class GameRules
     {
         return Convert.ToBoolean(Instance.Config.Credits["ignore_warmup"]) && GlobalGameRules.WarmupPeriod;
     }
+    public static bool IsPistolRound()
+    {
+        var halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
+        var maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
+
+        if (GlobalGameRules == null) return false;
+        return GlobalGameRules.TotalRoundsPlayed == 0 ||
+               (halftime && maxrounds / 2 == GlobalGameRules.TotalRoundsPlayed) ||
+               GlobalGameRules.GameRestart;
+    }
 }
