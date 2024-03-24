@@ -20,6 +20,7 @@
 	"Purchase Succeeded": "{white}Ви {white}купили {green}{0}{white}.",
 	"Purchase Equip": "{white}Ви {white}екіпіровали {green}{0}{white}.",
 	"Purchase Unequip": "{white}Ви {white}зняли екіпіровку з {green}{0}{white}.",
+  "Purchase Forbidden Pistol Round": "{white}You {white}cannot buy {green}{0}{white} in Pistol Round.",
 	"Item Sell": "{white}Ви {white}продали {green}{0}{white}.",
 	"Godmode expired": "{white}Час вашого богомоду закінчився.",
 	"Speed expired": "{white}Час вашої швидкості закінчився.",

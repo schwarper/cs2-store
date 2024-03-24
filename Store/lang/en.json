@@ -19,7 +19,8 @@
 
     "Purchase Succeeded": "{white}You {white}bought {green}{0}{white}.",
     "Purchase Equip": "{white}You {white}equipped {green}{0}{white}.",
-    "Purchase Unequip": "{white}You {white}unequipped {green}{0}{white}.",
+  "Purchase Unequip": "{white}You {white}unequipped {green}{0}{white}.",
+  "Purchase Forbidden Pistol Round": "{white}You {white}cannot buy {green}{0}{white} in Pistol Round.", 
     "Item Sell": "{white}You {white}sold {green}{0}{white}.",
     "Godmode expired": "{white}Your godmode time is expired.",
     "Speed expired": "{white}Your speed time is expired.",

@@ -20,6 +20,10 @@ public partial class Store
             {
                 player.GiveNamedItem(item.UniqueId);
             }
+            else
+            {
+                player.PrintToChat(Instance.Localizer["Prefix"] + Instance.Localizer["Purchase Forbidden Pistol Round"], item.Name);
+            }
         }
         else
         {
