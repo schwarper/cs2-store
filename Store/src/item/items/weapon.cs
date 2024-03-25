@@ -22,7 +22,7 @@ public partial class Store
             }
             else
             {
-                player.PrintToChat(Instance.Localizer["Prefix"] + Instance.Localizer["Purchase Forbidden Pistol Round",item.Name]);
+                player.PrintToChatMessage("No in pistol round", item.Name);
                 return false;
             }
         }

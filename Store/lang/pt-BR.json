@@ -7,7 +7,7 @@
     "No credits enough": "{white}Você não possui créditos suficientes.",
     "You are not alive": "{white}Você só pode comprar quando estiver vivo.",
     "You are alive": "{white}Você só pode comprar quando estiver morto.",
-    "No in pistol round": "{white}Você não pode comprar este item na rodada de pistola.",
+    "No in pistol round": "{white}Você não pode comprar este item {green}{0} {white} na rodada de pistola.",
     "No gift yourself": "{white}Você não pode presentear a si mesmo.",
     "No type found": "{white}Nenhum tipo encontrado.",
 
