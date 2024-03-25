@@ -113,14 +113,16 @@ public static class Event
                 return HookResult.Continue;
             }
 
+            if (Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value)) {
+                return HookResult.Continue;
+            }
+
+            if (value != null) {
+                value.CreditIntervalTimer?.Kill();
+            }
             string playername = player.PlayerName;
 
             Database.SavePlayer(player, playername);
-
-            if (Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value) && value != null)
-            {
-                value.CreditIntervalTimer?.Kill();
-            }
 
             return HookResult.Continue;
         });
