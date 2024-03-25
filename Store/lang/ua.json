@@ -7,6 +7,7 @@
 	"No credits enough": "{white}У вас недостатньо кредитів.",
 	"You are not alive": "{white}Ви можете купити це лише тоді, коли ви живі.",
 	"You are alive": "{white}Ви можете купити це лише тоді, коли ви мертві.",
+	"No in pistol round": "{white}Ви не можете купити цей товар у пістолетному раунді.",
 	"No gift yourself": "{white}Ви не можете подарувати кредити самому собі.",
 	"No type found": "{white}Тип не знайдено.",
 
@@ -20,7 +21,6 @@
 	"Purchase Succeeded": "{white}Ви {white}купили {green}{0}{white}.",
 	"Purchase Equip": "{white}Ви {white}екіпіровали {green}{0}{white}.",
 	"Purchase Unequip": "{white}Ви {white}зняли екіпіровку з {green}{0}{white}.",
-  "Purchase Forbidden Pistol Round": "{white}You {white}cannot buy {green}{0}{white} in Pistol Round.",
 	"Item Sell": "{white}Ви {white}продали {green}{0}{white}.",
 	"Godmode expired": "{white}Час вашого богомоду закінчився.",
 	"Speed expired": "{white}Час вашої швидкості закінчився.",
