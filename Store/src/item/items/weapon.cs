@@ -14,24 +14,14 @@ public partial class Store
     }
     public static bool Weapon_OnEquip(CCSPlayerController player, Store_Item item)
     {
-        if (GameRules.IsPistolRound())
+        if (GameRules.IsPistolRound() && item.Slot != 0)
         {
-            if (item.Slot != 1)
-            {
-                player.GiveNamedItem(item.UniqueId);
-            }
-            else
-            {
-                player.PrintToChatMessage("No in pistol round", item.Name);
-                return false;
-            }
+            player.PrintToChatMessage("No in pistol round", item.Name);
+            return false;
         }
-        else
-        {
-            player.GiveNamedItem(item.UniqueId);
-        }
-        
-
+    
+        player.GiveNamedItem(item.UniqueId);
+    
         return true;
     }
     public static bool Weapon_OnUnequip(CCSPlayerController player, Store_Item item)
