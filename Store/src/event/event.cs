@@ -109,8 +109,7 @@ public static class Event
         {
             CCSPlayerController? player = @event.Userid;
 
-            if (!player.Valid())
-            {
+            if (player == null || !player.Valid()) {
                 return HookResult.Continue;
             }
 
