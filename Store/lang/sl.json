@@ -7,6 +7,7 @@
     "No credits enough": "{white}Nimate dovolj kreditov za nakup.",
     "You are not alive": "{white}Ta predmet lahko kupiš le, ko si živ.",
     "You are alive": "{white}Ta predmet lahko kupiš le, ko si mrtev.",
+    "No in pistol round": "{white}Tento predmet nemôžete použiť {green}{0} {white}v pištoľnom kole.",
     "No gift yourself": "{white}Ne morete darovati kreditov samemu sebi.",
     "No type found": "{white}Samemu sebi ne morete podariti kreditov.",
 

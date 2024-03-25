@@ -7,6 +7,7 @@
 	"No credits enough": "{white}У вас недостаточно кредитов.",
 	"You are not alive": "{white}Вы можете купить это только когда вы живы.",
 	"You are alive": "{white}Вы можете купить это только когда вы мертвы.",
+	"No in pistol round": "{white}Вы не сможете купить этот предмет {green}{0} {white} в пистолетном раунде.",
 	"No gift yourself": "{white}Вы не можете подарить кредиты сами себе.",
 	"No type found": "{white}Тип не найден.",
 
