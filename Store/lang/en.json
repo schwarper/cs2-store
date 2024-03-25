@@ -7,6 +7,7 @@
     "No credits enough": "{white}You do not have enough credits.",
     "You are not alive": "{white}You can buy it only when you are alive.",
     "You are alive": "{white}You can buy it only when you are dead.",
+    "No in pistol round": "{white}You cannot buy this item in pistol round.",
     "No gift yourself": "{white}You cannot gift credits to yourself.",
     "No type found": "{white}No type found.",
 
@@ -19,8 +20,7 @@
 
     "Purchase Succeeded": "{white}You {white}bought {green}{0}{white}.",
     "Purchase Equip": "{white}You {white}equipped {green}{0}{white}.",
-  "Purchase Unequip": "{white}You {white}unequipped {green}{0}{white}.",
-  "Purchase Forbidden Pistol Round": "{white}You {white}cannot buy {green}{0}{white} in Pistol Round.", 
+    "Purchase Unequip": "{white}You {white}unequipped {green}{0}{white}.",
     "Item Sell": "{white}You {white}sold {green}{0}{white}.",
     "Godmode expired": "{white}Your godmode time is expired.",
     "Speed expired": "{white}Your speed time is expired.",
