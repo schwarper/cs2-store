@@ -31,7 +31,7 @@ public static class Event
 
             foreach (CCSPlayerController player in Utilities.GetPlayers())
             {
-                if (!player.Valid() || !player.PawnIsAlive)
+                if (player == null || !player.Valid() || !player.PawnIsAlive)
                 {
                     continue;
                 }
@@ -52,7 +52,7 @@ public static class Event
         {
             CCSPlayerController? player = @event.Userid;
 
-            if (!player.Valid())
+            if (player == null || !player.Valid())
             {
                 return HookResult.Continue;
             }
@@ -109,17 +109,18 @@ public static class Event
         {
             CCSPlayerController? player = @event.Userid;
 
-            if (player == null || !player.Valid()) {
+            if (player == null || !player.Valid())
+            {
                 return HookResult.Continue;
             }
 
-            if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value)) {
+            if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
+            {
                 return HookResult.Continue;
             }
 
-            if (value != null) {
-                value.CreditIntervalTimer?.Kill();
-            }
+            value?.CreditIntervalTimer?.Kill();
+
             string playername = player.PlayerName;
 
             Database.SavePlayer(player, playername);
@@ -137,7 +138,7 @@ public static class Event
             CCSPlayerController victim = @event.Userid;
             CCSPlayerController attacker = @event.Attacker;
 
-            if (!victim.Valid() || !attacker.Valid() || victim == attacker)
+            if (victim == null || attacker == null || !victim.Valid() || !attacker.Valid() || victim == attacker)
             {
                 return HookResult.Continue;
             }
