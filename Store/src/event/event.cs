@@ -113,7 +113,7 @@ public static class Event
                 return HookResult.Continue;
             }
 
-            if (Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value)) {
+            if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value)) {
                 return HookResult.Continue;
             }
 
