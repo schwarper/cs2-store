@@ -24,13 +24,13 @@ public static class PlayerUtils
     }
     static public void ChangeModel(this CCSPlayerPawn pawn, string model)
     {
+        if (model == string.Empty)
+        {
+            return;
+        }
+
         Server.NextFrame(() =>
         {
-            if (pawn.OriginalController.Value?.PawnIsAlive == false)
-            {
-                return;
-            }
-
             pawn.SetModel(model);
         });
     }

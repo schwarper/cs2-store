@@ -20,9 +20,14 @@ public partial class Store
             return false;
         }
 
-        player.GravityScale = gravity;
+        CCSPlayerPawn? playerPawn = player.PlayerPawn.Value;
 
-        Utilities.SetStateChanged(player, "CBaseEntity", "m_flGravityScale");
+        if (playerPawn == null)
+        {
+            return false;
+        }
+
+        playerPawn.GravityScale = gravity;
 
         return true;
     }
