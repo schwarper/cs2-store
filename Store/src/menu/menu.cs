@@ -142,7 +142,7 @@ public static class Menu
             {
                 Item.Unequip(player, item);
 
-                player.PrintToChatMessage("Purchase UnEquip", item.Name);
+                player.PrintToChatMessage("Purchase Unequip", item.Name);
 
                 MenuManager.CloseActiveMenu(player);
             }, "menu_store<unequip>");
