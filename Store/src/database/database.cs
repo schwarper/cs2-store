@@ -40,6 +40,10 @@ public static class Database
             UserID = config.Database["user"],
             Password = config.Database["password"],
             Port = uint.Parse(config.Database["port"]),
+            Pooling = true,
+            MinimumPoolSize = 0,
+            MaximumPoolSize = 640,
+            ConnectionIdleTimeout = 30,
             AllowZeroDateTime = true
         };
 
