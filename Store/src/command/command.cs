@@ -12,20 +12,20 @@ public static class Command
     {
         StoreConfig config = Instance.Config;
 
-        AddCommands(config.Commands["credits"], "Show credits", Command_Credits);
-        AddCommands(config.Commands["store"], "Store menu", Command_Store);
-        AddCommands(config.Commands["inventory"], "Open inventory menu", Command_Inv);
-        AddCommands(config.Commands["givecredits"], "Give credits", Command_GiveCredits);
-        AddCommands(config.Commands["gift"], "Gift", Command_Gift);
-        AddCommands(config.Commands["resetplayer"], "Reset player's inventory", Command_ResetPlayer);
-        AddCommands(config.Commands["resetdatabase"], "Reset database", Command_ResetDatabase);
-    }
-
-    public static void AddCommands(IEnumerable<string> commands, string description, CommandInfo.CommandCallback commandAction)
-    {
-        foreach (string command in commands)
+        Dictionary<string, (string description, CommandInfo.CommandCallback handler)> commands = new()
         {
-            Instance.AddCommand($"css_{command}", description, commandAction);
+            {"credits", ("Show credits", Command_Credits)},
+            {"store", ("Store menu", Command_Store)},
+            {"inventory", ("Open inventory menu", Command_Inv)},
+            {"givecredits", ("Give credits", Command_GiveCredits)},
+            {"gift", ("Gift", Command_Gift)},
+            {"resetplayer", ("Reset player's inventory", Command_ResetPlayer)},
+            {"resetdatabase", ("Reset database", Command_ResetDatabase)}
+        };
+
+        foreach (var command in commands)
+        {
+            Instance.AddCommand($"css_{command.Key}", command.Value.description, command.Value.handler);
         }
     }
 

@@ -79,21 +79,11 @@ public class StoreAPI : IStoreApi
 
     public bool IsPlayerVip(CCSPlayerController player)
     {
-        string vip = Instance.Config.Menu["vip_flag"];
-
-        return !string.IsNullOrEmpty(vip) && AdminManager.PlayerHasPermissions(player, vip);
+        return Item.IsPlayerVip(player);
     }
 
     public void RegisterType(string Type, Action MapStart, Func<CCSPlayerController, Store_Item, bool> Equip, Func<CCSPlayerController, Store_Item, bool> Unequip, bool Equipable, bool? Alive)
     {
-        Instance.GlobalStoreItemTypes.Add(new Store_Item_Types
-        {
-            Type = Type,
-            MapStart = MapStart,
-            Equip = Equip,
-            Unequip = Unequip,
-            Equipable = Equipable,
-            Alive = Alive
-        });
+        Item.RegisterType(Type, MapStart, Equip, Unequip, Equipable, Alive);
     }
 }

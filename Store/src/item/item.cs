@@ -196,4 +196,24 @@ public static class Item
     {
         return Instance.GlobalStorePlayerEquipments.Where(item => item.SteamID == player.SteamID).ToList();
     }
+
+    public static bool IsPlayerVip(CCSPlayerController player)
+    {
+        string vip = Instance.Config.Menu["vip_flag"];
+
+        return !string.IsNullOrEmpty(vip) && AdminManager.PlayerHasPermissions(player, vip);
+    }
+
+    public static void RegisterType(string Type, Action MapStart, Func<CCSPlayerController, Store_Item, bool> Equip, Func<CCSPlayerController, Store_Item, bool> Unequip, bool Equipable, bool? Alive)
+    {
+        Instance.GlobalStoreItemTypes.Add(new Store_Item_Types
+        {
+            Type = Type,
+            MapStart = MapStart,
+            Equip = Equip,
+            Unequip = Unequip,
+            Equipable = Equipable,
+            Alive = Alive
+        });
+    }
 }
