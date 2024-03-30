@@ -16,8 +16,8 @@ public static class GameRules
 
     public static bool IsPistolRound()
     {
-        var halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
-        var maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
+        bool halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
+        int maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
 
         return GlobalGameRules.TotalRoundsPlayed == 0 ||
                (halftime && maxrounds / 2 == GlobalGameRules.TotalRoundsPlayed) ||

@@ -13,11 +13,11 @@ public partial class Store
     public static void ColoredSkin_OnMapStart()
     {
     }
-    public static bool ColoredSkin_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool ColoredSkin_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static bool ColoredSkin_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool ColoredSkin_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         player.PlayerPawn.Value?.Color(Color.White);
         return true;
@@ -25,7 +25,7 @@ public partial class Store
 
     public static void OnTick_ColoredSkin(CCSPlayerController player)
     {
-        Store_PlayerItem? playercoloredskin = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "coloredskin" && (p.Slot == 0 || (p.Slot != 0 && p.Slot == player.TeamNum)));
+        Store_Equipment? playercoloredskin = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "coloredskin");
 
         if (playercoloredskin == null)
         {

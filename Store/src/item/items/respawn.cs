@@ -1,5 +1,4 @@
 using CounterStrikeSharp.API.Core;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -12,13 +11,13 @@ public partial class Store
     public static void Respawn_OnMapStart()
     {
     }
-    public static bool Respawn_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Respawn_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         player.Respawn();
 
         return true;
     }
-    public static bool Respawn_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Respawn_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

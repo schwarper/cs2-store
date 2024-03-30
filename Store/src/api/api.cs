@@ -1,7 +1,5 @@
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Admin;
 using StoreApi;
-using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
@@ -27,34 +25,34 @@ public class StoreAPI : IStoreApi
         Credits.Give(player, amount);
     }
 
-    public bool Item_Purchase(CCSPlayerController player, Store_Item item)
+    public bool Item_Purchase(CCSPlayerController player, Dictionary<string, string> item)
     {
         return Item.Purchase(player, item);
     }
 
-    public bool Item_Equip(CCSPlayerController player, Store_Item item)
+    public bool Item_Equip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return Item.Equip(player, item);
     }
 
-    public bool Item_Unequip(CCSPlayerController player, Store_Item item)
+    public bool Item_Unequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return Item.Unequip(player, item);
     }
 
-    public bool Item_Sell(CCSPlayerController player, Store_Item item)
+    public bool Item_Sell(CCSPlayerController player, Dictionary<string, string> item)
     {
         return Item.Sell(player, item);
     }
 
-    public bool Item_PlayerHas(CCSPlayerController player, string UniqueId)
+    public bool Item_PlayerHas(CCSPlayerController player, string type, string UniqueId, bool ignoreVip)
     {
-        return Item.PlayerHas(player, UniqueId);
+        return Item.PlayerHas(player, type, UniqueId, ignoreVip);
     }
 
-    public bool Item_PlayerUsing(CCSPlayerController player, string UniqueId)
+    public bool Item_PlayerUsing(CCSPlayerController player, string type, string UniqueId)
     {
-        return Item.PlayerUsing(player, UniqueId);
+        return Item.PlayerUsing(player, type, UniqueId);
     }
 
     public bool Item_IsInJson(string type, string UniqueId)
@@ -62,17 +60,17 @@ public class StoreAPI : IStoreApi
         return Item.IsInJson(type, UniqueId);
     }
 
-    public Store_Item? GetItem(string UniqueId)
+    public Dictionary<string, string>? GetItem(string type, string UniqueId)
     {
-        return Item.FindItemByUniqueId(UniqueId);
+        return Item.Find(type, UniqueId);
     }
 
-    public List<Store_PlayerItem> GetPlayerItems(CCSPlayerController player)
+    public List<Store_Item> GetPlayerItems(CCSPlayerController player)
     {
         return Item.GetPlayerItems(player);
     }
 
-    public List<Store_PlayerItem> GetPlayerEquipments(CCSPlayerController player)
+    public List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player)
     {
         return Item.GetPlayerEquipments(player);
     }
@@ -82,7 +80,7 @@ public class StoreAPI : IStoreApi
         return Item.IsPlayerVip(player);
     }
 
-    public void RegisterType(string Type, Action MapStart, Func<CCSPlayerController, Store_Item, bool> Equip, Func<CCSPlayerController, Store_Item, bool> Unequip, bool Equipable, bool? Alive)
+    public void RegisterType(string Type, Action MapStart, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip, bool Equipable, bool? Alive)
     {
         Item.RegisterType(Type, MapStart, Equip, Unequip, Equipable, Alive);
     }

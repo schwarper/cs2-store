@@ -1,5 +1,4 @@
 using CounterStrikeSharp.API.Core;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -12,9 +11,9 @@ public partial class Store
     public static void Health_OnMapStart()
     {
     }
-    public static bool Health_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Health_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!int.TryParse(item.UniqueId, out int health))
+        if (!int.TryParse(item["uniqueid"], out int health))
         {
             return false;
         }
@@ -51,7 +50,7 @@ public partial class Store
         return true;
     }
 
-    public static bool Health_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Health_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

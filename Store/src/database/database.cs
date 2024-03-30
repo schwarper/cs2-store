@@ -62,8 +62,8 @@ public static class Database
                         SteamID BIGINT UNSIGNED NOT NULL,
                         PlayerName VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                         Credits INT NOT NULL,
-                        DateOfJoin TIMESTAMP NOT NULL,
-                        DateOfLastJoin TIMESTAMP NOT NULL,
+                        DateOfJoin DATETIME NOT NULL,
+                        DateOfLastJoin DATETIME NOT NULL,
                         PRIMARY KEY (id),
                         UNIQUE KEY id (id),
                         UNIQUE KEY SteamID (SteamID)
@@ -76,9 +76,8 @@ public static class Database
                         Price INT UNSIGNED NOT NULL,
                         Type varchar(16) NOT NULL,
                         UniqueId varchar(256) NOT NULL,
-                        Slot int,
-                        Color varchar(11),
-                        DateOfPurchase TIMESTAMP NOT NULL,
+                        DateOfPurchase DATETIME NOT NULL,
+                        DateOfExpiration DATETIME NOT NULL,
                         PRIMARY KEY (id)
 			    );", transaction: transaction);
 
@@ -89,22 +88,19 @@ public static class Database
                         Type varchar(16) NOT NULL,
                         UniqueId varchar(256) NOT NULL,
                         Slot INT,
-                        Color varchar(11),
                         PRIMARY KEY (id)
 			    );", transaction: transaction);
 
-                await transaction.CommitAsync();
+                IEnumerable<Store_Player> store_players = await connection.QueryAsync<Store_Player>("SELECT * FROM store_players;", transaction: transaction);
 
-                IEnumerable<Store_Player> storePlayers = await connection.QueryAsync<Store_Player>("SELECT * FROM store_players;");
-
-                foreach (Store_Player player in storePlayers)
+                foreach (Store_Player player in store_players)
                 {
                     Instance.GlobalStorePlayers.Add(player);
                 }
 
-                IEnumerable<Store_PlayerItem> storeItems = await connection.QueryAsync<Store_PlayerItem>("SELECT * FROM store_items;");
+                IEnumerable<Store_Item> store_items = await connection.QueryAsync<Store_Item>("SELECT * FROM store_items;", transaction: transaction);
 
-                foreach (Store_PlayerItem item in storeItems)
+                foreach (Store_Item item in store_items)
                 {
                     if (Item.IsInJson(item.Type, item.UniqueId))
                     {
@@ -112,15 +108,17 @@ public static class Database
                     }
                 }
 
-                IEnumerable<Store_PlayerItem> storeEquipments = await connection.QueryAsync<Store_PlayerItem>("SELECT * FROM store_equipments;");
+                IEnumerable<Store_Equipment> store_equipments = await connection.QueryAsync<Store_Equipment>("SELECT * FROM store_equipments;", transaction: transaction);
 
-                foreach (Store_PlayerItem equipments in storeEquipments)
+                foreach (Store_Equipment equipment in store_equipments)
                 {
-                    if (Item.IsInJson(equipments.Type, equipments.UniqueId))
+                    if (Item.IsInJson(equipment.Type, equipment.UniqueId))
                     {
-                        Instance.GlobalStorePlayerEquipments.Add(equipments);
+                        Instance.GlobalStorePlayerEquipments.Add(equipment);
                     }
                 }
+
+                await transaction.CommitAsync();
             }
             catch (Exception)
             {
@@ -132,37 +130,30 @@ public static class Database
 
     public static async Task LoadPlayer(CCSPlayerController player)
     {
-        try
+        using MySqlConnection connection = Connect();
+
+        dynamic result = await connection.QueryFirstOrDefaultAsync(@"SELECT * FROM store_players WHERE SteamID = @SteamID",
+        new
         {
-            using MySqlConnection connection = Connect();
+            player.SteamID
+        });
 
-            dynamic result = await connection.QueryFirstOrDefaultAsync(@"SELECT * FROM store_players WHERE SteamID = @SteamID",
-            new
+        Server.NextFrame(() =>
+        {
+            if (result == null)
             {
-                player.SteamID
-            });
-
-            Server.NextFrame(() =>
-            {
-                if (result == null)
+                Instance.GlobalStorePlayers.Add(new Store_Player
                 {
-                    Instance.GlobalStorePlayers.Add(new Store_Player
-                    {
-                        SteamID = player.SteamID,
-                        PlayerName = player.PlayerName,
-                        Credits = Instance.Config.Credits["start"],
-                        DateOfJoin = DateTime.Now,
-                        DateOfLastJoin = DateTime.Now
-                    });
+                    SteamID = player.SteamID,
+                    PlayerName = player.PlayerName,
+                    Credits = Instance.Config.Credits["start"],
+                    DateOfJoin = DateTime.Now,
+                    DateOfLastJoin = DateTime.Now
+                });
 
-                    InsertNewPlayer(player);
-                }
-            });
-        }
-        catch (MySqlException ex)
-        {
-            throw new Exception($"Database error: {ex}");
-        }
+                InsertNewPlayer(player);
+            }
+        });
     }
 
     public static void InsertNewPlayer(CCSPlayerController player)
@@ -196,22 +187,23 @@ public static class Database
             ",
             new
             {
-                playername,
+                PlayerName = playername,
                 Credits = Credits.Get(player),
-                player.SteamID,
                 DateOfJoin = DateTime.Now,
-                DateOfLastJoin = DateTime.Now
+                DateOfLastJoin = DateTime.Now,
+                SteamId = player.SteamID,
             });
     }
 
-    public static void SavePlayerItem(CCSPlayerController player, Store_PlayerItem item)
+    public static void SavePlayerItem(CCSPlayerController player, Store_Item item)
     {
         Execute(@"
-                INSERT INTO store_items (
-                    SteamID, Price, Type, UniqueId, Slot, Color, DateOfPurchase
-                ) VALUES (
-                    @SteamID, @Price, @Type, @UniqueId, @Slot, @Color, @DateOfPurchase
-                );"
+            INSERT INTO store_items (
+                SteamID, Price, Type, UniqueId, DateOfPurchase, DateOfExpiration
+            ) VALUES (
+                @SteamID, @Price, @Type, @UniqueId, @DateOfPurchase, @DateOfExpiration
+            );
+           "
             ,
             new
             {
@@ -219,12 +211,11 @@ public static class Database
                 item.Price,
                 item.Type,
                 item.UniqueId,
-                item.Slot,
-                item.Color,
-                DateOfPurchase = DateTime.Now
+                item.DateOfPurchase,
+                item.DateOfExpiration
             });
     }
-    public static void RemovePlayerItem(CCSPlayerController player, Store_PlayerItem item)
+    public static void RemovePlayerItem(CCSPlayerController player, Store_Item item)
     {
         Execute(@"
                 DELETE
@@ -240,13 +231,13 @@ public static class Database
                 item.UniqueId
             });
     }
-    public static void SavePlayerEquipment(CCSPlayerController player, Store_PlayerItem item)
+    public static void SavePlayerEquipment(CCSPlayerController player, Store_Equipment item)
     {
         Execute(@"
-                REPLACE INTO store_equipments (
-                    SteamID, Type, UniqueId, Slot, Color
+                INSERT INTO store_equipments (
+                    SteamID, Type, UniqueId, Slot
                 ) VALUES (
-                    @SteamID, @Type, @UniqueId, @Slot, @Color
+                    @SteamID, @Type, @UniqueId, @Slot
                 );
             "
             ,
@@ -255,8 +246,7 @@ public static class Database
                 player.SteamID,
                 item.Type,
                 item.UniqueId,
-                item.Slot,
-                item.Color
+                item.Slot
             });
     }
     public static void RemovePlayerEquipment(CCSPlayerController player, string UniqueId)

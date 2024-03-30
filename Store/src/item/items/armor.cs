@@ -1,6 +1,5 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -13,9 +12,9 @@ public partial class Store : BasePlugin
     public static void Armor_OnMapStart()
     {
     }
-    public static bool Armor_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Armor_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!int.TryParse(item.UniqueId, out int armor))
+        if (!int.TryParse(item["uniqueid"], out int armor))
         {
             return false;
         }
@@ -69,7 +68,7 @@ public partial class Store : BasePlugin
 
         return true;
     }
-    public static bool Armor_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Armor_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

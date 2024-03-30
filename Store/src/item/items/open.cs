@@ -1,6 +1,5 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -21,7 +20,7 @@ public partial class Store
     public static void Open_OnMapStart()
     {
     }
-    public static bool Open_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Open_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         foreach (string doorname in DoorNames)
         {
@@ -35,7 +34,7 @@ public partial class Store
 
         return true;
     }
-    public static bool Open_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Open_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

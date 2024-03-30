@@ -13,11 +13,11 @@ public partial class Store
     public static void Smoke_OnMapStart()
     {
     }
-    public static bool Smoke_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Smoke_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static bool Smoke_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Smoke_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
@@ -44,7 +44,7 @@ public partial class Store
                 return;
             }
 
-            Store_PlayerItem? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "smoke");
+            Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "smoke");
 
             if (item == null)
             {
@@ -59,7 +59,14 @@ public partial class Store
             }
             else
             {
-                string[] colorValues = item.Color.Split(' ');
+                Dictionary<string, string>? itemdata = Item.Find(item.Type, item.UniqueId);
+
+                if (itemdata == null)
+                {
+                    return;
+                }
+
+                string[] colorValues = itemdata["color"].Split(' ');
 
                 grenade.SmokeColor.X = float.Parse(colorValues[0]);
                 grenade.SmokeColor.Y = float.Parse(colorValues[1]);

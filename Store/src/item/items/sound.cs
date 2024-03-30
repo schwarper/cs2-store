@@ -1,7 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using static CounterStrikeSharp.API.Core.Listeners;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -15,8 +14,8 @@ public partial class Store
     {
         IEnumerable<string> playerSkinItems = Instance.Config.Items
         .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value.Type == "playerskin")
-        .Select(kvp => kvp.Value.UniqueId);
+        .Where(kvp => kvp.Value["type"] == "playerskin")
+        .Select(kvp => kvp.Value["uniqueid"]);
 
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
@@ -26,7 +25,7 @@ public partial class Store
             }
         });
     }
-    public static bool Sound_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Sound_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
@@ -35,12 +34,12 @@ public partial class Store
                 continue;
             }
 
-            target.ExecuteClientCommand($"play {item.UniqueId}");
+            target.ExecuteClientCommand($"play {item["uniqueid"]}");
         }
 
         return true;
     }
-    public static bool Sound_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Sound_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

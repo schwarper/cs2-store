@@ -1,5 +1,4 @@
 using CounterStrikeSharp.API.Core;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -12,9 +11,9 @@ public partial class Store
     public static void Godmode_OnMapStart()
     {
     }
-    public static bool Godmode_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Godmode_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!float.TryParse(item.UniqueId, out float godmode))
+        if (!float.TryParse(item["uniqueid"], out float godmode))
         {
             return false;
         }
@@ -40,7 +39,7 @@ public partial class Store
 
         return true;
     }
-    public static bool Godmode_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Godmode_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

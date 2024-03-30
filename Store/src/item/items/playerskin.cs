@@ -20,6 +20,11 @@ public partial class Store
                 return HookResult.Continue;
             }
 
+            if (player.Team != CsTeam.Terrorist && player.Team != CsTeam.CounterTerrorist)
+            {
+                return HookResult.Continue;
+            }
+
             CCSPlayerPawn? playerPawn = player.PlayerPawn?.Value;
 
             if (playerPawn == null)
@@ -27,7 +32,7 @@ public partial class Store
                 return HookResult.Continue;
             }
 
-            Store_PlayerItem? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
+            Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
 
             if (item == null)
             {
@@ -45,8 +50,8 @@ public partial class Store
     {
         IEnumerable<string> playerSkinItems = Instance.Config.Items
         .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value.Type == "playerskin")
-        .Select(kvp => kvp.Value.UniqueId);
+        .Where(kvp => kvp.Value["type"] == "playerskin")
+        .Select(kvp => kvp.Value["uniqueid"]);
 
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
@@ -57,18 +62,28 @@ public partial class Store
         });
     }
 
-    public static bool Playerskin_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Playerskin_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (player.TeamNum == item.Slot)
+        if (item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
         {
-            player.PlayerPawn.Value?.ChangeModel(item.UniqueId);
+            return false;
+        }
+
+        if (player.TeamNum == int.Parse(item["slot"]))
+        {
+            player.PlayerPawn.Value?.ChangeModel(item["uniqueid"]);
         }
 
         return true;
     }
-    public static bool Playerskin_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Playerskin_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (player.TeamNum == item.Slot)
+        if (item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
+        {
+            return false;
+        }
+
+        if (player.TeamNum == int.Parse(item["slot"]))
         {
             SetDefaultModel(player);
         }

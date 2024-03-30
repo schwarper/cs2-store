@@ -1,25 +1,27 @@
+using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
+using static CounterStrikeSharp.API.Core.Listeners;
+using static StoreApi.Store;
+
 namespace Store;
 
 public partial class Store
 {
     public static void Tracer_OnPluginStart()
     {
-    }
-    /*
-    public static void Tracer_OnPluginStart()
-    {
         new StoreAPI().RegisterType("tracer", Tracer_OnMapStart, Tracer_OnEquip, Tracer_OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventBulletImpact>((@event, info) =>
         {
-            var player = @event.Userid;
+            CCSPlayerController? player = @event.Userid;
 
             if (player == null || !player.IsValid)
             {
                 return HookResult.Continue;
             }
 
-            Store_PlayerItem? playertracer = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "tracer");
+            Store_Equipment? playertracer = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "tracer");
 
             if (playertracer == null)
             {
@@ -37,14 +39,7 @@ public partial class Store
             entity.DispatchSpawn();
             entity.AcceptInput("Start");
 
-            Vector absorigin = player.PlayerPawn.Value!.AbsOrigin!;
-            CNetworkViewOffsetVector offset = player.PlayerPawn.Value.ViewOffset;
-
-            /*
-             * TO DO
-             * position is not correct.
-
-            Vector position = new(absorigin.X + offset.X, absorigin.Y + offset.Y, absorigin.Z + offset.Z);
+            Vector position = Vec.GetEyePosition(player);
 
             entity.Teleport(position, new QAngle(), new Vector());
 
@@ -54,7 +49,21 @@ public partial class Store
 
             Utilities.SetStateChanged(entity, "CBeam", "m_vecEndPos");
 
-            Instance.AddTimer(10.0f, () =>
+            Dictionary<string, string>? itemdata = Item.Find(playertracer.Type, playertracer.UniqueId);
+
+            if (itemdata == null)
+            {
+                return HookResult.Continue;
+            }
+
+            float lifetime = 0.3f;
+
+            if (itemdata.TryGetValue("lifetime", out string? value) && float.TryParse(value, out float lt))
+            {
+                lifetime = lt;
+            }
+
+            Instance.AddTimer(lifetime, () =>
             {
                 if (entity != null && entity.IsValid)
                 {
@@ -69,8 +78,8 @@ public partial class Store
     {
         IEnumerable<string> playerTracers = Instance.Config.Items
         .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value.Type == "trail")
-        .Select(kvp => kvp.Value.UniqueId);
+        .Where(kvp => kvp.Value["type"] == "trail")
+        .Select(kvp => kvp.Value["uniqueid"]);
 
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
@@ -80,13 +89,12 @@ public partial class Store
             }
         });
     }
-    public static bool Tracer_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Tracer_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static bool Tracer_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Tracer_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    */
 }

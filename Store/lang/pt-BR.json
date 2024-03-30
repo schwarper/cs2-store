@@ -43,7 +43,7 @@
     "menu_store<purchase>": "{0} - [{1}]",
     "menu_store<equip>": "EQUIPAR",
     "menu_store<unequip>": "DESEQUIPAR",
-    "menu_store<sell>": "VENDER",
+    "menu_store<sell>": "VENDER [{0}]",
 
     "css_credits": "{white}Você possui {green}{0} {white}créditos.",
     "css_givecredits<player>": "{blue}{0} {white}deu {green}{2} créditos {white}para {green}{1}{white}.",

@@ -1,6 +1,4 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -13,9 +11,9 @@ public partial class Store
     public static void Gravity_OnMapStart()
     {
     }
-    public static bool Gravity_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Gravity_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!float.TryParse(item.UniqueId, out float gravity))
+        if (!float.TryParse(item["uniqueid"], out float gravity))
         {
             return false;
         }
@@ -31,7 +29,7 @@ public partial class Store
 
         return true;
     }
-    public static bool Gravity_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Gravity_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

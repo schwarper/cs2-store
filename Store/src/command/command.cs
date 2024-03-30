@@ -12,20 +12,23 @@ public static class Command
     {
         StoreConfig config = Instance.Config;
 
-        Dictionary<string, (string description, CommandInfo.CommandCallback handler)> commands = new()
+        Dictionary<IEnumerable<string>, (string description, CommandInfo.CommandCallback handler)> commands = new()
         {
-            {"credits", ("Show credits", Command_Credits)},
-            {"store", ("Store menu", Command_Store)},
-            {"inventory", ("Open inventory menu", Command_Inv)},
-            {"givecredits", ("Give credits", Command_GiveCredits)},
-            {"gift", ("Gift", Command_Gift)},
-            {"resetplayer", ("Reset player's inventory", Command_ResetPlayer)},
-            {"resetdatabase", ("Reset database", Command_ResetDatabase)}
+            {config.Commands["credits"], ("Show credits", Command_Credits)},
+            {config.Commands["store"], ("Store menu", Command_Store)},
+            {config.Commands["inventory"], ("Open inventory menu", Command_Inv)},
+            {config.Commands["givecredits"], ("Give credits", Command_GiveCredits)},
+            {config.Commands["gift"], ("Gift", Command_Gift)},
+            {config.Commands["resetplayer"], ("Reset player's inventory", Command_ResetPlayer)},
+            {config.Commands["resetdatabase"], ("Reset database", Command_ResetDatabase)}
         };
 
-        foreach (var command in commands)
+        foreach (KeyValuePair<IEnumerable<string>, (string description, CommandInfo.CommandCallback handler)> commandPair in commands)
         {
-            Instance.AddCommand($"css_{command.Key}", command.Value.description, command.Value.handler);
+            foreach (string command in commandPair.Key)
+            {
+                Instance.AddCommand($"css_{command}", commandPair.Value.description, commandPair.Value.handler);
+            }
         }
     }
 
@@ -126,6 +129,12 @@ public static class Command
         if (!int.TryParse(command.GetArg(2), out int value))
         {
             command.ReplyToCommand(Instance.Localizer["Prefix"] + Instance.Localizer["Must be an integer"]);
+            return;
+        }
+
+        if (Credits.Get(player) < value)
+        {
+            player.PrintToChatMessage("No credits enough");
             return;
         }
 

@@ -1,5 +1,4 @@
 using CounterStrikeSharp.API.Core;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -12,19 +11,19 @@ public partial class Store
     public static void Weapon_OnMapStart()
     {
     }
-    public static bool Weapon_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Weapon_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (GameRules.IsPistolRound() && item.Slot != 0)
+        if (GameRules.IsPistolRound() && item["no_pistol_round"] == "true")
         {
-            player.PrintToChatMessage("No in pistol round", item.Name);
+            player.PrintToChatMessage("No in pistol round", item["name"]);
             return false;
         }
-    
-        player.GiveNamedItem(item.UniqueId);
-    
+
+        player.GiveNamedItem(item["uniqueid"]);
+
         return true;
     }
-    public static bool Weapon_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Weapon_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

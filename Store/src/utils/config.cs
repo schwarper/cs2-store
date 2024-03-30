@@ -1,6 +1,5 @@
 using CounterStrikeSharp.API.Core;
 using System.Text.Json.Serialization;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -56,9 +55,10 @@ public class StoreConfig : BasePluginConfig
     public Dictionary<string, string> Settings { get; set; } = new Dictionary<string, string>
     {
         { "max_health", "0" },
-        { "max_armor", "0" }
+        { "max_armor", "0" },
+        { "sell_ratio", "0.60f" }
     };
 
     [JsonPropertyName("items")]
-    public Dictionary<string, Dictionary<string, Store_Item>> Items { get; set; } = new();
+    public Dictionary<string, Dictionary<string, Dictionary<string, string>>> Items { get; set; } = new();
 }

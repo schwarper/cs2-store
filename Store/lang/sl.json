@@ -43,7 +43,7 @@
     "menu_store<purchase>": "{0} - [{1}]",
     "menu_store<equip>": "AKTIVIRAJ",
     "menu_store<unequip>": "DEAKTIVIRAJ",
-    "menu_store<sell>": "PRODAJ",
+    "menu_store<sell>": "PRODAJ [{0}]",
 
     "css_credits": "{white}Trenutno imaš {green}{0} {white}kreditov.",
     "css_givecredits<player>": "{blue}{0} {white}je dal {lightblue}{2} kredite {white}igralcu {green}{1}{white}.",

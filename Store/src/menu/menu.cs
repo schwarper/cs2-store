@@ -3,7 +3,6 @@ using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Menu;
 using System.Text;
 using static Store.Store;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -22,8 +21,6 @@ public static class Menu
 
     public static void DisplayStore(CCSPlayerController player, bool inventory)
     {
-        bool isVip = new StoreAPI().IsPlayerVip(player);
-
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
             StringBuilder builder = new();
@@ -31,9 +28,9 @@ public static class Menu
 
             CenterHtmlMenu menu = new(builder.ToString());
 
-            foreach (KeyValuePair<string, Dictionary<string, Store_Item>> category in Instance.Config.Items)
+            foreach (KeyValuePair<string, Dictionary<string, Dictionary<string, string>>> category in Instance.Config.Items)
             {
-                if (inventory && !category.Value.Values.Any(p => Item.PlayerHas(player, p.UniqueId) || isVip && p.Slot != 0))
+                if ((inventory || Item.IsPlayerVip(player)) && !category.Value.Values.Any(item => Item.PlayerHas(player, item["type"], item["uniqueid"], false)))
                 {
                     continue;
                 }
@@ -43,17 +40,16 @@ public static class Menu
 
                 menu.AddMenuOption(builderkey.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
                 {
-                    DisplayItems(player, builderkey.ToString(), category.Value, inventory, isVip);
+                    DisplayItems(player, builderkey.ToString(), category.Value, inventory);
                 });
             }
-
             MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
         }
     }
 
-    public static void DisplayItems(CCSPlayerController player, string key, Dictionary<string, Store_Item> items, bool inventory, bool isVip)
+    public static void DisplayItems(CCSPlayerController player, string key, Dictionary<string, Dictionary<string, string>> items, bool inventory)
     {
-        Dictionary<string, Store_Item> playerSkinItems = items.Where(p => p.Value.Type == "playerskin" && p.Value.Enable).ToDictionary(p => p.Key, p => p.Value);
+        Dictionary<string, Dictionary<string, string>> playerSkinItems = items.Where(p => p.Value["type"] == "playerskin" && p.Value["enable"] == "true").ToDictionary(p => p.Key, p => p.Value);
 
         if (playerSkinItems.Any())
         {
@@ -61,32 +57,20 @@ public static class Menu
 
             foreach (int Slot in new[] { 2, 3 })
             {
-                if (inventory && playerSkinItems.Any(p => p.Value.Slot == Slot && (Item.PlayerHas(player, p.Value.UniqueId) || isVip)))
+                if ((inventory || Item.IsPlayerVip(player)) && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false)))
                 {
-                    using (new WithTemporaryCulture(player.GetLanguage()))
-                    {
-                        StringBuilder builder = new();
-                        builder.AppendFormat(Instance.Localizer[$"menu_store<{(Slot == 2 ? "t" : "ct")}_title>"]);
-
-                        menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
-                        {
-                            DisplayItem(player, inventory, isVip, builder.ToString(), playerSkinItems.Where(p => p.Value.Slot == Slot).ToDictionary(p => p.Key, p => p.Value));
-                        });
-                    }
+                    continue;
                 }
-                else if (!inventory)
+
+                using (new WithTemporaryCulture(player.GetLanguage()))
                 {
+                    StringBuilder builder = new();
+                    builder.AppendFormat(Instance.Localizer[$"menu_store<{(Slot == 2 ? "t" : "ct")}_title>"]);
 
-                    using (new WithTemporaryCulture(player.GetLanguage()))
+                    menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
                     {
-                        StringBuilder builder = new();
-                        builder.AppendFormat(Instance.Localizer[$"menu_store<{(Slot == 2 ? "t" : "ct")}_title>"]);
-
-                        menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
-                        {
-                            DisplayItem(player, inventory, isVip, builder.ToString(), playerSkinItems.Where(p => p.Value.Slot == Slot).ToDictionary(p => p.Key, p => p.Value));
-                        });
-                    }
+                        DisplayItem(player, inventory, builder.ToString(), playerSkinItems.Where(p => p.Value.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && int.Parse(p.Value["slot"]) == Slot).ToDictionary(p => p.Key, p => p.Value));
+                    });
                 }
             }
 
@@ -94,29 +78,34 @@ public static class Menu
         }
         else
         {
-            DisplayItem(player, inventory, isVip, key, items);
+            DisplayItem(player, inventory, key, items);
         }
     }
 
-    public static void DisplayItem(CCSPlayerController player, bool inventory, bool isVip, string key, Dictionary<string, Store_Item> items)
+    public static void DisplayItem(CCSPlayerController player, bool inventory, string key, Dictionary<string, Dictionary<string, string>> items)
     {
         CenterHtmlMenu menu = new(key);
 
-        foreach (KeyValuePair<string, Store_Item> kvp in items)
+        foreach (KeyValuePair<string, Dictionary<string, string>> kvp in items)
         {
-            Store_Item item = kvp.Value;
+            Dictionary<string, string> item = kvp.Value;
 
-            if (!item.Enable)
+            if (item["enable"] != "true")
             {
                 continue;
             }
 
-            if (Item.PlayerHas(player, item.UniqueId) || isVip && item.Slot != 0)
+            if ((inventory || Item.IsPlayerVip(player)) && !Item.PlayerHas(player, item["type"], item["uniqueid"], false))
+            {
+                continue;
+            }
+
+            if (Item.PlayerHas(player, item["type"], item["uniqueid"], false))
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
-                    DisplayItemOption(player, item, isVip);
-                }, item.Name);
+                    DisplayItemOption(player, item);
+                }, item["name"]);
             }
             else if (!inventory)
             {
@@ -125,24 +114,24 @@ public static class Menu
                     Item.Purchase(player, item);
 
                     MenuManager.CloseActiveMenu(player);
-                }, "menu_store<purchase>", item.Name, item.Price);
+                }, "menu_store<purchase>", item["name"], item["price"]);
             }
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
     }
 
-    public static void DisplayItemOption(CCSPlayerController player, Store_Item item, bool isVip)
+    public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item)
     {
-        CenterHtmlMenu menu = new(item.Name);
+        CenterHtmlMenu menu = new(item["name"]);
 
-        if (Item.PlayerUsing(player, item.UniqueId))
+        if (Item.PlayerUsing(player, item["type"], item["uniqueid"]))
         {
             AddMenuOption(player, menu, (player, option) =>
             {
                 Item.Unequip(player, item);
 
-                player.PrintToChatMessage("Purchase Unequip", item.Name);
+                player.PrintToChatMessage("Purchase Unequip", item["name"]);
 
                 MenuManager.CloseActiveMenu(player);
             }, "menu_store<unequip>");
@@ -153,22 +142,29 @@ public static class Menu
             {
                 Item.Equip(player, item);
 
-                player.PrintToChatMessage("Purchase Equip", item.Name);
+                player.PrintToChatMessage("Purchase Equip", item["name"]);
 
                 MenuManager.CloseActiveMenu(player);
             }, "menu_store<equip>");
         }
 
-        if (Instance.Config.Menu["enable_selling"] == "1" && !isVip)
+        if (Instance.Config.Menu["enable_selling"] == "1" && !Item.IsPlayerVip(player))
         {
+            float sell_ratio = 0.0f;
+
+            if (Instance.Config.Settings.TryGetValue("sell_ratio", out string? value) && float.TryParse(value, out float ratio))
+            {
+                sell_ratio = ratio;
+            }
+
             AddMenuOption(player, menu, (player, option) =>
             {
                 Item.Sell(player, item);
 
-                player.PrintToChatMessage("Item Sell", item.Name);
+                player.PrintToChatMessage("Item Sell", item["name"]);
 
                 MenuManager.CloseActiveMenu(player);
-            }, "menu_store<sell>");
+            }, "menu_store<sell>", int.Parse(item["price"]) * sell_ratio);
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);

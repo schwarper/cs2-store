@@ -1,7 +1,6 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using StoreApi;
-using static StoreApi.Store;
 
 namespace Store_TestModule;
 
@@ -34,15 +33,15 @@ public class Store_TestModule : BasePlugin
     {
     }
 
-    public static bool Equip(CCSPlayerController player, Store_Item item)
+    public static bool Equip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        Server.PrintToChatAll($"Player {player.PlayerName} equipped {item.Name}");
+        Server.PrintToChatAll($"Player {player.PlayerName} equipped {item["Name"]}");
         return true;
     }
 
-    public static bool Unequip(CCSPlayerController player, Store_Item item)
+    public static bool Unequip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        Server.PrintToChatAll($"Player {player.PlayerName} unequipped {item.Name}");
+        Server.PrintToChatAll($"Player {player.PlayerName} unequipped {item["Name"]}");
         return true;
     }
 }

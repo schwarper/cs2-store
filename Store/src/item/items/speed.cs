@@ -1,5 +1,4 @@
 using CounterStrikeSharp.API.Core;
-using static StoreApi.Store;
 
 namespace Store;
 
@@ -12,9 +11,9 @@ public partial class Store
     public static void Speed_OnMapStart()
     {
     }
-    public static bool Speed_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool Speed_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!float.TryParse(item.UniqueId, out float speed))
+        if (!float.TryParse(item["uniqueid"], out float speed))
         {
             return false;
         }
@@ -40,7 +39,7 @@ public partial class Store
 
         return true;
     }
-    public static bool Speed_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool Speed_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

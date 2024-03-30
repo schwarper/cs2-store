@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
+using static CounterStrikeSharp.API.Core.Listeners;
 using static StoreApi.Store;
 
 namespace Store;
@@ -15,19 +16,31 @@ public partial class Store
     }
     public static void GrenadeTrail_OnMapStart()
     {
+        IEnumerable<string> playerSkinItems = Instance.Config.Items
+        .SelectMany(wk => wk.Value)
+        .Where(kvp => kvp.Value["type"] == "grenadetrail")
+        .Select(kvp => kvp.Value["uniqueid"]);
+
+        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
+        {
+            foreach (string UniqueId in playerSkinItems)
+            {
+                manifest.AddResource(UniqueId);
+            }
+        });
     }
-    public static bool GrenadeTrail_OnEquip(CCSPlayerController player, Store_Item item)
+    public static bool GrenadeTrail_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static bool GrenadeTrail_OnUnequip(CCSPlayerController player, Store_Item item)
+    public static bool GrenadeTrail_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
 
     public static void OnEntityCreated_GrenadeTrail(CEntityInstance entity)
     {
-        if (!entity.DesignerName.Contains("_projectile"))
+        if (entity.DesignerName != "hegrenade_projectile")
         {
             return;
         }
@@ -48,7 +61,7 @@ public partial class Store
                 return;
             }
 
-            Store_PlayerItem? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "grenadetrail");
+            Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "grenadetrail");
 
             if (item == null)
             {
@@ -71,23 +84,14 @@ public partial class Store
         });
     }
 
-    public static float CalculateDistance(Vector point1, Vector point2)
-    {
-        float dx = point2.X - point1.X;
-        float dy = point2.Y - point1.Y;
-        float dz = point2.Z - point1.Z;
-
-        return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
-    }
-
     public static void OnTick_GrenadeTrail()
     {
-        foreach (KeyValuePair<CBaseCSGrenadeProjectile, CParticleSystem> hey in Instance.GlobalGrenadeTrail)
+        foreach (KeyValuePair<CBaseCSGrenadeProjectile, CParticleSystem> kv in Instance.GlobalGrenadeTrail)
         {
-            CBaseCSGrenadeProjectile grenade = hey.Key;
-            CParticleSystem particle = hey.Value;
+            CBaseCSGrenadeProjectile grenade = kv.Key;
+            CParticleSystem particle = kv.Value;
 
-            if (!grenade.IsValid || CalculateDistance(grenade.AbsOrigin!, grenade.ExplodeEffectOrigin) < 5)
+            if (!grenade.IsValid || Vec.CalculateDistance(grenade.AbsOrigin!, grenade.ExplodeEffectOrigin) < 5)
             {
                 if (particle.IsValid)
                 {
