@@ -1,0 +1,318 @@
+{
+    "database": {
+        "host": "",
+        "port": "3306",
+        "user": "",
+        "password": "",
+        "name": ""
+    },
+    "commands": {
+        "credits": [
+            "credits"
+        ],
+        "store": [
+            "store",
+            "shop",
+            "market"
+        ],
+        "inventory": [
+            "inv",
+            "inventory"
+        ],
+        "givecredits": [
+            "givecredits"
+        ],
+        "gift": [
+            "gift"
+        ],
+        "resetplayer": [
+            "resetplayer"
+        ],
+        "resetdatabase": [
+            "resetdatabase"
+        ]
+    },
+    "defaultmodels": {
+        "ct": [
+            "characters/models/ctm_fbi/ctm_fbi_variantb.vmdl"
+        ],
+        "t": [
+            "characters/models/tm_leet/tm_leet_variantj.vmdl"
+        ]
+    },
+    "credits": {
+        "ignore_warmup": 1,
+        "start": 0,
+        "interval_active_inactive": 60,
+        "amount_active": 10,
+        "amount_inactive": 1,
+        "amount_kill": 1
+    },
+    "menu": {
+        "enable_selling": "1",
+        "vip_flag": ""
+    },
+    "settings": {
+        "max_health": "0",
+        "max_armor": "0"
+    },
+    "items": {
+        "playerskins": {
+            "1": {
+                "name": "Mr. Muhlik",
+                "uniqueid": "characters/models/tm_leet/tm_leet_variantj.vmdl",
+                "type": "playerskin",
+                "price": "0",
+                "slot": "2",
+                "enable": "true"
+            },
+            "2": {
+                "name": "Number K",
+                "uniqueid": "characters/models/tm_professional/tm_professional_vari.vmdl",
+                "type": "playerskin",
+                "price": "0",
+                "slot": "2",
+                "enable": "true"
+            },
+            "3": {
+                "name": "Operator",
+                "uniqueid": "characters/models/ctm_fbi/ctm_fbi_variantf.vmdl",
+                "type": "playerskin",
+                "price": "0",
+                "slot": "3",
+                "enable": "true"
+            },
+            "4": {
+                "name": "Blueberries",
+                "uniqueid": "characters/models/ctm_st6/ctm_st6_variantj.vmdl",
+                "type": "playerskin",
+                "price": "0",
+                "slot": "3",
+                "enable": "true"
+            }
+        },
+        "weapons": {
+            "1": {
+                "name": "AK47",
+                "uniqueid": "weapon_ak47",
+                "type": "weapon",
+                "price": "0",
+                "no_pistol_round": "true",
+                "enable": "true"
+            },
+            "2": {
+                "name": "Deagle",
+                "uniqueid": "weapon_deagle",
+                "type": "weapon",
+                "price": "0",
+                "no_pistol_round": "false",
+                "enable": "true"
+            }
+        },
+        "features": {
+            "1": {
+                "name": "Respawn",
+                "uniqueid": "respawn",
+                "type": "respawn",
+                "price": "0",
+                "enable": "true"
+            },
+            "2": {
+                "name": "50 HP",
+                "uniqueid": "50",
+                "type": "health",
+                "price": "0",
+                "enable": "true"
+            },
+            "3": {
+                "name": "10 Armor",
+                "uniqueid": "10",
+                "type": "armor",
+                "price": "0",
+                "enable": "true"
+            },
+            "4": {
+                "name": "Open test",
+                "uniqueid": "open",
+                "type": "open",
+                "price": "0",
+                "enable": "true"
+            },
+            "5": {
+                "name": "Random colorskin",
+                "uniqueid": "coloredskin",
+                "type": "coloredskin",
+                "price": "0",
+                "slot": "1",
+                "enable": "true"
+            },
+            "6": {
+                "name": "Green colorskin",
+                "uniqueid": "coloredskin_color",
+                "type": "coloredskin_color",
+                "price": "0",
+                "color": "0 255 0",
+                "enable": "true"
+            }
+        },
+        "gravity": {
+            "1": {
+                "name": "100",
+                "uniqueid": "100",
+                "type": "gravity",
+                "price": "0",
+                "enable": "true"
+            },
+            "2": {
+                "name": "200",
+                "uniqueid": "200",
+                "type": "gravity",
+                "price": "0",
+                "enable": "true"
+            },
+            "3": {
+                "name": "300",
+                "uniqueid": "300",
+                "type": "gravity",
+                "price": "0",
+                "enable": "true"
+            }
+        },
+        "speed": {
+            "1": {
+                "name": "5 Sec",
+                "uniqueid": "5",
+                "type": "speed",
+                "price": "0",
+                "enable": "true"
+            },
+            "2": {
+                "name": "10 Sec",
+                "uniqueid": "10",
+                "type": "speed",
+                "price": "0",
+                "enable": "true"
+            },
+            "3": {
+                "name": "60 Sec",
+                "uniqueid": "60",
+                "type": "speed",
+                "price": "0",
+                "enable": "true"
+            }
+        },
+        "godmode": {
+            "1": {
+                "name": "5 Sec",
+                "uniqueid": "5",
+                "type": "godmode",
+                "price": "0",
+                "enable": "true"
+            },
+            "2": {
+                "name": "10 Sec",
+                "uniqueid": "10",
+                "type": "godmode",
+                "price": "0",
+                "enable": "true"
+            },
+            "3": {
+                "name": "60 Sec",
+                "uniqueid": "60",
+                "type": "godmode",
+                "price": "0",
+                "enable": "true"
+            }
+        },
+        "smoke": {
+            "1": {
+                "name": "Random",
+                "uniqueid": "colorsmoke",
+                "type": "smoke",
+                "price": "0",
+                "slot": "1",
+                "enable": "true"
+            },
+            "2": {
+                "name": "Red",
+                "uniqueid": "redsmoke",
+                "type": "smoke",
+                "Color": "255 0 0",
+                "price": "0",
+                "slot": "1",
+                "enable": "true"
+            },
+            "3": {
+                "name": "Green",
+                "uniqueid": "redsmoke",
+                "type": "smoke",
+                "Color": "0 255 0",
+                "price": "0",
+                "slot": "1",
+                "enable": "true"
+            },
+            "4": {
+                "name": "Blue",
+                "uniqueid": "redsmoke",
+                "type": "smoke",
+                "Color": "0 0 255",
+                "price": "0",
+                "slot": "1",
+                "enable": "true"
+            }
+        },
+        "trail": {
+            "1": {
+                "name": "Energycirc Trail",
+                "uniqueid": "particles/ui/status_levels/ui_status_level_8_energycirc.vpcf",
+                "type": "trail",
+                "price": "0",
+                "slot": "1",
+                "lifetime": "1.3f",
+                "enable": "true"
+            },
+            "2": {
+                "name": "Random color trail",
+                "uniqueid": "trailrandomcolor",
+                "type": "trail",
+                "price": "0",
+                "slot": "1",
+                "lifetime": "1.3f",
+                "color": "",
+                "enable": "true"
+            },
+            "3": {
+                "name": "Green color trail",
+                "uniqueid": "trailgreencolor",
+                "type": "trail",
+                "price": "0",
+                "slot": "1",
+                "lifetime": "1.3f",
+                "color": "0 255 0",
+                "enable": "true"
+            }
+        },
+        "tracer": {
+            "1": {
+                "name": "Energycirc Tracer",
+                "uniqueid": "particles/ui/status_levels/ui_status_level_8_energycirc.vpcf",
+                "type": "tracer",
+                "price": "0",
+                "slot": "1",
+                "lifetime": "0.3f",
+                "enable": "true"
+            }
+        },
+        "grenadetrail": {
+            "1": {
+                "name": "Molotov effect",
+                "uniqueid": "particles/inferno_fx/molotov_fire01.vpcf",
+                "type": "grenadetrail",
+                "price": "0",
+                "slot": "1",
+                "enable": "true"
+            }
+        }
+    },
+    "ConfigVersion": 1
+}

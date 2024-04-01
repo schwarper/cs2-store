@@ -64,7 +64,7 @@ public partial class Store
 
     public static bool Playerskin_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
+        if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
         {
             return false;
         }
@@ -78,7 +78,7 @@ public partial class Store
     }
     public static bool Playerskin_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
+        if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
         {
             return false;
         }

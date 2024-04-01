@@ -262,6 +262,19 @@ public static class Database
             });
     }
 
+    public static void ResetPlayer(CCSPlayerController player)
+    {
+        Execute(@"
+            DELETE FROM store_items WHERE SteamID = @SteamID; 
+            DELETE FROM store_equipments WHERE SteamID = @SteamID
+        "
+        ,
+        new
+        {
+            player.SteamID
+        });
+    }
+
     public static void ResetDatabase()
     {
         using MySqlConnection connection = Connect();

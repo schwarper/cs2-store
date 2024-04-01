@@ -179,6 +179,8 @@ public static class Command
         Instance.GlobalStorePlayerItems.RemoveAll(p => p.SteamID == target.SteamID);
         Instance.GlobalStorePlayerEquipments.RemoveAll(p => p.SteamID == target.SteamID);
 
+        Database.ResetPlayer(target);
+
         Server.PrintToChatAll(Instance.Localizer["Prefix"] + Instance.Localizer["css_reset", player?.PlayerName ?? "Console", target.PlayerName]);
     }
 }
