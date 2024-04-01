@@ -54,7 +54,8 @@
     },
     "settings": {
         "max_health": "0",
-        "max_armor": "0"
+        "max_armor": "0",
+        "sell_ratio": "0.60f"
     },
     "items": {
         "playerskins": {
