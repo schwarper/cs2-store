@@ -1,7 +1,7 @@
 {
     "database": {
         "host": "",
-        "port": "",
+        "port": "3306",
         "user": "",
         "password": "",
         "name": ""
@@ -54,8 +54,7 @@
     },
     "settings": {
         "max_health": "0",
-        "max_armor": "0",
-        "sell_ratio": "0.60f"
+        "max_armor": "0"
     },
     "items": {
         "playerskins": {
@@ -131,26 +130,49 @@
                 "type": "armor",
                 "price": "0",
                 "enable": "true"
+            },
+            "4": {
+                "name": "Open test",
+                "uniqueid": "open",
+                "type": "open",
+                "price": "0",
+                "enable": "true"
+            },
+            "5": {
+                "name": "Random colorskin",
+                "uniqueid": "coloredskin",
+                "type": "coloredskin",
+                "price": "0",
+                "slot": "1",
+                "enable": "true"
+            },
+            "6": {
+                "name": "Green colorskin",
+                "uniqueid": "coloredskin_color",
+                "type": "coloredskin_color",
+                "price": "0",
+                "color": "0 255 0",
+                "enable": "true"
             }
         },
         "gravity": {
             "1": {
-                "name": "0.1",
-                "uniqueid": "0.1f",
+                "name": "100",
+                "uniqueid": "100",
                 "type": "gravity",
                 "price": "0",
                 "enable": "true"
             },
             "2": {
-                "name": "0.2",
-                "uniqueid": "0.2f",
+                "name": "200",
+                "uniqueid": "200",
                 "type": "gravity",
                 "price": "0",
                 "enable": "true"
             },
             "3": {
-                "name": "0.3",
-                "uniqueid": "0.3f",
+                "name": "300",
+                "uniqueid": "300",
                 "type": "gravity",
                 "price": "0",
                 "enable": "true"
@@ -248,6 +270,26 @@
                 "slot": "1",
                 "lifetime": "1.3f",
                 "enable": "true"
+            },
+            "2": {
+                "name": "Random color trail",
+                "uniqueid": "trailrandomcolor",
+                "type": "trail",
+                "price": "0",
+                "slot": "1",
+                "lifetime": "1.3f",
+                "color": "",
+                "enable": "true"
+            },
+            "3": {
+                "name": "Green color trail",
+                "uniqueid": "trailgreencolor",
+                "type": "trail",
+                "price": "0",
+                "slot": "1",
+                "lifetime": "1.3f",
+                "color": "0 255 0",
+                "enable": "true"
             }
         },
         "tracer": {
@@ -259,26 +301,13 @@
                 "slot": "1",
                 "lifetime": "0.3f",
                 "enable": "true"
-            },
-            "2": {
-                "name": "Grenade Trail",
+            }
+        },
+        "grenadetrail": {
+            "1": {
+                "name": "Molotov effect",
                 "uniqueid": "particles/inferno_fx/molotov_fire01.vpcf",
                 "type": "grenadetrail",
-                "price": "0",
-                "slot": "1",
-                "enable": "true"
-            },
-            "3": {
-                "name": "Open Doors",
-                "uniqueid": "open",
-                "type": "open",
-                "price": "0",
-                "enable": "true"
-            },
-              "4": {
-                "name": "Colored skin",
-                "uniqueid": "coloredskin",
-                "type": "coloredskin",
                 "price": "0",
                 "slot": "1",
                 "enable": "true"
