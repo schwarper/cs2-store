@@ -1,3 +1,5 @@
+using System.Drawing;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using static CounterStrikeSharp.API.Core.Listeners;
@@ -71,7 +73,7 @@ public partial class Store
 
         if (player.TeamNum == int.Parse(item["slot"]))
         {
-            player.PlayerPawn.Value?.ChangeModel(item["uniqueid"]);
+            SetModelNextServerFrame(player.PlayerPawn.Value, item["uniqueid"], item["disableleg"]);
         }
 
         return true;
@@ -104,5 +106,20 @@ public partial class Store
 
             player.PlayerPawn.Value?.ChangeModel(model);
         }
+    }
+
+    public static void SetModelNextServerFrame(CCSPlayerPawn playerPawn, string model, string
+            disableleg)
+    {
+        Server.NextFrame(() =>
+        {
+            playerPawn.SetModel(model);
+            var originalRender = playerPawn.Render;
+            if (disableleg == "true") {
+                playerPawn.Render = Color.FromArgb(254, originalRender.R, originalRender.G, originalRender.B);
+            } else {
+                playerPawn.Render = Color.FromArgb(255, originalRender.R, originalRender.G, originalRender.B);
+            }
+        });
     }
 }
