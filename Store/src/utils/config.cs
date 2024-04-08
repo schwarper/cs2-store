@@ -56,7 +56,8 @@ public class StoreConfig : BasePluginConfig
     {
         { "max_health", "0" },
         { "max_armor", "0" },
-        { "sell_ratio", "0.60f" }
+        { "sell_ratio", "0.60f" },
+        { "default_model_disable_leg", "false" }
     };
 
     [JsonPropertyName("items")]

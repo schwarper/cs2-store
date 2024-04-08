@@ -1,4 +1,5 @@
 using CounterStrikeSharp.API.Core;
+using System.Globalization;
 
 namespace Store;
 
@@ -13,7 +14,7 @@ public partial class Store
     }
     public static bool Godmode_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!float.TryParse(item["uniqueid"], out float godmode))
+        if (!float.TryParse(item["godmodeTimerValue"], CultureInfo.InvariantCulture, out float godmode))
         {
             return false;
         }

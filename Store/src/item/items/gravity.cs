@@ -1,4 +1,5 @@
 using CounterStrikeSharp.API.Core;
+using System.Globalization;
 
 namespace Store;
 
@@ -13,7 +14,7 @@ public partial class Store
     }
     public static bool Gravity_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!float.TryParse(item["uniqueid"], out float gravity))
+        if (!float.TryParse(item["gravityValue"], CultureInfo.InvariantCulture, out float gravity))
         {
             return false;
         }

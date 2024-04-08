@@ -12,15 +12,20 @@ public partial class Store
     }
     public static void Sound_OnMapStart()
     {
-        IEnumerable<string> playerSkinItems = Instance.Config.Items
+        IEnumerable<string> sounds = Instance.Config.Items
         .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value["type"] == "playerskin")
+        .Where(kvp => kvp.Value["type"] == "sound")
         .Select(kvp => kvp.Value["uniqueid"]);
 
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
-            foreach (string UniqueId in playerSkinItems)
+            foreach (string UniqueId in sounds)
             {
+                if (!UniqueId.Contains(".vsnd"))
+                {
+                    continue;
+                }
+
                 manifest.AddResource(UniqueId);
             }
         });

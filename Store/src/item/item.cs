@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
+using System.Globalization;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -48,7 +49,7 @@ public static class Item
                 Type = item["type"],
                 UniqueId = item["uniqueid"],
                 DateOfPurchase = DateTime.Now,
-                DateOfExpiration = expiration == 0 ? DateTime.MinValue : DateTime.Now.AddSeconds(expiration)
+                DateOfExpiration = expiration <= 0 ? DateTime.MinValue : DateTime.Now.AddSeconds(expiration)
             };
 
             Instance.GlobalStorePlayerItems.Add(playeritem);
@@ -149,7 +150,7 @@ public static class Item
 
         float sell_ratio = 0.0f;
 
-        if (Instance.Config.Settings.TryGetValue("sell_ratio", out string? value) && float.TryParse(value, out float ratio))
+        if (Instance.Config.Settings.TryGetValue("sell_ratio", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float ratio))
         {
             sell_ratio = ratio;
         }

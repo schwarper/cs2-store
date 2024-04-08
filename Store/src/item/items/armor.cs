@@ -14,7 +14,7 @@ public partial class Store : BasePlugin
     }
     public static bool Armor_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!int.TryParse(item["uniqueid"], out int armor))
+        if (!int.TryParse(item["armorValue"], out int armor))
         {
             return false;
         }
@@ -34,19 +34,6 @@ public partial class Store : BasePlugin
         if (maxarmor > 0)
         {
             if (playerPawn.ArmorValue >= maxarmor)
-            {
-                return false;
-            }
-
-            if (playerPawn.ArmorValue + armor > maxarmor)
-            {
-                armor = maxarmor - playerPawn.ArmorValue;
-            }
-        }
-
-        if (maxarmor > 0)
-        {
-            if (playerPawn.ArmorValue == maxarmor)
             {
                 return false;
             }

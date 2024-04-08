@@ -55,40 +55,31 @@
     "settings": {
         "max_health": "0",
         "max_armor": "0",
-        "sell_ratio": "0.60f"
+        "sell_ratio": "0.60",
+        "default_model_disable_leg": "false"
     },
     "items": {
         "playerskins": {
             "1": {
-                "name": "Mr. Muhlik",
-                "uniqueid": "characters/models/tm_leet/tm_leet_variantj.vmdl",
+                "name": "Number K",
+                "uniqueid": "characters/models/tm_professional/tm_professional_vari.vmdl",
+                "armModel": "",
                 "type": "playerskin",
                 "price": "0",
                 "slot": "2",
+                "disable_leg": "false",
+                "expiration": "0",
                 "enable": "true"
             },
             "2": {
-                "name": "Number K",
-                "uniqueid": "characters/models/tm_professional/tm_professional_vari.vmdl",
-                "type": "playerskin",
-                "price": "0",
-                "slot": "2",
-                "enable": "true"
-            },
-            "3": {
                 "name": "Operator",
                 "uniqueid": "characters/models/ctm_fbi/ctm_fbi_variantf.vmdl",
+                "armModel": "",
                 "type": "playerskin",
                 "price": "0",
                 "slot": "3",
-                "enable": "true"
-            },
-            "4": {
-                "name": "Blueberries",
-                "uniqueid": "characters/models/ctm_st6/ctm_st6_variantj.vmdl",
-                "type": "playerskin",
-                "price": "0",
-                "slot": "3",
+                "disable_leg": "false",
+                "expiration": "86400",
                 "enable": "true"
             }
         },
@@ -120,108 +111,88 @@
             },
             "2": {
                 "name": "50 HP",
-                "uniqueid": "50",
+                "uniqueid": "health50",
                 "type": "health",
                 "price": "0",
+                "healthValue": "50",
                 "enable": "true"
             },
             "3": {
                 "name": "10 Armor",
-                "uniqueid": "10",
+                "uniqueid": "armor10",
                 "type": "armor",
                 "price": "0",
+                "armorValue": "10",
                 "enable": "true"
             },
             "4": {
-                "name": "Open test",
+                "name": "Open Doors",
                 "uniqueid": "open",
                 "type": "open",
                 "price": "0",
                 "enable": "true"
             },
             "5": {
-                "name": "Random colorskin",
-                "uniqueid": "coloredskin",
-                "type": "coloredskin",
+                "name": "Sound",
+                "uniqueid": "sounds/ambient/ambience/rainscapes/thunder_close01.vsnd_c",
+                "type": "sound",
                 "price": "0",
-                "slot": "1",
-                "enable": "true"
-            },
-            "6": {
-                "name": "Green colorskin",
-                "uniqueid": "coloredskin_color",
-                "type": "coloredskin_color",
-                "price": "0",
-                "color": "0 255 0",
                 "enable": "true"
             }
         },
         "gravity": {
             "1": {
-                "name": "100",
-                "uniqueid": "100",
+                "name": "0.1",
+                "uniqueid": "gravity0.1",
                 "type": "gravity",
                 "price": "0",
+                "gravityValue": "0.1",
                 "enable": "true"
             },
             "2": {
-                "name": "200",
-                "uniqueid": "200",
+                "name": "0.2",
+                "uniqueid": "gravity0.2",
                 "type": "gravity",
                 "price": "0",
-                "enable": "true"
-            },
-            "3": {
-                "name": "300",
-                "uniqueid": "300",
-                "type": "gravity",
-                "price": "0",
+                "gravityValue": "0.2",
                 "enable": "true"
             }
         },
         "speed": {
             "1": {
-                "name": "5 Sec",
-                "uniqueid": "5",
+                "name": "1.1f Speed 1 Round",
+                "uniqueid": "speed10",
                 "type": "speed",
                 "price": "0",
+                "speedValue": "1.1",
+                "speedTimerValue": "0",
                 "enable": "true"
             },
             "2": {
-                "name": "10 Sec",
-                "uniqueid": "10",
+                "name": "5 Sec 1.1f Speed",
+                "uniqueid": "speed51.1",
                 "type": "speed",
                 "price": "0",
-                "enable": "true"
-            },
-            "3": {
-                "name": "60 Sec",
-                "uniqueid": "60",
-                "type": "speed",
-                "price": "0",
+                "speedValue": "1.1",
+                "speedTimerValue": "5",
                 "enable": "true"
             }
         },
         "godmode": {
             "1": {
                 "name": "5 Sec",
-                "uniqueid": "5",
+                "uniqueid": "god5",
                 "type": "godmode",
                 "price": "0",
+                "godmodeTimerValue": "5",
                 "enable": "true"
             },
             "2": {
                 "name": "10 Sec",
-                "uniqueid": "10",
+                "uniqueid": "god10",
                 "type": "godmode",
                 "price": "0",
-                "enable": "true"
-            },
-            "3": {
-                "name": "60 Sec",
-                "uniqueid": "60",
-                "type": "godmode",
-                "price": "0",
+                "godmodeTimerValue": "10",
                 "enable": "true"
             }
         },
@@ -238,25 +209,7 @@
                 "name": "Red",
                 "uniqueid": "redsmoke",
                 "type": "smoke",
-                "Color": "255 0 0",
-                "price": "0",
-                "slot": "1",
-                "enable": "true"
-            },
-            "3": {
-                "name": "Green",
-                "uniqueid": "redsmoke",
-                "type": "smoke",
-                "Color": "0 255 0",
-                "price": "0",
-                "slot": "1",
-                "enable": "true"
-            },
-            "4": {
-                "name": "Blue",
-                "uniqueid": "redsmoke",
-                "type": "smoke",
-                "Color": "0 0 255",
+                "color": "255 0 0",
                 "price": "0",
                 "slot": "1",
                 "enable": "true"
@@ -269,7 +222,9 @@
                 "type": "trail",
                 "price": "0",
                 "slot": "1",
-                "lifetime": "1.3f",
+                "lifetime": "1.3",
+                "acceptInputValue": "Start",
+                "angleValue": "90 0 0",
                 "enable": "true"
             },
             "2": {
@@ -278,7 +233,8 @@
                 "type": "trail",
                 "price": "0",
                 "slot": "1",
-                "lifetime": "1.3f",
+                "lifetime": "1.3",
+                "widthValue": "1.0",
                 "color": "",
                 "enable": "true"
             },
@@ -288,7 +244,8 @@
                 "type": "trail",
                 "price": "0",
                 "slot": "1",
-                "lifetime": "1.3f",
+                "lifetime": "1.3",
+                "widthValue": "1.0",
                 "color": "0 255 0",
                 "enable": "true"
             }
@@ -300,7 +257,8 @@
                 "type": "tracer",
                 "price": "0",
                 "slot": "1",
-                "lifetime": "0.3f",
+                "lifetime": "0.3",
+                "acceptInputValue": "Start",
                 "enable": "true"
             }
         },
@@ -311,6 +269,26 @@
                 "type": "grenadetrail",
                 "price": "0",
                 "slot": "1",
+                "acceptInputValue": "Start",
+                "enable": "true"
+            }
+        },
+        "colorskins": {
+            "1": {
+                "name": "Random colorskin",
+                "uniqueid": "coloredskin_random",
+                "type": "coloredskin",
+                "price": "0",
+                "slot": "1",
+                "enable": "true"
+            },
+            "2": {
+                "name": "Green colorskin",
+                "uniqueid": "coloredskin_green",
+                "type": "coloredskin",
+                "price": "0",
+                "slot": "1",
+                "color": "0 255 0",
                 "enable": "true"
             }
         }

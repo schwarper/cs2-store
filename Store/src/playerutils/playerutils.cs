@@ -22,7 +22,7 @@ public static class PlayerUtils
             player.PrintToChat(builder.ToString());
         }
     }
-    static public void ChangeModel(this CCSPlayerPawn pawn, string model)
+    static public void ChangeModel(this CCSPlayerPawn pawn, string model, string disableleg)
     {
         if (model == string.Empty)
         {
@@ -32,10 +32,21 @@ public static class PlayerUtils
         Server.NextFrame(() =>
         {
             pawn.SetModel(model);
+
+            Color originalRender = pawn.Render;
+
+            if (disableleg == "true")
+            {
+                pawn.Render = Color.FromArgb(254, originalRender.R, originalRender.G, originalRender.B);
+            }
+            else
+            {
+                pawn.Render = Color.FromArgb(255, originalRender.R, originalRender.G, originalRender.B);
+            }
         });
     }
 
-    static public void Color(this CCSPlayerPawn pawn, Color color)
+    static public void ColorSkin(this CCSPlayerPawn pawn, Color color)
     {
         pawn.RenderMode = RenderMode_t.kRenderTransColor;
         pawn.Render = color;

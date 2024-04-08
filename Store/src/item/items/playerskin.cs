@@ -1,5 +1,3 @@
-using System.Drawing;
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using static CounterStrikeSharp.API.Core.Listeners;
@@ -42,7 +40,14 @@ public partial class Store
             }
             else
             {
-                playerPawn.ChangeModel(item.UniqueId);
+                Dictionary<string, string>? itemdata = Item.Find(item.Type, item.UniqueId);
+
+                if (itemdata == null)
+                {
+                    return HookResult.Continue;
+                }
+
+                playerPawn.ChangeModel(item.UniqueId, itemdata["disable_leg"]);
             }
 
             return HookResult.Continue;
@@ -50,16 +55,23 @@ public partial class Store
     }
     public static void Playerskin_OnMapStart()
     {
-        IEnumerable<string> playerSkinItems = Instance.Config.Items
+        List<KeyValuePair<string, Dictionary<string, string>>> playerSkinItems = Instance.Config.Items
         .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value["type"] == "playerskin")
-        .Select(kvp => kvp.Value["uniqueid"]);
+        .Where(kvp => kvp.Value["type"] == "playerskin").ToList();
 
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
-            foreach (string UniqueId in playerSkinItems)
+            foreach (KeyValuePair<string, Dictionary<string, string>> item in playerSkinItems)
             {
-                manifest.AddResource(UniqueId);
+                if (item.Value["uniqueid"].Contains(".vmdl"))
+                {
+                    manifest.AddResource(item.Value["uniqueid"]);
+                }
+
+                if (item.Value["armModel"].Contains(".vmdl"))
+                {
+                    manifest.AddResource(item.Value["armModel"]);
+                }
             }
         });
     }
@@ -71,9 +83,9 @@ public partial class Store
             return false;
         }
 
-        if (player.TeamNum == int.Parse(item["slot"]))
+        if (player.TeamNum == int.Parse(item["slot"]) && player.PawnIsAlive)
         {
-            SetModelNextServerFrame(player.PlayerPawn.Value, item["uniqueid"], item["disableleg"]);
+            player.PlayerPawn.Value?.ChangeModel(item["uniqueid"], item["disable_leg"]);
         }
 
         return true;
@@ -104,22 +116,7 @@ public partial class Store
 
             string model = modelsArray[randomnumber];
 
-            player.PlayerPawn.Value?.ChangeModel(model);
+            player.PlayerPawn.Value?.ChangeModel(model, Instance.Config.Settings["default_model_disable_leg"]);
         }
-    }
-
-    public static void SetModelNextServerFrame(CCSPlayerPawn playerPawn, string model, string
-            disableleg)
-    {
-        Server.NextFrame(() =>
-        {
-            playerPawn.SetModel(model);
-            var originalRender = playerPawn.Render;
-            if (disableleg == "true") {
-                playerPawn.Render = Color.FromArgb(254, originalRender.R, originalRender.G, originalRender.B);
-            } else {
-                playerPawn.Render = Color.FromArgb(255, originalRender.R, originalRender.G, originalRender.B);
-            }
-        });
     }
 }

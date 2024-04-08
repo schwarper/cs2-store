@@ -2,6 +2,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Drawing;
+using System.Globalization;
 using static CounterStrikeSharp.API.Core.Listeners;
 using static StoreApi.Store;
 
@@ -33,6 +34,11 @@ public partial class Store
         {
             foreach (string UniqueId in playerTrails)
             {
+                if (!UniqueId.Contains(".vpcf"))
+                {
+                    continue;
+                }
+
                 manifest.AddResource(UniqueId);
             }
         });
@@ -84,7 +90,7 @@ public partial class Store
 
         float lifetime = 1.3f;
 
-        if (itemdata.TryGetValue("lifetime", out string? ltvalue) && float.TryParse(ltvalue, out float lt))
+        if (itemdata.TryGetValue("lifetime", out string? ltvalue) && float.TryParse(ltvalue, CultureInfo.InvariantCulture, out float lt))
         {
             lifetime = lt;
         }
@@ -93,7 +99,7 @@ public partial class Store
         {
             if (string.IsNullOrEmpty(cvalue))
             {
-                CreateTrail_Beam(player, absorigin, lifetime, null);
+                CreateTrail_Beam(player, absorigin, lifetime, null, itemdata);
             }
             else
             {
@@ -101,16 +107,16 @@ public partial class Store
 
                 Color color = Color.FromArgb(int.Parse(colorValues[0]), int.Parse(colorValues[1]), int.Parse(colorValues[2]));
 
-                CreateTrail_Beam(player, absorigin, lifetime, color);
+                CreateTrail_Beam(player, absorigin, lifetime, color, itemdata);
             }
         }
         else
         {
-            CreateTrail_Particle(absorigin, playertrail.UniqueId, lifetime);
+            CreateTrail_Particle(absorigin, playertrail.UniqueId, lifetime, itemdata);
         }
     }
 
-    public static void CreateTrail_Particle(Vector absOrigin, string effectName, float lifetime)
+    public static void CreateTrail_Particle(Vector absOrigin, string effectName, float lifetime, Dictionary<string, string> itemdata)
     {
         CParticleSystem? entity = Utilities.CreateEntityByName<CParticleSystem>("info_particle_system");
 
@@ -119,10 +125,30 @@ public partial class Store
             return;
         }
 
+        if (!itemdata.TryGetValue("acceptInputValue", out string? acceptinputvalue) || string.IsNullOrEmpty(acceptinputvalue))
+        {
+            acceptinputvalue = "Start";
+        }
+
+        QAngle angle = new();
+
+        if (!itemdata.TryGetValue("angleValue", out string? angleValue) || string.IsNullOrEmpty(angleValue))
+        {
+            angle.X = 90;
+        }
+        else
+        {
+            string[] angleValues = angleValue.Split(' ');
+
+            angle.X = int.Parse(angleValues[0]);
+            angle.Y = int.Parse(angleValues[0]);
+            angle.Z = int.Parse(angleValues[0]);
+        }
+
         entity.EffectName = effectName;
         entity.DispatchSpawn();
-        entity.Teleport(absOrigin, new QAngle(90, 0, 0), new Vector());
-        entity.AcceptInput("Start");
+        entity.Teleport(absOrigin, angle, new Vector());
+        entity.AcceptInput(acceptinputvalue!);
 
         Instance.AddTimer(lifetime, () =>
         {
@@ -133,7 +159,7 @@ public partial class Store
         });
     }
 
-    public static void CreateTrail_Beam(CCSPlayerController player, Vector absOrigin, float lifetime, Color? color)
+    public static void CreateTrail_Beam(CCSPlayerController player, Vector absOrigin, float lifetime, Color? color, Dictionary<string, string> itemdata)
     {
         CBeam? beam = Utilities.CreateEntityByName<CBeam>("env_beam");
 
@@ -160,8 +186,15 @@ public partial class Store
             color = Color.FromKnownColor(randomColorName.Value);
         }
 
+        float width = 1.0f;
+
+        if (itemdata.TryGetValue("lifetime", out string? ltvalue) && float.TryParse(ltvalue, CultureInfo.InvariantCulture, out float fwidth))
+        {
+            width = fwidth;
+        }
+
         beam.RenderMode = RenderMode_t.kRenderTransColor;
-        beam.Width = 1.0f;
+        beam.Width = width;
         beam.Render = (Color)color;
 
         beam.Teleport(absOrigin, new QAngle(), new Vector());

@@ -1,5 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using System.Globalization;
 using static StoreApi.Store;
 
 namespace Store;
@@ -68,9 +69,9 @@ public partial class Store
 
                 string[] colorValues = itemdata["color"].Split(' ');
 
-                grenade.SmokeColor.X = float.Parse(colorValues[0]);
-                grenade.SmokeColor.Y = float.Parse(colorValues[1]);
-                grenade.SmokeColor.Z = float.Parse(colorValues[2]);
+                grenade.SmokeColor.X = float.Parse(colorValues[0], CultureInfo.InvariantCulture);
+                grenade.SmokeColor.Y = float.Parse(colorValues[1], CultureInfo.InvariantCulture);
+                grenade.SmokeColor.Z = float.Parse(colorValues[2], CultureInfo.InvariantCulture);
             }
         });
     }

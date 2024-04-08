@@ -75,10 +75,22 @@ public partial class Store
                 return;
             }
 
+            Dictionary<string, string>? itemdata = Item.Find(item.Type, item.UniqueId);
+
+            if (itemdata == null)
+            {
+                return;
+            }
+
+            if (!itemdata.TryGetValue("acceptInputValue", out string? acceptinputvalue) || string.IsNullOrEmpty(acceptinputvalue))
+            {
+                acceptinputvalue = "Start";
+            }
+
             particle.EffectName = item.UniqueId;
             particle.DispatchSpawn();
             particle.Teleport(grenade.AbsOrigin!, new QAngle(), new Vector());
-            particle.AcceptInput("Start");
+            particle.AcceptInput(acceptinputvalue);
 
             Instance.GlobalGrenadeTrail.Add(grenade, particle);
         });

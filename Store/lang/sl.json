@@ -4,6 +4,7 @@
     "No matching client": "{white}Trenutno ni ustrezne stranke.",
     "More than one client matched": "{white}Ujema se več kot ena stranka.",
     "Must be an integer": "{white}Vrednost, ki ste jo vnesli, mora biti celo število.",
+    "Must be a steamid": "{white}Vrednost, ki ste jo vnesli, mora biti veljavni steamid.",
     "No credits enough": "{white}Nimate dovolj kreditov za nakup.",
     "You are not alive": "{white}Ta predmet lahko kupiš le, ko si živ.",
     "You are alive": "{white}Ta predmet lahko kupiš le, ko si mrtev.",
@@ -37,6 +38,7 @@
     "menu_store<trail>": "Sled",
     "menu_store<grenadetrail>": "Granatna sled",
     "menu_store<tracer>": "Sledilec",
+    "menu_store<colorskins>": "Barvne kože",
 
     "menu_store<t_title>": "T Modeli",
     "menu_store<ct_title>": "CT Modeli",

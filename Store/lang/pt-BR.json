@@ -4,6 +4,7 @@
     "No matching client": "{white}Não há nenhum cliente correspondente",
     "More than one client matched": "{white>Há mais de um cliente correspondente",
     "Must be an integer": "{white}O valor inserido deve ser um número inteiro",
+    "Must be a steamid": "{white}O valor inserido deve ser um steamid válido",
     "No credits enough": "{white}Você não possui créditos suficientes.",
     "You are not alive": "{white}Você só pode comprar quando estiver vivo.",
     "You are alive": "{white}Você só pode comprar quando estiver morto.",
@@ -37,6 +38,7 @@
     "menu_store<trail>": "Rastro",
     "menu_store<grenadetrail>": "Rastro de Granada",
     "menu_store<tracer>": "Traçador",
+    "menu_store<colorskins>": "Peles coloridas",
 
     "menu_store<t_title>": "Modelos T",
     "menu_store<ct_title>": "Modelos CT",

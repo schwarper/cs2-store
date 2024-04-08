@@ -4,6 +4,7 @@
 	"No matching client": "{white}Не знайдено відповідного клієнта",
 	"More than one client matched": "{white}Знайдено більше одного відповідного клієнта",
 	"Must be an integer": "{white}Введене значення повинно бути цілим числом",
+	"Must be a steamid": "{white}Значення, яке ви ввели, має бути дійсним паролем",
 	"No credits enough": "{white}У вас недостатньо кредитів.",
 	"You are not alive": "{white}Ви можете купити це лише тоді, коли ви живі.",
 	"You are alive": "{white}Ви можете купити це лише тоді, коли ви мертві.",
@@ -37,6 +38,7 @@
 	"menu_store<trail>": "Слід",
 	"menu_store<grenadetrail>": "Слід за гранатою",
 	"menu_store<tracer>": "Трасер",
+	"menu_store<colorskins>": "Кольорова шкіра",
 
 	"menu_store<t_title>": "Моделі t",
 	"menu_store<ct_title>": "Моделі ct",

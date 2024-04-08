@@ -4,6 +4,7 @@
     "No matching client": "{white}There is no matching client",
     "More than one client matched": "{white}There are more than one client matched",
     "Must be an integer": "{white}The value you entered must be an integer",
+    "Must be a steamid": "{white}The value you entered must be a valid steamid",
     "No credits enough": "{white}You do not have enough credits.",
     "You are not alive": "{white}You can buy it only when you are alive.",
     "You are alive": "{white}You can buy it only when you are dead.",
@@ -37,6 +38,7 @@
     "menu_store<trail>": "Trail",
     "menu_store<grenadetrail>": "Grenade Trail",
     "menu_store<tracer>": "Tracer",
+    "menu_store<colorskins>": "Colorskins",
 
     "menu_store<t_title>": "T Models",
     "menu_store<ct_title>": "CT Models",

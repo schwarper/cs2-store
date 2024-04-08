@@ -1,4 +1,5 @@
 using CounterStrikeSharp.API.Core;
+using System.Globalization;
 
 namespace Store;
 
@@ -13,7 +14,12 @@ public partial class Store
     }
     public static bool Speed_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!float.TryParse(item["uniqueid"], out float speed))
+        if (!float.TryParse(item["speedValue"], CultureInfo.InvariantCulture, out float speed))
+        {
+            return false;
+        }
+
+        if (!float.TryParse(item["speedTimerValue"], CultureInfo.InvariantCulture, out float speedtimer))
         {
             return false;
         }
@@ -25,9 +31,9 @@ public partial class Store
             return false;
         }
 
-        if (speed > 0.0)
+        if (speedtimer > 0.0)
         {
-            Instance.AddTimer(speed, () =>
+            Instance.AddTimer(speedtimer, () =>
             {
                 playerPawn.VelocityModifier = 1.0f;
 

@@ -2,6 +2,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
+using CounterStrikeSharp.API.Modules.Entities;
 using static Store.Store;
 
 namespace Store;
@@ -69,10 +70,35 @@ public static class Command
     [RequiresPermissions("@css/root")]
     public static void Command_GiveCredits(CCSPlayerController? player, CommandInfo command)
     {
-        (List<CCSPlayerController> players, string targetname) = Instance.FindTarget(command, 2, false);
+        (List<CCSPlayerController> players, string targetname) = Instance.FindTarget(command, 2, false, true);
 
         if (players == null)
         {
+            if (!SteamID.TryParse(command.GetArg(1), out SteamID? steamId) || steamId == null)
+            {
+                command.ReplyToCommand(Instance.Localizer["Prefix"] + Instance.Localizer["Must be a steamid"]);
+                return;
+            }
+
+            if (!int.TryParse(command.GetArg(2), out int credits))
+            {
+                command.ReplyToCommand(Instance.Localizer["Prefix"] + Instance.Localizer["Must be an integer"]);
+                return;
+            }
+
+            StoreApi.Store.Store_Player? playerdata = Instance.GlobalStorePlayers.SingleOrDefault(player => player.SteamID == steamId.SteamId64);
+
+            if (playerdata == null)
+            {
+                command.ReplyToCommand(Instance.Localizer["Prefix"] + Instance.Localizer["No matching client"]);
+                return;
+            }
+
+            playerdata.Credits += credits;
+
+            Database.Execute("UPDATE store_players SET Credits = Credits + @Credits WHERE SteamId = @SteamId;", new { Credits = credits, @SteamID = steamId.SteamId64 });
+
+            Server.PrintToChatAll(Instance.Localizer["Prefix"] + Instance.Localizer["css_givecredits<player>", player == null ? Instance.Localizer["Console"] : player.PlayerName, steamId.SteamId64, credits]);
             return;
         }
 

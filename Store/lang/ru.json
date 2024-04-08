@@ -4,6 +4,7 @@
 	"No matching client": "{white}Не найдено совпадений с клиентом",
 	"More than one client matched": "{white}Найдено более одного совпадения с клиентом",
 	"Must be an integer": "{white}Введенное значение должно быть целым числом",
+	"Must be a steamid": "{white}Введенное вами значение должно быть действительным steamid",
 	"No credits enough": "{white}У вас недостаточно кредитов.",
 	"You are not alive": "{white}Вы можете купить это только когда вы живы.",
 	"You are alive": "{white}Вы можете купить это только когда вы мертвы.",
@@ -37,6 +38,7 @@
 	"menu_store<trail>": "След",
 	"menu_store<grenadetrail>": "След за гранатой",
 	"menu_store<tracer>": "Маркер",
+	"menu_store<colorskins>": "Цветные шкурки",
 
 	"menu_store<t_title>": "Модели t",
 	"menu_store<ct_title>": "Модели ct",

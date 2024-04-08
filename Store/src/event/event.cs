@@ -24,7 +24,7 @@ public static class Event
         {
             Instance.GlobalTickrate++;
 
-            if (Instance.GlobalTickrate % 10 != 0)
+            if (Instance.GlobalTickrate % 5 != 0)
             {
                 return;
             }
@@ -46,6 +46,23 @@ public static class Event
         {
             OnEntityCreated_Smoke(entity);
             OnEntityCreated_GrenadeTrail(entity);
+        });
+
+        Instance.RegisterListener<OnMapStart>((mapname) =>
+        {
+            Database.Execute("DELETE FROM store_items WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0000-00-00 00:00:00';", null);
+
+            List<Store_Item> itemsToRemove = Instance.GlobalStorePlayerItems
+            .Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)
+            .ToList();
+
+            foreach (Store_Item? item in itemsToRemove)
+            {
+                Instance.GlobalStorePlayerItems.Remove(item);
+                Instance.GlobalStorePlayerEquipments.RemoveAll(i => i.UniqueId == item.UniqueId);
+
+                Database.Execute("DELETE FROM store_equipment WHERE SteamID == @SteamID AND UniqueId == @UniqueId", new { item.SteamID, item.UniqueId });
+            }
         });
 
         Instance.RegisterEventHandler<EventPlayerConnectFull>((@event, info) =>

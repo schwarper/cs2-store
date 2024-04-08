@@ -4,6 +4,7 @@
     "No matching client": "{white}Eşleşen alıcı bulunamadı.",
     "More than one client matched": "{white}Verilen biçim düzeniyle birden fazla alıcı eşleşti.",
     "Must be an integer": "{white}Girdiğiniz değer bir sayı olmalıdır.",
+    "Must be a steamid": "{white}Girdiğiniz değer steamid olmalıdır.",
     "No credits enough": "{white}Yeterli krediniz bulunmamaktadır.",
     "You are not alive": "{white}Sadece yaşarken alabilirsiniz.",
     "You are alive": "{white}Sadece ölüyken alabilirsiniz.",
@@ -37,6 +38,7 @@
     "menu_store<trail>": "Trail",
     "menu_store<grenadetrail>": "Bomba izi",
     "menu_store<tracer>": "Tracer",
+    "menu_store<colorskins>": "Renkli Skin",
 
     "menu_store<t_title>": "T Modelleri",
     "menu_store<ct_title>": "CT Modelleri",

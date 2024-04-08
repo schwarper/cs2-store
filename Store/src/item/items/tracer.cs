@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
+using System.Globalization;
 using static CounterStrikeSharp.API.Core.Listeners;
 using static StoreApi.Store;
 
@@ -28,6 +29,13 @@ public partial class Store
                 return HookResult.Continue;
             }
 
+            Dictionary<string, string>? itemdata = Item.Find(playertracer.Type, playertracer.UniqueId);
+
+            if (itemdata == null)
+            {
+                return HookResult.Continue;
+            }
+
             CBeam? entity = Utilities.CreateEntityByName<CBeam>("beam");
 
             if (entity == null || !entity.IsValid)
@@ -35,9 +43,14 @@ public partial class Store
                 return HookResult.Continue;
             }
 
+            if (!itemdata.TryGetValue("acceptInputValue", out string? acceptinputvalue) || string.IsNullOrEmpty(acceptinputvalue))
+            {
+                acceptinputvalue = "Start";
+            }
+
             entity.SetModel(playertracer.UniqueId);
             entity.DispatchSpawn();
-            entity.AcceptInput("Start");
+            entity.AcceptInput(acceptinputvalue!);
 
             Vector position = Vec.GetEyePosition(player);
 
@@ -49,16 +62,9 @@ public partial class Store
 
             Utilities.SetStateChanged(entity, "CBeam", "m_vecEndPos");
 
-            Dictionary<string, string>? itemdata = Item.Find(playertracer.Type, playertracer.UniqueId);
-
-            if (itemdata == null)
-            {
-                return HookResult.Continue;
-            }
-
             float lifetime = 0.3f;
 
-            if (itemdata.TryGetValue("lifetime", out string? value) && float.TryParse(value, out float lt))
+            if (itemdata.TryGetValue("lifetime", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float lt))
             {
                 lifetime = lt;
             }

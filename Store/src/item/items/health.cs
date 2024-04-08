@@ -13,7 +13,7 @@ public partial class Store
     }
     public static bool Health_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!int.TryParse(item["uniqueid"], out int health))
+        if (!int.TryParse(item["healthValue"], out int health))
         {
             return false;
         }

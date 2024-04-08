@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Menu;
+using System.Globalization;
 using System.Text;
 using static Store.Store;
 
@@ -51,7 +52,7 @@ public static class Menu
     {
         Dictionary<string, Dictionary<string, string>> playerSkinItems = items.Where(p => p.Value["type"] == "playerskin" && p.Value["enable"] == "true").ToDictionary(p => p.Key, p => p.Value);
 
-        if (playerSkinItems.Any())
+        if (playerSkinItems.Count != 0)
         {
             CenterHtmlMenu menu = new(key);
 
@@ -152,7 +153,7 @@ public static class Menu
         {
             float sell_ratio = 0.0f;
 
-            if (Instance.Config.Settings.TryGetValue("sell_ratio", out string? value) && float.TryParse(value, out float ratio))
+            if (Instance.Config.Settings.TryGetValue("sell_ratio", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float ratio))
             {
                 sell_ratio = ratio;
             }

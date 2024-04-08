@@ -10,7 +10,8 @@ public partial class Store : BasePlugin
         (
             CommandInfo command,
             int minArgCount,
-            bool singletarget
+            bool singletarget,
+            bool ignoreMessage = false
         )
     {
         if (command.ArgCount < minArgCount)
@@ -22,7 +23,11 @@ public partial class Store : BasePlugin
 
         if (targetresult.Players.Count == 0)
         {
-            command.ReplyToCommand(Localizer["Prefix"] + Localizer["No matching client"]);
+            if (!ignoreMessage)
+            {
+                command.ReplyToCommand(Localizer["Prefix"] + Localizer["No matching client"]);
+            }
+
             return (new List<CCSPlayerController>(), string.Empty);
         }
         else if (singletarget && targetresult.Players.Count > 1)
