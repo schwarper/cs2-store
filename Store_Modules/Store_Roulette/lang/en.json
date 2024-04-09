@@ -6,6 +6,7 @@
     "No enough credits": "{white}You don't have enough credits.",
     "Min roulette": "{white}The value you entered must be higher than {green}{0} {white}.",
     "Max roulette": "{white}The value you entered must be lower than {green}{0} {white}.",
+    "Cannot join during warmup": "{white}You can't join the roulette during warmup.",
 
     "menu_title": "Roulette [Your bet: {0}]",
     "menu_options": "{0} [{1}x]",

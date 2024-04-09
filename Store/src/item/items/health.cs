@@ -31,6 +31,7 @@ public partial class Store
         }
 
         int currentHealth = playerPawn.GetHealth();
+        int pawnMaxHealth = playerPawn.MaxHealth;
 
         if (maxhealth > 0)
         {
@@ -42,6 +43,19 @@ public partial class Store
             if (currentHealth + health > maxhealth)
             {
                 health = maxhealth - currentHealth;
+            }
+        }
+
+        if(maxhealth == 0)
+        {
+            if (currentHealth >= pawnMaxHealth)
+            {
+                return false;
+            }
+
+            if (currentHealth + health > pawnMaxHealth)
+            {
+                health = pawnMaxHealth - currentHealth;
             }
         }
 
