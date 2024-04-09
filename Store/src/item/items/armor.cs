@@ -44,6 +44,20 @@ public partial class Store : BasePlugin
             }
         }
 
+        if(maxarmor == -1)
+        {
+            maxarmor = 100;
+            if (playerPawn.ArmorValue >= maxarmor)
+            {
+                return false;
+            }
+
+            if (playerPawn.ArmorValue + armor > maxarmor)
+            {
+                armor = maxarmor - playerPawn.ArmorValue;
+            }
+        }
+
         if (playerPawn.ItemServices != null)
         {
             new CCSPlayer_ItemServices(playerPawn.ItemServices.Handle).HasHelmet = true;
