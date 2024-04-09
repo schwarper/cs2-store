@@ -8,7 +8,7 @@ namespace Store;
 public partial class Store : BasePlugin, IPluginConfig<StoreConfig>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "0.1.2";
+    public override string ModuleVersion => "0.1.2a";
     public override string ModuleAuthor => "schwarper & xshadowbringer";
 
     public override void Load(bool hotReload)
