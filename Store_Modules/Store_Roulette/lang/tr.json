@@ -6,6 +6,7 @@
     "No enough credits": "{white}Yeterli krediniz bulunmamaktadır.",
     "Min roulette": "{white}Girdiğiniz değer {green}{0} {white}krediden yüksek olmalıdır.",
     "Max roulette": "{white}Girdiğiniz değer {green}{0} {white}krediden düşük olmalıdır.",
+    "Cannot join during warmup": "{white}You can't join the roulette during warmup.",
 
     "menu_title": "Rulet [Bahisiniz: {0}]",
     "menu_options": "{0} [{1}x]",

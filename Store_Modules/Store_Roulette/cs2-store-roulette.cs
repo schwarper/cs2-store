@@ -103,6 +103,12 @@ public class Store_Roulette : BasePlugin, IPluginConfig<Store_RouletteConfig>
             throw new Exception("StoreApi could not be located.");
         }
 
+        if (Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!.WarmupPeriod)
+        {
+            info.ReplyToCommand(Localizer["Prefix"] + Localizer["Cannot join during warmup"]);
+            return;
+        }
+
         if (GlobalRoulette.Values.Any(dict => dict.ContainsKey(player)))
         {
             info.ReplyToCommand(Localizer["Prefix"] + Localizer["You are already in"]);
