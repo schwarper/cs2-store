@@ -4,6 +4,7 @@
 	"No matching client": "{white}Не знайдено відповідного клієнта",
 	"More than one client matched": "{white}Знайдено більше одного відповідного клієнта",
 	"Must be an integer": "{white}Введене значення повинно бути цілим числом",
+	"Must be higher than zero": "{white}Значення, яке ви ввели, має бути більше нуля.",
 	"Must be a steamid": "{white}Значення, яке ви ввели, має бути дійсним паролем",
 	"No credits enough": "{white}У вас недостатньо кредитів.",
 	"You are not alive": "{white}Ви можете купити це лише тоді, коли ви живі.",

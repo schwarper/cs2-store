@@ -1,9 +1,11 @@
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Menu;
 using System.Globalization;
 using System.Text;
 using static Store.Store;
+using static StoreApi.Store;
 
 namespace Store;
 
@@ -114,7 +116,7 @@ public static class Menu
                 {
                     Item.Purchase(player, item);
 
-                    MenuManager.CloseActiveMenu(player);
+                    DisplayItemOption(player, item);
                 }, "menu_store<purchase>", item["name"], item["price"]);
             }
         }
@@ -134,7 +136,7 @@ public static class Menu
 
                 player.PrintToChatMessage("Purchase Unequip", item["name"]);
 
-                MenuManager.CloseActiveMenu(player);
+                DisplayItemOption(player, item);
             }, "menu_store<unequip>");
         }
         else
@@ -145,13 +147,13 @@ public static class Menu
 
                 player.PrintToChatMessage("Purchase Equip", item["name"]);
 
-                MenuManager.CloseActiveMenu(player);
+                DisplayItemOption(player, item);
             }, "menu_store<equip>");
         }
 
         if (Instance.Config.Menu["enable_selling"] == "1" && !Item.IsPlayerVip(player))
         {
-            float sell_ratio = 0.0f;
+            float sell_ratio = 1.0f;
 
             if (Instance.Config.Settings.TryGetValue("sell_ratio", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float ratio))
             {
@@ -165,7 +167,14 @@ public static class Menu
                 player.PrintToChatMessage("Item Sell", item["name"]);
 
                 MenuManager.CloseActiveMenu(player);
-            }, "menu_store<sell>", int.Parse(item["price"]) * sell_ratio);
+            }, "menu_store<sell>", (int)(int.Parse(item["price"]) * sell_ratio));
+        }
+
+        var playeritem = Instance.GlobalStorePlayerItems.First(p => p.SteamID == player.SteamID && p.Type == item["type"]);
+        
+        if (playeritem.DateOfExpiration > DateTime.MinValue)
+        {
+            menu.AddMenuOption(playeritem.DateOfExpiration.ToString(), (p, o) => { }, true);
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);

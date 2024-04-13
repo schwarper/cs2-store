@@ -20,7 +20,7 @@ public partial class Store
                 return HookResult.Continue;
             }
 
-            if (player.Team != CsTeam.Terrorist && player.Team != CsTeam.CounterTerrorist)
+            if (player.TeamNum < 2)
             {
                 return HookResult.Continue;
             }

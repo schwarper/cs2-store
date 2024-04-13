@@ -4,6 +4,7 @@
     "No matching client": "{white}Trenutno ni ustrezne stranke.",
     "More than one client matched": "{white}Ujema se več kot ena stranka.",
     "Must be an integer": "{white}Vrednost, ki ste jo vnesli, mora biti celo število.",
+    "Must be higher than zero": "{white}Vrednost, ki ste jo vnesli, mora biti večja od nič.",
     "Must be a steamid": "{white}Vrednost, ki ste jo vnesli, mora biti veljavni steamid.",
     "No credits enough": "{white}Nimate dovolj kreditov za nakup.",
     "You are not alive": "{white}Ta predmet lahko kupiš le, ko si živ.",

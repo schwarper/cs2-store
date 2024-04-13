@@ -7,11 +7,11 @@ namespace Store;
 public partial class Store
 {
     public StoreConfig Config { get; set; } = new StoreConfig();
-    public List<Store_Player> GlobalStorePlayers { get; set; } = new();
-    public List<Store_Item> GlobalStorePlayerItems { get; set; } = new();
-    public List<Store_Equipment> GlobalStorePlayerEquipments { get; set; } = new();
-    public List<Store_Item_Types> GlobalStoreItemTypes { get; set; } = new();
-    public Dictionary<CCSPlayerController, Player> GlobalDictionaryPlayer { get; set; } = new();
+    public List<Store_Player> GlobalStorePlayers { get; set; } = [];
+    public List<Store_Item> GlobalStorePlayerItems { get; set; } = [];
+    public List<Store_Equipment> GlobalStorePlayerEquipments { get; set; } = [];
+    public List<Store_Item_Types> GlobalStoreItemTypes { get; set; } = [];
+    public Dictionary<CCSPlayerController, Player> GlobalDictionaryPlayer { get; set; } = [];
     public int GlobalTickrate { get; set; } = 0;
     public static Store Instance { get; set; } = new();
 

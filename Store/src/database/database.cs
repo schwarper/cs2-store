@@ -175,7 +175,7 @@ public static class Database
             });
     }
 
-    public static void SavePlayer(CCSPlayerController player, string playername)
+    public static void SavePlayer(CCSPlayerController player)
     {
         Execute(@"
                 UPDATE
@@ -187,7 +187,7 @@ public static class Database
             ",
             new
             {
-                PlayerName = playername,
+                player.PlayerName,
                 Credits = Credits.Get(player),
                 DateOfJoin = DateTime.Now,
                 DateOfLastJoin = DateTime.Now,

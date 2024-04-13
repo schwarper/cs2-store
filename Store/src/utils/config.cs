@@ -17,20 +17,20 @@ public class StoreConfig : BasePluginConfig
     [JsonPropertyName("commands")]
     public Dictionary<string, string[]> Commands { get; set; } = new Dictionary<string, string[]>
     {
-        { "credits", new string[] { "credits", "tl" } },
-        { "store", new string[] { "store", "shop", "market" } },
-        { "inventory", new string[] { "inv", "inventory" } },
-        { "givecredits", new string[] { "givecredits" } },
-        { "gift", new string[] { "gift" } },
-        { "resetplayer", new string[] { "resetplayer" } },
-        { "resetdatabase", new string[] { "resetdatabase" } }
+        { "credits", ["credits", "tl"] },
+        { "store", ["store", "shop", "market"] },
+        { "inventory", ["inv", "inventory"] },
+        { "givecredits", ["givecredits"] },
+        { "gift", ["gift"] },
+        { "resetplayer", ["resetplayer"] },
+        { "resetdatabase", ["resetdatabase"] }
     };
 
     [JsonPropertyName("defaultmodels")]
     public Dictionary<string, string[]> DefaultModels { get; set; } = new Dictionary<string, string[]>
     {
-        { "ct", new string[] { "characters/models/ctm_fbi/ctm_fbi_variantb.vmdl" } },
-        { "t", new string[] { "characters/models/tm_leet/tm_leet_variantj.vmdl" } }
+        { "ct", ["characters/models/ctm_fbi/ctm_fbi_variantb.vmdl" ] },
+        { "t", [ "characters/models/tm_leet/tm_leet_variantj.vmdl" ] }
     };
 
     [JsonPropertyName("credits")]
@@ -61,5 +61,5 @@ public class StoreConfig : BasePluginConfig
     };
 
     [JsonPropertyName("items")]
-    public Dictionary<string, Dictionary<string, Dictionary<string, string>>> Items { get; set; } = new();
+    public Dictionary<string, Dictionary<string, Dictionary<string, string>>> Items { get; set; } = [];
 }

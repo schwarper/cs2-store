@@ -148,7 +148,7 @@ public static class Item
             return false;
         }
 
-        float sell_ratio = 0.0f;
+        float sell_ratio = 1.0f;
 
         if (Instance.Config.Settings.TryGetValue("sell_ratio", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float ratio))
         {
