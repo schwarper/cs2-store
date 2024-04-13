@@ -158,6 +158,12 @@ public static class Command
             return;
         }
 
+        if (value <= 0)
+        {
+            command.ReplyToCommand(Instance.Localizer["Prefix"] + Instance.Localizer["Must be higher than zero"]);
+            return;
+        }
+
         if (Credits.Get(player) < value)
         {
             player.PrintToChatMessage("No credits enough");

@@ -1,10 +1,12 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
 using static CounterStrikeSharp.API.Core.Listeners;
 using static Store.Store;
 using static StoreApi.Store;
+using Player = StoreApi.Store.Player;
 
 namespace Store;
 
@@ -138,9 +140,10 @@ public static class Event
 
             value?.CreditIntervalTimer?.Kill();
 
-            string playername = player.PlayerName;
-
-            Database.SavePlayer(player, playername);
+            Server.NextFrame(() =>
+            {
+                Database.SavePlayer(player);
+            });
 
             return HookResult.Continue;
         });
@@ -160,9 +163,10 @@ public static class Event
                 return HookResult.Continue;
             }
 
-            string playername = victim.PlayerName;
-
-            Database.SavePlayer(victim, playername);
+            Server.NextFrame(() =>
+            {
+                Database.SavePlayer(victim);
+            });
 
             if (Instance.Config.Credits["amount_kill"] > 0)
             {

@@ -69,7 +69,6 @@ public class Store_Roulette : BasePlugin, IPluginConfig<Store_RouletteConfig>
         foreach (Color color in Colors)
         {
             GlobalRoulette.Add(color, []);
-            Server.PrintToChatAll($"{color} eklendi");
         }
     }
 
@@ -182,7 +181,7 @@ public class Store_Roulette : BasePlugin, IPluginConfig<Store_RouletteConfig>
         }
 
         StoreApi.GivePlayerCredits(player, -credits);
-        GlobalRoulette[color] = new Dictionary<CCSPlayerController, int> { { player, credits } };
+        GlobalRoulette[color].Add(player, credits);
 
         char chatcolor = FindChatColor(color);
         PrintToChatAll("Join roulette", player.PlayerName, credits, chatcolor, Localizer[color.Name]);

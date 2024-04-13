@@ -4,6 +4,7 @@
 	"No matching client": "{white}Не найдено совпадений с клиентом",
 	"More than one client matched": "{white}Найдено более одного совпадения с клиентом",
 	"Must be an integer": "{white}Введенное значение должно быть целым числом",
+	"Must be higher than zero": "{white}Введенное вами значение должно быть больше нуля.",
 	"Must be a steamid": "{white}Введенное вами значение должно быть действительным steamid",
 	"No credits enough": "{white}У вас недостаточно кредитов.",
 	"You are not alive": "{white}Вы можете купить это только когда вы живы.",
