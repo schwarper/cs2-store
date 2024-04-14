@@ -170,9 +170,9 @@ public static class Menu
             }, "menu_store<sell>", (int)(int.Parse(item["price"]) * sell_ratio));
         }
 
-        var playeritem = Instance.GlobalStorePlayerItems.First(p => p.SteamID == player.SteamID && p.Type == item["type"]);
-        
-        if (playeritem.DateOfExpiration > DateTime.MinValue)
+        Store_Item? playeritem = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"]);
+
+        if (playeritem != null && playeritem.DateOfExpiration > DateTime.MinValue)
         {
             menu.AddMenuOption(playeritem.DateOfExpiration.ToString(), (p, o) => { }, true);
         }
