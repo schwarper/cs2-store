@@ -114,9 +114,14 @@ public static class Menu
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
-                    Item.Purchase(player, item);
-
-                    DisplayItemOption(player, item);
+                    if (Item.Purchase(player, item))
+                    {
+                        DisplayItemOption(player, item);
+                    }
+                    else
+                    {
+                        MenuManager.CloseActiveMenu(player);
+                    }
                 }, "menu_store<purchase>", item["name"], item["price"]);
             }
         }
