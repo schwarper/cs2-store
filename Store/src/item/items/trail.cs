@@ -25,21 +25,16 @@ public partial class Store
     }
     public static void Trail_OnMapStart()
     {
-        IEnumerable<string> playerTrails = Instance.Config.Items
-        .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value["type"] == "trail")
-        .Select(kvp => kvp.Value["uniqueid"]);
-
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
-            foreach (string UniqueId in playerTrails)
-            {
-                if (!UniqueId.Contains(".vpcf"))
-                {
-                    continue;
-                }
+            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("trail");
 
-                manifest.AddResource(UniqueId);
+            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
+            {
+                if (item.Value["uniqueid"].Contains(".vpcf"))
+                {
+                    manifest.AddResource(item.Value["uniqueid"]);
+                }
             }
         });
     }

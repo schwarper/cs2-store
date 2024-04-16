@@ -36,6 +36,15 @@ public static class Item
             return false;
         }
 
+        if (!type.Equip(player, item))
+        {
+            return false;
+        }
+
+        Credits.Give(player, -int.Parse(item["price"]));
+
+        player.PrintToChatMessage("Purchase Succeeded", item["name"]);
+
         if (type.Equipable)
         {
             item.TryGetValue("expiration", out string? expirationtime);
@@ -61,15 +70,8 @@ public static class Item
         }
         else
         {
-            if (!type.Equip(player, item))
-            {
-                return false;
-            }
+            return false;
         }
-
-        Credits.Give(player, -int.Parse(item["price"]));
-
-        player.PrintToChatMessage("Purchase Succeeded", item["name"]);
 
         return true;
     }
@@ -97,12 +99,17 @@ public static class Item
             return false;
         }
 
+        if (!item.TryGetValue("slot", out string? sslot) || !int.TryParse(sslot, out int islot))
+        {
+            islot = 0;
+        }
+
         Store_Equipment playeritem = new()
         {
             SteamID = player.SteamID,
             Type = item["type"],
             UniqueId = item["uniqueid"],
-            Slot = int.Parse(item["slot"])
+            Slot = islot
         };
 
         Instance.GlobalStorePlayerEquipments.Add(playeritem);
@@ -238,5 +245,12 @@ public static class Item
             Equipable = Equipable,
             Alive = Alive
         });
+    }
+
+    public static List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type)
+    {
+        return Instance.Config.Items
+        .SelectMany(wk => wk.Value)
+        .Where(kvp => kvp.Value["type"] == type).ToList();
     }
 }

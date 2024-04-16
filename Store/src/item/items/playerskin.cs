@@ -55,15 +55,13 @@ public partial class Store
     }
     public static void Playerskin_OnMapStart()
     {
-        List<KeyValuePair<string, Dictionary<string, string>>> playerSkinItems = Instance.Config.Items
-        .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value["type"] == "playerskin").ToList();
-
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
-            foreach (KeyValuePair<string, Dictionary<string, string>> item in playerSkinItems)
+            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("playerskin");
+
+            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
             {
-                if (item.Value["uniqueid"].Contains(".vmdl"))
+                if (item.Value["uniqueid"].Contains(".vpcf"))
                 {
                     manifest.AddResource(item.Value["uniqueid"]);
                 }

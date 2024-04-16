@@ -65,6 +65,11 @@ public class StoreAPI : IStoreApi
         return Item.Find(type, UniqueId);
     }
 
+    public List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type)
+    {
+        return Item.GetItemsByType(type);
+    }
+
     public List<Store_Item> GetPlayerItems(CCSPlayerController player)
     {
         return Item.GetPlayerItems(player);

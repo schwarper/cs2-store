@@ -16,16 +16,13 @@ public partial class Store
     }
     public static void GrenadeTrail_OnMapStart()
     {
-        IEnumerable<string> playerSkinItems = Instance.Config.Items
-        .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value["type"] == "grenadetrail")
-        .Select(kvp => kvp.Value["uniqueid"]);
-
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
-            foreach (string UniqueId in playerSkinItems)
+            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("grenadetrail");
+
+            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
             {
-                manifest.AddResource(UniqueId);
+                manifest.AddResource(item.Value["uniqueid"]);
             }
         });
     }

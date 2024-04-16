@@ -98,7 +98,7 @@ public static class Command
 
             Database.Execute("UPDATE store_players SET Credits = Credits + @Credits WHERE SteamId = @SteamId;", new { Credits = credits, @SteamID = steamId.SteamId64 });
 
-            Server.PrintToChatAll(Instance.Localizer["Prefix"] + Instance.Localizer["css_givecredits<player>", player == null ? Instance.Localizer["Console"] : player.PlayerName, steamId.SteamId64, credits]);
+            Server.PrintToChatAll(Instance.Localizer["Prefix"] + Instance.Localizer["css_givecredits<player>", player?.PlayerName ?? "Console", steamId.SteamId64, credits]);
             return;
         }
 
@@ -115,11 +115,11 @@ public static class Command
 
         if (players.Count == 1)
         {
-            Server.PrintToChatAll(Instance.Localizer["Prefix"] + Instance.Localizer["css_givecredits<player>", player == null ? Instance.Localizer["Console"] : player.PlayerName, targetname, value]);
+            Server.PrintToChatAll(Instance.Localizer["Prefix"] + Instance.Localizer["css_givecredits<player>", player?.PlayerName ?? "Console", targetname, value]);
         }
         else
         {
-            Server.PrintToChatAll(Instance.Localizer["Prefix"] + Instance.Localizer["css_givecredits<multiple>", player == null ? Instance.Localizer["Console"] : player.PlayerName, targetname, value]);
+            Server.PrintToChatAll(Instance.Localizer["Prefix"] + Instance.Localizer["css_givecredits<multiple>", player?.PlayerName ?? "Console", targetname, value]);
         }
     }
 
@@ -196,6 +196,31 @@ public static class Command
 
         if (players == null)
         {
+            if (!SteamID.TryParse(command.GetArg(1), out SteamID? steamId) || steamId == null)
+            {
+                command.ReplyToCommand(Instance.Localizer["Prefix"] + Instance.Localizer["Must be a steamid"]);
+                return;
+            }
+
+            StoreApi.Store.Store_Player? playerdata = Instance.GlobalStorePlayers.SingleOrDefault(player => player.SteamID == steamId.SteamId64);
+
+            if (playerdata == null)
+            {
+                command.ReplyToCommand(Instance.Localizer["Prefix"] + Instance.Localizer["No matching client"]);
+                return;
+            }
+
+            Instance.GlobalStorePlayers.RemoveAll(p => p.SteamID == steamId.SteamId64);
+            Instance.GlobalStorePlayerItems.RemoveAll(p => p.SteamID == steamId.SteamId64);
+            Instance.GlobalStorePlayerEquipments.RemoveAll(p => p.SteamID == steamId.SteamId64);
+
+            Database.Execute("DELETE FROM store_players WHERE SteamId = @SteamId; " +
+                 "DELETE FROM store_items WHERE SteamId = @SteamId; " +
+                 "DELETE FROM store_equipments WHERE SteamId = @SteamId;",
+                 new { @SteamID = steamId.SteamId64 });
+
+
+            Server.PrintToChatAll(Instance.Localizer["Prefix"] + Instance.Localizer["css_reset", player?.PlayerName ?? "Console", steamId.SteamId64]);
             return;
         }
 

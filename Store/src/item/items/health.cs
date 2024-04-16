@@ -46,7 +46,7 @@ public partial class Store
             }
         }
 
-        if(maxhealth == -1)
+        if (maxhealth == -1)
         {
             if (currentHealth >= pawnMaxHealth)
             {

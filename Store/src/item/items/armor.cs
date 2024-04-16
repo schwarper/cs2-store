@@ -44,7 +44,7 @@ public partial class Store : BasePlugin
             }
         }
 
-        if(maxarmor == -1)
+        if (maxarmor == -1)
         {
             maxarmor = 100;
             if (playerPawn.ArmorValue >= maxarmor)
