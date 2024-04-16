@@ -29,3 +29,7 @@ https://cs2-store.gitbook.io/cs2-store
 ![image](https://github.com/schwarper/cs2-store/assets/75811921/0db6f827-e2c2-4c7c-9440-9ae97f4225e2)
 
 ![image](https://github.com/schwarper/cs2-store/assets/75811921/02a48527-6146-46ea-ae34-83deb8e36ca7)
+
+![image](https://github.com/schwarper/cs2-store/assets/75811921/e6c494db-64d0-44e6-b115-56499d95b912)
+
+![image](https://github.com/schwarper/cs2-store/assets/75811921/4602f571-b00d-4e51-a740-a66e90216dfa)
