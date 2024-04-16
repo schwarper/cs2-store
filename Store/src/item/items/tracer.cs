@@ -82,16 +82,13 @@ public partial class Store
     }
     public static void Tracer_OnMapStart()
     {
-        IEnumerable<string> playerTracers = Instance.Config.Items
-        .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value["type"] == "trail")
-        .Select(kvp => kvp.Value["uniqueid"]);
-
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
-            foreach (string UniqueId in playerTracers)
+            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("tracer");
+
+            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
             {
-                manifest.AddResource(UniqueId);
+                manifest.AddResource(item.Value["uniqueid"]);
             }
         });
     }

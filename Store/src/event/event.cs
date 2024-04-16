@@ -1,6 +1,5 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
 using static CounterStrikeSharp.API.Core.Listeners;
@@ -48,6 +47,7 @@ public static class Event
         {
             OnEntityCreated_Smoke(entity);
             OnEntityCreated_GrenadeTrail(entity);
+            OnEntityCreated_CustomWeapon(entity);
         });
 
         Instance.RegisterListener<OnMapStart>((mapname) =>

@@ -12,21 +12,16 @@ public partial class Store
     }
     public static void Sound_OnMapStart()
     {
-        IEnumerable<string> sounds = Instance.Config.Items
-        .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value["type"] == "sound")
-        .Select(kvp => kvp.Value["uniqueid"]);
-
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
-            foreach (string UniqueId in sounds)
-            {
-                if (!UniqueId.Contains(".vsnd"))
-                {
-                    continue;
-                }
+            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("trail");
 
-                manifest.AddResource(UniqueId);
+            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
+            {
+                if (item.Value["uniqueid"].Contains(".vsnd"))
+                {
+                    manifest.AddResource(item.Value["uniqueid"]);
+                }
             }
         });
     }
