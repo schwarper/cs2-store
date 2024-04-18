@@ -143,7 +143,7 @@ public class Store_Roulette : BasePlugin, IPluginConfig<Store_RouletteConfig>
             StringBuilder builder = new();
             builder.AppendFormat(Localizer["menu_title", credits]);
 
-            CenterHtmlMenu menu = new(builder.ToString())
+            CenterHtmlMenu menu = new(builder.ToString(), this)
             {
                 PostSelectAction = PostSelectAction.Close
             };
