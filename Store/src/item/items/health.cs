@@ -6,7 +6,7 @@ public partial class Store
 {
     public static void Health_OnPluginStart()
     {
-        new StoreAPI().RegisterType("health", Health_OnMapStart, Health_OnEquip, Health_OnUnequip, false, true);
+        Item.RegisterType("health", Health_OnMapStart, Health_OnEquip, Health_OnUnequip, false, true);
     }
     public static void Health_OnMapStart()
     {

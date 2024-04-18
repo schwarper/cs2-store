@@ -28,7 +28,7 @@ public static class Menu
             StringBuilder builder = new();
             builder.AppendFormat(Instance.Localizer["menu_store<title>", Credits.Get(player)]);
 
-            CenterHtmlMenu menu = new(builder.ToString());
+            CenterHtmlMenu menu = new(builder.ToString(), Instance);
 
             foreach (KeyValuePair<string, Dictionary<string, Dictionary<string, string>>> category in Instance.Config.Items)
             {
@@ -45,6 +45,7 @@ public static class Menu
                     DisplayItems(player, builderkey.ToString(), category.Value, inventory);
                 });
             }
+
             MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
         }
     }
@@ -55,7 +56,7 @@ public static class Menu
 
         if (playerSkinItems.Count != 0)
         {
-            CenterHtmlMenu menu = new(key);
+            CenterHtmlMenu menu = new(key, Instance);
 
             foreach (int Slot in new[] { 2, 3 })
             {
@@ -86,7 +87,7 @@ public static class Menu
 
     public static void DisplayItem(CCSPlayerController player, bool inventory, string key, Dictionary<string, Dictionary<string, string>> items)
     {
-        CenterHtmlMenu menu = new(key);
+        CenterHtmlMenu menu = new(key, Instance);
 
         foreach (KeyValuePair<string, Dictionary<string, string>> kvp in items)
         {
@@ -130,7 +131,7 @@ public static class Menu
 
     public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item)
     {
-        CenterHtmlMenu menu = new(item["name"]);
+        CenterHtmlMenu menu = new(item["name"], Instance);
 
         if (Item.PlayerUsing(player, item["type"], item["uniqueid"]))
         {

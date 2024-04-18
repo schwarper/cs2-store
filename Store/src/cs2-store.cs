@@ -8,7 +8,7 @@ namespace Store;
 public partial class Store : BasePlugin, IPluginConfig<StoreConfig>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "0.1.4";
+    public override string ModuleVersion => "0.1.5";
     public override string ModuleAuthor => "schwarper & xshadowbringer";
 
     public override void Load(bool hotReload)
@@ -22,6 +22,7 @@ public partial class Store : BasePlugin, IPluginConfig<StoreConfig>
 
         Armor_OnPluginStart();
         ColoredSkin_OnPluginStart();
+        CustomWeapon_OnPluginStart();
         Godmode_OnPluginStart();
         Gravity_OnPluginStart();
         GrenadeTrail_OnPluginStart();

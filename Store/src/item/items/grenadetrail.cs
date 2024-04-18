@@ -12,7 +12,7 @@ public partial class Store
 
     public static void GrenadeTrail_OnPluginStart()
     {
-        new StoreAPI().RegisterType("grenadetrail", GrenadeTrail_OnMapStart, GrenadeTrail_OnEquip, GrenadeTrail_OnUnequip, true, null);
+        Item.RegisterType("grenadetrail", GrenadeTrail_OnMapStart, GrenadeTrail_OnEquip, GrenadeTrail_OnUnequip, true, null);
     }
     public static void GrenadeTrail_OnMapStart()
     {
@@ -72,7 +72,7 @@ public partial class Store
                 return;
             }
 
-            Dictionary<string, string>? itemdata = Item.Find(item.Type, item.UniqueId);
+            Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
 
             if (itemdata == null)
             {

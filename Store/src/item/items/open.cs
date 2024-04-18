@@ -15,7 +15,7 @@ public partial class Store
 
     public static void Open_OnPluginStart()
     {
-        new StoreAPI().RegisterType("open", Open_OnMapStart, Open_OnEquip, Open_OnUnequip, false, null);
+        Item.RegisterType("open", Open_OnMapStart, Open_OnEquip, Open_OnUnequip, false, null);
     }
     public static void Open_OnMapStart()
     {

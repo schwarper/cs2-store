@@ -9,7 +9,7 @@ public partial class Store
 {
     public static void Smoke_OnPluginStart()
     {
-        new StoreAPI().RegisterType("smoke", Smoke_OnMapStart, Smoke_OnEquip, Smoke_OnUnequip, true, null);
+        Item.RegisterType("smoke", Smoke_OnMapStart, Smoke_OnEquip, Smoke_OnUnequip, true, null);
     }
     public static void Smoke_OnMapStart()
     {
@@ -60,7 +60,7 @@ public partial class Store
             }
             else
             {
-                Dictionary<string, string>? itemdata = Item.Find(item.Type, item.UniqueId);
+                Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
 
                 if (itemdata == null)
                 {

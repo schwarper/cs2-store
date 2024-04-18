@@ -16,18 +16,4 @@ public partial class Store
     public static Store Instance { get; set; } = new();
 
     public readonly Random random = new();
-
-    public static readonly Dictionary<string, TargetType> TargetTypeMap = new(StringComparer.OrdinalIgnoreCase)
-    {
-        { "@all", TargetType.GroupAll },
-        { "@bots", TargetType.GroupBots },
-        { "@human", TargetType.GroupHumans },
-        { "@alive", TargetType.GroupAlive },
-        { "@dead", TargetType.GroupDead },
-        { "@!me", TargetType.GroupNotMe },
-        { "@me", TargetType.PlayerMe },
-        { "@ct", TargetType.TeamCt },
-        { "@t", TargetType.TeamT },
-        { "@spec", TargetType.TeamSpec }
-    };
 }

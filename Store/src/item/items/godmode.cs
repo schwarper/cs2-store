@@ -7,7 +7,7 @@ public partial class Store
 {
     public static void Godmode_OnPluginStart()
     {
-        new StoreAPI().RegisterType("godmode", Godmode_OnMapStart, Godmode_OnEquip, Godmode_OnUnequip, false, true);
+        Item.RegisterType("godmode", Godmode_OnMapStart, Godmode_OnEquip, Godmode_OnUnequip, false, true);
     }
     public static void Godmode_OnMapStart()
     {

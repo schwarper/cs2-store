@@ -22,7 +22,7 @@ public partial class Store
 
     public static void CustomWeapon_OnPluginStart()
     {
-        new StoreAPI().RegisterType("customweapon", OnMapStart, Equip, Unequip, false, null);
+        Item.RegisterType("customweapon", OnMapStart, Equip, Unequip, true, null);
 
         Instance.RegisterEventHandler<EventItemEquip>(OnItemEquip);
     }
@@ -31,14 +31,11 @@ public partial class Store
     {
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
-            List<KeyValuePair<string, Dictionary<string, string>>> customWeaponItems = Item.GetItemsByType("customweapon");
+            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("customweapon");
 
-            foreach (KeyValuePair<string, Dictionary<string, string>> item in customWeaponItems)
+            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
             {
-                if (item.Value["uniqueid"].Contains(".vmdl"))
-                {
-                    manifest.AddResource(item.Value["uniqueid"]);
-                }
+                manifest.AddResource(item.Value["uniqueid"]);
             }
         });
     }
@@ -76,19 +73,26 @@ public partial class Store
 
         Server.NextFrame(() =>
         {
-            CBasePlayerWeapon weapon = new CBasePlayerWeapon(entity.Handle);
+            CBasePlayerWeapon? weapon = new(entity.Handle);
 
             if (weapon == null)
             {
                 return;
             }
 
-            if (weapon.OriginalOwnerXuidLow == 0)
+            CHandle<CBaseEntity> ownerHandle = weapon.OwnerEntity;
+
+            if (ownerHandle == null)
             {
                 return;
             }
 
-            CCSPlayerController? player = Utilities.GetPlayerFromSteamId(weapon.OriginalOwnerXuidLow);
+            CCSPlayerController? player = ownerHandle.Value?.As<CCSPlayerController>();
+
+            if (player == null)
+            {
+                return;
+            }
 
             if (player == null || !player.IsValid)
             {
@@ -102,7 +106,7 @@ public partial class Store
                 return;
             }
 
-            Dictionary<string, string>? itemdata = Item.Find(playerequipment.Type, playerequipment.UniqueId);
+            Dictionary<string, string>? itemdata = Item.GetItem(playerequipment.Type, playerequipment.UniqueId);
 
             if (itemdata == null)
             {

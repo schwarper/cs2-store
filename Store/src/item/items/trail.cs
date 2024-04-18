@@ -15,7 +15,7 @@ public partial class Store
 
     public static void Trail_OnPluginStart()
     {
-        new StoreAPI().RegisterType("trail", Trail_OnMapStart, Trail_OnEquip, Trail_OnUnequip, true, null);
+        Item.RegisterType("trail", Trail_OnMapStart, Trail_OnEquip, Trail_OnUnequip, true, null);
 
         for (int i = 0; i < 64; i++)
         {
@@ -25,6 +25,21 @@ public partial class Store
     }
     public static void Trail_OnMapStart()
     {
+        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
+        {
+            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("trail");
+
+            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
+            {
+                if (!item.Value["uniqueid"].Contains(".vpcf"))
+                {
+                    continue;
+                }
+
+                manifest.AddResource(item.Value["uniqueid"]);
+            }
+        });
+
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
             List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("trail");
@@ -55,7 +70,7 @@ public partial class Store
             return;
         }
 
-        Dictionary<string, string>? itemdata = Item.Find(playertrail.Type, playertrail.UniqueId);
+        Dictionary<string, string>? itemdata = Item.GetItem(playertrail.Type, playertrail.UniqueId);
 
         if (itemdata == null)
         {
