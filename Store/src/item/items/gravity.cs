@@ -7,7 +7,7 @@ public partial class Store
 {
     public static void Gravity_OnPluginStart()
     {
-        new StoreAPI().RegisterType("gravity", Gravity_OnMapStart, Gravity_OnEquip, Gravity_OnUnequip, false, true);
+        Item.RegisterType("gravity", Gravity_OnMapStart, Gravity_OnEquip, Gravity_OnUnequip, false, true);
     }
     public static void Gravity_OnMapStart()
     {

@@ -1,3 +1,4 @@
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using static CounterStrikeSharp.API.Core.Listeners;
@@ -9,7 +10,7 @@ public partial class Store
 {
     public static void Playerskin_OnPluginStart()
     {
-        new StoreAPI().RegisterType("playerskin", Playerskin_OnMapStart, Playerskin_OnEquip, Playerskin_OnUnequip, true, null);
+        Item.RegisterType("playerskin", Playerskin_OnMapStart, Playerskin_OnEquip, Playerskin_OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventPlayerSpawn>((@event, info) =>
         {
@@ -40,7 +41,7 @@ public partial class Store
             }
             else
             {
-                Dictionary<string, string>? itemdata = Item.Find(item.Type, item.UniqueId);
+                Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
 
                 if (itemdata == null)
                 {
@@ -61,14 +62,11 @@ public partial class Store
 
             foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
             {
-                if (item.Value["uniqueid"].Contains(".vpcf"))
-                {
-                    manifest.AddResource(item.Value["uniqueid"]);
-                }
+                manifest.AddResource(item.Value["uniqueid"]);
 
-                if (item.Value["armModel"].Contains(".vmdl"))
+                if (item.Value.TryGetValue("armModel", out string? armModel) && !string.IsNullOrEmpty(armModel))
                 {
-                    manifest.AddResource(item.Value["armModel"]);
+                    manifest.AddResource(armModel);
                 }
             }
         });

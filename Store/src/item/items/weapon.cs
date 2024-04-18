@@ -6,7 +6,7 @@ public partial class Store
 {
     public static void Weapon_OnPluginStart()
     {
-        new StoreAPI().RegisterType("weapon", Weapon_OnMapStart, Weapon_OnEquip, Weapon_OnUnequip, false, true);
+        Item.RegisterType("weapon", Weapon_OnMapStart, Weapon_OnEquip, Weapon_OnUnequip, false, true);
     }
     public static void Weapon_OnMapStart()
     {

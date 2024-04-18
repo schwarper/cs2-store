@@ -70,7 +70,7 @@ public static class Command
     [RequiresPermissions("@css/root")]
     public static void Command_GiveCredits(CCSPlayerController? player, CommandInfo command)
     {
-        (List<CCSPlayerController> players, string targetname) = Instance.FindTarget(command, 2, false, true);
+        (List<CCSPlayerController> players, string targetname) = FindTarget.Find(command, 2, false, true);
 
         if (players == null)
         {
@@ -131,7 +131,7 @@ public static class Command
             return;
         }
 
-        (List<CCSPlayerController> players, _) = Instance.FindTarget(command, 2, false);
+        (List<CCSPlayerController> players, _) = FindTarget.Find(command, 2, false);
 
         if (players == null)
         {
@@ -192,7 +192,7 @@ public static class Command
     [RequiresPermissions("@css/root")]
     public static void Command_ResetPlayer(CCSPlayerController? player, CommandInfo command)
     {
-        (List<CCSPlayerController> players, string targetname) = Instance.FindTarget(command, 2, false);
+        (List<CCSPlayerController> players, string targetname) = FindTarget.Find(command, 2, false);
 
         if (players == null)
         {

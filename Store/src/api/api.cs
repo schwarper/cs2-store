@@ -62,7 +62,7 @@ public class StoreAPI : IStoreApi
 
     public Dictionary<string, string>? GetItem(string type, string UniqueId)
     {
-        return Item.Find(type, UniqueId);
+        return Item.GetItem(type, UniqueId);
     }
 
     public List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type)

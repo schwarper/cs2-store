@@ -8,20 +8,17 @@ public partial class Store
 {
     public static void Sound_OnPluginStart()
     {
-        new StoreAPI().RegisterType("sound", Sound_OnMapStart, Sound_OnEquip, Sound_OnUnequip, false, null);
+        Item.RegisterType("sound", Sound_OnMapStart, Sound_OnEquip, Sound_OnUnequip, false, null);
     }
     public static void Sound_OnMapStart()
     {
         Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
         {
-            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("trail");
+            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("customweapon");
 
             foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
             {
-                if (item.Value["uniqueid"].Contains(".vsnd"))
-                {
-                    manifest.AddResource(item.Value["uniqueid"]);
-                }
+                manifest.AddResource(item.Value["uniqueid"]);
             }
         });
     }

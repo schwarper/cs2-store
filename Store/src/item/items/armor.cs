@@ -7,7 +7,7 @@ public partial class Store : BasePlugin
 {
     public static void Armor_OnPluginStart()
     {
-        new StoreAPI().RegisterType("armor", Armor_OnMapStart, Armor_OnEquip, Armor_OnUnequip, false, true);
+        Item.RegisterType("armor", Armor_OnMapStart, Armor_OnEquip, Armor_OnUnequip, false, true);
     }
     public static void Armor_OnMapStart()
     {

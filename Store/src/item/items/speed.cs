@@ -7,7 +7,7 @@ public partial class Store
 {
     public static void Speed_OnPluginStart()
     {
-        new StoreAPI().RegisterType("speed", Speed_OnMapStart, Speed_OnEquip, Speed_OnUnequip, false, true);
+        Item.RegisterType("speed", Speed_OnMapStart, Speed_OnEquip, Speed_OnUnequip, false, true);
     }
     public static void Speed_OnMapStart()
     {

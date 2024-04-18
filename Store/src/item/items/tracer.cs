@@ -11,7 +11,7 @@ public partial class Store
 {
     public static void Tracer_OnPluginStart()
     {
-        new StoreAPI().RegisterType("tracer", Tracer_OnMapStart, Tracer_OnEquip, Tracer_OnUnequip, true, null);
+        Item.RegisterType("tracer", Tracer_OnMapStart, Tracer_OnEquip, Tracer_OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventBulletImpact>((@event, info) =>
         {
@@ -29,7 +29,7 @@ public partial class Store
                 return HookResult.Continue;
             }
 
-            Dictionary<string, string>? itemdata = Item.Find(playertracer.Type, playertracer.UniqueId);
+            Dictionary<string, string>? itemdata = Item.GetItem(playertracer.Type, playertracer.UniqueId);
 
             if (itemdata == null)
             {

@@ -89,7 +89,7 @@ public static class Item
 
         if (currentitem != null)
         {
-            Dictionary<string, string> citem = Find(currentitem.Type, currentitem.UniqueId)!;
+            Dictionary<string, string> citem = GetItem(currentitem.Type, currentitem.UniqueId)!;
 
             Unequip(player, citem);
         }
@@ -178,7 +178,7 @@ public static class Item
 
     public static bool PlayerHas(CCSPlayerController player, string type, string UniqueId, bool ignoreVip)
     {
-        Dictionary<string, string>? item = Find(type, UniqueId);
+        Dictionary<string, string>? item = GetItem(type, UniqueId);
 
         if (item == null)
         {
@@ -210,11 +210,16 @@ public static class Item
             .Any(item => item["type"] == type && item["uniqueid"] == UniqueId);
     }
 
-    public static Dictionary<string, string>? Find(string type, string UniqueId)
+    public static Dictionary<string, string>? GetItem(string type, string UniqueId)
     {
         return Instance.Config.Items.Values
             .SelectMany(dict => dict.Values)
             .FirstOrDefault(item => item["type"] == type && item["uniqueid"] == UniqueId);
+    }
+
+    public static List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type)
+    {
+        return Instance.Config.Items.SelectMany(wk => wk.Value.Where(kvp => kvp.Value["type"] == type)).ToList();
     }
 
     public static List<Store_Item> GetPlayerItems(CCSPlayerController player)
@@ -245,12 +250,5 @@ public static class Item
             Equipable = Equipable,
             Alive = Alive
         });
-    }
-
-    public static List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type)
-    {
-        return Instance.Config.Items
-        .SelectMany(wk => wk.Value)
-        .Where(kvp => kvp.Value["type"] == type).ToList();
     }
 }

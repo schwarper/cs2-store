@@ -6,7 +6,7 @@ public partial class Store
 {
     public static void Respawn_OnPluginStart()
     {
-        new StoreAPI().RegisterType("respawn", Respawn_OnMapStart, Respawn_OnEquip, Respawn_OnUnequip, false, false);
+        Item.RegisterType("respawn", Respawn_OnMapStart, Respawn_OnEquip, Respawn_OnUnequip, false, false);
     }
     public static void Respawn_OnMapStart()
     {

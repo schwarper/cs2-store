@@ -8,7 +8,7 @@ public partial class Store
 {
     public static void ColoredSkin_OnPluginStart()
     {
-        new StoreAPI().RegisterType("coloredskin", ColoredSkin_OnMapStart, ColoredSkin_OnEquip, ColoredSkin_OnUnequip, true, null);
+        Item.RegisterType("coloredskin", ColoredSkin_OnMapStart, ColoredSkin_OnEquip, ColoredSkin_OnUnequip, true, null);
     }
     public static void ColoredSkin_OnMapStart()
     {
@@ -32,7 +32,7 @@ public partial class Store
             return;
         }
 
-        Dictionary<string, string>? itemdata = Item.Find(playercoloredskin.Type, playercoloredskin.UniqueId);
+        Dictionary<string, string>? itemdata = Item.GetItem(playercoloredskin.Type, playercoloredskin.UniqueId);
 
         if (itemdata == null)
         {
