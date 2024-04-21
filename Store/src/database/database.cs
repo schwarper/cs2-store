@@ -10,7 +10,7 @@ namespace Store;
 public static class Database
 {
     public static string GlobalDatabaseConnectionString { get; set; } = string.Empty;
-    private static string equipTableName = "store_equipments";
+    private static string? equipTableName;
 
 
     public static MySqlConnection Connect()
@@ -35,10 +35,9 @@ public static class Database
             throw new Exception("Database credentials in config must not be empty!");
         }
 
-        string? equipTableName;
         if (!config.Settings.TryGetValue("database_equip_table_name", out equipTableName))
         {
-            equipTableName = "store_equipments";
+            equipTableName = "store_equipments_default";
         }
 
         MySqlConnectionStringBuilder builder = new()
