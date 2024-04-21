@@ -35,7 +35,11 @@ public static class Database
             throw new Exception("Database credentials in config must not be empty!");
         }
 
-        equipTableName = config.Settings["database_equip_table_name"] ?? "store_equipments";
+        string? equipTableName;
+        if (!config.Settings.TryGetValue("database_equip_table_name", out equipTableName))
+        {
+            equipTableName = "store_equipments";
+        }
 
         MySqlConnectionStringBuilder builder = new()
         {
