@@ -83,12 +83,7 @@ public partial class Store
             return false;
         }
 
-        if (player.TeamNum == int.Parse(item["slot"]) && player.PawnIsAlive)
-        {
-            Instance.SetPlayerModel(player, item["uniqueid"], item["disable_leg"], int.Parse(item["slot"]));
-        }
-
-
+        Instance.SetPlayerModel(player, item["uniqueid"], item["disable_leg"], int.Parse(item["slot"]));
         return true;
     }
     public static bool Playerskin_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
@@ -123,11 +118,6 @@ public partial class Store
 
     private void SetPlayerModel(CCSPlayerController player, string model, string disable_leg, int slotNumber)
     {
-        if (player.PlayerPawn.Value == null)
-        {
-            return;
-        }
-
         float apply_playerskin_delay = 0.0f;
 
         if (Instance.Config.Settings.TryGetValue("apply_playerskin_delay", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float delay))
@@ -139,15 +129,27 @@ public partial class Store
         {
             AddTimer(apply_playerskin_delay, () =>
             {
-                if (player.TeamNum == slotNumber)
+                if (player == null || !player.IsValid || player.PlayerPawn.Value == null || player.TeamNum < 2 || !player.PawnIsAlive)
                 {
-                    player.PlayerPawn.Value.ChangeModel(model, disable_leg);
+                    return;
                 }
+                if(player.TeamNum == slotNumber)
+                {
+                    player.PlayerPawn.Value.ChangeModel(model,disable_leg);
+                }
+                
             }, TimerFlags.STOP_ON_MAPCHANGE);
         }
         else
         {
-            player.PlayerPawn.Value.ChangeModel(model, disable_leg);
+            if (player == null || !player.IsValid || player.PlayerPawn.Value == null || player.TeamNum < 2 || !player.PawnIsAlive)
+            {
+                return;
+            }
+            if (player.TeamNum == slotNumber)
+            {
+                player.PlayerPawn.Value.ChangeModel(model, disable_leg);
+            }
         }
     }
 }
