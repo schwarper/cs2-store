@@ -58,6 +58,7 @@ public class StoreConfig : BasePluginConfig
         { "max_armor", "0" },
         { "sell_ratio", "0.60f" },
         { "default_model_disable_leg", "false" },
+        { "database_equip_table_name", "store_equipments" },
         { "apply_playerskin_delay", "0.60f" }
     };
 

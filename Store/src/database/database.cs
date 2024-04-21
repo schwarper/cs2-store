@@ -10,6 +10,8 @@ namespace Store;
 public static class Database
 {
     public static string GlobalDatabaseConnectionString { get; set; } = string.Empty;
+    private static string equipTableName = "store_equipments";
+
 
     public static MySqlConnection Connect()
     {
@@ -32,6 +34,8 @@ public static class Database
         {
             throw new Exception("Database credentials in config must not be empty!");
         }
+
+        equipTableName = config.Settings["database_equip_table_name"] ?? "store_equipments";
 
         MySqlConnectionStringBuilder builder = new()
         {
@@ -81,8 +85,8 @@ public static class Database
                         PRIMARY KEY (id)
 			    );", transaction: transaction);
 
-                await connection.QueryAsync(@"
-                    CREATE TABLE IF NOT EXISTS store_equipments (
+                await connection.QueryAsync($@"
+                    CREATE TABLE IF NOT EXISTS {equipTableName} (
                         id INT NOT NULL AUTO_INCREMENT,
                         SteamID BIGINT UNSIGNED NOT NULL,
                         Type varchar(16) NOT NULL,
@@ -108,7 +112,7 @@ public static class Database
                     }
                 }
 
-                IEnumerable<Store_Equipment> store_equipments = await connection.QueryAsync<Store_Equipment>("SELECT * FROM store_equipments;", transaction: transaction);
+                IEnumerable<Store_Equipment> store_equipments = await connection.QueryAsync<Store_Equipment>($"SELECT * FROM {equipTableName};", transaction: transaction);
 
                 foreach (Store_Equipment equipment in store_equipments)
                 {
@@ -181,7 +185,7 @@ public static class Database
                 UPDATE
                     store_players
                 SET
-                    PlayerName = @PlayerName, Credits = @Credits, DateOfJoin = @DateOfJoin, DateOfLastJoin = @DateOfLastJoin
+                    PlayerName = @PlayerName,Credits = @Credits, DateOfJoin = @DateOfJoin, DateOfLastJoin = @DateOfLastJoin
                 WHERE
                     SteamID = @SteamID;
             ",
@@ -234,7 +238,7 @@ public static class Database
     public static void SavePlayerEquipment(CCSPlayerController player, Store_Equipment item)
     {
         Execute(@"
-                INSERT INTO store_equipments (
+                INSERT INTO " + equipTableName + @" (
                     SteamID, Type, UniqueId, Slot
                 ) VALUES (
                     @SteamID, @Type, @UniqueId, @Slot
@@ -252,8 +256,8 @@ public static class Database
     public static void RemovePlayerEquipment(CCSPlayerController player, string UniqueId)
     {
         Execute(@"
-                DELETE FROM store_equipments WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
-            "
+                    DELETE FROM " + equipTableName + @" WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
+                "
             ,
             new
             {
@@ -266,7 +270,7 @@ public static class Database
     {
         Execute(@"
             DELETE FROM store_items WHERE SteamID = @SteamID; 
-            DELETE FROM store_equipments WHERE SteamID = @SteamID
+            DELETE FROM " + equipTableName + @" WHERE SteamID = @SteamID
         "
         ,
         new
