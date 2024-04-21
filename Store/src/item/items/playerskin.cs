@@ -1,6 +1,8 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
+using System.Globalization;
 using static CounterStrikeSharp.API.Core.Listeners;
 using static StoreApi.Store;
 
@@ -8,8 +10,10 @@ namespace Store;
 
 public partial class Store
 {
+    
     public static void Playerskin_OnPluginStart()
     {
+
         Item.RegisterType("playerskin", Playerskin_OnMapStart, Playerskin_OnEquip, Playerskin_OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventPlayerSpawn>((@event, info) =>
@@ -48,7 +52,7 @@ public partial class Store
                     return HookResult.Continue;
                 }
 
-                playerPawn.ChangeModel(item.UniqueId, itemdata["disable_leg"]);
+                Instance.SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"]);
             }
 
             return HookResult.Continue;
@@ -81,8 +85,9 @@ public partial class Store
 
         if (player.TeamNum == int.Parse(item["slot"]) && player.PawnIsAlive)
         {
-            player.PlayerPawn.Value?.ChangeModel(item["uniqueid"], item["disable_leg"]);
+            Instance.SetPlayerModel(player, item["uniqueid"], item["disable_leg"]);
         }
+
 
         return true;
     }
@@ -112,7 +117,30 @@ public partial class Store
 
             string model = modelsArray[randomnumber];
 
-            player.PlayerPawn.Value?.ChangeModel(model, Instance.Config.Settings["default_model_disable_leg"]);
+            Instance.SetPlayerModel(player, model, Instance.Config.Settings["default_model_disable_leg"]);
+        }
+    }
+
+    private void SetPlayerModel(CCSPlayerController player, string model, string disable_leg)
+    {
+        float apply_playerskin_delay = 0.0f;
+
+        if (Instance.Config.Settings.TryGetValue("apply_playerskin_delay", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float delay))
+        {
+            apply_playerskin_delay = delay;
+        }
+
+
+        if (apply_playerskin_delay > 0.0)
+        {
+            AddTimer(apply_playerskin_delay, () =>
+            {
+                player.PlayerPawn.Value?.ChangeModel(model, disable_leg);
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+        }
+        else
+        {
+            player.PlayerPawn.Value?.ChangeModel(model, disable_leg);
         }
     }
 }

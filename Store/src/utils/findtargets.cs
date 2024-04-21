@@ -44,7 +44,7 @@ public partial class Store : BasePlugin
         }
         else
         {
-            TargetTypeMap.TryGetValue(command.GetArg(1), out TargetType type);
+            Target.TargetTypeMap.TryGetValue(command.GetArg(1), out TargetType type);
 
             targetname = type switch
             {
