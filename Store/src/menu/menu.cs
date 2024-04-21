@@ -177,7 +177,7 @@ public static class Menu
 
         Store_Item? playeritem = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"] && p.UniqueId == item["uniqueid"]);
 
-        if (playeritem != null && playeritem.DateOfExpiration > DateTime.MinValue)
+        if (playeritem != null)
         {
             if (playeritem.DateOfExpiration > DateTime.MinValue)
             {
