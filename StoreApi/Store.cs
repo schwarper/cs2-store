@@ -10,8 +10,13 @@ public abstract class Store
         public required ulong SteamID { get; set; }
         public required string PlayerName { get; set; }
         public int Credits { get; set; }
+        public int OriginalCredits { get; set; }
+
         public DateTime DateOfJoin { get; set; }
         public DateTime DateOfLastJoin { get; set; }
+
+        public bool? bPlayerIsLoaded;
+
     }
 
     public class Store_Item

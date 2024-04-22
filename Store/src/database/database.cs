@@ -2,6 +2,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using Dapper;
 using MySqlConnector;
+using System.Transactions;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -98,33 +99,6 @@ public static class Database
                         PRIMARY KEY (id)
 			    );", transaction: transaction);
 
-                IEnumerable<Store_Player> store_players = await connection.QueryAsync<Store_Player>("SELECT * FROM store_players;", transaction: transaction);
-
-                foreach (Store_Player player in store_players)
-                {
-                    Instance.GlobalStorePlayers.Add(player);
-                }
-
-                IEnumerable<Store_Item> store_items = await connection.QueryAsync<Store_Item>("SELECT * FROM store_items;", transaction: transaction);
-
-                foreach (Store_Item item in store_items)
-                {
-                    if (Item.IsInJson(item.Type, item.UniqueId))
-                    {
-                        Instance.GlobalStorePlayerItems.Add(item);
-                    }
-                }
-
-                IEnumerable<Store_Equipment> store_equipments = await connection.QueryAsync<Store_Equipment>($"SELECT * FROM {equipTableName};", transaction: transaction);
-
-                foreach (Store_Equipment equipment in store_equipments)
-                {
-                    if (Item.IsInJson(equipment.Type, equipment.UniqueId))
-                    {
-                        Instance.GlobalStorePlayerEquipments.Add(equipment);
-                    }
-                }
-
                 await transaction.CommitAsync();
             }
             catch (Exception)
@@ -137,30 +111,114 @@ public static class Database
 
     public static async Task LoadPlayer(CCSPlayerController player)
     {
-        using MySqlConnection connection = Connect();
-
-        dynamic result = await connection.QueryFirstOrDefaultAsync(@"SELECT * FROM store_players WHERE SteamID = @SteamID",
-        new
+        if (player == null || !player.IsValid || player.IsBot)
         {
-            player.SteamID
-        });
+            return;
+        }
 
-        Server.NextFrame(() =>
+        Credits.SetOriginal(player, -1);
+        Credits.Set(player, -1);
+
+        try
         {
-            if (result == null)
+            using (MySqlConnection connection = Connect())
             {
-                Instance.GlobalStorePlayers.Add(new Store_Player
-                {
-                    SteamID = player.SteamID,
-                    PlayerName = player.PlayerName,
-                    Credits = Instance.Config.Credits["start"],
-                    DateOfJoin = DateTime.Now,
-                    DateOfLastJoin = DateTime.Now
-                });
 
-                InsertNewPlayer(player);
+                // Perform three related queries at once: player information, item information, and equipment information.
+                var multiQuery = await connection.QueryMultipleAsync(@"
+                SELECT * FROM store_players WHERE SteamID = @SteamID;
+                SELECT * FROM store_items WHERE SteamID = @SteamID AND(DateOfExpiration > @Now OR DateOfExpiration = '0001-01-01 00:00:00');
+                SELECT * FROM " + equipTableName + @" WHERE SteamID = @SteamID",
+                    new { player.SteamID, Now = DateTime.Now });
+
+                // The first query result for player information 
+                Store_Player playerData = await multiQuery.ReadFirstOrDefaultAsync<Store_Player>();
+
+                // The second query result is the item list for that player.
+                IEnumerable<Store_Item> items = await multiQuery.ReadAsync<Store_Item>();
+
+                // The third query result is the equipment list for that player.
+                IEnumerable<Store_Equipment> equipments = await multiQuery.ReadAsync<Store_Equipment>();
+
+                Server.NextFrame(() =>
+                {
+                    // Process player information.
+                    if (playerData == null)
+                    {
+                        Store_Player newPlayer = new Store_Player
+                        {
+                            SteamID = player.SteamID,
+                            PlayerName = player.PlayerName,
+                            Credits = Instance.Config.Credits["start"],
+                            OriginalCredits = Instance.Config.Credits["start"],
+                            DateOfJoin = DateTime.Now,
+                            DateOfLastJoin = DateTime.Now,
+                            bPlayerIsLoaded = true,
+                        };
+                        Instance.GlobalStorePlayers.Add(newPlayer);
+                        InsertNewPlayer(player);
+                    }
+                    else
+                    {
+                        var existingPlayer = Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == playerData.SteamID);
+                        if (existingPlayer != null)
+                        {
+                            // Update player information.
+                            existingPlayer.PlayerName = playerData.PlayerName;
+                            existingPlayer.Credits = Convert.ToInt32(playerData.Credits);
+                            existingPlayer.OriginalCredits = existingPlayer.Credits; // 保持同步
+                            existingPlayer.DateOfJoin = playerData.DateOfJoin;
+                            existingPlayer.DateOfLastJoin = playerData.DateOfLastJoin;
+                            existingPlayer.bPlayerIsLoaded = true;
+                        }
+                        else
+                        {
+                            // Set the OriginalCredits for player.
+                            playerData.OriginalCredits = Convert.ToInt32(playerData.Credits);
+
+                            Instance.GlobalStorePlayers.Add(playerData);
+                        }
+
+                    }
+
+                    // Process items information.
+                    foreach (var newItem in items)
+                    {
+                        var existingItem = Instance.GlobalStorePlayerItems.FirstOrDefault(i => i.SteamID == newItem.SteamID && i.UniqueId == newItem.UniqueId && i.Type == newItem.Type);
+                        if (existingItem != null)
+                        {
+                            existingItem.Price = newItem.Price;
+                            existingItem.DateOfExpiration = newItem.DateOfExpiration;
+                        }
+                        else
+                        {
+                            Instance.GlobalStorePlayerItems.Add(newItem);
+                        }
+                    }
+
+                    // Process equip information.
+                    foreach (var newEquipment in equipments)
+                    {
+                        var existingEquipment = Instance.GlobalStorePlayerEquipments.FirstOrDefault(e => e.SteamID == newEquipment.SteamID && e.UniqueId == newEquipment.UniqueId);
+                        if (existingEquipment != null)
+                        {
+                            existingEquipment.Type = newEquipment.Type;
+                            existingEquipment.Slot = newEquipment.Slot;
+                        }
+                        else
+                        {
+                            Instance.GlobalStorePlayerEquipments.Add(newEquipment);
+                        }
+                    }
+                });
             }
-        });
+        }
+        catch (Exception ex)
+        {
+            Credits.SetOriginal(player, -1);
+            Credits.Set(player, -1);
+            //Console.WriteLine("Failed to load player data: " + ex.Message);
+        }
     }
 
     public static void InsertNewPlayer(CCSPlayerController player)
@@ -184,23 +242,38 @@ public static class Database
 
     public static void SavePlayer(CCSPlayerController player)
     {
+        int PlayerCredits = Credits.Get(player);
+        int PlayeroriginalCredits = Credits.GetOriginal(player);
+
+        if (PlayeroriginalCredits == -1 || PlayerCredits == -1)
+            return;
+
+        int SetCredits = PlayerCredits - PlayeroriginalCredits;
+
         Execute(@"
-                UPDATE
-                    store_players
-                SET
-                    PlayerName = @PlayerName,Credits = @Credits, DateOfJoin = @DateOfJoin, DateOfLastJoin = @DateOfLastJoin
-                WHERE
-                    SteamID = @SteamID;
-            ",
+            UPDATE
+                store_players
+            SET
+                PlayerName = @PlayerName,
+                Credits = GREATEST(Credits + @SetCredits, 0), 
+                DateOfJoin = @DateOfJoin, 
+                DateOfLastJoin = @DateOfLastJoin
+            WHERE
+                SteamID = @SteamID;
+        ",
             new
             {
                 player.PlayerName,
-                Credits = Credits.Get(player),
+                SetCredits,
                 DateOfJoin = DateTime.Now,
                 DateOfLastJoin = DateTime.Now,
                 SteamId = player.SteamID,
             });
+
+        Credits.SetOriginal(player, PlayerCredits);
+
     }
+
 
     public static void SavePlayerItem(CCSPlayerController player, Store_Item item)
     {
@@ -255,6 +328,8 @@ public static class Database
                 item.UniqueId,
                 item.Slot
             });
+
+
     }
     public static void RemovePlayerEquipment(CCSPlayerController player, string UniqueId)
     {
@@ -288,7 +363,7 @@ public static class Database
 
         connection.Query(@"DROP TABLE store_players");
         connection.Query(@"DROP TABLE store_items");
-        connection.Query(@"DROP TABLE store_equipment");
+        connection.Query($@"DROP TABLE {equipTableName}");
 
         Server.ExecuteCommand("_restart");
     }
