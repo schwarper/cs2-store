@@ -1,18 +1,22 @@
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
 using System.Globalization;
 
 namespace Store;
 
-public partial class Store
+public static class Item_Gravity
 {
-    public static void Gravity_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("gravity", Gravity_OnMapStart, Gravity_OnEquip, Gravity_OnUnequip, false, true);
+        Item.RegisterType("gravity", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
     }
-    public static void Gravity_OnMapStart()
+    public static void OnMapStart()
     {
     }
-    public static bool Gravity_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!float.TryParse(item["gravityValue"], CultureInfo.InvariantCulture, out float gravity))
         {
@@ -30,7 +34,7 @@ public partial class Store
 
         return true;
     }
-    public static bool Gravity_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

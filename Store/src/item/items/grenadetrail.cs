@@ -1,41 +1,41 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
-using static CounterStrikeSharp.API.Core.Listeners;
+using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
-public partial class Store
+public static class Item_GrenadeTrail
 {
-    public Dictionary<CBaseCSGrenadeProjectile, CParticleSystem> GlobalGrenadeTrail { get; set; } = new();
+    public static Dictionary<CBaseCSGrenadeProjectile, CParticleSystem> GlobalGrenadeTrail { get; set; } = [];
 
-    public static void GrenadeTrail_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("grenadetrail", GrenadeTrail_OnMapStart, GrenadeTrail_OnEquip, GrenadeTrail_OnUnequip, true, null);
+        Item.RegisterType("grenadetrail", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
     }
-    public static void GrenadeTrail_OnMapStart()
+    public static void OnMapStart()
     {
-        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
+    }
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+        List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("grenadetrail");
+
+        foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
         {
-            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("grenadetrail");
-
-            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
-            {
-                manifest.AddResource(item.Value["uniqueid"]);
-            }
-        });
+            manifest.AddResource(item.Value["uniqueid"]);
+        }
     }
-    public static bool GrenadeTrail_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static bool GrenadeTrail_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
 
-    public static void OnEntityCreated_GrenadeTrail(CEntityInstance entity)
+    public static void OnEntityCreated(CEntityInstance entity)
     {
         if (entity.DesignerName != "hegrenade_projectile")
         {
@@ -89,13 +89,13 @@ public partial class Store
             particle.Teleport(grenade.AbsOrigin!, new QAngle(), new Vector());
             particle.AcceptInput(acceptinputvalue);
 
-            Instance.GlobalGrenadeTrail.Add(grenade, particle);
+            GlobalGrenadeTrail.Add(grenade, particle);
         });
     }
 
-    public static void OnTick_GrenadeTrail()
+    public static void OnTick()
     {
-        foreach (KeyValuePair<CBaseCSGrenadeProjectile, CParticleSystem> kv in Instance.GlobalGrenadeTrail)
+        foreach (KeyValuePair<CBaseCSGrenadeProjectile, CParticleSystem> kv in GlobalGrenadeTrail)
         {
             CBaseCSGrenadeProjectile grenade = kv.Key;
             CParticleSystem particle = kv.Value;
@@ -105,7 +105,7 @@ public partial class Store
                 if (particle.IsValid)
                 {
                     particle.Remove();
-                    Instance.GlobalGrenadeTrail.Remove(grenade);
+                    GlobalGrenadeTrail.Remove(grenade);
                 }
 
                 return;

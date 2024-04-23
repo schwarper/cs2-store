@@ -1,28 +1,34 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
+using System.Drawing;
 using System.Globalization;
+using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
-public partial class Store
+public static class Item_Smoke
 {
-    public static void Smoke_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("smoke", Smoke_OnMapStart, Smoke_OnEquip, Smoke_OnUnequip, true, null);
+        Item.RegisterType("smoke", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
     }
-    public static void Smoke_OnMapStart()
+    public static void OnMapStart()
     {
     }
-    public static bool Smoke_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static bool Smoke_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static void OnEntityCreated_Smoke(CEntityInstance entity)
+    public static void OnEntityCreated(CEntityInstance entity)
     {
         if (entity.DesignerName != "smokegrenade_projectile")
         {
@@ -54,9 +60,9 @@ public partial class Store
 
             if (item.UniqueId == "colorsmoke")
             {
-                grenade.SmokeColor.X = Random.Shared.NextSingle() * 255.0f;
-                grenade.SmokeColor.Y = Random.Shared.NextSingle() * 255.0f;
-                grenade.SmokeColor.Z = Random.Shared.NextSingle() * 255.0f;
+                grenade.SmokeColor.X = Instance.Random.NextSingle() * 255.0f;
+                grenade.SmokeColor.Y = Instance.Random.NextSingle() * 255.0f;
+                grenade.SmokeColor.Z = Instance.Random.NextSingle() * 255.0f;
             }
             else
             {

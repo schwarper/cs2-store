@@ -26,13 +26,6 @@ public static class Database
 
     public static void CreateDatabase(StoreConfig config)
     {
-        if (string.IsNullOrWhiteSpace(config.Database["host"]) ||
-            string.IsNullOrWhiteSpace(config.Database["name"]) ||
-            string.IsNullOrWhiteSpace(config.Database["user"]))
-        {
-            throw new Exception("Database credentials in config must not be empty!");
-        }
-
         MySqlConnectionStringBuilder builder = new()
         {
             Server = config.Database["host"],

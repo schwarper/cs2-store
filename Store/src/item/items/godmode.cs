@@ -1,18 +1,23 @@
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
 using System.Globalization;
+using static Store.Store;
 
 namespace Store;
 
-public partial class Store
+public static class Item_Godmode
 {
-    public static void Godmode_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("godmode", Godmode_OnMapStart, Godmode_OnEquip, Godmode_OnUnequip, false, true);
+        Item.RegisterType("godmode", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
     }
-    public static void Godmode_OnMapStart()
+    public static void OnMapStart()
     {
     }
-    public static bool Godmode_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!float.TryParse(item["godmodeTimerValue"], CultureInfo.InvariantCulture, out float godmode))
         {
@@ -40,7 +45,7 @@ public partial class Store
 
         return true;
     }
-    public static bool Godmode_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

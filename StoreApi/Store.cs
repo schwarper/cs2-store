@@ -1,4 +1,5 @@
 ﻿using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
 using Timer = CounterStrikeSharp.API.Modules.Timers.Timer;
 
 namespace StoreApi;
@@ -36,6 +37,7 @@ public abstract class Store
     {
         public required string Type;
         public required Action MapStart;
+        public required Action<ResourceManifest> ServerPrecacheResources;
         public required Func<CCSPlayerController, Dictionary<string, string>, bool> Equip;
         public required Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip;
         public required bool Equipable;

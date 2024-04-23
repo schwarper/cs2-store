@@ -1,16 +1,15 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
-using static CounterStrikeSharp.API.Core.Listeners;
+using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
-public partial class Store
+public static class Item_PlayerSkin
 {
-    public static void Playerskin_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("playerskin", Playerskin_OnMapStart, Playerskin_OnEquip, Playerskin_OnUnequip, true, null);
+        Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventPlayerSpawn>((@event, info) =>
         {
@@ -54,25 +53,24 @@ public partial class Store
             return HookResult.Continue;
         });
     }
-    public static void Playerskin_OnMapStart()
+    public static void OnMapStart()
     {
-        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
-        {
-            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("playerskin");
-
-            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
-            {
-                manifest.AddResource(item.Value["uniqueid"]);
-
-                if (item.Value.TryGetValue("armModel", out string? armModel) && !string.IsNullOrEmpty(armModel))
-                {
-                    manifest.AddResource(armModel);
-                }
-            }
-        });
     }
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+        List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("playerskin");
 
-    public static bool Playerskin_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+        foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
+        {
+            manifest.AddResource(item.Value["uniqueid"]);
+
+            if (item.Value.TryGetValue("armModel", out string? armModel) && !string.IsNullOrEmpty(armModel))
+            {
+                manifest.AddResource(armModel);
+            }
+        }
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
         {
@@ -86,7 +84,7 @@ public partial class Store
 
         return true;
     }
-    public static bool Playerskin_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
         {
@@ -108,7 +106,7 @@ public partial class Store
 
         if (maxIndex > 0)
         {
-            int randomnumber = Instance.random.Next(0, maxIndex - 1);
+            int randomnumber = Instance.Random.Next(0, maxIndex - 1);
 
             string model = modelsArray[randomnumber];
 

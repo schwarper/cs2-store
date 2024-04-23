@@ -2,16 +2,16 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Globalization;
-using static CounterStrikeSharp.API.Core.Listeners;
+using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
-public partial class Store
+public static class Item_Tracer
 {
-    public static void Tracer_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("tracer", Tracer_OnMapStart, Tracer_OnEquip, Tracer_OnUnequip, true, null);
+        Item.RegisterType("tracer", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventBulletImpact>((@event, info) =>
         {
@@ -80,23 +80,23 @@ public partial class Store
             return HookResult.Continue;
         });
     }
-    public static void Tracer_OnMapStart()
+    public static void OnMapStart()
     {
-        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
-        {
-            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("tracer");
-
-            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
-            {
-                manifest.AddResource(item.Value["uniqueid"]);
-            }
-        });
     }
-    public static bool Tracer_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+        List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("tracer");
+
+        foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
+        {
+            manifest.AddResource(item.Value["uniqueid"]);
+        }
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static bool Tracer_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

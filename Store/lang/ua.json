@@ -1,6 +1,4 @@
 {
-	"Prefix": "{red}[Магазин] ",
-
 	"No matching client": "{white}Не знайдено відповідного клієнта",
 	"More than one client matched": "{white}Знайдено більше одного відповідного клієнта",
 	"Must be an integer": "{white}Введене значення повинно бути цілим числом",
@@ -50,6 +48,7 @@
 
 	"css_credits": "{white}У вас {green}{0} {white}кредитів.",
 	"css_givecredits<player>": "{blue}{0} {white}передав {green}{2} кредитів {white}{green}{1}{white}.",
+	"css_givecredits<steamid>": "{blue}{0} {white}передав {green}{2} кредитів {white}{green}{1}{white}.",
 	"css_givecredits<multiple>": "{blue}{0} {white}передали {green}{2} кредитів {white}гравцям: {green}{1}{white}.",
 
 	"css_gift<player>": "{white}Ви відправили {green}{1} кредитів {white}гравцю {blue}{0}{white}.",

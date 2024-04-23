@@ -17,7 +17,7 @@ public static class PlayerUtils
     {
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
-            StringBuilder builder = new(Instance.Localizer["Prefix"]);
+            StringBuilder builder = new(Instance.Config.Tag);
             builder.AppendFormat(Instance.Localizer[message], args);
             player.PrintToChat(builder.ToString());
         }
@@ -48,8 +48,10 @@ public static class PlayerUtils
 
     static public void ColorSkin(this CCSPlayerPawn pawn, Color color)
     {
+        Color originalRender = pawn.Render;
+
+        pawn.Render = Color.FromArgb(originalRender.A, color.R, color.G, color.B);
         pawn.RenderMode = RenderMode_t.kRenderTransColor;
-        pawn.Render = color;
         Utilities.SetStateChanged(pawn, "CBaseModelEntity", "m_clrRender");
     }
     static public int GetHealth(this CCSPlayerPawn pawn)

@@ -1,15 +1,27 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
+using CounterStrikeSharp.API.Core.Translations;
 using StoreApi;
+using static StoreApi.Store;
 
 namespace Store;
 
-public partial class Store : BasePlugin, IPluginConfig<StoreConfig>
+public class Store : BasePlugin, IPluginConfig<StoreConfig>
 {
     public override string ModuleName => "Store";
     public override string ModuleVersion => "0.1.5";
     public override string ModuleAuthor => "schwarper & xshadowbringer";
+
+    public StoreConfig Config { get; set; } = new StoreConfig();
+    public List<Store_Player> GlobalStorePlayers { get; set; } = [];
+    public List<Store_Item> GlobalStorePlayerItems { get; set; } = [];
+    public List<Store_Equipment> GlobalStorePlayerEquipments { get; set; } = [];
+    public List<Store_Item_Types> GlobalStoreItemTypes { get; set; } = [];
+    public Dictionary<CCSPlayerController, Player> GlobalDictionaryPlayer { get; set; } = [];
+    public int GlobalTickrate { get; set; } = 0;
+    public static Store Instance { get; set; } = new();
+    public Random Random { get; set; } = new();
 
     public override void Load(bool hotReload)
     {
@@ -20,22 +32,22 @@ public partial class Store : BasePlugin, IPluginConfig<StoreConfig>
         Event.Load();
         Command.Load();
 
-        Armor_OnPluginStart();
-        ColoredSkin_OnPluginStart();
-        CustomWeapon_OnPluginStart();
-        Godmode_OnPluginStart();
-        Gravity_OnPluginStart();
-        GrenadeTrail_OnPluginStart();
-        Health_OnPluginStart();
-        Open_OnPluginStart();
-        Playerskin_OnPluginStart();
-        Respawn_OnPluginStart();
-        Smoke_OnPluginStart();
-        Sound_OnPluginStart();
-        Speed_OnPluginStart();
-        Tracer_OnPluginStart();
-        Trail_OnPluginStart();
-        Weapon_OnPluginStart();
+        Item_Armor.OnPluginStart();
+        Item_ColoredSkin.OnPluginStart();
+        Item_CustomWeapon.OnPluginStart();
+        Item_Godmode.OnPluginStart();
+        Item_Gravity.OnPluginStart();
+        Item_GrenadeTrail.OnPluginStart();
+        Item_Health.OnPluginStart();
+        Item_Open.OnPluginStart();
+        Item_PlayerSkin.OnPluginStart();
+        Item_Respawn.OnPluginStart();
+        Item_Smoke.OnPluginStart();
+        Item_Sound.OnPluginStart();
+        Item_Speed.OnPluginStart();
+        Item_Tracer.OnPluginStart();
+        Item_Trail.OnPluginStart();
+        Item_Weapon.OnPluginStart();
 
         if (hotReload)
         {
@@ -54,8 +66,22 @@ public partial class Store : BasePlugin, IPluginConfig<StoreConfig>
         }
     }
 
+    public override void Unload(bool hotReload)
+    {
+        Event.Unload();
+    }
+
     public void OnConfigParsed(StoreConfig config)
     {
+        string[] databaseStrings = ["host", "name", "user"];
+
+        if (databaseStrings.Any(p => string.IsNullOrEmpty(config.Database[p])))
+        {
+            throw new Exception("You need to setup Database credentials in config.");
+        }
+
+        config.Tag = StringExtensions.ReplaceColorTags(config.Tag);
+
         Database.CreateDatabase(config);
 
         Config = config;

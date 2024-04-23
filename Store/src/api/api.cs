@@ -1,4 +1,5 @@
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
 using StoreApi;
 using static StoreApi.Store;
 
@@ -85,8 +86,8 @@ public class StoreAPI : IStoreApi
         return Item.IsPlayerVip(player);
     }
 
-    public void RegisterType(string Type, Action MapStart, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip, bool Equipable, bool? Alive)
+    public void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip, bool Equipable, bool? Alive)
     {
-        Item.RegisterType(Type, MapStart, Equip, Unequip, Equipable, Alive);
+        Item.RegisterType(Type, MapStart, ServerPrecacheResources, Equip, Unequip, Equipable, Alive);
     }
 }
