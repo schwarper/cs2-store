@@ -1,6 +1,4 @@
 {
-    "Prefix": "{red}[Store] ",
-
     "No matching client": "{white}Eşleşen alıcı bulunamadı.",
     "More than one client matched": "{white}Verilen biçim düzeniyle birden fazla alıcı eşleşti.",
     "Must be an integer": "{white}Girdiğiniz değer bir sayı olmalıdır.",
@@ -50,6 +48,7 @@
 
     "css_credits": "{green}{0} {white}kredin bulunmaktadır.",
     "css_givecredits<player>": "{blue}{0}{white}, {green}{1} {white}adlı oyuncuya {green}{2} kredi {white}verdi.",
+    "css_givecredits<steamid>": "{blue}{0}{white}, {green}{1} {white}steamidye {green}{2} kredi {white}verdi.",
     "css_givecredits<multiple>": "{blue}{0}{white}, {green}{1} {green}{2} kredi {white}verdi.",
 
     "css_gift<player>": "{blue}{0}{white} adlı kişiye {green}{1} {white}kredi yolladınız.",

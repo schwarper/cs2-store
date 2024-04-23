@@ -1,6 +1,4 @@
 {
-    "Prefix": "{red}[Store] ",
-
     "No matching client": "{white}There is no matching client",
     "More than one client matched": "{white}There are more than one client matched",
     "Must be an integer": "{white}The value you entered must be an integer",
@@ -50,6 +48,7 @@
 
     "css_credits": "{white}You have {green}{0} {white}credits.",
     "css_givecredits<player>": "{blue}{0} {white}gave {green}{2} credits {white}to {green}{1}{white}.",
+    "css_givecredits<steamid>": "{blue}{0} {white}gave {green}{2} credits {white}to {green}{1}{white}.",
     "css_givecredits<multiple>": "{blue}{0} {white}gave {green}{2} credits {white}to {green}{1}{white}.",
 
     "css_gift<player>": "{white}You have sent {green}{1}{white}credits to {blue}{0}{white}.",

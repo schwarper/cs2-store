@@ -3,19 +3,19 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Drawing;
 using System.Globalization;
-using static CounterStrikeSharp.API.Core.Listeners;
+using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
-public partial class Store
+public static class Item_Trail
 {
     static readonly Vector[] GlobalTrailLastOrigin = new Vector[64];
     static readonly Vector[] GlobalTrailEndOrigin = new Vector[64];
 
-    public static void Trail_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("trail", Trail_OnMapStart, Trail_OnEquip, Trail_OnUnequip, true, null);
+        Item.RegisterType("trail", OnMapStart, ServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
         for (int i = 0; i < 64; i++)
         {
@@ -23,45 +23,33 @@ public partial class Store
             GlobalTrailEndOrigin[i] = new();
         }
     }
-    public static void Trail_OnMapStart()
+    public static void OnMapStart()
     {
-        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
+    }
+    public static void ServerPrecacheResources(ResourceManifest manifest)
+    {
+        List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("trail");
+
+        foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
         {
-            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("trail");
-
-            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
+            if (item.Value["uniqueid"].Contains(".vpcf"))
             {
-                if (!item.Value["uniqueid"].Contains(".vpcf"))
-                {
-                    continue;
-                }
-
                 manifest.AddResource(item.Value["uniqueid"]);
             }
-        });
-
-        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
-        {
-            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("trail");
-
-            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
-            {
-                if (item.Value["uniqueid"].Contains(".vpcf"))
-                {
-                    manifest.AddResource(item.Value["uniqueid"]);
-                }
-            }
-        });
+        }
     }
-    public static bool Trail_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void ServerPrecacheResources()
+    {
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static bool Trail_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static void OnTick_CreateTrail(CCSPlayerController player)
+    public static void OnTick(CCSPlayerController player)
     {
         Store_Equipment? playertrail = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "trail");
 
@@ -109,7 +97,7 @@ public partial class Store
         {
             if (string.IsNullOrEmpty(cvalue))
             {
-                CreateTrail_Beam(player, absorigin, lifetime, null, itemdata);
+                CreateBeam(player, absorigin, lifetime, null, itemdata);
             }
             else
             {
@@ -117,16 +105,16 @@ public partial class Store
 
                 Color color = Color.FromArgb(int.Parse(colorValues[0]), int.Parse(colorValues[1]), int.Parse(colorValues[2]));
 
-                CreateTrail_Beam(player, absorigin, lifetime, color, itemdata);
+                CreateBeam(player, absorigin, lifetime, color, itemdata);
             }
         }
         else
         {
-            CreateTrail_Particle(absorigin, playertrail.UniqueId, lifetime, itemdata);
+            CreateParticle(absorigin, playertrail.UniqueId, lifetime, itemdata);
         }
     }
 
-    public static void CreateTrail_Particle(Vector absOrigin, string effectName, float lifetime, Dictionary<string, string> itemdata)
+    public static void CreateParticle(Vector absOrigin, string effectName, float lifetime, Dictionary<string, string> itemdata)
     {
         CParticleSystem? entity = Utilities.CreateEntityByName<CParticleSystem>("info_particle_system");
 
@@ -169,7 +157,7 @@ public partial class Store
         });
     }
 
-    public static void CreateTrail_Beam(CCSPlayerController player, Vector absOrigin, float lifetime, Color? color, Dictionary<string, string> itemdata)
+    public static void CreateBeam(CCSPlayerController player, Vector absOrigin, float lifetime, Color? color, Dictionary<string, string> itemdata)
     {
         CBeam? beam = Utilities.CreateEntityByName<CBeam>("env_beam");
 
@@ -186,7 +174,7 @@ public partial class Store
 
         if (color == null)
         {
-            KnownColor? randomColorName = (KnownColor?)Enum.GetValues(typeof(KnownColor)).GetValue(Instance.random.Next(Enum.GetValues(typeof(KnownColor)).Length));
+            KnownColor? randomColorName = (KnownColor?)Enum.GetValues(typeof(KnownColor)).GetValue(Instance.Random.Next(Enum.GetValues(typeof(KnownColor)).Length));
 
             if (!randomColorName.HasValue)
             {

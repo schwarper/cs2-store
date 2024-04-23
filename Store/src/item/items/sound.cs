@@ -1,28 +1,28 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using static CounterStrikeSharp.API.Core.Listeners;
+using CounterStrikeSharp.API.Modules.Utils;
 
 namespace Store;
 
-public partial class Store
+public static class Item_Sound
 {
-    public static void Sound_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("sound", Sound_OnMapStart, Sound_OnEquip, Sound_OnUnequip, false, null);
+        Item.RegisterType("sound", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, null);
     }
-    public static void Sound_OnMapStart()
+    public static void OnMapStart()
     {
-        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
-        {
-            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("customweapon");
+    }
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+        List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("sound");
 
-            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
-            {
-                manifest.AddResource(item.Value["uniqueid"]);
-            }
-        });
+        foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
+        {
+            manifest.AddResource(item.Value["uniqueid"]);
+        }
     }
-    public static bool Sound_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
@@ -36,7 +36,7 @@ public partial class Store
 
         return true;
     }
-    public static bool Sound_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

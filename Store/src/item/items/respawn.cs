@@ -1,23 +1,27 @@
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
 
 namespace Store;
 
-public partial class Store
+public static class Item_Respawn
 {
-    public static void Respawn_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("respawn", Respawn_OnMapStart, Respawn_OnEquip, Respawn_OnUnequip, false, false);
+        Item.RegisterType("respawn", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, false);
     }
-    public static void Respawn_OnMapStart()
+    public static void OnMapStart()
     {
     }
-    public static bool Respawn_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         player.Respawn();
 
         return true;
     }
-    public static bool Respawn_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

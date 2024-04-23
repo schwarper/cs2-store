@@ -1,17 +1,22 @@
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
+using static Store.Store;
 
 namespace Store;
 
-public partial class Store
+public static class Item_Health
 {
-    public static void Health_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("health", Health_OnMapStart, Health_OnEquip, Health_OnUnequip, false, true);
+        Item.RegisterType("health", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
     }
-    public static void Health_OnMapStart()
+    public static void OnMapStart()
     {
     }
-    public static bool Health_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!int.TryParse(item["healthValue"], out int health))
         {
@@ -64,7 +69,7 @@ public partial class Store
         return true;
     }
 
-    public static bool Health_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
