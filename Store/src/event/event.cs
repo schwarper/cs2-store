@@ -11,61 +11,20 @@ namespace Store;
 
 public static class Event
 {
+    public static void Unload()
+    {
+        Instance.RemoveListener<OnMapStart>(OnMapStart);
+        Instance.RemoveListener<OnServerPrecacheResources>(OnServerPrecacheResources);
+        Instance.RemoveListener<OnTick>(OnTick);
+        Instance.RemoveListener<OnEntityCreated>(OnEntityCreated);
+    }
+
     public static void Load()
     {
-        Instance.RegisterListener<OnMapStart>((mapname) =>
-        {
-            Instance.GlobalStoreItemTypes.ForEach((type) =>
-            {
-                type.MapStart();
-            });
-        });
-
-        Instance.RegisterListener<OnTick>(() =>
-        {
-            Instance.GlobalTickrate++;
-
-            if (Instance.GlobalTickrate % 10 != 0)
-            {
-                return;
-            }
-
-            foreach (CCSPlayerController player in Utilities.GetPlayers())
-            {
-                if (player == null || !player.Valid() || !player.PawnIsAlive)
-                {
-                    continue;
-                }
-
-                OnTick_CreateTrail(player);
-                OnTick_ColoredSkin(player);
-                OnTick_GrenadeTrail();
-            }
-        });
-
-        Instance.RegisterListener<OnEntityCreated>((entity) =>
-        {
-            OnEntityCreated_Smoke(entity);
-            OnEntityCreated_GrenadeTrail(entity);
-            OnEntityCreated_CustomWeapon(entity);
-        });
-
-        Instance.RegisterListener<OnMapStart>((mapname) =>
-        {
-            Database.Execute("DELETE FROM store_items WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);
-
-            List<Store_Item> itemsToRemove = Instance.GlobalStorePlayerItems
-            .Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)
-            .ToList();
-
-            foreach (Store_Item? item in itemsToRemove)
-            {
-                Database.Execute("DELETE FROM store_equipment WHERE SteamID == @SteamID AND UniqueId == @UniqueId", new { item.SteamID, item.UniqueId });
-
-                Instance.GlobalStorePlayerItems.Remove(item);
-                Instance.GlobalStorePlayerEquipments.RemoveAll(i => i.UniqueId == item.UniqueId);
-            }
-        });
+        Instance.RegisterListener<OnMapStart>(OnMapStart);
+        Instance.RegisterListener<OnServerPrecacheResources>(OnServerPrecacheResources);
+        Instance.RegisterListener<OnTick>(OnTick);
+        Instance.RegisterListener<OnEntityCreated>(OnEntityCreated);
 
         Instance.RegisterEventHandler<EventPlayerConnectFull>((@event, info) =>
         {
@@ -173,10 +132,69 @@ public static class Event
             {
                 Credits.Give(attacker, Instance.Config.Credits["amount_kill"]);
 
-                attacker.PrintToChat(Instance.Localizer["Prefix"] + Instance.Localizer["credits_earned<kill>", Instance.Config.Credits["amount_kill"]]);
+                attacker.PrintToChat(Instance.Config.Tag + Instance.Localizer["credits_earned<kill>", Instance.Config.Credits["amount_kill"]]);
             }
 
             return HookResult.Continue;
         });
+    }
+
+    public static void OnMapStart(string mapname)
+    {
+        Instance.GlobalStoreItemTypes.ForEach((type) =>
+        {
+            type.MapStart();
+        });
+
+        Database.Execute("DELETE FROM store_items WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);
+
+        List<Store_Item> itemsToRemove = Instance.GlobalStorePlayerItems
+        .Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)
+        .ToList();
+
+        foreach (Store_Item? item in itemsToRemove)
+        {
+            Database.Execute("DELETE FROM store_equipment WHERE SteamID == @SteamID AND UniqueId == @UniqueId", new { item.SteamID, item.UniqueId });
+
+            Instance.GlobalStorePlayerItems.Remove(item);
+            Instance.GlobalStorePlayerEquipments.RemoveAll(i => i.UniqueId == item.UniqueId);
+        }
+    }
+
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+        Instance.GlobalStoreItemTypes.ForEach((type) =>
+        {
+            type.ServerPrecacheResources(manifest);
+        });
+    }
+
+    public static void OnTick()
+    {
+        Instance.GlobalTickrate++;
+
+        if (Instance.GlobalTickrate % 10 != 0)
+        {
+            return;
+        }
+
+        foreach (CCSPlayerController player in Utilities.GetPlayers())
+        {
+            if (player == null || !player.Valid() || !player.PawnIsAlive)
+            {
+                continue;
+            }
+
+            Item_Trail.OnTick(player);
+            Item_ColoredSkin.OnTick(player);
+            Item_GrenadeTrail.OnTick();
+        }
+    }
+
+    public static void OnEntityCreated(CEntityInstance entity)
+    {
+        Item_Smoke.OnEntityCreated(entity);
+        Item_GrenadeTrail.OnEntityCreated(entity);
+        Item_CustomWeapon.OnEntityCreated(entity);
     }
 }

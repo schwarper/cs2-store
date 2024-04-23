@@ -1,26 +1,30 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
 
 namespace Store;
 
-public partial class Store
+public static class Item_Open
 {
-    static readonly string[] DoorNames =
-    {
+    private static readonly string[] DoorNames =
+    [
         "func_door",
         "func_movelinear",
         "func_door_rotating",
         "prop_door_rotating"
-    };
+    ];
 
-    public static void Open_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("open", Open_OnMapStart, Open_OnEquip, Open_OnUnequip, false, null);
+        Item.RegisterType("open", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, null);
     }
-    public static void Open_OnMapStart()
+    public static void OnMapStart()
     {
     }
-    public static bool Open_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         foreach (string doorname in DoorNames)
         {
@@ -34,7 +38,7 @@ public partial class Store
 
         return true;
     }
-    public static bool Open_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

@@ -1,4 +1,5 @@
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
 using StoreApi;
 using static StoreApi.Store;
 
@@ -15,14 +16,24 @@ public class StoreAPI : IStoreApi
         return Credits.Get(player);
     }
 
-    public void SetPlayerCredits(CCSPlayerController player, int amount)
+    public int SetPlayerCredits(CCSPlayerController player, int credits)
     {
-        Credits.Set(player, amount);
+        return Credits.Set(player, credits);
     }
 
-    public void GivePlayerCredits(CCSPlayerController player, int amount)
+    public int GetPlayerOriginalCredits(CCSPlayerController player)
     {
-        Credits.Give(player, amount);
+        return Credits.GetOriginal(player);
+    }
+
+    public int SetPlayerOriginalCredits(CCSPlayerController player, int credits)
+    {
+        return Credits.SetOriginal(player, credits);
+    }
+
+    public int GivePlayerCredits(CCSPlayerController player, int credits)
+    {
+        return Credits.Give(player, credits);
     }
 
     public bool Item_Purchase(CCSPlayerController player, Dictionary<string, string> item)
@@ -85,8 +96,8 @@ public class StoreAPI : IStoreApi
         return Item.IsPlayerVip(player);
     }
 
-    public void RegisterType(string Type, Action MapStart, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip, bool Equipable, bool? Alive)
+    public void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip, bool Equipable, bool? Alive)
     {
-        Item.RegisterType(Type, MapStart, Equip, Unequip, Equipable, Alive);
+        Item.RegisterType(Type, MapStart, ServerPrecacheResources, Equip, Unequip, Equipable, Alive);
     }
 }

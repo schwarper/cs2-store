@@ -1,18 +1,23 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
+using static Store.Store;
 
 namespace Store;
 
-public partial class Store : BasePlugin
+public static class Item_Armor
 {
-    public static void Armor_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("armor", Armor_OnMapStart, Armor_OnEquip, Armor_OnUnequip, false, true);
+        Item.RegisterType("armor", OnMapStart, OnServerPrecacheResources, OnEquip, OnUneuip, false, true);
     }
-    public static void Armor_OnMapStart()
+    public static void OnMapStart()
     {
     }
-    public static bool Armor_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!int.TryParse(item["armorValue"], out int armor))
         {
@@ -47,6 +52,7 @@ public partial class Store : BasePlugin
         if (maxarmor == -1)
         {
             maxarmor = 100;
+
             if (playerPawn.ArmorValue >= maxarmor)
             {
                 return false;
@@ -69,7 +75,7 @@ public partial class Store : BasePlugin
 
         return true;
     }
-    public static bool Armor_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUneuip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

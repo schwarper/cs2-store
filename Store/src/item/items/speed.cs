@@ -1,18 +1,23 @@
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
 using System.Globalization;
+using static Store.Store;
 
 namespace Store;
 
-public partial class Store
+public static class Item_Speed
 {
-    public static void Speed_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("speed", Speed_OnMapStart, Speed_OnEquip, Speed_OnUnequip, false, true);
+        Item.RegisterType("speed", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
     }
-    public static void Speed_OnMapStart()
+    public static void OnMapStart()
     {
     }
-    public static bool Speed_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!float.TryParse(item["speedValue"], CultureInfo.InvariantCulture, out float speed))
         {
@@ -45,7 +50,7 @@ public partial class Store
 
         return true;
     }
-    public static bool Speed_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }

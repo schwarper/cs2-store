@@ -1,6 +1,4 @@
 {
-	"Prefix": "{red}[Магазин] ",
-
 	"No matching client": "{white}Не найдено совпадений с клиентом",
 	"More than one client matched": "{white}Найдено более одного совпадения с клиентом",
 	"Must be an integer": "{white}Введенное значение должно быть целым числом",
@@ -50,6 +48,7 @@
 
 	"css_credits": "{white}У вас {green}{0} {white}кредитов.",
 	"css_givecredits<player>": "{blue}{0} {white}передал {green}{2} кредитов {white}{green}{1}{white}.",
+	"css_givecredits<steamid>": "{blue}{0} {white}передал {green}{2} кредитов {white}{green}{1}{white}.",
 	"css_givecredits<multiple>": "{blue}{0} {white}передали {green}{2} кредитов {white}игрокам: {green}{1}{white}.",
 
 	"css_gift<player>": "{white}Вы отправили {green}{1} кредитов {white}игроку {blue}{0}{white}.",

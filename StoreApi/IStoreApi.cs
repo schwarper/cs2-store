@@ -1,5 +1,6 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
+using CounterStrikeSharp.API.Modules.Utils;
 using static StoreApi.Store;
 
 namespace StoreApi;
@@ -9,8 +10,10 @@ public interface IStoreApi
     public static readonly PluginCapability<IStoreApi?> Capability = new("store:api");
 
     public int GetPlayerCredits(CCSPlayerController player);
-    public void SetPlayerCredits(CCSPlayerController player, int value);
-    public void GivePlayerCredits(CCSPlayerController player, int amount);
+    public int SetPlayerCredits(CCSPlayerController player, int credits);
+    public int GetPlayerOriginalCredits(CCSPlayerController player);
+    public int SetPlayerOriginalCredits(CCSPlayerController player, int credits);
+    public int GivePlayerCredits(CCSPlayerController player, int credits);
     public bool Item_Purchase(CCSPlayerController player, Dictionary<string, string> item);
     public bool Item_Equip(CCSPlayerController player, Dictionary<string, string> item);
     public bool Item_Unequip(CCSPlayerController player, Dictionary<string, string> item);
@@ -23,6 +26,6 @@ public interface IStoreApi
     public List<Store_Item> GetPlayerItems(CCSPlayerController player);
     public List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player);
     public bool IsPlayerVip(CCSPlayerController player);
-    public void RegisterType(string type, Action mapStart, Func<CCSPlayerController, Dictionary<string, string>, bool> equip, Func<CCSPlayerController, Dictionary<string, string>, bool> unequip, bool equipable, bool? alive = false);
+    public void RegisterType(string type, Action mapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> equip, Func<CCSPlayerController, Dictionary<string, string>, bool> unequip, bool equipable, bool? alive = false);
 
 }

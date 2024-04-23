@@ -1,20 +1,17 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Globalization;
-using static CounterStrikeSharp.API.Core.Listeners;
+using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
-public partial class Store
+public static class Item_PlayerSkin
 {
-    
-    public static void Playerskin_OnPluginStart()
+    public static void OnPluginStart()
     {
-
-        Item.RegisterType("playerskin", Playerskin_OnMapStart, Playerskin_OnEquip, Playerskin_OnUnequip, true, null);
+        Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventPlayerSpawn>((@event, info) =>
         {
@@ -52,41 +49,40 @@ public partial class Store
                     return HookResult.Continue;
                 }
 
-                Instance.SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"], item.Slot);
+                SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"], item.Slot);
             }
 
             return HookResult.Continue;
         });
     }
-    public static void Playerskin_OnMapStart()
+    public static void OnMapStart()
     {
-        Instance.RegisterListener<OnServerPrecacheResources>((manifest) =>
-        {
-            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("playerskin");
-
-            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
-            {
-                manifest.AddResource(item.Value["uniqueid"]);
-
-                if (item.Value.TryGetValue("armModel", out string? armModel) && !string.IsNullOrEmpty(armModel))
-                {
-                    manifest.AddResource(armModel);
-                }
-            }
-        });
     }
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+        List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("playerskin");
 
-    public static bool Playerskin_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+        foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
+        {
+            manifest.AddResource(item.Value["uniqueid"]);
+
+            if (item.Value.TryGetValue("armModel", out string? armModel) && !string.IsNullOrEmpty(armModel))
+            {
+                manifest.AddResource(armModel);
+            }
+        }
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
         {
             return false;
         }
 
-        Instance.SetPlayerModel(player, item["uniqueid"], item["disable_leg"], int.Parse(item["slot"]));
+        SetPlayerModel(player, item["uniqueid"], item["disable_leg"], int.Parse(item["slot"]));
         return true;
     }
-    public static bool Playerskin_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
         {
@@ -100,7 +96,6 @@ public partial class Store
 
         return true;
     }
-
     public static void SetDefaultModel(CCSPlayerController player)
     {
         string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels["ct"] : Instance.Config.DefaultModels["t"];
@@ -108,36 +103,35 @@ public partial class Store
 
         if (maxIndex > 0)
         {
-            int randomnumber = Instance.random.Next(0, maxIndex - 1);
+            int randomnumber = Instance.Random.Next(0, maxIndex - 1);
 
             string model = modelsArray[randomnumber];
 
-            Instance.SetPlayerModel(player, model, Instance.Config.Settings["default_model_disable_leg"], player.TeamNum);
+            SetPlayerModel(player, model, Instance.Config.Settings["default_model_disable_leg"], player.TeamNum);
         }
     }
-
-    private void SetPlayerModel(CCSPlayerController player, string model, string disable_leg, int slotNumber)
+    private static void SetPlayerModel(CCSPlayerController player, string model, string disable_leg, int slotNumber)
     {
-        float apply_playerskin_delay = 0.0f;
+        float apply_delay = 0.0f;
 
-        if (Instance.Config.Settings.TryGetValue("apply_playerskin_delay", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float delay))
+        if (Instance.Config.Settings.TryGetValue("apply_delay", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float delay))
         {
-            apply_playerskin_delay = delay;
+            apply_delay = delay;
         }
 
-        if (apply_playerskin_delay > 0.0)
+        if (apply_delay > 0.0)
         {
-            AddTimer(apply_playerskin_delay, () =>
+            Instance.AddTimer(apply_delay, () =>
             {
                 if (player == null || !player.IsValid || player.PlayerPawn.Value == null || player.TeamNum < 2 || !player.PawnIsAlive)
                 {
                     return;
                 }
-                if(player.TeamNum == slotNumber)
+                if (player.TeamNum == slotNumber)
                 {
-                    player.PlayerPawn.Value.ChangeModel(model,disable_leg);
+                    player.PlayerPawn.Value.ChangeModel(model, disable_leg);
                 }
-                
+
             }, TimerFlags.STOP_ON_MAPCHANGE);
         }
         else

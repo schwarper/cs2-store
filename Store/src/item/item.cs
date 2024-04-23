@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
+using CounterStrikeSharp.API.Modules.Utils;
 using System.Globalization;
 using static Store.Store;
 using static StoreApi.Store;
@@ -239,12 +240,13 @@ public static class Item
         return !string.IsNullOrEmpty(vip) && AdminManager.PlayerHasPermissions(player, vip);
     }
 
-    public static void RegisterType(string Type, Action MapStart, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip, bool Equipable, bool? Alive)
+    public static void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip, bool Equipable, bool? Alive)
     {
         Instance.GlobalStoreItemTypes.Add(new Store_Item_Types
         {
             Type = Type,
             MapStart = MapStart,
+            ServerPrecacheResources = ServerPrecacheResources,
             Equip = Equip,
             Unequip = Unequip,
             Equipable = Equipable,

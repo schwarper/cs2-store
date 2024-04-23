@@ -1,29 +1,34 @@
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
 using System.Drawing;
+using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
-public partial class Store
+public static class Item_ColoredSkin
 {
-    public static void ColoredSkin_OnPluginStart()
+    public static void OnPluginStart()
     {
-        Item.RegisterType("coloredskin", ColoredSkin_OnMapStart, ColoredSkin_OnEquip, ColoredSkin_OnUnequip, true, null);
+        Item.RegisterType("coloredskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
     }
-    public static void ColoredSkin_OnMapStart()
+    public static void OnMapStart()
     {
     }
-    public static bool ColoredSkin_OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
+    }
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
-    public static bool ColoredSkin_OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         player.PlayerPawn.Value?.ColorSkin(Color.White);
         return true;
     }
 
-    public static void OnTick_ColoredSkin(CCSPlayerController player)
+    public static void OnTick(CCSPlayerController player)
     {
         Store_Equipment? playercoloredskin = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "coloredskin");
 
@@ -49,7 +54,7 @@ public partial class Store
         }
         else
         {
-            KnownColor? randomColorName = (KnownColor?)Enum.GetValues(typeof(KnownColor)).GetValue(Instance.random.Next(Enum.GetValues(typeof(KnownColor)).Length));
+            KnownColor? randomColorName = (KnownColor?)Enum.GetValues(typeof(KnownColor)).GetValue(Instance.Random.Next(Enum.GetValues(typeof(KnownColor)).Length));
 
             if (!randomColorName.HasValue)
             {
