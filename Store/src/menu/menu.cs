@@ -175,11 +175,14 @@ public static class Menu
             }, "menu_store<sell>", (int)(int.Parse(item["price"]) * sell_ratio));
         }
 
-        Store_Item? playeritem = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"]);
+        Store_Item? playeritem = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"] && p.UniqueId == item["uniqueid"]);
 
-        if (playeritem != null && playeritem.DateOfExpiration > DateTime.MinValue)
+        if (playeritem != null)
         {
-            menu.AddMenuOption(playeritem.DateOfExpiration.ToString(), (p, o) => { }, true);
+            if (playeritem.DateOfExpiration > DateTime.MinValue)
+            {
+                menu.AddMenuOption(playeritem.DateOfExpiration.ToString(), (p, o) => { }, true);
+            }
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);

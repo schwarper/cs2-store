@@ -142,6 +142,10 @@ public static class Event
 
             Database.SavePlayer(player);
 
+            Instance.GlobalStorePlayers.RemoveAll(p => p.SteamID == player.SteamID);
+            Instance.GlobalStorePlayerItems.RemoveAll(i => i.SteamID == player.SteamID);
+            Instance.GlobalStorePlayerEquipments.RemoveAll(e => e.SteamID == player.SteamID);
+
             return HookResult.Continue;
         });
 
