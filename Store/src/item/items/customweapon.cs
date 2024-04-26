@@ -12,13 +12,6 @@ public static class Item_CustomWeapon
 {
     public static void OnPluginStart()
     {
-        Instance.AddCommand("css_viewmodel", "", (player, info) =>
-        {
-            CHandle<CBasePlayerWeapon> activeweapon = player!.PlayerPawn.Value!.WeaponServices!.ActiveWeapon;
-
-            Server.PrintToChatAll($"{activeweapon.Value!.DesignerName} {Weapon.GetViewModel(player)}");
-        });
-
         Item.RegisterType("customweapon", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventItemEquip>(OnItemEquip);
@@ -72,7 +65,7 @@ public static class Item_CustomWeapon
 
         CBasePlayerWeapon weapon = entity.As<CBasePlayerWeapon>();
 
-        Server.NextFrame(() =>
+        Server.RunOnTick((int)(Server.TickedTime + 10.0f), () =>
         {
             CHandle<CBaseEntity> ownerentity = weapon.OwnerEntity;
 
@@ -148,6 +141,17 @@ public static class Item_CustomWeapon
 
 public class Weapon
 {
+    public static unsafe CBaseViewModel ViewModel(CCSPlayerController player)
+    {
+        CCSPlayer_ViewModelServices viewModelServices = new(player.PlayerPawn.Value!.ViewModelServices!.Handle);
+
+        nint ptr = viewModelServices.Handle + Schema.GetSchemaOffset("CCSPlayer_ViewModelServices", "m_hViewModel");
+        Span<nint> viewModels = MemoryMarshal.CreateSpan(ref ptr, 3);
+
+        CHandle<CBaseViewModel> viewModel = new(viewModels[0]);
+
+        return viewModel.Value!;
+    }
     public static unsafe string GetViewModel(CCSPlayerController player)
     {
         return ViewModel(player).VMName;
@@ -184,16 +188,5 @@ public class Weapon
         {
             SetViewModel(player, globalnamedata[0]);
         }
-    }
-    public static unsafe CBaseViewModel ViewModel(CCSPlayerController player)
-    {
-        CCSPlayer_ViewModelServices viewModelServices = new(player.PlayerPawn.Value!.ViewModelServices!.Handle);
-
-        nint ptr = viewModelServices.Handle + Schema.GetSchemaOffset("CCSPlayer_ViewModelServices", "m_hViewModel");
-        Span<nint> viewModels = MemoryMarshal.CreateSpan(ref ptr, 3);
-
-        CHandle<CBaseViewModel> viewModel = new(viewModels[0]);
-
-        return viewModel.Value!;
     }
 }
