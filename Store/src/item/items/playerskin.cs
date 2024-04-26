@@ -13,47 +13,7 @@ public static class Item_PlayerSkin
     {
         Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
-        Instance.RegisterEventHandler<EventPlayerSpawn>((@event, info) =>
-        {
-            CCSPlayerController player = @event.Userid;
-
-            if (player == null || !player.IsValid)
-            {
-                return HookResult.Continue;
-            }
-
-            if (player.TeamNum < 2)
-            {
-                return HookResult.Continue;
-            }
-
-            CCSPlayerPawn? playerPawn = player.PlayerPawn?.Value;
-
-            if (playerPawn == null)
-            {
-                return HookResult.Continue;
-            }
-
-            Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
-
-            if (item == null)
-            {
-                SetDefaultModel(player);
-            }
-            else
-            {
-                Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
-
-                if (itemdata == null)
-                {
-                    return HookResult.Continue;
-                }
-
-                SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"], item.Slot);
-            }
-
-            return HookResult.Continue;
-        });
+        Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
     }
     public static void OnMapStart()
     {
@@ -80,6 +40,7 @@ public static class Item_PlayerSkin
         }
 
         SetPlayerModel(player, item["uniqueid"], item["disable_leg"], int.Parse(item["slot"]));
+
         return true;
     }
     public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
@@ -95,6 +56,40 @@ public static class Item_PlayerSkin
         }
 
         return true;
+    }
+    public static HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+    {
+        CCSPlayerController player = @event.Userid;
+
+        if (player == null || !player.IsValid)
+        {
+            return HookResult.Continue;
+        }
+
+        if (player.TeamNum < 2)
+        {
+            return HookResult.Continue;
+        }
+
+        Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
+
+        if (item == null)
+        {
+            SetDefaultModel(player);
+        }
+        else
+        {
+            Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
+
+            if (itemdata == null)
+            {
+                return HookResult.Continue;
+            }
+
+            SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"], item.Slot);
+        }
+
+        return HookResult.Continue;
     }
     public static void SetDefaultModel(CCSPlayerController player)
     {
@@ -112,38 +107,19 @@ public static class Item_PlayerSkin
     }
     private static void SetPlayerModel(CCSPlayerController player, string model, string disable_leg, int slotNumber)
     {
-        float apply_delay = 0.0f;
+        float apply_delay = 0.1f;
 
         if (Instance.Config.Settings.TryGetValue("apply_delay", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float delay))
         {
-            apply_delay = delay;
+            apply_delay = float.MaxNumber(0.1f, delay);
         }
 
-        if (apply_delay > 0.0)
+        Instance.AddTimer(apply_delay, () =>
         {
-            Instance.AddTimer(apply_delay, () =>
+            if (player.IsValid && player.TeamNum == slotNumber && player.PawnIsAlive)
             {
-                if (player == null || !player.IsValid || player.PlayerPawn.Value == null || player.TeamNum < 2 || !player.PawnIsAlive)
-                {
-                    return;
-                }
-                if (player.TeamNum == slotNumber)
-                {
-                    player.PlayerPawn.Value.ChangeModel(model, disable_leg);
-                }
-
-            }, TimerFlags.STOP_ON_MAPCHANGE);
-        }
-        else
-        {
-            if (player == null || !player.IsValid || player.PlayerPawn.Value == null || player.TeamNum < 2 || !player.PawnIsAlive)
-            {
-                return;
+                player.PlayerPawn.Value?.ChangeModel(model, disable_leg);
             }
-            if (player.TeamNum == slotNumber)
-            {
-                player.PlayerPawn.Value.ChangeModel(model, disable_leg);
-            }
-        }
+        }, TimerFlags.STOP_ON_MAPCHANGE);
     }
 }

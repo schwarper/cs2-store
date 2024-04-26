@@ -96,7 +96,7 @@ public static class Command
 
             playerdata.Credits += credits;
 
-            Database.Execute("UPDATE store_players SET Credits = Credits + @Credits WHERE SteamId = @SteamId;", new { Credits = credits, @SteamID = steamId.SteamId64 });
+            Database.ExecuteAsync("UPDATE store_players SET Credits = Credits + @Credits WHERE SteamId = @SteamId;", new { Credits = credits, @SteamID = steamId.SteamId64 });
 
             Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_givecredits<steamid>", player?.PlayerName ?? "Console", steamId.SteamId64, credits]);
             return;
@@ -214,7 +214,7 @@ public static class Command
             Instance.GlobalStorePlayerItems.RemoveAll(p => p.SteamID == steamId.SteamId64);
             Instance.GlobalStorePlayerEquipments.RemoveAll(p => p.SteamID == steamId.SteamId64);
 
-            Database.Execute("DELETE FROM store_players WHERE SteamId = @SteamId; " +
+            Database.ExecuteAsync("DELETE FROM store_players WHERE SteamId = @SteamId; " +
                  "DELETE FROM store_items WHERE SteamId = @SteamId; " +
                  "DELETE FROM store_equipments WHERE SteamId = @SteamId;",
                  new { @SteamID = steamId.SteamId64 });

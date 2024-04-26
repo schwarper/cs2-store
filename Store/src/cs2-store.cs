@@ -10,7 +10,7 @@ namespace Store;
 public class Store : BasePlugin, IPluginConfig<StoreConfig>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "0.1.6";
+    public override string ModuleVersion => "0.1.7";
     public override string ModuleAuthor => "schwarper & xshadowbringer";
 
     public StoreConfig Config { get; set; } = new StoreConfig();
@@ -82,7 +82,10 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
 
         config.Tag = StringExtensions.ReplaceColorTags(config.Tag);
 
-        Database.CreateDatabase(config);
+        Task.Run(async () =>
+        {
+            await Database.CreateDatabaseAsync(config);
+        });
 
         Config = config;
     }
