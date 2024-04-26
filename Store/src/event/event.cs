@@ -146,7 +146,7 @@ public static class Event
             type.MapStart();
         });
 
-        Database.Execute("DELETE FROM store_items WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);
+        Database.ExecuteAsync("DELETE FROM store_items WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);
 
         List<Store_Item> itemsToRemove = Instance.GlobalStorePlayerItems
         .Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)
@@ -154,7 +154,7 @@ public static class Event
 
         foreach (Store_Item? item in itemsToRemove)
         {
-            Database.Execute("DELETE FROM store_equipment WHERE SteamID == @SteamID AND UniqueId == @UniqueId", new { item.SteamID, item.UniqueId });
+            Database.ExecuteAsync("DELETE FROM store_equipment WHERE SteamID == @SteamID AND UniqueId == @UniqueId", new { item.SteamID, item.UniqueId });
 
             Instance.GlobalStorePlayerItems.Remove(item);
             Instance.GlobalStorePlayerEquipments.RemoveAll(i => i.UniqueId == item.UniqueId);

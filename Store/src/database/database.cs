@@ -2,6 +2,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using Dapper;
 using MySqlConnector;
+using System.Xml;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -10,26 +11,29 @@ namespace Store;
 public static class Database
 {
     public static string GlobalDatabaseConnectionString { get; set; } = string.Empty;
-    private static string? equipTableName;
+    private static string equipTableName = "store_equipments";
 
-    public static MySqlConnection Connect()
+    public static async Task<MySqlConnection> ConnectAsync()
     {
         MySqlConnection connection = new(GlobalDatabaseConnectionString);
-        connection.Open();
+        await connection.OpenAsync();
         return connection;
     }
 
-    public static void Execute(string query, object? parameters)
+    public static void ExecuteAsync(string query, object? parameters)
     {
-        using MySqlConnection connection = Connect();
-        connection.Execute(query, parameters);
+        Task.Run(async () =>
+        {
+            using MySqlConnection connection = await ConnectAsync();
+            await connection.ExecuteAsync(query, parameters);
+        });
     }
 
-    public static void CreateDatabase(StoreConfig config)
+    public static async Task CreateDatabaseAsync(StoreConfig config)
     {
-        if (!config.Settings.TryGetValue("database_equip_table_name", out equipTableName))
+        if (config.Settings.TryGetValue("database_equip_table_name", out string? tablename))
         {
-            equipTableName = "store_equipments_default";
+            equipTableName = tablename;
         }
 
         MySqlConnectionStringBuilder builder = new()
@@ -48,56 +52,53 @@ public static class Database
 
         GlobalDatabaseConnectionString = builder.ConnectionString;
 
-        _ = Task.Run(async () =>
+        using MySqlConnection connection = await ConnectAsync();
+        using MySqlTransaction transaction = await connection.BeginTransactionAsync();
+
+        try
         {
-            using MySqlConnection connection = Connect();
-            using MySqlTransaction transaction = await connection.BeginTransactionAsync();
+            await connection.ExecuteAsync(@"
+                CREATE TABLE IF NOT EXISTS store_players (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    SteamID BIGINT UNSIGNED NOT NULL,
+                    PlayerName VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+                    Credits INT NOT NULL,
+                    DateOfJoin DATETIME NOT NULL,
+                    DateOfLastJoin DATETIME NOT NULL,
+                    PRIMARY KEY (id),
+                    UNIQUE KEY id (id),
+                    UNIQUE KEY SteamID (SteamID)
+                );", transaction: transaction);
 
-            try
-            {
-                await connection.QueryAsync(@"
-                    CREATE TABLE IF NOT EXISTS store_players (
-                        id INT NOT NULL AUTO_INCREMENT,
-                        SteamID BIGINT UNSIGNED NOT NULL,
-                        PlayerName VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-                        Credits INT NOT NULL,
-                        DateOfJoin DATETIME NOT NULL,
-                        DateOfLastJoin DATETIME NOT NULL,
-                        PRIMARY KEY (id),
-                        UNIQUE KEY id (id),
-                        UNIQUE KEY SteamID (SteamID)
-				);", transaction: transaction);
+            await connection.ExecuteAsync(@"
+                CREATE TABLE IF NOT EXISTS store_items (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    SteamID BIGINT UNSIGNED NOT NULL,
+                    Price INT UNSIGNED NOT NULL,
+                    Type varchar(16) NOT NULL,
+                    UniqueId varchar(256) NOT NULL,
+                    DateOfPurchase DATETIME NOT NULL,
+                    DateOfExpiration DATETIME NOT NULL,
+                    PRIMARY KEY (id)
+                );", transaction: transaction);
 
-                await connection.QueryAsync(@"
-                    CREATE TABLE IF NOT EXISTS store_items (
-                        id INT NOT NULL AUTO_INCREMENT,
-                        SteamID BIGINT UNSIGNED NOT NULL,
-                        Price INT UNSIGNED NOT NULL,
-                        Type varchar(16) NOT NULL,
-                        UniqueId varchar(256) NOT NULL,
-                        DateOfPurchase DATETIME NOT NULL,
-                        DateOfExpiration DATETIME NOT NULL,
-                        PRIMARY KEY (id)
-			    );", transaction: transaction);
+            await connection.ExecuteAsync($@"
+                CREATE TABLE IF NOT EXISTS {equipTableName} (
+                    id INT NOT NULL AUTO_INCREMENT,
+                    SteamID BIGINT UNSIGNED NOT NULL,
+                    Type varchar(16) NOT NULL,
+                    UniqueId varchar(256) NOT NULL,
+                    Slot INT,
+                    PRIMARY KEY (id)
+                );", transaction: transaction);
 
-                await connection.QueryAsync($@"
-                    CREATE TABLE IF NOT EXISTS {equipTableName} (
-                        id INT NOT NULL AUTO_INCREMENT,
-                        SteamID BIGINT UNSIGNED NOT NULL,
-                        Type varchar(16) NOT NULL,
-                        UniqueId varchar(256) NOT NULL,
-                        Slot INT,
-                        PRIMARY KEY (id)
-			    );", transaction: transaction);
-
-                await transaction.CommitAsync();
-            }
-            catch (Exception)
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
-        });
+            await transaction.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
     }
 
     public static async Task LoadPlayer(CCSPlayerController player)
@@ -107,7 +108,7 @@ public static class Database
 
         try
         {
-            using MySqlConnection connection = Connect();
+            using MySqlConnection connection = await ConnectAsync();
 
             SqlMapper.GridReader multiQuery = await connection.QueryMultipleAsync(@"
                 SELECT * FROM store_players WHERE SteamID = @SteamID;
@@ -152,7 +153,7 @@ public static class Database
                     {
                         existingPlayer.PlayerName = playerData.PlayerName;
                         existingPlayer.Credits = Convert.ToInt32(playerData.Credits);
-                        existingPlayer.OriginalCredits = existingPlayer.Credits; // 保持同步
+                        existingPlayer.OriginalCredits = existingPlayer.Credits;
                         existingPlayer.DateOfJoin = playerData.DateOfJoin;
                         existingPlayer.DateOfLastJoin = playerData.DateOfLastJoin;
                         existingPlayer.bPlayerIsLoaded = true;
@@ -205,7 +206,7 @@ public static class Database
 
     public static void InsertNewPlayer(CCSPlayerController player)
     {
-        Execute(@"
+        ExecuteAsync(@"
                 INSERT INTO store_players (
                     SteamID, PlayerName, Credits, DateOfJoin, DateOfLastJoin
                 ) VALUES (
@@ -234,17 +235,17 @@ public static class Database
 
         int SetCredits = PlayerCredits - PlayerOriginalCredits;
 
-        Execute(@"
-            UPDATE
-                store_players
-            SET
-                PlayerName = @PlayerName,
-                Credits = GREATEST(Credits + @SetCredits, 0), 
-                DateOfJoin = @DateOfJoin, 
-                DateOfLastJoin = @DateOfLastJoin
-            WHERE
-                SteamID = @SteamID;
-        ",
+        ExecuteAsync(@"
+                UPDATE
+                    store_players
+                SET
+                    PlayerName = @PlayerName,
+                    Credits = GREATEST(Credits + @SetCredits, 0), 
+                    DateOfJoin = @DateOfJoin, 
+                    DateOfLastJoin = @DateOfLastJoin
+                WHERE
+                    SteamID = @SteamID;
+            ",
             new
             {
                 player.PlayerName,
@@ -260,12 +261,12 @@ public static class Database
 
     public static void SavePlayerItem(CCSPlayerController player, Store_Item item)
     {
-        Execute(@"
-            INSERT INTO store_items (
-                SteamID, Price, Type, UniqueId, DateOfPurchase, DateOfExpiration
-            ) VALUES (
-                @SteamID, @Price, @Type, @UniqueId, @DateOfPurchase, @DateOfExpiration
-            );
+        ExecuteAsync(@"
+                INSERT INTO store_items (
+                    SteamID, Price, Type, UniqueId, DateOfPurchase, DateOfExpiration
+                ) VALUES (
+                    @SteamID, @Price, @Type, @UniqueId, @DateOfPurchase, @DateOfExpiration
+                );
            "
             ,
             new
@@ -280,43 +281,41 @@ public static class Database
     }
     public static void RemovePlayerItem(CCSPlayerController player, Store_Item item)
     {
-        Execute(@"
+        ExecuteAsync(@"
                 DELETE
                 FROM
                     store_items
                 WHERE
                     SteamID = @SteamID AND UniqueId = @UniqueId;
             "
-            ,
-            new
-            {
-                player.SteamID,
-                item.UniqueId
-            });
+                ,
+                new
+                {
+                    player.SteamID,
+                    item.UniqueId
+                });
     }
     public static void SavePlayerEquipment(CCSPlayerController player, Store_Equipment item)
     {
-        Execute(@"
+        ExecuteAsync(@"
                 INSERT INTO " + equipTableName + @" (
                     SteamID, Type, UniqueId, Slot
                 ) VALUES (
                     @SteamID, @Type, @UniqueId, @Slot
                 );
             "
-            ,
-            new
-            {
-                player.SteamID,
-                item.Type,
-                item.UniqueId,
-                item.Slot
-            });
-
-
+                ,
+                new
+                {
+                    player.SteamID,
+                    item.Type,
+                    item.UniqueId,
+                    item.Slot
+                });
     }
     public static void RemovePlayerEquipment(CCSPlayerController player, string UniqueId)
     {
-        Execute(@"
+        ExecuteAsync(@"
                     DELETE FROM " + equipTableName + @" WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
                 "
             ,
@@ -329,24 +328,27 @@ public static class Database
 
     public static void ResetPlayer(CCSPlayerController player)
     {
-        Execute(@"
-            DELETE FROM store_items WHERE SteamID = @SteamID; 
-            DELETE FROM " + equipTableName + @" WHERE SteamID = @SteamID
-        "
-        ,
-        new
-        {
-            player.SteamID
-        });
+        ExecuteAsync(@"
+                DELETE FROM store_items WHERE SteamID = @SteamID; 
+                DELETE FROM " + equipTableName + @" WHERE SteamID = @SteamID
+            "
+            ,
+            new
+            {
+                player.SteamID
+            });
     }
 
     public static void ResetDatabase()
     {
-        using MySqlConnection connection = Connect();
+        Task.Run(async () =>
+        {
+            using MySqlConnection connection = await ConnectAsync();
 
-        connection.Query(@"DROP TABLE store_players");
-        connection.Query(@"DROP TABLE store_items");
-        connection.Query($@"DROP TABLE {equipTableName}");
+            connection.Query(@"DROP TABLE store_players");
+            connection.Query(@"DROP TABLE store_items");
+            connection.Query($@"DROP TABLE {equipTableName}");
+        });
 
         Server.ExecuteCommand("_restart");
     }
