@@ -71,7 +71,7 @@ public static class Item_Armor
 
         playerPawn.ArmorValue += armor;
 
-        Utilities.SetStateChanged(playerPawn, "CCSPlayerPawnBase", "m_ArmorValue");
+        Utilities.SetStateChanged(playerPawn, "CCSPlayerPawn", "m_ArmorValue");
 
         return true;
     }
