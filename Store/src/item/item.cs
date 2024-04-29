@@ -37,7 +37,7 @@ public static class Item
             return false;
         }
 
-        if (!type.Equip(player, item))
+        if (!type.Equipable && !type.Equip(player, item))
         {
             return false;
         }
