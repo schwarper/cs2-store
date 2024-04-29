@@ -26,117 +26,9 @@ public static class Event
         Instance.RegisterListener<OnTick>(OnTick);
         Instance.RegisterListener<OnEntityCreated>(OnEntityCreated);
 
-        Instance.RegisterEventHandler<EventPlayerConnectFull>((@event, info) =>
-        {
-            CCSPlayerController? player = @event.Userid;
-
-            if (player == null || !player.Valid())
-            {
-                return HookResult.Continue;
-            }
-
-            Task.Run(() => Database.LoadPlayer(player));
-
-            if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
-            {
-                value = new Player();
-                Instance.GlobalDictionaryPlayer.Add(player, value);
-            }
-
-            value.CreditIntervalTimer = Instance.AddTimer(Instance.Config.Credits["interval_active_inactive"], () =>
-            {
-                if (GameRules.IgnoreWarmUp())
-                {
-                    return;
-                }
-
-                CsTeam Team = player.Team;
-
-                switch (Team)
-                {
-                    case CsTeam.Terrorist:
-                    case CsTeam.CounterTerrorist:
-                        {
-                            if (Instance.Config.Credits["amount_active"] > 0)
-                            {
-                                Credits.Give(player, Instance.Config.Credits["amount_active"]);
-
-                                player.PrintToChatMessage("credits_earned<active>", Instance.Config.Credits["amount_active"]);
-                            }
-
-                            break;
-                        }
-                    case CsTeam.Spectator:
-                        {
-                            if (Instance.Config.Credits["amount_inactive"] > 0)
-                            {
-                                Credits.Give(player, Instance.Config.Credits["amount_inactive"]);
-
-                                player.PrintToChatMessage("credits_earned<inactive>", Instance.Config.Credits["amount_inactive"]);
-                            }
-
-                            break;
-                        }
-                }
-            }, TimerFlags.REPEAT | TimerFlags.STOP_ON_MAPCHANGE);
-
-            return HookResult.Continue;
-        });
-
-        Instance.RegisterEventHandler<EventPlayerDisconnect>((@event, info) =>
-        {
-            CCSPlayerController? player = @event.Userid;
-
-            if (player == null || !player.Valid())
-            {
-                return HookResult.Continue;
-            }
-
-            if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
-            {
-                return HookResult.Continue;
-            }
-
-            value?.CreditIntervalTimer?.Kill();
-
-            Database.SavePlayer(player);
-
-            Instance.GlobalStorePlayers.RemoveAll(p => p.SteamID == player.SteamID);
-            Instance.GlobalStorePlayerItems.RemoveAll(i => i.SteamID == player.SteamID);
-            Instance.GlobalStorePlayerEquipments.RemoveAll(e => e.SteamID == player.SteamID);
-
-            return HookResult.Continue;
-        });
-
-        Instance.RegisterEventHandler<EventPlayerDeath>((@event, info) =>
-        {
-            if (GameRules.IgnoreWarmUp())
-            {
-                return HookResult.Continue;
-            }
-
-            CCSPlayerController victim = @event.Userid;
-            CCSPlayerController attacker = @event.Attacker;
-
-            if (victim == null || attacker == null || !victim.Valid() || !attacker.Valid() || victim == attacker)
-            {
-                return HookResult.Continue;
-            }
-
-            Server.NextFrame(() =>
-            {
-                Database.SavePlayer(victim);
-            });
-
-            if (Instance.Config.Credits["amount_kill"] > 0)
-            {
-                Credits.Give(attacker, Instance.Config.Credits["amount_kill"]);
-
-                attacker.PrintToChat(Instance.Config.Tag + Instance.Localizer["credits_earned<kill>", Instance.Config.Credits["amount_kill"]]);
-            }
-
-            return HookResult.Continue;
-        });
+        Instance.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
+        Instance.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
+        Instance.RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
     }
 
     public static void OnMapStart(string mapname)
@@ -163,6 +55,14 @@ public static class Event
 
     public static void OnServerPrecacheResources(ResourceManifest manifest)
     {
+        foreach (string[] models in Instance.Config.DefaultModels.Values)
+        {
+            foreach (string model in models)
+            {
+                manifest.AddResource(model);
+            }
+        }
+
         Instance.GlobalStoreItemTypes.ForEach((type) =>
         {
             type.ServerPrecacheResources(manifest);
@@ -196,5 +96,117 @@ public static class Event
         Item_Smoke.OnEntityCreated(entity);
         Item_GrenadeTrail.OnEntityCreated(entity);
         Item_CustomWeapon.OnEntityCreated(entity);
+    }
+
+    public static HookResult OnPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
+    {
+        CCSPlayerController? player = @event.Userid;
+
+        if (player == null || !player.Valid())
+        {
+            return HookResult.Continue;
+        }
+
+        Task.Run(() => Database.LoadPlayer(player));
+
+        if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
+        {
+            value = new Player();
+            Instance.GlobalDictionaryPlayer.Add(player, value);
+        }
+
+        value.CreditIntervalTimer = Instance.AddTimer(Instance.Config.Credits["interval_active_inactive"], () =>
+        {
+            if (GameRules.IgnoreWarmUp())
+            {
+                return;
+            }
+
+            CsTeam Team = player.Team;
+
+            switch (Team)
+            {
+                case CsTeam.Terrorist:
+                case CsTeam.CounterTerrorist:
+                    {
+                        if (Instance.Config.Credits["amount_active"] > 0)
+                        {
+                            Credits.Give(player, Instance.Config.Credits["amount_active"]);
+
+                            player.PrintToChatMessage("credits_earned<active>", Instance.Config.Credits["amount_active"]);
+                        }
+
+                        break;
+                    }
+                case CsTeam.Spectator:
+                    {
+                        if (Instance.Config.Credits["amount_inactive"] > 0)
+                        {
+                            Credits.Give(player, Instance.Config.Credits["amount_inactive"]);
+
+                            player.PrintToChatMessage("credits_earned<inactive>", Instance.Config.Credits["amount_inactive"]);
+                        }
+
+                        break;
+                    }
+            }
+        }, TimerFlags.REPEAT | TimerFlags.STOP_ON_MAPCHANGE);
+
+        return HookResult.Continue;
+    }
+
+    public static HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
+    {
+        CCSPlayerController? player = @event.Userid;
+
+        if (player == null || !player.Valid())
+        {
+            return HookResult.Continue;
+        }
+
+        if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
+        {
+            return HookResult.Continue;
+        }
+
+        value?.CreditIntervalTimer?.Kill();
+
+        Database.SavePlayer(player);
+
+        Instance.GlobalStorePlayers.RemoveAll(p => p.SteamID == player.SteamID);
+        Instance.GlobalStorePlayerItems.RemoveAll(i => i.SteamID == player.SteamID);
+        Instance.GlobalStorePlayerEquipments.RemoveAll(e => e.SteamID == player.SteamID);
+
+        return HookResult.Continue;
+    }
+
+    public static HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
+    {
+        if (GameRules.IgnoreWarmUp())
+        {
+            return HookResult.Continue;
+        }
+
+        CCSPlayerController victim = @event.Userid;
+        CCSPlayerController attacker = @event.Attacker;
+
+        if (victim == null || attacker == null || !victim.Valid() || !attacker.Valid() || victim == attacker)
+        {
+            return HookResult.Continue;
+        }
+
+        Server.NextFrame(() =>
+        {
+            Database.SavePlayer(victim);
+        });
+
+        if (Instance.Config.Credits["amount_kill"] > 0)
+        {
+            Credits.Give(attacker, Instance.Config.Credits["amount_kill"]);
+
+            attacker.PrintToChat(Instance.Config.Tag + Instance.Localizer["credits_earned<kill>", Instance.Config.Credits["amount_kill"]]);
+        }
+
+        return HookResult.Continue;
     }
 }

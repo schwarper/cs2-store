@@ -14,7 +14,15 @@ public static class Item_CustomWeapon
     {
         Item.RegisterType("customweapon", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
-        Instance.RegisterEventHandler<EventItemEquip>(OnItemEquip);
+        if (Item.GetItemsByType("customweapon").Count > 0)
+        {
+            if (CoreConfig.FollowCS2ServerGuidelines)
+            {
+                throw new Exception($"Cannot set or get 'CEconEntity::m_OriginalOwnerXuidLow' with \"FollowCS2ServerGuidelines\" option enabled.");
+            }
+
+            Instance.RegisterEventHandler<EventItemEquip>(OnItemEquip);
+        }
     }
     public static void OnMapStart()
     {
@@ -65,11 +73,9 @@ public static class Item_CustomWeapon
 
         CBasePlayerWeapon weapon = entity.As<CBasePlayerWeapon>();
 
-        Server.RunOnTick((int)(Server.TickedTime + 10.0f), () =>
+        Server.NextWorldUpdate(() =>
         {
-            CHandle<CBaseEntity> ownerentity = weapon.OwnerEntity;
-
-            if (!ownerentity.IsValid)
+            if (weapon.OriginalOwnerXuidLow == 0)
             {
                 return;
             }
