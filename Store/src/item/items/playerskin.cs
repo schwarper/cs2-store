@@ -59,9 +59,9 @@ public static class Item_PlayerSkin
     }
     public static HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
     {
-        CCSPlayerController player = @event.Userid;
+        CCSPlayerController? player = @event.Userid;
 
-        if (player == null || !player.IsValid)
+        if (player == null)
         {
             return HookResult.Continue;
         }

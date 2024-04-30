@@ -73,7 +73,7 @@ public static class Event
     {
         Instance.GlobalTickrate++;
 
-        if (Instance.GlobalTickrate != 10)
+        if (Instance.GlobalTickrate % 10 != 0)
         {
             return;
         }
@@ -82,7 +82,7 @@ public static class Event
 
         foreach (CCSPlayerController player in Utilities.GetPlayers())
         {
-            if (player == null || !player.Valid() || !player.PawnIsAlive)
+            if (!player.PawnIsAlive)
             {
                 continue;
             }
@@ -104,7 +104,7 @@ public static class Event
     {
         CCSPlayerController? player = @event.Userid;
 
-        if (player == null || !player.Valid())
+        if (player == null)
         {
             return HookResult.Continue;
         }
@@ -161,7 +161,7 @@ public static class Event
     {
         CCSPlayerController? player = @event.Userid;
 
-        if (player == null || !player.Valid())
+        if (player == null)
         {
             return HookResult.Continue;
         }
@@ -189,10 +189,10 @@ public static class Event
             return HookResult.Continue;
         }
 
-        CCSPlayerController victim = @event.Userid;
-        CCSPlayerController attacker = @event.Attacker;
+        CCSPlayerController? victim = @event.Userid;
+        CCSPlayerController? attacker = @event.Attacker;
 
-        if (victim == null || attacker == null || !victim.Valid() || !attacker.Valid() || victim == attacker)
+        if (victim == null || attacker == null || victim == attacker)
         {
             return HookResult.Continue;
         }

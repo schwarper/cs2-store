@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="CounterStrikeSharp.API" Version="1.0.215" />
+	  <PackageReference Include="CounterStrikeSharp.API" Version="1.0.224" />
 	  <PackageReference Include="Daffer" Version="1.0.3" />
 	  <PackageReference Include="MySqlConnector" Version="2.3.7" />
   </ItemGroup>

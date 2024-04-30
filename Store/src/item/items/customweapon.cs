@@ -129,9 +129,9 @@ public static class Item_CustomWeapon
     }
     public static HookResult OnItemEquip(EventItemEquip @event, GameEventInfo info)
     {
-        CCSPlayerController player = @event.Userid;
+        CCSPlayerController? player = @event.Userid;
 
-        if (player == null || !player.IsValid)
+        if (player == null)
         {
             return HookResult.Continue;
         }
