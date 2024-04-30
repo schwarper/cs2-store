@@ -10,7 +10,7 @@ namespace Store;
 public class Store : BasePlugin, IPluginConfig<StoreConfig>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "0.1.8";
+    public override string ModuleVersion => "0.1.8a";
     public override string ModuleAuthor => "schwarper & xshadowbringer";
 
     public StoreConfig Config { get; set; } = new StoreConfig();

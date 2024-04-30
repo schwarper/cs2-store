@@ -73,10 +73,12 @@ public static class Event
     {
         Instance.GlobalTickrate++;
 
-        if (Instance.GlobalTickrate % 10 != 0)
+        if (Instance.GlobalTickrate != 10)
         {
             return;
         }
+
+        Instance.GlobalTickrate = 0;
 
         foreach (CCSPlayerController player in Utilities.GetPlayers())
         {

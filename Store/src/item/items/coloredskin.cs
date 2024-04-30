@@ -8,9 +8,15 @@ namespace Store;
 
 public static class Item_ColoredSkin
 {
+    private static bool coloredskinExists = false;
     public static void OnPluginStart()
     {
         Item.RegisterType("coloredskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+
+        if (Item.GetItemsByType("coloredskin").Count > 0)
+        {
+            coloredskinExists = true;
+        }
     }
     public static void OnMapStart()
     {
@@ -30,6 +36,11 @@ public static class Item_ColoredSkin
 
     public static void OnTick(CCSPlayerController player)
     {
+        if (!coloredskinExists)
+        {
+            return;
+        }
+
         Store_Equipment? playercoloredskin = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "coloredskin");
 
         if (playercoloredskin == null)
