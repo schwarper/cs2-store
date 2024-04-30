@@ -12,15 +12,21 @@ public static class Item_Trail
 {
     static readonly Vector[] GlobalTrailLastOrigin = new Vector[64];
     static readonly Vector[] GlobalTrailEndOrigin = new Vector[64];
+    private static bool trailExists = false;
 
     public static void OnPluginStart()
     {
         Item.RegisterType("trail", OnMapStart, ServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
-        for (int i = 0; i < 64; i++)
+        if (Item.GetItemsByType("trail").Count > 0)
         {
-            GlobalTrailLastOrigin[i] = new();
-            GlobalTrailEndOrigin[i] = new();
+            trailExists = true;
+
+            for (int i = 0; i < 64; i++)
+            {
+                GlobalTrailLastOrigin[i] = new();
+                GlobalTrailEndOrigin[i] = new();
+            }
         }
     }
     public static void OnMapStart()
@@ -51,6 +57,11 @@ public static class Item_Trail
     }
     public static void OnTick(CCSPlayerController player)
     {
+        if (!trailExists)
+        {
+            return;
+        }
+
         Store_Equipment? playertrail = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "trail");
 
         if (playertrail == null)

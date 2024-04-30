@@ -2,7 +2,6 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using Dapper;
 using MySqlConnector;
-using System.Xml;
 using static Store.Store;
 using static StoreApi.Store;
 

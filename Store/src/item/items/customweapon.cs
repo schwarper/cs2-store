@@ -10,6 +10,8 @@ namespace Store;
 
 public static class Item_CustomWeapon
 {
+    private static bool customweaponExists = false;
+
     public static void OnPluginStart()
     {
         Item.RegisterType("customweapon", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
@@ -22,6 +24,8 @@ public static class Item_CustomWeapon
             }
 
             Instance.RegisterEventHandler<EventItemEquip>(OnItemEquip);
+
+            customweaponExists = true;
         }
     }
     public static void OnMapStart()
@@ -66,6 +70,11 @@ public static class Item_CustomWeapon
     }
     public static void OnEntityCreated(CEntityInstance entity)
     {
+        if (!customweaponExists)
+        {
+            return;
+        }
+
         if (!entity.DesignerName.StartsWith("weapon_"))
         {
             return;
@@ -120,9 +129,9 @@ public static class Item_CustomWeapon
     }
     public static HookResult OnItemEquip(EventItemEquip @event, GameEventInfo info)
     {
-        CCSPlayerController player = @event.Userid;
+        CCSPlayerController? player = @event.Userid;
 
-        if (player == null || !player.IsValid)
+        if (player == null)
         {
             return HookResult.Continue;
         }

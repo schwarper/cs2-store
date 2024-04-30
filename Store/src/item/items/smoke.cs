@@ -9,9 +9,16 @@ namespace Store;
 
 public static class Item_Smoke
 {
+    private static bool smokeExists = false;
+
     public static void OnPluginStart()
     {
         Item.RegisterType("smoke", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+
+        if (Item.GetItemsByType("smoke").Count > 0)
+        {
+            smokeExists = true;
+        }
     }
     public static void OnMapStart()
     {
@@ -29,6 +36,11 @@ public static class Item_Smoke
     }
     public static void OnEntityCreated(CEntityInstance entity)
     {
+        if (!smokeExists)
+        {
+            return;
+        }
+
         if (entity.DesignerName != "smokegrenade_projectile")
         {
             return;

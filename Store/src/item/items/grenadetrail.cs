@@ -9,10 +9,16 @@ namespace Store;
 public static class Item_GrenadeTrail
 {
     public static Dictionary<CBaseCSGrenadeProjectile, CParticleSystem> GlobalGrenadeTrail { get; set; } = [];
+    private static bool grenadetrailExists = false;
 
     public static void OnPluginStart()
     {
         Item.RegisterType("grenadetrail", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+
+        if (Item.GetItemsByType("grenadetrail").Count > 0)
+        {
+            grenadetrailExists = true;
+        }
     }
     public static void OnMapStart()
     {
@@ -37,6 +43,11 @@ public static class Item_GrenadeTrail
 
     public static void OnEntityCreated(CEntityInstance entity)
     {
+        if (!grenadetrailExists)
+        {
+            return;
+        }
+
         if (entity.DesignerName != "hegrenade_projectile")
         {
             return;
@@ -95,6 +106,11 @@ public static class Item_GrenadeTrail
 
     public static void OnTick()
     {
+        if (!grenadetrailExists)
+        {
+            return;
+        }
+
         foreach (KeyValuePair<CBaseCSGrenadeProjectile, CParticleSystem> kv in GlobalGrenadeTrail)
         {
             CBaseCSGrenadeProjectile grenade = kv.Key;
