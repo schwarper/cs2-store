@@ -78,6 +78,8 @@ public static class Event
             return;
         }
 
+        Instance.GlobalTickrate = 0;
+
         foreach (CCSPlayerController player in Utilities.GetPlayers())
         {
             if (player == null || !player.Valid() || !player.PawnIsAlive)
