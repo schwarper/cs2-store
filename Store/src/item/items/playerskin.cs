@@ -1,125 +1,123 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
+using System.Collections.Generic;
 using System.Globalization;
-using static Store.Store;
-using static StoreApi.Store;
+using System.Linq;
 
-namespace Store;
-
-public static class Item_PlayerSkin
+namespace Store
 {
-    public static void OnPluginStart()
+    public static class Item_PlayerSkin
     {
-        Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-
-        Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
-    }
-    public static void OnMapStart()
-    {
-    }
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
-    {
-        List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("playerskin");
-
-        foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
+        public static void OnPluginStart()
         {
-            manifest.AddResource(item.Value["uniqueid"]);
+            Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+            Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
+        }
 
-            if (item.Value.TryGetValue("armModel", out string? armModel) && !string.IsNullOrEmpty(armModel))
+        public static void OnMapStart() { }
+
+        public static void OnServerPrecacheResources(ResourceManifest manifest)
+        {
+            List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("playerskin");
+
+            foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
             {
-                manifest.AddResource(armModel);
+                manifest.AddResource(item.Value["uniqueid"]);
+
+                if (item.Value.TryGetValue("armModel", out string? armModel) && !string.IsNullOrEmpty(armModel))
+                {
+                    manifest.AddResource(armModel);
+                }
             }
         }
-    }
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
-    {
-        if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
+
+        public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
         {
-            return false;
+            if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
+            {
+                return false;
+            }
+
+            SetPlayerModel(player, item["uniqueid"], item["disable_leg"], int.Parse(item["slot"]));
+
+            return true;
         }
 
-        SetPlayerModel(player, item["uniqueid"], item["disable_leg"], int.Parse(item["slot"]));
-
-        return true;
-    }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
-    {
-        if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
+        public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
         {
-            return false;
+            if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
+            {
+                return false;
+            }
+
+            if (player.TeamNum == int.Parse(item["slot"]))
+            {
+                SetDefaultModel(player);
+            }
+
+            return true;
         }
 
-        if (player.TeamNum == int.Parse(item["slot"]))
+        public static HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
         {
-            SetDefaultModel(player);
-        }
+            CCSPlayerController player = @event.Userid;
 
-        return true;
-    }
-    public static HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
-    {
-        CCSPlayerController player = @event.Userid;
-
-        if (player == null || !player.IsValid)
-        {
-            return HookResult.Continue;
-        }
-
-        if (player.TeamNum < 2)
-        {
-            return HookResult.Continue;
-        }
-
-        Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
-
-        if (item == null)
-        {
-            SetDefaultModel(player);
-        }
-        else
-        {
-            Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
-
-            if (itemdata == null)
+            if (player == null || !player.IsValid || player.TeamNum < 2)
             {
                 return HookResult.Continue;
             }
 
-            SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"], item.Slot);
-        }
+            Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
 
-        return HookResult.Continue;
-    }
-    public static void SetDefaultModel(CCSPlayerController player)
-    {
-        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels["ct"] : Instance.Config.DefaultModels["t"];
-        int maxIndex = modelsArray.Length;
-
-        if (maxIndex > 0)
-        {
-            int randomnumber = Instance.Random.Next(0, maxIndex - 1);
-
-            string model = modelsArray[randomnumber];
-
-            SetPlayerModel(player, model, Instance.Config.Settings["default_model_disable_leg"], player.TeamNum);
-        }
-    }
-    private static void SetPlayerModel(CCSPlayerController player, string model, string disable_leg, int slotNumber)
-    {
-        float apply_delay = 0.1f;
-
-        if (Instance.Config.Settings.TryGetValue("apply_delay", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float delay))
-        {
-            apply_delay = float.MaxNumber(0.1f, delay);
-        }
-
-        Instance.AddTimer(apply_delay, () =>
-        {
-            if (player.IsValid && player.TeamNum == slotNumber && player.PawnIsAlive)
+            if (item == null)
             {
-                player.PlayerPawn.Value?.ChangeModel(model, disable_leg);
+                SetDefaultModel(player);
             }
-        }, TimerFlags.STOP_ON_MAPCHANGE);
+            else
+            {
+                Dictionary<string, string>? itemData = Item.GetItem(item.Type, item.UniqueId);
+
+                if (itemData == null)
+                {
+                    return HookResult.Continue;
+                }
+
+                SetPlayerModel(player, item.UniqueId, itemData["disable_leg"], item.Slot);
+            }
+
+            return HookResult.Continue;
+        }
+
+        public static void SetDefaultModel(CCSPlayerController player)
+        {
+            string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels["ct"] : Instance.Config.DefaultModels["t"];
+            int maxIndex = modelsArray.Length;
+
+            if (maxIndex > 0)
+            {
+                int randomNumber = Instance.Random.Next(0, maxIndex - 1);
+                string model = modelsArray[randomNumber];
+                SetPlayerModel(player, model, Instance.Config.Settings["default_model_disable_leg"], player.TeamNum);
+            }
+        }
+
+        private static void SetPlayerModel(CCSPlayerController player, string model, string disableLeg, int slotNumber)
+        {
+            float applyDelay = 0.1f;
+
+            if (Instance.Config.Settings.TryGetValue("apply_delay", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float delay))
+            {
+                applyDelay = float.Max(0.1f, delay);
+            }
+
+            Instance.AddTimer(applyDelay, () =>
+            {
+                if (player.IsValid && player.TeamNum == slotNumber && player.PawnIsAlive)
+                {
+                    player.PlayerPawn.Value?.ChangeModel(model, disableLeg);
+                }
+            }, TimerFlags.STOP_ON_MAPCHANGE);
+        }
     }
 }
