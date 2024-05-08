@@ -43,10 +43,10 @@ public static class Event
         List<Store_Item> itemsToRemove = Instance.GlobalStorePlayerItems
         .Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)
         .ToList();
-
+        string store_equipmentTableName = Instance.Config.Settings.TryGetValue("database_equip_table_name", out string? tablename) ? tablename : "store_equipment";
         foreach (Store_Item? item in itemsToRemove)
         {
-            Database.ExecuteAsync("DELETE FROM store_equipment WHERE SteamID == @SteamID AND UniqueId == @UniqueId", new { item.SteamID, item.UniqueId });
+            Database.ExecuteAsync($"DELETE FROM {store_equipmentTableName} WHERE SteamID == @SteamID AND UniqueId == @UniqueId", new { item.SteamID, item.UniqueId });
 
             Instance.GlobalStorePlayerItems.Remove(item);
             Instance.GlobalStorePlayerEquipments.RemoveAll(i => i.UniqueId == item.UniqueId);
