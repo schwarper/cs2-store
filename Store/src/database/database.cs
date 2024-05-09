@@ -91,6 +91,15 @@ public static class Database
                     PRIMARY KEY (id)
                 );", transaction: transaction);
 
+            await connection.ExecuteAsync($@"
+                DELETE FROM {equipTableName}
+                    WHERE NOT EXISTS (
+                    SELECT 1 FROM store_items
+                    WHERE store_items.Type = {equipTableName}.Type
+                    AND store_items.UniqueId = {equipTableName}.UniqueId
+                    AND store_items.SteamID = {equipTableName}.SteamID
+                )", transaction: transaction);
+
             await transaction.CommitAsync();
         }
         catch (Exception)
