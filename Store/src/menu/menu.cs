@@ -174,7 +174,7 @@ public static class Menu
                 purchase_price = PlayerItems.Price;
             }
 
-            int sellingPrice = usePurchaseCredit ? purchase_price : (int)(int.Parse(item["price"]) * sell_ratio);
+            int sellingPrice = (int)((usePurchaseCredit ? purchase_price : int.Parse(item["price"])) * sell_ratio);
 
             if(sellingPrice > 1) {
                 AddMenuOption(player, menu, (player, option) =>
