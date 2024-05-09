@@ -103,6 +103,7 @@ public static class Menu
                 continue;
             }
 
+            bool isHidden = item.ContainsKey("hide") && item["hide"] == "true";
             if (Item.PlayerHas(player, item["type"], item["uniqueid"], false))
             {
                 AddMenuOption(player, menu, (player, option) =>
@@ -110,7 +111,7 @@ public static class Menu
                     DisplayItemOption(player, item);
                 }, item["name"]);
             }
-            else if (!inventory && item["hide"] != "true")
+            else if (!inventory && !isHidden)
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
