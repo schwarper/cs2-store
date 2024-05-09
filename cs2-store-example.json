@@ -56,7 +56,9 @@
         "max_health": "0",
         "max_armor": "0",
         "sell_ratio": "0.60",
-        "default_model_disable_leg": "false"
+        "default_model_disable_leg": "false",
+        "sell_use_purchase_credit": "0",
+        "database_equip_table_name": "store_equipments"
     },
     "items": {
         "playerskins": {
@@ -69,6 +71,7 @@
                 "slot": "2",
                 "disable_leg": "false",
                 "expiration": "0",
+                "hide": "false",
                 "enable": "true"
             },
             "2": {
@@ -80,6 +83,7 @@
                 "slot": "3",
                 "disable_leg": "false",
                 "expiration": "86400",
+                "hide": "false",
                 "enable": "true"
             }
         },
