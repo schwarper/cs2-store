@@ -103,14 +103,14 @@ public static class Menu
                 continue;
             }
 
-            if (Item.PlayerHas(player, item["type"], item["uniqueid"], false))
+            if (Item.PlayerHas(player, item["type"], item["uniqueid"], false) || item["hide"] != "true")
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
                     DisplayItemOption(player, item);
                 }, item["name"]);
             }
-            else if (!inventory)
+            else if (!inventory && item["hide"] != "true")
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
