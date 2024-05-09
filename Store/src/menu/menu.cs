@@ -157,6 +157,8 @@ public static class Menu
             }, "menu_store<equip>");
         }
 
+        Store_Item? PlayerItems = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"] && p.UniqueId == item["uniqueid"]);
+
         if (Instance.Config.Menu["enable_selling"] == "1" && !Item.IsPlayerVip(player))
         {
             float sell_ratio = 1.0f;
@@ -166,24 +168,30 @@ public static class Menu
                 sell_ratio = ratio;
             }
 
-            AddMenuOption(player, menu, (player, option) =>
+            int purchase_price = 1;
+            bool usePurchaseCredit = Instance.Config.Settings.TryGetValue("sell_use_purchase_credit", out string? useCreditsValue) && useCreditsValue == "1";
+            if (usePurchaseCredit && PlayerItems != null)
             {
-                Item.Sell(player, item);
+                purchase_price = PlayerItems.Price;
+            }
 
-                player.PrintToChatMessage("Item Sell", item["name"]);
+            int sellingPrice = (int)((usePurchaseCredit ? purchase_price : int.Parse(item["price"])) * sell_ratio);
 
-                MenuManager.CloseActiveMenu(player);
-            }, "menu_store<sell>", (int)(int.Parse(item["price"]) * sell_ratio));
+            if(sellingPrice > 1) {
+                AddMenuOption(player, menu, (player, option) =>
+                {
+                    Item.Sell(player, item);
+
+                    player.PrintToChatMessage("Item Sell", item["name"]);
+
+                    MenuManager.CloseActiveMenu(player);
+                }, "menu_store<sell>", sellingPrice);
+            }
         }
 
-        Store_Item? playeritem = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"] && p.UniqueId == item["uniqueid"]);
-
-        if (playeritem != null)
+        if (PlayerItems != null && PlayerItems.DateOfExpiration > DateTime.MinValue)
         {
-            if (playeritem.DateOfExpiration > DateTime.MinValue)
-            {
-                menu.AddMenuOption(playeritem.DateOfExpiration.ToString(), (p, o) => { }, true);
-            }
+            menu.AddMenuOption(PlayerItems.DateOfExpiration.ToString(), (p, o) => { }, true);
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
