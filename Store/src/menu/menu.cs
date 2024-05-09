@@ -103,7 +103,7 @@ public static class Menu
                 continue;
             }
 
-            if (Item.PlayerHas(player, item["type"], item["uniqueid"], false) || item["hide"] != "true")
+            if (Item.PlayerHas(player, item["type"], item["uniqueid"], false))
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
