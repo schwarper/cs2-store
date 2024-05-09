@@ -190,7 +190,7 @@ public static class Menu
 
         if (PlayerItems != null && PlayerItems.DateOfExpiration > DateTime.MinValue)
         {
-            menu.AddMenuOption("Expiration: " + PlayerItems.DateOfExpiration.ToString(), (p, o) => { }, true);
+            menu.AddMenuOption(PlayerItems.DateOfExpiration.ToString(), (p, o) => { }, true);
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
