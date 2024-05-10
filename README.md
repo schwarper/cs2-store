@@ -6,7 +6,7 @@ If you want to donate or need a help about plugin, you can contact me in discord
 
 Discord nickname: schwarper
 
-Discord link : [cs2-store discord](https://discord.gg/4zQfUzjk36)
+Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 
 # Documentation
 
