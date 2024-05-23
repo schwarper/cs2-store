@@ -97,6 +97,11 @@ public static class Event
             type.MapStart();
         });
 
+        Instance.AddTimer(5.0F, () =>
+        {
+            GameRules.GlobalGameRules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!;
+        }, TimerFlags.STOP_ON_MAPCHANGE);
+
         Database.ExecuteAsync("DELETE FROM store_items WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);
 
         List<Store_Item> itemsToRemove = Instance.GlobalStorePlayerItems
