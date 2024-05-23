@@ -12,11 +12,9 @@ namespace Store;
 
 public static class Event
 {
-    private static bool IsRoundStart = false;
     public static void Unload()
     {
         Instance.RemoveListener<OnMapStart>(OnMapStart);
-        Instance.RemoveListener<OnMapEnd>(OnMapEnd);
         Instance.RemoveListener<OnServerPrecacheResources>(OnServerPrecacheResources);
         Instance.RemoveListener<OnTick>(OnTick);
         Instance.RemoveListener<OnEntityCreated>(OnEntityCreated);
@@ -26,13 +24,11 @@ public static class Event
     public static void Load()
     {
         Instance.RegisterListener<OnMapStart>(OnMapStart);
-        Instance.RegisterListener<OnMapEnd>(OnMapEnd);
         Instance.RegisterListener<OnServerPrecacheResources>(OnServerPrecacheResources);
         Instance.RegisterListener<OnTick>(OnTick);
         Instance.RegisterListener<OnEntityCreated>(OnEntityCreated);
 
 
-        Instance.RegisterEventHandler<EventRoundStart>(OnEventRoundStart);
         Instance.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
         Instance.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
         Instance.RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
@@ -43,16 +39,13 @@ public static class Event
             StartCreditsTimer();
         });
     }
-    public static void OnMapEnd()
-    {
-        IsRoundStart = false;
-    }
 
     public static void StartCreditsTimer()
     {
         Instance.AddTimer(Instance.Config.Credits["interval_active_inactive"], () =>
         {
-            if (!IsRoundStart) {
+            if (GameRules.IgnoreWarmUp())
+            {
                 return;
             }
 
@@ -198,13 +191,6 @@ public static class Event
         return HookResult.Continue;
     }
 
-    
-    public static HookResult OnEventRoundStart(EventRoundStart @event, GameEventInfo info)
-    {
-        IsRoundStart = true;
-        return HookResult.Continue;
-    }
-
     public static HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
@@ -231,7 +217,7 @@ public static class Event
     }
     public static HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
     {
-        if (!IsRoundStart)
+        if (GameRules.IgnoreWarmUp())
         {
             return HookResult.Continue;
         }
