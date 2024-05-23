@@ -1,5 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
 using static CounterStrikeSharp.API.Core.Listeners;
@@ -11,25 +12,90 @@ namespace Store;
 
 public static class Event
 {
+    private static bool IsRoundStart = false;
     public static void Unload()
     {
         Instance.RemoveListener<OnMapStart>(OnMapStart);
+        Instance.RemoveListener<OnMapEnd>(OnMapEnd);
         Instance.RemoveListener<OnServerPrecacheResources>(OnServerPrecacheResources);
         Instance.RemoveListener<OnTick>(OnTick);
         Instance.RemoveListener<OnEntityCreated>(OnEntityCreated);
+        Instance.RemoveListener<OnClientAuthorized>(OnClientAuthorized);
     }
 
     public static void Load()
     {
         Instance.RegisterListener<OnMapStart>(OnMapStart);
+        Instance.RegisterListener<OnMapEnd>(OnMapEnd);
         Instance.RegisterListener<OnServerPrecacheResources>(OnServerPrecacheResources);
         Instance.RegisterListener<OnTick>(OnTick);
         Instance.RegisterListener<OnEntityCreated>(OnEntityCreated);
 
+
+        Instance.RegisterEventHandler<EventRoundStart>(OnEventRoundStart);
         Instance.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
         Instance.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
         Instance.RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
+        Instance.RegisterListener<OnClientAuthorized>(OnClientAuthorized);
+
+        Instance.AddTimer(5.0F, () =>
+        {
+            StartCreditsTimer();
+        });
     }
+    public static void OnMapEnd()
+    {
+        IsRoundStart = false;
+    }
+
+    public static void StartCreditsTimer()
+    {
+        Instance.AddTimer(Instance.Config.Credits["interval_active_inactive"], () =>
+        {
+            if (!IsRoundStart) {
+                return;
+            }
+
+            foreach (var player in Utilities.GetPlayers())
+            {
+                if (player == null
+                    || !player.IsValid
+                    || player.PlayerPawn == null
+                    || !player.PlayerPawn.IsValid
+                    || player.PlayerPawn.Value == null
+                    || player.UserId == null
+                    || player.IsBot
+                    || player.IsHLTV)
+                {
+                    continue;
+                }
+
+                CsTeam team = player.Team;
+
+                switch (team)
+                {
+                    case CsTeam.Terrorist:
+                    case CsTeam.CounterTerrorist:
+                        if (Instance.Config.Credits["amount_active"] > 0)
+                        {
+                            Credits.Give(player, Instance.Config.Credits["amount_active"]);
+                            player.PrintToChatMessage("credits_earned<active>", Instance.Config.Credits["amount_active"]);
+                        }
+                        break;
+
+                    case CsTeam.Spectator:
+                        if (Instance.Config.Credits["amount_inactive"] > 0)
+                        {
+                            Credits.Give(player, Instance.Config.Credits["amount_inactive"]);
+                            player.PrintToChatMessage("credits_earned<inactive>", Instance.Config.Credits["amount_inactive"]);
+                        }
+                        break;
+                }
+            }
+        }, TimerFlags.REPEAT);
+    }
+
+
 
     public static void OnMapStart(string mapname)
     {
@@ -43,7 +109,10 @@ public static class Event
         List<Store_Item> itemsToRemove = Instance.GlobalStorePlayerItems
         .Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)
         .ToList();
+
         string store_equipmentTableName = Instance.Config.Settings.TryGetValue("database_equip_table_name", out string? tablename) ? tablename : "store_equipment";
+
+        
         foreach (Store_Item? item in itemsToRemove)
         {
             Database.ExecuteAsync($"DELETE FROM {store_equipmentTableName} WHERE SteamID == @SteamID AND UniqueId == @UniqueId", new { item.SteamID, item.UniqueId });
@@ -100,6 +169,17 @@ public static class Event
         Item_CustomWeapon.OnEntityCreated(entity);
     }
 
+    private static void OnClientAuthorized(int playerSlot, SteamID steamId)
+    {
+        CCSPlayerController? player = Utilities.GetPlayerFromSlot(playerSlot);
+        if (player == null)
+        {
+            return;
+        }
+
+        Task.Run(() => Database.LoadPlayer(player));
+    }
+
     public static HookResult OnPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
@@ -109,51 +189,19 @@ public static class Event
             return HookResult.Continue;
         }
 
-        Task.Run(() => Database.LoadPlayer(player));
-
         if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
         {
             value = new Player();
             Instance.GlobalDictionaryPlayer.Add(player, value);
         }
 
-        value.CreditIntervalTimer = Instance.AddTimer(Instance.Config.Credits["interval_active_inactive"], () =>
-        {
-            if (GameRules.IgnoreWarmUp())
-            {
-                return;
-            }
+        return HookResult.Continue;
+    }
 
-            CsTeam Team = player.Team;
-
-            switch (Team)
-            {
-                case CsTeam.Terrorist:
-                case CsTeam.CounterTerrorist:
-                    {
-                        if (Instance.Config.Credits["amount_active"] > 0)
-                        {
-                            Credits.Give(player, Instance.Config.Credits["amount_active"]);
-
-                            player.PrintToChatMessage("credits_earned<active>", Instance.Config.Credits["amount_active"]);
-                        }
-
-                        break;
-                    }
-                case CsTeam.Spectator:
-                    {
-                        if (Instance.Config.Credits["amount_inactive"] > 0)
-                        {
-                            Credits.Give(player, Instance.Config.Credits["amount_inactive"]);
-
-                            player.PrintToChatMessage("credits_earned<inactive>", Instance.Config.Credits["amount_inactive"]);
-                        }
-
-                        break;
-                    }
-            }
-        }, TimerFlags.REPEAT | TimerFlags.STOP_ON_MAPCHANGE);
-
+    
+    public static HookResult OnEventRoundStart(EventRoundStart @event, GameEventInfo info)
+    {
+        IsRoundStart = true;
         return HookResult.Continue;
     }
 
@@ -181,10 +229,9 @@ public static class Event
 
         return HookResult.Continue;
     }
-
     public static HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
     {
-        if (GameRules.IgnoreWarmUp())
+        if (!IsRoundStart)
         {
             return HookResult.Continue;
         }
