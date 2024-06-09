@@ -82,7 +82,7 @@ public static class Menu
 
                 menu.Add(builderkey.ToString(), (CCSPlayerController player, IWasdMenuOption option) =>
                 {
-                    DisplayItems(player, builderkey.ToString(), category.Value, inventory);
+                    DisplayItems(player, builderkey.ToString(), category.Value, inventory, option);
                 });
             }
 
@@ -90,13 +90,15 @@ public static class Menu
         }
     }
 
-    public static void DisplayItems(CCSPlayerController player, string key, Dictionary<string, Dictionary<string, string>> items, bool inventory)
+    public static void DisplayItems(CCSPlayerController player, string key, Dictionary<string, Dictionary<string, string>> items, bool inventory, IWasdMenuOption? prev = null)
     {
         Dictionary<string, Dictionary<string, string>> playerSkinItems = items.Where(p => p.Value["type"] == "playerskin" && p.Value["enable"] == "true").ToDictionary(p => p.Key, p => p.Value);
 
         if (playerSkinItems.Count != 0)
         {
             var menu = WasdManager.CreateMenu(key);
+            if(prev != null)
+                menu.Prev = prev.Parent?.Options?.Find(prev);
 
             foreach (int Slot in new[] { 2, 3 })
             {
@@ -112,22 +114,24 @@ public static class Menu
 
                     menu.Add(builder.ToString(), (CCSPlayerController player, IWasdMenuOption option) =>
                     {
-                        DisplayItem(player, inventory, builder.ToString(), playerSkinItems.Where(p => p.Value.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && int.Parse(p.Value["slot"]) == Slot).ToDictionary(p => p.Key, p => p.Value));
+                        DisplayItem(player, inventory, builder.ToString(), playerSkinItems.Where(p => p.Value.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && int.Parse(p.Value["slot"]) == Slot).ToDictionary(p => p.Key, p => p.Value), option);
                     });
                 }
             }
 
-            WasdManager.OpenMainMenu(player, menu);
+            WasdManager.OpenSubMenu(player, menu);
         }
         else
         {
-            DisplayItem(player, inventory, key, items);
+            DisplayItem(player, inventory, key, items, prev);
         }
     }
 
-    public static void DisplayItem(CCSPlayerController player, bool inventory, string key, Dictionary<string, Dictionary<string, string>> items)
+    public static void DisplayItem(CCSPlayerController player, bool inventory, string key, Dictionary<string, Dictionary<string, string>> items, IWasdMenuOption? prev = null)
     {
         var menu = WasdManager.CreateMenu(key);
+        if (prev != null)
+            menu.Prev = prev.Parent?.Options?.Find(prev);
 
         foreach (KeyValuePair<string, Dictionary<string, string>> kvp in items)
         {
@@ -148,7 +152,7 @@ public static class Menu
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
-                    DisplayItemOption(player, item);
+                    DisplayItemOption(player, item, option);
                 }, item["name"]);
             }
             else if (!inventory && !isHidden)
@@ -157,7 +161,7 @@ public static class Menu
                 {
                     if (Item.Purchase(player, item))
                     {
-                        DisplayItemOption(player, item);
+                        DisplayItemOption(player, item, option);
                     }
                     else
                     {
@@ -167,12 +171,14 @@ public static class Menu
             }
         }
 
-        WasdManager.OpenMainMenu(player, menu);
+        WasdManager.OpenSubMenu(player, menu);
     }
 
-    public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item)
+    public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item, IWasdMenuOption? prev = null)
     {
         var menu = WasdManager.CreateMenu(item["name"]);
+        if (prev != null)
+            menu.Prev = prev.Parent?.Options?.Find(prev);
 
         if (Item.PlayerUsing(player, item["type"], item["uniqueid"]))
         {
@@ -182,7 +188,7 @@ public static class Menu
 
                 player.PrintToChatMessage("Purchase Unequip", item["name"]);
 
-                DisplayItemOption(player, item);
+                DisplayItemOption(player, item, option);
             }, "menu_store<unequip>");
         }
         else
@@ -193,7 +199,7 @@ public static class Menu
 
                 player.PrintToChatMessage("Purchase Equip", item["name"]);
 
-                DisplayItemOption(player, item);
+                DisplayItemOption(player, item, option);
             }, "menu_store<equip>");
         }
 
@@ -235,7 +241,7 @@ public static class Menu
             menu.Add(PlayerItems.DateOfExpiration.ToString(), (p, o) => { DisplayItemOption(player, item); });
         }
 
-        WasdManager.OpenMainMenu(player, menu);
+        WasdManager.OpenSubMenu(player, menu);
     }
 
     public static void OnTick()
