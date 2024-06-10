@@ -58,5 +58,11 @@
 
     "credits_earned<active>": "{white}You earned {green}{0} credits {white}for being active on the server.",
     "credits_earned<inactive>": "{white}You earned {green}{0} credits {white}for being inactive on the server.",
-    "credits_earned<kill>": "{white}You earned {green}{0} credits {white}for killing a player."
+    "credits_earned<kill>": "{white}You earned {green}{0} credits {white}for killing a player.",
+
+    "menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''>",
+    "menu.selection.right": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/right.gif' class=''>",
+    "menu.title.prefix": "<font color='green'>",
+    "menu.more.options.below": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''>",
+    "menu.bottom.text": "           <font color='cyan'>[ WASD - To Move ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - To Exit ]"
 }

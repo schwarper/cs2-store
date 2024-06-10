@@ -8,7 +8,7 @@ namespace Store;
 
 public class WasdMenuPlayer
 {
-    public CCSPlayerController player { get; set; }
+    public CCSPlayerController player { get; set; } = null!;
     public WasdMenu? MainMenu = null;
     public LinkedListNode<IWasdMenuOption>? CurrentChoice = null;
     public LinkedListNode<IWasdMenuOption>? MenuStart = null;
