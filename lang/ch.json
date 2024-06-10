@@ -1,0 +1,64 @@
+{
+    "No matching client": "{white}没有匹配的客户端",
+    "More than one client matched": "{white}有多个客户端匹配",
+    "Must be an integer": "{white}您输入的值必须是整数",
+    "Must be higher than zero": "{white}您输入的值必须大于零.",
+    "Must be a steamid": "{white}您输入的值必须是有效的steamid",
+    "No credits enough": "{white}你没有足够的积分.",
+    "You are not alive": "{white}你只有活着的时候才能使用此功能.",
+    "You are alive": "{white}你只有死亡的时候才可以购买.",
+    "No in pistol round": "{white}在手枪局您无法购买此商品 {green}{0} {white}.",
+    "No gift yourself": "{white}您不能将积分赠送给自己。",
+    "No type found": "{white}找不到类型.",
+
+    "t team players": "{green}T阵营 {white}玩家",
+    "ct team players": "{green}CT阵营{white}玩家",
+    "alive players": "{green}幸存 {white}玩家",
+    "all players": "{green}所有 {white}玩家",
+    "dead players": "{green}死亡 {white}玩家",
+    "Console": "Console",
+
+    "Purchase Succeeded": "{white}你 {white}购买了 {green}{0}{white}.",
+    "Purchase Equip": "{white}你 {white}装备了 {green}{0}{white}.",
+    "Purchase Unequip": "{white}你 {white}未装备 {green}{0}{white}.",
+    "Item Sell": "{white}你 {white}出售了 {green}{0}{white}.",
+    "Godmode expired": "{white}你的无敌时间已过期.",
+    "Speed expired": "{white}你的加速时间已过.",
+
+    "menu.bottom.text": "           <font color='cyan'>[ WASD - 移动 ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - 退出 ]",
+
+    "menu_store<title>": "Store [你的积分: {0}]",
+
+    "menu_store<playerskins>": "玩家皮肤",
+    "menu_store<weapons>": "武器",
+    "menu_store<features>": "特征",
+    "menu_store<gravity>": "重力",
+    "menu_store<speed>": "速度",
+    "menu_store<godmode>": "无敌模式",
+    "menu_store<smoke>": "烟雾",
+    "menu_store<trail>": "足迹",
+    "menu_store<grenadetrail>": "手榴弹弹道",
+    "menu_store<tracer>": "曳光弹",
+    "menu_store<colorskins>": "彩色皮肤",
+
+    "menu_store<t_title>": "T 模型",
+    "menu_store<ct_title>": "CT 模型",
+    "menu_store<purchase>": "{0} - [{1}]",
+    "menu_store<equip>": "装备",
+    "menu_store<unequip>": "未来装备",
+    "menu_store<sell>": "出售 [{0}]",
+
+    "css_credits": "{white}你拥有 {green}{0} {white}积分.",
+    "css_givecredits<player>": "{blue}{0} {white}给予 {green}{2} 积分 {white}至 {green}{1}{white}.",
+    "css_givecredits<steamid>": "{blue}{0} {white}给予 {green}{2} 积分 {white}至 {green}{1}{white}.",
+    "css_givecredits<multiple>": "{blue}{0} {white}给予 {green}{2} 积分 {white}至 {green}{1}{white}.",
+
+    "css_gift<player>": "{white}你将 {green}{1}{white}积分转给了{blue}{0}{white}.",
+    "css_gift<target>": "{blue}{0} {white}已到账 {green}{1} {white}积分.",
+
+    "css_reset": "{blue}{0}{white} 重置 {green}{1}{white}'商店数据.",
+
+    "credits_earned<active>": "{white}你赚取了 {green}{0} 积分 {white}服务器处于活动状态.",
+    "credits_earned<inactive>": "{white}你赚取了 {green}{0} 积分 {white}因为服务器处于非活动状态.",
+    "credits_earned<kill>": "{white}你赚取了 {green}{0} 积分 {white}来自于击杀玩家."
+}

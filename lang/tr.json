@@ -1,0 +1,64 @@
+{
+    "No matching client": "{white}Eşleşen alıcı bulunamadı.",
+    "More than one client matched": "{white}Verilen biçim düzeniyle birden fazla alıcı eşleşti.",
+    "Must be an integer": "{white}Girdiğiniz değer bir sayı olmalıdır.",
+    "Must be higher than zero": "{white}Girdiğiniz değer sıfırdan büyük olmalıdır.",
+    "Must be a steamid": "{white}Girdiğiniz değer steamid olmalıdır.",
+    "No credits enough": "{white}Yeterli krediniz bulunmamaktadır.",
+    "You are not alive": "{white}Sadece yaşarken alabilirsiniz.",
+    "You are alive": "{white}Sadece ölüyken alabilirsiniz.",
+    "No in pistol round": "{white}Bu ürünü {green}{0} {white}tabanca turunda alamazsınız.",
+    "No gift yourself": "{white}Kendine kredi hediye edemezsin.",
+    "No type found": "{white}Böyle bir type bulunamadı.",
+
+    "t team players": "{green}t takımı {white}oyuncularını",
+    "ct team players": "{green}ct takımı {white}oyuncularını",
+    "alive players": "{green}yaşayan {white}oyuncuları",
+    "all players": "{green}bütün {white}oyuncuları",
+    "dead players": "{green}ölü {white}oyuncuları",
+    "Console": "PANEL",
+
+    "Purchase Succeeded": "{green}{0} {white}satın aldın.",
+    "Purchase Equip": "{green}{0} {white}kuşandın.",
+    "Purchase Unequip": "{green}{0} {white}bıraktın.",
+    "Item Sell": "{green}{0} {white}sattın.",
+    "Godmode expired": "{white}Godmode süreniz bitti.",
+    "Speed expired": "{white}Hızlı koşma süreniz bitti.",
+
+    "menu_store<text>": "           <font color='cyan'>[ WASD - Hareket ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Çıkış ]",
+
+    "menu_store<title>": "Market [Krediniz: {0}]",
+
+    "menu_store<playerskins>": "Oyuncu Modelleri",
+    "menu_store<weapons>": "Silahlar",
+    "menu_store<features>": "Özellikler",
+    "menu_store<gravity>": "Yer çekimi",
+    "menu_store<speed>": "Hızlı Koşma",
+    "menu_store<godmode>": "Dokunulmazlık",
+    "menu_store<smoke>": "Sis rengi",
+    "menu_store<trail>": "Trail",
+    "menu_store<grenadetrail>": "Bomba izi",
+    "menu_store<tracer>": "Tracer",
+    "menu_store<colorskins>": "Renkli Skin",
+
+    "menu_store<t_title>": "T Modelleri",
+    "menu_store<ct_title>": "CT Modelleri",
+    "menu_store<purchase>": "{0} - [{1}]",
+    "menu_store<equip>": "KUŞAN",
+    "menu_store<unequip>": "BIRAK",
+    "menu_store<sell>": "SAT [{0}]",
+
+    "css_credits": "{green}{0} {white}kredin bulunmaktadır.",
+    "css_givecredits<player>": "{blue}{0}{white}, {green}{1} {white}adlı oyuncuya {green}{2} kredi {white}verdi.",
+    "css_givecredits<steamid>": "{blue}{0}{white}, {green}{1} {white}steamidye {green}{2} kredi {white}verdi.",
+    "css_givecredits<multiple>": "{blue}{0}{white}, {green}{1} {green}{2} kredi {white}verdi.",
+
+    "css_gift<player>": "{blue}{0}{white} adlı kişiye {green}{1} {white}kredi yolladınız.",
+    "css_gift<target>": "{blue}{0}{white}, size {green}{1} {white}kredi yolladı.",
+
+    "css_reset": "{blue}{0}{white}, {green}{1} {white}adlı oyuncunun marketini sıfırladı",
+
+    "credits_earned<active>": "{white}Sunucuda aktif vakit geçirdiğiniz için {green}{0} kredi {white}kazandınız.",
+    "credits_earned<inactive>": "{white}Sunucuda pasif vakit geçirdiğiniz için {green}{0} kredi {white}kazandınız.",
+    "credits_earned<kill>": "{white}Oyuncu öldürdüğünüz için {green}{0} {white}kredi kazandınız."
+}
