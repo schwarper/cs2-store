@@ -25,6 +25,8 @@
     "Godmode expired": "{white}Vaš čas boga načina je potekel.",
     "Speed expired": "{white}Vaš hitrostni čas je potekel.",
 
+    "menu_store<text>": "           <font color='cyan'>[ WASD - Premikanje ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Izstopite iz ]",
+
     "menu_store<title>": "Trgovina [Vaši krediti: {0}]",
 
     "menu_store<playerskins>": "Igralniške kože",

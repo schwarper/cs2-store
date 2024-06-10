@@ -25,6 +25,8 @@
     "Godmode expired": "{white}Seu tempo de godmode expirou.",
     "Speed expired": "{white}Seu tempo de velocidade expirou.",
 
+    "menu_store<text>": "           <font color='cyan'>[ WASD - Para mover ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Sair ]",
+
     "menu_store<title>": "Loja [Seus créditos: {0}]",
 
     "menu_store<playerskins>": "Skins de Jogadores",

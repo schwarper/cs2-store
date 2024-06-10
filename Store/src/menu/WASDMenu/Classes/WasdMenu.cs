@@ -9,9 +9,9 @@ public class WasdMenu : IWasdMenu
     public LinkedListNode<IWasdMenuOption>? Prev { get; set; } = null;
     public LinkedListNode<IWasdMenuOption> Add(string display, Action<CCSPlayerController, IWasdMenuOption> onChoice)
     {
-        if (Options == null)
-            Options = new();
-        WasdMenuOption newOption = new WasdMenuOption
+        Options ??= new();
+
+        WasdMenuOption newOption = new()
         {
             OptionDisplay = display,
             OnChoose = onChoice,

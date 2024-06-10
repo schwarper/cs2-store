@@ -19,27 +19,40 @@ public static class Menu
     {
         Instance.RegisterEventHandler<EventPlayerActivate>((@event, info) =>
         {
-            if (@event.Userid != null)
+            var player = @event.Userid;
+
+            if (player == null)
             {
-                Players[@event.Userid.Slot] = new WasdMenuPlayer
-                {
-                    player = @event.Userid,
-                    Buttons = 0
-                };
+                return HookResult.Continue;
             }
+
+            Players[player.Slot] = new WasdMenuPlayer
+            {
+                player = player,
+                Buttons = 0
+            };
 
             return HookResult.Continue;
         });
 
         Instance.RegisterEventHandler<EventPlayerDisconnect>((@event, info) =>
         {
-            if (@event.Userid != null) Players.Remove(@event.Userid.Slot);
+            var player = @event.Userid;
+
+            if (player == null)
+            {
+                return HookResult.Continue;
+            }
+
+            Players.Remove(player.Slot);
+
             return HookResult.Continue;
         });
 
-        Instance.RegisterListener<Listeners.OnTick>(OnTick);
+        Instance.RegisterListener<OnTick>(OnTick);
 
         if (hotReload)
+        {
             foreach (CCSPlayerController pl in Utilities.GetPlayers())
             {
                 Players[pl.Slot] = new WasdMenuPlayer
@@ -48,6 +61,7 @@ public static class Menu
                     Buttons = pl.Buttons
                 };
             }
+        }
     }
 
     public static void AddMenuOption(CCSPlayerController player, IWasdMenu menu, Action<CCSPlayerController, IWasdMenuOption> onSelect, string display, params object[] args)
