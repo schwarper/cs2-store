@@ -25,6 +25,8 @@
     "Godmode expired": "{white}你的无敌时间已过期.",
     "Speed expired": "{white}你的加速时间已过.",
 
+    "menu.bottom.text": "           <font color='cyan'>[ WASD - 移动 ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - 退出 ]",
+
     "menu_store<title>": "Store [你的积分: {0}]",
 
     "menu_store<playerskins>": "玩家皮肤",

@@ -25,6 +25,8 @@
     "Godmode expired": "{white}Godmode süreniz bitti.",
     "Speed expired": "{white}Hızlı koşma süreniz bitti.",
 
+    "menu_store<text>": "           <font color='cyan'>[ WASD - Hareket ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Çıkış ]",
+
     "menu_store<title>": "Market [Krediniz: {0}]",
 
     "menu_store<playerskins>": "Oyuncu Modelleri",

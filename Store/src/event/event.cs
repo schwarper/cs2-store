@@ -49,7 +49,7 @@ public static class Event
                 return;
             }
 
-            foreach (var player in Utilities.GetPlayers())
+            foreach (CCSPlayerController player in Utilities.GetPlayers())
             {
                 if (player == null
                     || !player.IsValid
@@ -110,7 +110,7 @@ public static class Event
 
         string store_equipmentTableName = Instance.Config.Settings.TryGetValue("database_equip_table_name", out string? tablename) ? tablename : "store_equipment";
 
-        
+
         foreach (Store_Item? item in itemsToRemove)
         {
             Database.ExecuteAsync($"DELETE FROM {store_equipmentTableName} WHERE SteamID == @SteamID AND UniqueId == @UniqueId", new { item.SteamID, item.UniqueId });

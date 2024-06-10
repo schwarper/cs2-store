@@ -109,7 +109,7 @@ public static class Database
             throw;
         }
     }
-    
+
 
     public static async Task LoadPlayer(CCSPlayerController player)
     {

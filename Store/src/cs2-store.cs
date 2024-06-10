@@ -10,7 +10,7 @@ namespace Store;
 public class Store : BasePlugin, IPluginConfig<StoreConfig>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "0.2.0";
+    public override string ModuleVersion => "0.2.1";
     public override string ModuleAuthor => "schwarper & xshadowbringer";
 
     public StoreConfig Config { get; set; } = new StoreConfig();
@@ -31,6 +31,7 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
 
         Event.Load();
         Command.Load();
+        Menu.SetSettings(hotReload);
 
         Item_Armor.OnPluginStart();
         Item_ColoredSkin.OnPluginStart();
