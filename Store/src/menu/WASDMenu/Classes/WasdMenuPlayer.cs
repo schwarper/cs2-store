@@ -2,6 +2,7 @@
 using CounterStrikeSharp.API.Core;
 using Microsoft.Extensions.Localization;
 using System.Text;
+using static Store.Store;
 
 namespace Store;
 
@@ -13,7 +14,6 @@ public class WasdMenuPlayer
     public LinkedListNode<IWasdMenuOption>? MenuStart = null;
     public string CenterHtml = "";
     public int VisibleOptions = 5;
-    public static IStringLocalizer? Localizer = null;
     public PlayerButtons Buttons { get; set; }
 
     public void OpenMainMenu(WasdMenu? menu)
@@ -124,13 +124,13 @@ public class WasdMenuPlayer
         LinkedListNode<IWasdMenuOption>? option = MenuStart!;
         if (option.Value.Parent?.Title != "")
         {
-            builder.AppendLine($"{Localizer?["menu.title.prefix"]}{option.Value.Parent?.Title}</u><font color='white'><br>");
+            builder.AppendLine($"{Instance.Localizer["menu.title.prefix"]}{option.Value.Parent?.Title}</u><font color='white'><br>");
         }
 
         while (i < VisibleOptions && option != null)
         {
             if (option == CurrentChoice)
-                builder.AppendLine($"{Localizer?["menu.selection.left"]} {option.Value.OptionDisplay} {Localizer?["menu.selection.right"]} <br>");
+                builder.AppendLine($"{Instance.Localizer["menu.selection.left"]} {option.Value.OptionDisplay} {Instance.Localizer["menu.selection.right"]} <br>");
             else
                 builder.AppendLine($"{option.Value.OptionDisplay} <br>");
             option = option.Next;
@@ -140,11 +140,11 @@ public class WasdMenuPlayer
         if (option != null)
         { // more options
             builder.AppendLine(
-                $"{Localizer?["menu.more.options.below"]}");
+                $"{Instance.Localizer["menu.more.options.below"]}");
         }
 
         builder.AppendLine("<br>" +
-                           $"{Localizer?["menu.bottom.text"]}<br>");
+                           $"{Instance.Localizer["menu.bottom.text"]}<br>");
         builder.AppendLine("</div>");
         CenterHtml = builder.ToString();
     }

@@ -31,6 +31,7 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
 
         Event.Load();
         Command.Load();
+        Menu.SetSettings(hotReload);
 
         Item_Armor.OnPluginStart();
         Item_ColoredSkin.OnPluginStart();
