@@ -1,6 +1,5 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using Microsoft.Extensions.Localization;
 using System.Text;
 using static Store.Store;
 

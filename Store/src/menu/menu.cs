@@ -1,8 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Capabilities;
 using CounterStrikeSharp.API.Core.Translations;
-using CounterStrikeSharp.API.Modules.Menu;
 using System.Globalization;
 using System.Text;
 using static CounterStrikeSharp.API.Core.Listeners;
@@ -19,7 +17,7 @@ public static class Menu
     {
         Instance.RegisterEventHandler<EventPlayerActivate>((@event, info) =>
         {
-            var player = @event.Userid;
+            CCSPlayerController? player = @event.Userid;
 
             if (player == null)
             {
@@ -37,7 +35,7 @@ public static class Menu
 
         Instance.RegisterEventHandler<EventPlayerDisconnect>((@event, info) =>
         {
-            var player = @event.Userid;
+            CCSPlayerController? player = @event.Userid;
 
             if (player == null)
             {
@@ -82,7 +80,7 @@ public static class Menu
             StringBuilder builder = new();
             builder.AppendFormat(Instance.Localizer["menu_store<title>", Credits.Get(player)]);
 
-            var menu = WasdManager.CreateMenu(builder.ToString());
+            IWasdMenu menu = WasdManager.CreateMenu(builder.ToString());
 
             foreach (KeyValuePair<string, Dictionary<string, Dictionary<string, string>>> category in Instance.Config.Items)
             {
@@ -110,8 +108,8 @@ public static class Menu
 
         if (playerSkinItems.Count != 0)
         {
-            var menu = WasdManager.CreateMenu(key);
-            if(prev != null)
+            IWasdMenu menu = WasdManager.CreateMenu(key);
+            if (prev != null)
                 menu.Prev = prev.Parent?.Options?.Find(prev);
 
             foreach (int Slot in new[] { 2, 3 })
@@ -143,7 +141,7 @@ public static class Menu
 
     public static void DisplayItem(CCSPlayerController player, bool inventory, string key, Dictionary<string, Dictionary<string, string>> items, IWasdMenuOption? prev = null)
     {
-        var menu = WasdManager.CreateMenu(key);
+        IWasdMenu menu = WasdManager.CreateMenu(key);
         if (prev != null)
             menu.Prev = prev.Parent?.Options?.Find(prev);
 
@@ -190,7 +188,7 @@ public static class Menu
 
     public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item, IWasdMenuOption? prev = null)
     {
-        var menu = WasdManager.CreateMenu(item["name"]);
+        IWasdMenu menu = WasdManager.CreateMenu(item["name"]);
         if (prev != null)
             menu.Prev = prev.Parent?.Options?.Find(prev);
 
