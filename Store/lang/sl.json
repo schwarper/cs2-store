@@ -25,7 +25,11 @@
     "Godmode expired": "{white}Vaš čas boga načina je potekel.",
     "Speed expired": "{white}Vaš hitrostni čas je potekel.",
 
-    "menu_store<text>": "           <font color='cyan'>[ WASD - Premikanje ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Izstopite iz ]",
+    "menu.buttom.text": "           <font color='cyan'>[ WASD - Premikanje ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Izstopite iz ]",
+    "menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''> <font color='orange'>",
+    "menu.selection.right": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/right.gif' class=''> <font color='white'>",
+    "menu.selection.prefix": "<font color='green'>",
+    "menu.selection.optionsbelow": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''>",
 
     "menu_store<title>": "Trgovina [Vaši krediti: {0}]",
 

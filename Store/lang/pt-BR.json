@@ -25,7 +25,11 @@
     "Godmode expired": "{white}Seu tempo de godmode expirou.",
     "Speed expired": "{white}Seu tempo de velocidade expirou.",
 
-    "menu_store<text>": "           <font color='cyan'>[ WASD - Para mover ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Sair ]",
+    "menu.buttom.text": "           <font color='cyan'>[ WASD - Para mover ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Sair ]",
+    "menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''> <font color='orange'>",
+    "menu.selection.right": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/right.gif' class=''> <font color='white'>",
+    "menu.selection.prefix": "<font color='green'>",
+    "menu.selection.optionsbelow": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''>",
 
     "menu_store<title>": "Loja [Seus créditos: {0}]",
 

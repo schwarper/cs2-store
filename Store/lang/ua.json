@@ -25,7 +25,11 @@
 	"Godmode expired": "{white}Час вашого богомоду закінчився.",
 	"Speed expired": "{white}Час вашої швидкості закінчився.",
 
-	"menu_store<text>": "           <font color='cyan'>[ WASD - Перемістити ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Виходьте ]",
+	"menu.bottom.text": "           <font color='cyan'>[ WASD - Перемістити ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Виходьте ]",
+	"menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''> <font color='orange'>",
+	"menu.selection.right": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/right.gif' class=''> <font color='white'>",
+	"menu.selection.prefix": "<font color='green'>",
+	"menu.selection.optionsbelow": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''>",
 
 	"menu_store<title>": "Магазин [Ваші кредити: {0}]",
 
