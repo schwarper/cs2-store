@@ -8,10 +8,6 @@ Discord nickname: schwarper
 
 Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 
-# Documentation
-
-https://cs2-store.gitbook.io/cs2-store
-
 # Images
 
 ![image](https://github.com/schwarper/cs2-store/assets/75811921/d0edc64e-6475-4d04-b5c7-0ea03686d1e6)
