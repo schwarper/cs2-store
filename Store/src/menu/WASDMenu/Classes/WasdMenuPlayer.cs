@@ -1,6 +1,5 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using Microsoft.Extensions.Localization;
 using System.Text;
 using static Store.Store;
 
@@ -8,7 +7,12 @@ namespace Store;
 
 public class WasdMenuPlayer
 {
-    public CCSPlayerController player { get; set; }
+    public const string MenuSelectionLeft = "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''>";
+    public const string MenuSelectionRight = "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/right.gif' class=''>";
+    public const string Prefix = "<font color='green'>";
+    public const string OptionsBelow = "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''>";
+
+    public CCSPlayerController player = null!;
     public WasdMenu? MainMenu = null;
     public LinkedListNode<IWasdMenuOption>? CurrentChoice = null;
     public LinkedListNode<IWasdMenuOption>? MenuStart = null;
@@ -119,18 +123,18 @@ public class WasdMenuPlayer
         if (CurrentChoice == null || MainMenu == null)
             return;
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new();
         int i = 0;
         LinkedListNode<IWasdMenuOption>? option = MenuStart!;
         if (option.Value.Parent?.Title != "")
         {
-            builder.AppendLine($"{Instance.Localizer["menu.title.prefix"]}{option.Value.Parent?.Title}</u><font color='white'><br>");
+            builder.AppendLine($"{Prefix}{option.Value.Parent?.Title}</u><font color='white'><br>");
         }
 
         while (i < VisibleOptions && option != null)
         {
             if (option == CurrentChoice)
-                builder.AppendLine($"{Instance.Localizer["menu.selection.left"]} {option.Value.OptionDisplay} {Instance.Localizer["menu.selection.right"]} <br>");
+                builder.AppendLine($"{MenuSelectionLeft} {option.Value.OptionDisplay} {MenuSelectionRight} <br>");
             else
                 builder.AppendLine($"{option.Value.OptionDisplay} <br>");
             option = option.Next;
@@ -138,13 +142,13 @@ public class WasdMenuPlayer
         }
 
         if (option != null)
-        { // more options
+        {
             builder.AppendLine(
-                $"{Instance.Localizer["menu.more.options.below"]}");
+                $"{OptionsBelow}");
         }
 
         builder.AppendLine("<br>" +
-                           $"{Instance.Localizer["menu.bottom.text"]}<br>");
+                           $"{Instance.Localizer["menu_store<text>"]}<br>");
         builder.AppendLine("</div>");
         CenterHtml = builder.ToString();
     }

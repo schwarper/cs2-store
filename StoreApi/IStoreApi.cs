@@ -9,6 +9,7 @@ public interface IStoreApi
 {
     public static readonly PluginCapability<IStoreApi?> Capability = new("store:api");
 
+    public string GetDatabaseString();
     public int GetPlayerCredits(CCSPlayerController player);
     public int SetPlayerCredits(CCSPlayerController player, int credits);
     public int GetPlayerOriginalCredits(CCSPlayerController player);

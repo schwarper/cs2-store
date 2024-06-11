@@ -41,7 +41,7 @@ public static class WasdManager
 
     public static IWasdMenu CreateMenu(string title = "")
     {
-        WasdMenu menu = new WasdMenu
+        WasdMenu menu = new()
         {
             Title = title
         };
