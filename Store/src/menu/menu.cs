@@ -286,7 +286,9 @@ public static class Menu
 
             if (player.CenterHtml != "")
             {
-                player.player.PrintToCenterHtml(player.CenterHtml);
+                Server.NextFrame(() =>
+                    player.player.PrintToCenterHtml(player.CenterHtml)
+                );
             }
         }
     }
