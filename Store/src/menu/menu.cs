@@ -200,7 +200,7 @@ public static class Menu
 
                 player.PrintToChatMessage("Purchase Unequip", item["name"]);
 
-                DisplayItemOption(player, item, option);
+                DisplayItemOption(player, item, prev);
             }, "menu_store<unequip>");
         }
         else
@@ -211,7 +211,7 @@ public static class Menu
 
                 player.PrintToChatMessage("Purchase Equip", item["name"]);
 
-                DisplayItemOption(player, item, option);
+                DisplayItemOption(player, item, prev);
             }, "menu_store<equip>");
         }
 
