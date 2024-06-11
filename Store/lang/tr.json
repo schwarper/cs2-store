@@ -25,10 +25,10 @@
     "Godmode expired": "{white}Godmode süreniz bitti.",
     "Speed expired": "{white}Hızlı koşma süreniz bitti.",
 
-    "menu.buttom.text": "           <font color='cyan'>[ WASD - Hareket ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Çıkış ]",
+    "menu.bottom.text": "           <font color='cyan'>[ WASD - Hareket ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Çıkış ]",
     "menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''> <font color='orange'>",
     "menu.selection.right": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/right.gif' class=''> <font color='white'>",
-    "menu.selection.prefix": "<font color='green'>",
+    "menu.prefix": "<font color='green'>",
     "menu.selection.optionsbelow": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''>",
 
     "menu_store<title>": "Market [Krediniz: {0}]",
