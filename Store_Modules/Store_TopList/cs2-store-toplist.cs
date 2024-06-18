@@ -1,4 +1,4 @@
-﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
@@ -16,13 +16,15 @@ namespace Store_TopList
     {
         [JsonPropertyName("top_players_limit")]
         public int TopPlayersLimit { get; set; } = 10;
+
+        [JsonPropertyName("commands")]
+        public List<string> Commands { get; set; } = new List<string>();
     }
 
     public class Store_TopList : BasePlugin, IPluginConfig<Store_TopListConfig>
     {
         public override string ModuleName { get; } = "Store Module [TopList]";
-        public override string ModuleVersion { get; } = "0.0.1";
-        public override string ModuleAuthor => "Nathy";
+        public override string ModuleVersion { get; } = "0.0.2";
 
         private IStoreApi? storeApi;
 
@@ -36,6 +38,8 @@ namespace Store_TopList
             {
                 return;
             }
+
+            CreateCommands();
         }
 
         public void OnConfigParsed(Store_TopListConfig config)
@@ -43,7 +47,14 @@ namespace Store_TopList
             Config = config;
         }
 
-        [ConsoleCommand("css_topcredits", "Get topX players by credits")]
+        private void CreateCommands()
+        {
+            foreach (var cmd in Config.Commands)
+            {
+                AddCommand($"css_{cmd}", "Shows top list by credits", OnCommand);
+            }
+        }
+
         public void OnCommand(CCSPlayerController? player, CommandInfo command)
         {
             if (player == null)
