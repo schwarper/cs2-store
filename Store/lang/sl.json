@@ -57,10 +57,10 @@
   "css_givecredits<steamid>": "{blue}{0} {white}je dal {lightblue}{2} kredite {white}igralcu {green}{1}{white}.",
   "css_givecredits<multiple>": "{blue}{0} {white}je dal {lightblue}{2} kredite {white} {green}{1}{white}.",
 
-  "css_gift<player>": "{white}You have sent {green}{1}{white}credits to {blue}{0}{white}.",
-  "css_gift<target>": "{blue}{0} {white}sent you {green}{1} {white}credits.",
+  "css_gift<player>": "{white}Poslal/a si {green}{1}{white}kredite igralcu {blue}{0}{white}.",
+  "css_gift<target>": "{blue}{0} {white}Poslal/a je  {green}{1} {white} stevilo kreditov.",
 
-  "css_reset": "{blue}{0}{white} resetted {green}{1}{white}'s store datas.",
+  "css_reset": "{blue}{0}{white} restartal bazo {green}{1}{white}'s trgovine.",
 
   "credits_earned<active>": "{white}Prislužil si {green}{0} kreditov {white}, zaradi igranja na strežniku.",
   "credits_earned<inactive>": "{white}Prislužil si {green}{0} kreditov {white}, zaradi neaktivnosti na strežniku.",
