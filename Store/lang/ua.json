@@ -64,5 +64,8 @@
 
 	"credits_earned<active>": "{white}Ви заробили {green}{0} кредитів {white}за активну присутність на сервері.",
 	"credits_earned<inactive>": "{white}Ви заробили {green}{0} кредитів {white}за неактивну присутність на сервері.",
-	"credits_earned<kill>": "{white}Ви заробили {green}{0} кредитів {white}за вбивство гравця."
+	"credits_earned<kill>": "{white}Ви заробили {green}{0} кредитів {white}за вбивство гравця.",
+
+	"css_model0": "{blue}{0}{white} увімкнено форсування моделей гравців за замовчуванням.",
+	"css_model1": "{blue}{0}{white} вимкнено вирівнювання моделей гравців за замовчуванням."
 }
