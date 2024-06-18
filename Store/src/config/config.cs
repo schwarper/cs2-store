@@ -51,7 +51,8 @@ public class StoreConfig : BasePluginConfig
     public Dictionary<string, string> Menu { get; set; } = new Dictionary<string, string>
     {
         { "enable_selling", "1" },
-        { "vip_flag", "@css/root" }
+        { "vip_flag", "@css/root" },
+        { "use_wasd_menu", "true" }
     };
 
     [JsonPropertyName("settings")]
