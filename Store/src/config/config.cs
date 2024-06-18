@@ -64,7 +64,7 @@ public class StoreConfig : BasePluginConfig
         { "default_model_disable_leg", "false" },
         { "database_equip_table_name", "store_equipments" },
         { "apply_playerskin_delay", "0.60f" },
-        { "model0_model1_flag", "@css/root" },
+        { "model0_model1_flag", "@css/root" }
     };
 
     [JsonPropertyName("items")]
