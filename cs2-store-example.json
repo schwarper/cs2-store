@@ -50,7 +50,8 @@
     },
     "menu": {
         "enable_selling": "1",
-        "vip_flag": ""
+        "vip_flag": "",
+        "use_wasd_menu": "true"
     },
     "settings": {
         "max_health": "0",
@@ -58,7 +59,8 @@
         "sell_ratio": "0.60",
         "default_model_disable_leg": "false",
         "sell_use_purchase_credit": "0",
-        "database_equip_table_name": "store_equipments"
+        "database_equip_table_name": "store_equipments",
+        "model0_model1_flag": "@css/root"
     },
     "items": {
         "playerskins": {
