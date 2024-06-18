@@ -57,10 +57,15 @@
   "css_givecredits<steamid>": "{blue}{0} {white}je dal {lightblue}{2} kredite {white}igralcu {green}{1}{white}.",
   "css_givecredits<multiple>": "{blue}{0} {white}je dal {lightblue}{2} kredite {white} {green}{1}{white}.",
 
+  "css_gift<player>": "{white}You have sent {green}{1}{white}credits to {blue}{0}{white}.",
+  "css_gift<target>": "{blue}{0} {white}sent you {green}{1} {white}credits.",
+
+  "css_reset": "{blue}{0}{white} resetted {green}{1}{white}'s store datas.",
+
   "credits_earned<active>": "{white}Prislužil si {green}{0} kreditov {white}, zaradi igranja na strežniku.",
   "credits_earned<inactive>": "{white}Prislužil si {green}{0} kreditov {white}, zaradi neaktivnosti na strežniku.",
   "credits_earned<kill>": "{white}Dobil si {green}{0} kreditov {white}za uboj igralca.",
 
-  "css_model0": "{modra}{0}{bela} vklopi privzeto forsiranje modelov igralcev.",
-  "css_model1": "{blue}{0}{white} izklopljeno privzeto siljenje modelov igralcev."
+  "css_model0": "{blue}{0}{white} vklopil privzeto vsiljevanje modelov igralcev.",
+  "css_model1": "{blue}{0}{white} izklopil privzeto vsiljevanje modelov igralcev."
 }
