@@ -1,92 +1,34 @@
-using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
+using CounterStrikeSharp.API.Modules.Menu;
 using System.Globalization;
 using System.Text;
-using static CounterStrikeSharp.API.Core.Listeners;
 using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
-public static class Menu
+public static class OldMenu
 {
-    public static readonly Dictionary<int, WasdMenuPlayer> Players = [];
-
-    public static void SetSettings(bool hotReload)
-    {
-        Instance.RegisterEventHandler<EventPlayerActivate>((@event, info) =>
-        {
-            CCSPlayerController? player = @event.Userid;
-
-            if (player == null)
-            {
-                return HookResult.Continue;
-            }
-
-            Players[player.Slot] = new WasdMenuPlayer
-            {
-                player = player,
-                Buttons = 0
-            };
-
-            return HookResult.Continue;
-        });
-
-        Instance.RegisterEventHandler<EventPlayerDisconnect>((@event, info) =>
-        {
-            CCSPlayerController? player = @event.Userid;
-
-            if (player == null)
-            {
-                return HookResult.Continue;
-            }
-
-            Players.Remove(player.Slot);
-
-            return HookResult.Continue;
-        });
-
-        Instance.RegisterListener<OnTick>(OnTick);
-
-        if (hotReload)
-        {
-            foreach (CCSPlayerController pl in Utilities.GetPlayers())
-            {
-                Players[pl.Slot] = new WasdMenuPlayer
-                {
-                    player = pl,
-                    Buttons = pl.Buttons
-                };
-            }
-        }
-    }
-
-    public static void AddMenuOption(CCSPlayerController player, IWasdMenu menu, Action<CCSPlayerController, IWasdMenuOption> onSelect, string display, params object[] args)
+    public static void AddMenuOption(CCSPlayerController player, CenterHtmlMenu menu, Action<CCSPlayerController, ChatMenuOption> onSelect, string display, params object[] args)
     {
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
             StringBuilder builder = new();
             builder.AppendFormat(Instance.Localizer[display, args]);
 
-            menu.Add(builder.ToString(), onSelect);
+            menu.AddMenuOption(builder.ToString(), onSelect);
         }
     }
 
     public static void DisplayStore(CCSPlayerController player, bool inventory)
     {
-        if (Instance.Config.Menu.TryGetValue("use_wasd_menu", out string? value) && value == "false")
-        {
-            OldMenu.DisplayStore(player, inventory);
-            return;
-        }
-
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
             StringBuilder builder = new();
             builder.AppendFormat(Instance.Localizer["menu_store<title>", Credits.Get(player)]);
 
-            IWasdMenu menu = WasdManager.CreateMenu(builder.ToString());
+            CenterHtmlMenu menu = new(builder.ToString(), Instance);
 
             foreach (KeyValuePair<string, Dictionary<string, Dictionary<string, string>>> category in Instance.Config.Items)
             {
@@ -98,25 +40,23 @@ public static class Menu
                 StringBuilder builderkey = new();
                 builderkey.AppendFormat(Instance.Localizer[$"menu_store<{category.Key}>"]);
 
-                menu.Add(builderkey.ToString(), (CCSPlayerController player, IWasdMenuOption option) =>
+                menu.AddMenuOption(builderkey.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
                 {
-                    DisplayItems(player, builderkey.ToString(), category.Value, inventory, option);
+                    DisplayItems(player, builderkey.ToString(), category.Value, inventory);
                 });
             }
 
-            WasdManager.OpenMainMenu(player, menu);
+            MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
         }
     }
 
-    public static void DisplayItems(CCSPlayerController player, string key, Dictionary<string, Dictionary<string, string>> items, bool inventory, IWasdMenuOption? prev = null)
+    public static void DisplayItems(CCSPlayerController player, string key, Dictionary<string, Dictionary<string, string>> items, bool inventory)
     {
         Dictionary<string, Dictionary<string, string>> playerSkinItems = items.Where(p => p.Value["type"] == "playerskin" && p.Value["enable"] == "true").ToDictionary(p => p.Key, p => p.Value);
 
         if (playerSkinItems.Count != 0)
         {
-            IWasdMenu menu = WasdManager.CreateMenu(key);
-            if (prev != null)
-                menu.Prev = prev.Parent?.Options?.Find(prev);
+            CenterHtmlMenu menu = new(key, Instance);
 
             foreach (int Slot in new[] { 2, 3 })
             {
@@ -130,26 +70,24 @@ public static class Menu
                     StringBuilder builder = new();
                     builder.AppendFormat(Instance.Localizer[$"menu_store<{(Slot == 2 ? "t" : "ct")}_title>"]);
 
-                    menu.Add(builder.ToString(), (CCSPlayerController player, IWasdMenuOption option) =>
+                    menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
                     {
-                        DisplayItem(player, inventory, builder.ToString(), playerSkinItems.Where(p => p.Value.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && int.Parse(p.Value["slot"]) == Slot).ToDictionary(p => p.Key, p => p.Value), option);
+                        DisplayItem(player, inventory, builder.ToString(), playerSkinItems.Where(p => p.Value.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && int.Parse(p.Value["slot"]) == Slot).ToDictionary(p => p.Key, p => p.Value));
                     });
                 }
             }
 
-            WasdManager.OpenSubMenu(player, menu);
+            MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
         }
         else
         {
-            DisplayItem(player, inventory, key, items, prev);
+            DisplayItem(player, inventory, key, items);
         }
     }
 
-    public static void DisplayItem(CCSPlayerController player, bool inventory, string key, Dictionary<string, Dictionary<string, string>> items, IWasdMenuOption? prev = null)
+    public static void DisplayItem(CCSPlayerController player, bool inventory, string key, Dictionary<string, Dictionary<string, string>> items)
     {
-        IWasdMenu menu = WasdManager.CreateMenu(key);
-        if (prev != null)
-            menu.Prev = prev.Parent?.Options?.Find(prev);
+        CenterHtmlMenu menu = new(key, Instance);
 
         foreach (KeyValuePair<string, Dictionary<string, string>> kvp in items)
         {
@@ -170,7 +108,7 @@ public static class Menu
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
-                    DisplayItemOption(player, item, option);
+                    DisplayItemOption(player, item);
                 }, item["name"]);
             }
             else if (!inventory && !isHidden)
@@ -179,24 +117,22 @@ public static class Menu
                 {
                     if (Item.Purchase(player, item))
                     {
-                        DisplayItemOption(player, item, option);
+                        DisplayItemOption(player, item);
                     }
                     else
                     {
-                        WasdManager.CloseMenu(player);
+                        MenuManager.CloseActiveMenu(player);
                     }
                 }, "menu_store<purchase>", item["name"], item["price"]);
             }
         }
 
-        WasdManager.OpenSubMenu(player, menu);
+        MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
     }
 
-    public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item, IWasdMenuOption? prev = null)
+    public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item)
     {
-        IWasdMenu menu = WasdManager.CreateMenu(item["name"]);
-        if (prev != null)
-            menu.Prev = prev.Parent?.Options?.Find(prev);
+        CenterHtmlMenu menu = new(item["name"], Instance);
 
         if (Item.PlayerUsing(player, item["type"], item["uniqueid"]))
         {
@@ -206,7 +142,7 @@ public static class Menu
 
                 player.PrintToChatMessage("Purchase Unequip", item["name"]);
 
-                DisplayItemOption(player, item, prev);
+                DisplayItemOption(player, item);
             }, "menu_store<unequip>");
         }
         else
@@ -217,7 +153,7 @@ public static class Menu
 
                 player.PrintToChatMessage("Purchase Equip", item["name"]);
 
-                DisplayItemOption(player, item, prev);
+                DisplayItemOption(player, item);
             }, "menu_store<equip>");
         }
 
@@ -249,53 +185,16 @@ public static class Menu
 
                     player.PrintToChatMessage("Item Sell", item["name"]);
 
-                    WasdManager.CloseMenu(player);
+                    MenuManager.CloseActiveMenu(player);
                 }, "menu_store<sell>", sellingPrice);
             }
         }
 
         if (PlayerItems != null && PlayerItems.DateOfExpiration > DateTime.MinValue)
         {
-            menu.Add(PlayerItems.DateOfExpiration.ToString(), (p, o) => { DisplayItemOption(player, item); });
+            menu.AddMenuOption(PlayerItems.DateOfExpiration.ToString(), (p, o) => { }, true);
         }
 
-        WasdManager.OpenSubMenu(player, menu);
-    }
-
-    public static void OnTick()
-    {
-        foreach (WasdMenuPlayer? player in Players.Values.Where(p => p.MainMenu != null))
-        {
-            if ((player.Buttons & PlayerButtons.Forward) == 0 && (player.player.Buttons & PlayerButtons.Forward) != 0)
-            {
-                player.ScrollUp();
-            }
-            else if ((player.Buttons & PlayerButtons.Back) == 0 && (player.player.Buttons & PlayerButtons.Back) != 0)
-            {
-                player.ScrollDown();
-            }
-            else if ((player.Buttons & PlayerButtons.Moveright) == 0 && (player.player.Buttons & PlayerButtons.Moveright) != 0)
-            {
-                player.Choose();
-            }
-            else if ((player.Buttons & PlayerButtons.Moveleft) == 0 && (player.player.Buttons & PlayerButtons.Moveleft) != 0)
-            {
-                player.CloseSubMenu();
-            }
-
-            if (((long)player.player.Buttons & 8589934592) == 8589934592)
-            {
-                player.OpenMainMenu(null);
-            }
-
-            player.Buttons = player.player.Buttons;
-
-            if (player.CenterHtml != "")
-            {
-                Server.NextFrame(() =>
-                    player.player.PrintToCenterHtml(player.CenterHtml)
-                );
-            }
-        }
+        MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
     }
 }

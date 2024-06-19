@@ -51,7 +51,8 @@ public class StoreConfig : BasePluginConfig
     public Dictionary<string, string> Menu { get; set; } = new Dictionary<string, string>
     {
         { "enable_selling", "1" },
-        { "vip_flag", "@css/root" }
+        { "vip_flag", "@css/root" },
+        { "use_wasd_menu", "true" }
     };
 
     [JsonPropertyName("settings")]
@@ -62,7 +63,8 @@ public class StoreConfig : BasePluginConfig
         { "sell_ratio", "0.60f" },
         { "default_model_disable_leg", "false" },
         { "database_equip_table_name", "store_equipments" },
-        { "apply_playerskin_delay", "0.60f" }
+        { "apply_playerskin_delay", "0.60f" },
+        { "model0_model1_flag", "@css/root" }
     };
 
     [JsonPropertyName("items")]

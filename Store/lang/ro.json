@@ -1,0 +1,71 @@
+{
+  "No matching client": "{white}Nu există niciun client potrivit",
+  "More than one client matched": "{white}Există mai mulți clienți care se potrivesc",
+  "Must be an integer": "{white}Valoarea introdusă trebuie să fie un număr întreg",
+  "Must be higher than zero": "{white}Valoarea introdusă trebuie să fie mai mare decât zero.",
+  "Must be a steamid": "{white}Valoarea introdusă trebuie să fie un steamid valid",
+  "No credits enough": "{white}Nu ai suficiente credite.",
+  "You are not alive": "{white}Poți cumpăra acest lucru doar când ești în viață.",
+  "You are alive": "{white}Poți cumpăra acest lucru doar când ești mort.",
+  "No in pistol round": "{white}Nu poți cumpăra acest obiect {green}{0} {white}în runda de pistol.",
+  "No gift yourself": "{white}Nu poți trimite credite către tine însuți.",
+  "No type found": "{white}Nu a fost găsit niciun tip.",
+
+  "t team players": "{green}jucători echipa T {white}",
+  "ct team players": "{green}jucători echipa CT {white}",
+  "alive players": "{green}jucători în viață {white}",
+  "all players": "{green}toți jucătorii {white}",
+  "dead players": "{green}jucători morți {white}",
+  "Console": "Consolă",
+
+  "Purchase Succeeded": "{white}Ai {white}cumpărat {green}{0}{white}.",
+  "Purchase Equip": "{white}Ai {white}echipat {green}{0}{white}.",
+  "Purchase Unequip": "{white}Ai {white}dezechipat {green}{0}{white}.",
+  "Item Sell": "{white}Ai {white}vândut {green}{0}{white}.",
+  "Godmode expired": "{white}Timpul tău de godmode a expirat.",
+  "Speed expired": "{white}Timpul tău de viteză a expirat.",
+
+  "menu.bottom.text": "           <font color='cyan'>[ WASD - Pentru a te mișca ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Pentru a ieși ]",
+  "menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''> <font color='orange'>",
+  "menu.selection.right": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/right.gif' class=''> <font color='white'>",
+  "menu.prefix": "<font color='green'>",
+  "menu.selection.optionsbelow": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''>",
+
+  "menu_store<title>": "Magazin [Creditele tale: {0}]",
+
+  "menu_store<playerskins>": "Skinuri pentru jucători",
+  "menu_store<weapons>": "Arme",
+  "menu_store<features>": "Caracteristici",
+  "menu_store<gravity>": "Gravitate",
+  "menu_store<speed>": "Viteză",
+  "menu_store<godmode>": "Modul Zeu",
+  "menu_store<smoke>": "Fum",
+  "menu_store<trail>": "Urmă",
+  "menu_store<grenadetrail>": "Urmă de grenadă",
+  "menu_store<tracer>": "Trasor",
+  "menu_store<colorskins>": "Skinuri colorate",
+
+  "menu_store<t_title>": "Modele T",
+  "menu_store<ct_title>": "Modele CT",
+  "menu_store<purchase>": "{0} - [{1}]",
+  "menu_store<equip>": "ECHIPEAZĂ",
+  "menu_store<unequip>": "DEZ-ECHIPEAZĂ",
+  "menu_store<sell>": "VINDE [{0}]",
+
+  "css_credits": "{white}Ai {green}{0} {white}credite.",
+  "css_givecredits<player>": "{blue}{0} {white}a dat {green}{2} credite {white}către {green}{1}{white}.",
+  "css_givecredits<steamid>": "{blue}{0} {white}a dat {green}{2} credite {white}către {green}{1}{white}.",
+  "css_givecredits<multiple>": "{blue}{0} {white}a dat {green}{2} credite {white}către {green}{1}{white}.",
+
+  "css_gift<player>": "{white}Ai trimis {green}{1}{white}credite către {blue}{0}{white}.",
+  "css_gift<target>": "{blue}{0} {white}ți-a trimis {green}{1} {white}credite.",
+
+  "css_reset": "{blue}{0}{white} a resetat datele magazinului pentru {green}{1}{white}.",
+
+  "credits_earned<active>": "{white}Ai câștigat {green}{0} credite {white}pentru că ai fost activ pe server.",
+  "credits_earned<inactive>": "{white}Ai câștigat {green}{0} credite {white}pentru că ai fost inactiv pe server.",
+  "credits_earned<kill>": "{white}Ai câștigat {green}{0} credite {white}pentru că ai omorât un jucător.",
+
+  "css_model0": "{blue}{0}{white} a activat forțarea implicită a modelelor jucătorilor.",
+  "css_model1": "{blue}{0}{white} a dezactivat forțarea implicită a modelelor jucătorilor."
+}

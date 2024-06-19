@@ -1,4 +1,7 @@
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Admin;
+using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Globalization;
@@ -9,8 +12,13 @@ namespace Store;
 
 public static class Item_PlayerSkin
 {
+    public static bool ForceModelDefault { get; set; } = false;
+
     public static void OnPluginStart()
     {
+        Instance.AddCommand("css_model0", "Model0", Command_Model0);
+        Instance.AddCommand("css_model1", "Model1", Command_Model1);
+
         Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
@@ -39,6 +47,11 @@ public static class Item_PlayerSkin
             return false;
         }
 
+        if (ForceModelDefault)
+        {
+            return false;
+        }
+
         SetPlayerModel(player, item["uniqueid"], item["disable_leg"], int.Parse(item["slot"]));
 
         return true;
@@ -46,6 +59,11 @@ public static class Item_PlayerSkin
     public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
+        {
+            return false;
+        }
+
+        if (ForceModelDefault)
         {
             return false;
         }
@@ -71,9 +89,10 @@ public static class Item_PlayerSkin
             return HookResult.Continue;
         }
 
+
         Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
 
-        if (item == null)
+        if (item == null || ForceModelDefault)
         {
             SetDefaultModel(player);
         }
@@ -121,5 +140,65 @@ public static class Item_PlayerSkin
                 player.PlayerPawn.Value?.ChangeModel(model, disable_leg);
             }
         }, TimerFlags.STOP_ON_MAPCHANGE);
+    }
+
+    private static void Command_Model0(CCSPlayerController? player, CommandInfo info)
+    {
+        if (Instance.Config.Settings.TryGetValue("model0_model1_flag", out string? value) && !string.IsNullOrEmpty(value))
+        {
+            if (!AdminManager.PlayerHasPermissions(player, value))
+            {
+                return;
+            }
+        }
+        else
+        {
+            return;
+        }
+
+        foreach (var target in Utilities.GetPlayers())
+        {
+            SetDefaultModel(target);
+        }
+
+        Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_model0", player?.PlayerName ?? Instance.Localizer["Console"]]);
+
+        ForceModelDefault = true;
+    }
+
+    private static void Command_Model1(CCSPlayerController? player, CommandInfo info)
+    {
+        if (Instance.Config.Settings.TryGetValue("model0_model1_flag", out string? value) && !string.IsNullOrEmpty(value))
+        {
+            if (!AdminManager.PlayerHasPermissions(player, value))
+            {
+                return;
+            }
+        }
+        else
+        {
+            return;
+        }
+
+        foreach (var target in Utilities.GetPlayers())
+        {
+            Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == target.SteamID && p.Type == "playerskin" && p.Slot == target.TeamNum);
+
+            if (item != null)
+            {
+                Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
+
+                if (itemdata == null)
+                {
+                    continue;
+                }
+
+                SetPlayerModel(target, item.UniqueId, itemdata["disable_leg"], item.Slot);
+            }
+        }
+
+        Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_model0", player?.PlayerName ?? Instance.Localizer["Console"]]);
+
+        ForceModelDefault = false;
     }
 }

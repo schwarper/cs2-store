@@ -25,6 +25,12 @@
 	"Godmode expired": "{white}Время вашего бессмертия истекло.",
 	"Speed expired": "{white}Время вашей скорости истекло.",
 
+	"menu.bottom.text": "           <font color='cyan'>[ WASD - Чтобы переехать ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Выйти с сайта ]",
+	"menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''> <font color='orange'>",
+	"menu.selection.right": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/right.gif' class=''> <font color='white'>",
+	"menu.prefix": "<font color='green'>",
+	"menu.selection.optionsbelow": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''> <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/arrow.gif' class=''>",
+
 	"menu_store<title>": "Магазин [Ваши кредиты: {0}]",
 
 	"menu_store<playerskins>": "Скины игроков",
@@ -58,5 +64,8 @@
 
 	"credits_earned<active>": "{white}Вы заработали {green}{0} кредитов {white}за активное присутствие на сервере.",
 	"credits_earned<inactive>": "{white}Вы заработали {green}{0} кредитов {white}за неактивное присутствие на сервере.",
-	"credits_earned<kill>": "{white}Вы заработали {green}{0} кредитов {white}за убийство игрока."
+	"credits_earned<kill>": "{white}Вы заработали {green}{0} кредитов {white}за убийство игрока.",
+
+	"css_model0": "{blue}{0}{white} включена форсировка моделей игроков по умолчанию.",
+	"css_model1": "{blue}{0}{white} выключил принудительное форсирование моделей игроков по умолчанию."
 }
