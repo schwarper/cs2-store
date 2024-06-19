@@ -25,6 +25,7 @@ namespace Store_TopList
     {
         public override string ModuleName { get; } = "Store Module [TopList]";
         public override string ModuleVersion { get; } = "0.0.2";
+        public override string ModuleAuthor => "Nathy";
 
         private IStoreApi? storeApi;
 
