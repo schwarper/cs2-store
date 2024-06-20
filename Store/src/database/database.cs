@@ -125,12 +125,12 @@ public static class Database
 
         Task.Run(async () =>
         {
-            await LoadPlayerAsync(player,steamid, PlayerName);
+            await LoadPlayerAsync(player, steamid, PlayerName);
         });
 
     }
 
-    public static async Task LoadPlayerAsync(CCSPlayerController player, ulong SteamID,String PlayerName)
+    public static async Task LoadPlayerAsync(CCSPlayerController player, ulong SteamID, String PlayerName)
     {
         async Task LoadDataAsync(int attempt = 1)
         {
@@ -247,7 +247,7 @@ public static class Database
 
 
 
-    public static void InsertNewPlayer(ulong SteamId,String PlayerName)
+    public static void InsertNewPlayer(ulong SteamId, String PlayerName)
     {
         ExecuteAsync(@"
                 INSERT INTO store_players (
