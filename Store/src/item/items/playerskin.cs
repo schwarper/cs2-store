@@ -90,23 +90,26 @@ public static class Item_PlayerSkin
             return HookResult.Continue;
         }
 
-        Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
-
-        if (item == null || ForceModelDefault)
+        Instance.AddTimer(0.1f, () =>
         {
-            SetDefaultModel(player);
-        }
-        else
-        {
-            Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
+            Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
 
-            if (itemdata == null)
+            if (item == null || ForceModelDefault)
             {
-                return HookResult.Continue;
+                SetDefaultModel(player);
             }
+            else
+            {
+                Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
 
-            SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"], item.Slot);
-        }
+                if (itemdata == null)
+                {
+                    return;
+                }
+
+                SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"], item.Slot);
+            }
+        });
 
         return HookResult.Continue;
     }
