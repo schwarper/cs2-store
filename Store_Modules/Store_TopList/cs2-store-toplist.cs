@@ -1,14 +1,10 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
 using Dapper;
 using MySqlConnector;
-using System.Text.Json.Serialization;
 using StoreApi;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace Store_TopList
 {
@@ -18,7 +14,7 @@ namespace Store_TopList
         public int TopPlayersLimit { get; set; } = 10;
 
         [JsonPropertyName("commands")]
-        public List<string> Commands { get; set; } = new List<string>();
+        public List<string> Commands { get; set; } = [];
     }
 
     public class Store_TopList : BasePlugin, IPluginConfig<Store_TopListConfig>
@@ -50,7 +46,7 @@ namespace Store_TopList
 
         private void CreateCommands()
         {
-            foreach (var cmd in Config.Commands)
+            foreach (string cmd in Config.Commands)
             {
                 AddCommand($"css_{cmd}", "Shows top list by credits", OnCommand);
             }
@@ -67,7 +63,7 @@ namespace Store_TopList
             {
                 try
                 {
-                    var topPlayers = await GetTopPlayersByCreditsAsync();
+                    List<TopPlayer> topPlayers = await GetTopPlayersByCreditsAsync();
 
                     Server.NextFrame(() =>
                     {
@@ -80,7 +76,7 @@ namespace Store_TopList
                         player.PrintToChat(Localizer["topcredits.title"]);
 
                         int rank = 1;
-                        foreach (var topPlayer in topPlayers)
+                        foreach (TopPlayer topPlayer in topPlayers)
                         {
                             player.PrintToChat(Localizer["topcredits.players", rank, topPlayer.PlayerName, topPlayer.Credits]);
                             rank++;
@@ -103,7 +99,7 @@ namespace Store_TopList
             using MySqlConnection connection = new(connectionString);
             await connection.OpenAsync();
 
-            var query = $@"
+            string query = $@"
                 SELECT PlayerName, Credits
                 FROM store_players
                 ORDER BY Credits DESC
@@ -125,7 +121,7 @@ namespace Store_TopList
 
     public class TopPlayer
     {
-        public string PlayerName { get; set; }
+        public string PlayerName { get; set; } = string.Empty;
         public int Credits { get; set; }
     }
 }

@@ -22,6 +22,7 @@ public static class Item_PlayerSkin
         Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
+        Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart, HookMode.Pre);
     }
     public static void OnMapStart()
     {
@@ -89,7 +90,6 @@ public static class Item_PlayerSkin
             return HookResult.Continue;
         }
 
-
         Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
 
         if (item == null || ForceModelDefault)
@@ -108,6 +108,12 @@ public static class Item_PlayerSkin
             SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"], item.Slot);
         }
 
+        return HookResult.Continue;
+    }
+
+    public static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
+    {
+        ForceModelDefault = false;
         return HookResult.Continue;
     }
     public static void SetDefaultModel(CCSPlayerController player)
@@ -156,7 +162,7 @@ public static class Item_PlayerSkin
             return;
         }
 
-        foreach (var target in Utilities.GetPlayers())
+        foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
             SetDefaultModel(target);
         }
@@ -180,7 +186,7 @@ public static class Item_PlayerSkin
             return;
         }
 
-        foreach (var target in Utilities.GetPlayers())
+        foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
             Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == target.SteamID && p.Type == "playerskin" && p.Slot == target.TeamNum);
 
@@ -197,7 +203,7 @@ public static class Item_PlayerSkin
             }
         }
 
-        Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_model0", player?.PlayerName ?? Instance.Localizer["Console"]]);
+        Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_model1", player?.PlayerName ?? Instance.Localizer["Console"]]);
 
         ForceModelDefault = false;
     }
