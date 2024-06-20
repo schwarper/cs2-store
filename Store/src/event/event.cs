@@ -175,7 +175,7 @@ public static class Event
             return;
         }
 
-        Task.Run(() => Database.LoadPlayer(player));
+        Database.LoadPlayer(player);
     }
 
     public static HookResult OnPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)

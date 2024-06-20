@@ -54,15 +54,7 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
         {
             foreach (CCSPlayerController player in Utilities.GetPlayers())
             {
-                if (player == null || !player.IsValid || player.IsBot || player.IsHLTV || string.IsNullOrEmpty(player.IpAddress))
-                {
-                    continue;
-                }
-
-                Task.Run(async () =>
-                {
-                    await Database.LoadPlayer(player);
-                });
+                Database.LoadPlayer(player);
             }
         }
     }

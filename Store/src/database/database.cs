@@ -111,11 +111,27 @@ public static class Database
     }
 
 
-    public static async Task LoadPlayer(CCSPlayerController player)
+    public static void LoadPlayer(CCSPlayerController player)
     {
+        if (player == null || !player.IsValid || player.IsBot || player.IsHLTV || string.IsNullOrEmpty(player.IpAddress))
+        {
+            return;
+        }
+
         Credits.SetOriginal(player, -1);
         Credits.Set(player, -1);
-        //Instance.Logger.LogInformation($" LoadPlayer {player.SteamID} ");
+        ulong steamid = player.SteamID;
+        String PlayerName = player.PlayerName;
+
+        Task.Run(async () =>
+        {
+            await LoadPlayerAsync(player,steamid, PlayerName);
+        });
+
+    }
+
+    public static async Task LoadPlayerAsync(CCSPlayerController player, ulong SteamID,String PlayerName)
+    {
         async Task LoadDataAsync(int attempt = 1)
         {
             try
@@ -129,7 +145,7 @@ public static class Database
                 ,
                 new
                 {
-                    player.SteamID,
+                    SteamID,
                     DateTime.Now
                 });
 
@@ -145,8 +161,8 @@ public static class Database
                     {
                         Store_Player newPlayer = new()
                         {
-                            SteamID = player.SteamID,
-                            PlayerName = player.PlayerName,
+                            SteamID = SteamID,
+                            PlayerName = PlayerName,
                             Credits = Instance.Config.Credits["start"],
                             OriginalCredits = Instance.Config.Credits["start"],
                             DateOfJoin = DateTime.Now,
@@ -155,7 +171,7 @@ public static class Database
                         };
 
                         Instance.GlobalStorePlayers.Add(newPlayer);
-                        InsertNewPlayer(player);
+                        InsertNewPlayer(SteamID, PlayerName);
                     }
                     else
                     {
@@ -211,10 +227,10 @@ public static class Database
             }
             catch (Exception ex)
             {
-                Instance.Logger.LogError($"Error loading player {player.SteamID} attempt {attempt}: {ex.Message}");
+                Instance.Logger.LogError($"Error load player {SteamID} attempt {attempt}: ex:{ex.Message}");
                 if (attempt < 3)
                 {
-                    Instance.Logger.LogInformation($"Retrying to load player {player.SteamID} (attempt {attempt + 1})");
+                    Instance.Logger.LogInformation($"Retrying to load player {SteamID} (attempt: {attempt + 1})");
                     await Task.Delay(5000);
                     await LoadDataAsync(attempt + 1);
                 }
@@ -230,7 +246,8 @@ public static class Database
     }
 
 
-    public static void InsertNewPlayer(CCSPlayerController player)
+
+    public static void InsertNewPlayer(ulong SteamId,String PlayerName)
     {
         ExecuteAsync(@"
                 INSERT INTO store_players (
@@ -241,8 +258,8 @@ public static class Database
             ,
             new
             {
-                player.SteamID,
-                player.PlayerName,
+                SteamId,
+                PlayerName,
                 Credits = Instance.Config.Credits["start"],
                 DateOfJoin = DateTime.Now,
                 DateOfLastJoin = DateTime.Now
