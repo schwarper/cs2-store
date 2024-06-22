@@ -1,0 +1,7 @@
+{
+    "Quiz.Question": "{red}[Soru] {white}{0}",
+    "Quiz.AnsweredCorrectly": "{red}[Soru] {blue}{0} {white}soruyu {green}doğru {white}cevapladı.",
+    "Quiz.Awarded": "{red}[Soru] {white}Player {blue}{0} {green}{1} kredi {white}kazandı.",
+    "Quiz.IncorrectAnswer": "{red}[Soru] {white}Cevabınız {darkred}yanlış{white}. Lütfen tekrar deneyin.",
+    "Quiz.AlreadyAnswered": "{red}[Soru] {white}Soru zaten cevaplandı. Lütfen yenisini bekleyin."
+}
