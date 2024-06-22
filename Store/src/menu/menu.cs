@@ -177,14 +177,8 @@ public static class Menu
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
-                    if (Item.Purchase(player, item))
-                    {
-                        DisplayItemOption(player, item, option);
-                    }
-                    else
-                    {
-                        WasdManager.CloseMenu(player);
-                    }
+                    DisplayConfirmationMenu(player, item, option);
+
                 }, "menu_store<purchase>", item["name"], item["price"]);
             }
         }
@@ -258,6 +252,28 @@ public static class Menu
         {
             menu.Add(PlayerItems.DateOfExpiration.ToString(), (p, o) => { DisplayItemOption(player, item); });
         }
+
+        WasdManager.OpenSubMenu(player, menu);
+    }
+
+    public static void DisplayConfirmationMenu(CCSPlayerController player, Dictionary<string, string> item, IWasdMenuOption? prev = null)
+    {
+        IWasdMenu menu = WasdManager.CreateMenu(Instance.Localizer["menu_store<confirm_title>", item["name"], item["price"]]);
+        if (prev != null)
+            menu.Prev = prev.Parent?.Options?.Find(prev);
+
+        AddMenuOption(player, menu, (p, o) =>
+        {
+            if (Item.Purchase(p, item))
+            {
+                DisplayItemOption(p, item, o);
+            }
+        }, "menu_store<yes>");
+
+        AddMenuOption(player, menu, (p, o) =>
+        {
+            WasdManager.CloseSubMenu(p);
+        }, "menu_store<no>");
 
         WasdManager.OpenSubMenu(player, menu);
     }

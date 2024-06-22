@@ -51,6 +51,9 @@
 	"menu_store<equip>": "ЕКІПІРОВАТИ",
 	"menu_store<unequip>": "ЗНЯТИ",
 	"menu_store<sell>": "ПРОДАТИ [{0}]",
+	"menu_store<confirm_title>": "Купуєш? {0} - {1} креді",
+	"menu_store<yes>": "Так",
+	"menu_store<no>": "Ні",
 
 	"css_credits": "{white}У вас {green}{0} {white}кредитів.",
 	"css_givecredits<player>": "{blue}{0} {white}передав {green}{2} кредитів {white}{green}{1}{white}.",

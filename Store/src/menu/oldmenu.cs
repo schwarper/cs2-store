@@ -115,14 +115,8 @@ public static class OldMenu
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
-                    if (Item.Purchase(player, item))
-                    {
-                        DisplayItemOption(player, item);
-                    }
-                    else
-                    {
-                        MenuManager.CloseActiveMenu(player);
-                    }
+                    DisplayConfirmationMenu(player, item);
+
                 }, "menu_store<purchase>", item["name"], item["price"]);
             }
         }
@@ -196,5 +190,26 @@ public static class OldMenu
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
+    }
+
+    public static void DisplayConfirmationMenu(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        CenterHtmlMenu menu = new(Instance.Localizer["menu_store<confirm_title>", item["name"], item["price"]], Instance);
+
+        AddMenuOption(player, menu, (p, o) =>
+        {
+            if (Item.Purchase(p, item))
+            {
+                DisplayItemOption(p, item);
+            }
+
+        }, "menu_store<yes>");
+
+        AddMenuOption(player, menu, (p, o) =>
+        {
+            MenuManager.CloseActiveMenu(player);
+        }, "menu_store<no>");
+
+        menu.Open(player);
     }
 }
