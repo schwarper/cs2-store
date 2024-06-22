@@ -1,4 +1,4 @@
-﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
@@ -15,9 +15,6 @@ namespace Store_Quiz
     {
         [JsonPropertyName("question_interval_seconds")]
         public int QuestionIntervalSeconds { get; set; } = 30;
-
-        [JsonPropertyName("commands")]
-        public List<string> Commands { get; set; } = new List<string>();
 
         [JsonPropertyName("questions")]
         public List<Question> Questions { get; set; } = new();
@@ -63,18 +60,11 @@ namespace Store_Quiz
                 return;
             }
 
-            CreateCommands();
-
             quizTimer = new Timer(AskQuestion, null, Timeout.Infinite, Timeout.Infinite);
             StartQuizTimer();
-        }
-
-        private void CreateCommands()
-        {
-            foreach (var cmd in Config.Commands)
-            {
-                AddCommand($"css_{cmd}", "Answer quiz", OnAnswerCommand);
-            }
+            
+            AddCommandListener("say", OnPlayerChatAll);
+            AddCommandListener("say_team", OnPlayerChatTeam);
         }
 
         private void StartQuizTimer()
@@ -112,17 +102,16 @@ namespace Store_Quiz
             }
         }
 
-        [CommandHelper(minArgs: 1, usage: "[answer]")]
-        public void OnAnswerCommand(CCSPlayerController? player, CommandInfo command)
+        private HookResult OnPlayerChatAll(CCSPlayerController? player, CommandInfo message)
         {
             if (player == null)
             {
-                return;
+                return HookResult.Handled;
             }
 
             if (!questionAnswered)
             {
-                var answer = command.GetArg(1);
+                var answer = message.GetArg(1);
                 var currentQuestion = Config.Questions[currentQuestionIndex];
 
                 if (answer.Equals(currentQuestion.Answer, StringComparison.OrdinalIgnoreCase))
@@ -138,15 +127,41 @@ namespace Store_Quiz
 
                     MoveToNextQuestion();
                 }
-                else
+            }
+            return HookResult.Continue;
+        }
+
+        private HookResult OnPlayerChatTeam(CCSPlayerController? player, CommandInfo message)
+        {
+            if (player == null)
+            {
+                return HookResult.Handled;
+            }
+
+            if (!questionAnswered)
+            {
+                var answer = message.GetArg(1);
+                var currentQuestion = Config.Questions[currentQuestionIndex];
+
+                if (answer.Equals(currentQuestion.Answer, StringComparison.OrdinalIgnoreCase))
                 {
-                    player.PrintToChat(Localizer["Quiz.IncorrectAnswer"]);
+                    questionAnswered = true;
+                    Server.PrintToChatAll(Localizer["Quiz.AnsweredCorrectly", player.PlayerName]);
+
+                    if (storeApi != null && currentQuestion.Credits > 0)
+                    {
+                        storeApi.GivePlayerCredits(player, currentQuestion.Credits);
+                        Server.PrintToChatAll(Localizer["Quiz.Awarded", player.PlayerName, currentQuestion.Credits]);
+                    }
+
+                    MoveToNextQuestion();
                 }
             }
             else
             {
                 player.PrintToChat(Localizer["Quiz.AlreadyAnswered"]);
             }
+            return HookResult.Continue;
         }
 
         private void MoveToNextQuestion()
