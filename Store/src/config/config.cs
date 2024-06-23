@@ -33,19 +33,19 @@ public class StoreConfig : BasePluginConfig
 
     public class Config_Credit
     {
-        public int IgnoreWarmup { get; set; } = 1;
         public int Start { get; set; } = 0;
         public int IntervalActiveInActive { get; set; } = 60;
         public int AmountActive { get; set; } = 10;
         public int AmountInActive { get; set; } = 1;
         public int AmountKill { get; set; } = 1;
+        public bool IgnoreWarmup { get; set; } = true;
     }
 
     public class Config_Menu
     {
         public bool EnableSelling { get; set; } = true;
-        public string VipFlag { get; set; } = "@css/root";
         public bool UseWASDMenu { get; set; } = true;
+        public string VipFlag { get; set; } = "@css/root";
     }
 
     public class Config_Setting
@@ -53,10 +53,10 @@ public class StoreConfig : BasePluginConfig
         public int MaxHealth { get; set; } = 0;
         public int MaxArmor { get; set; } = 0;
         public float SellRatio { get; set; } = 0.60f;
+        public float ApplyPlayerskinDelay { get; set; } = 0.60f;
         public bool SellUsePurchaseCredit { get; set; } = false;
         public bool DefaultModelDisableLeg { get; set; } = false;
         public string DatabaseEquipTableName { get; set; } = "store_equipments";
-        public float ApplyPlayerskinDelay { get; set; } = 0.60f;
         public string Model0Model1Flag { get; set; } = "@css/root";
     }
 
