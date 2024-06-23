@@ -17,7 +17,7 @@ namespace Store_Quiz
         public int QuestionIntervalSeconds { get; set; } = 30;
 
         [JsonPropertyName("questions")]
-        public List<Question> Questions { get; set; } = new();
+        public List<Question> Questions { get; set; } = [];
     }
 
     public class Question
@@ -43,7 +43,7 @@ namespace Store_Quiz
         private int currentQuestionIndex = 0;
         private bool questionAnswered = false;
         private IStoreApi? storeApi;
-        private object timerLock = new object();
+        private readonly object timerLock = new();
 
         public void OnConfigParsed(Store_QuizConfig config)
         {
