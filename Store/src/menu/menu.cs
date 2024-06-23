@@ -1,7 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
-using System.Globalization;
 using System.Text;
 using static CounterStrikeSharp.API.Core.Listeners;
 using static Store.Store;
@@ -75,7 +74,7 @@ public static class Menu
 
     public static void DisplayStore(CCSPlayerController player, bool inventory)
     {
-        if (!Instance.Config.Menu.use_wasd_menu)
+        if (!Instance.Config.Menu.UseWASDMenu)
         {
             OldMenu.DisplayStore(player, inventory);
             return;
@@ -217,13 +216,13 @@ public static class Menu
 
         Store_Item? PlayerItems = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"] && p.UniqueId == item["uniqueid"]);
 
-        if (Instance.Config.Menu.enable_selling && !Item.IsPlayerVip(player))
+        if (Instance.Config.Menu.EnableSelling && !Item.IsPlayerVip(player))
         {
-            float sell_ratio = Instance.Config.Settings.sell_ratio;
+            float sell_ratio = Instance.Config.Settings.SellRatio;
 
             int purchase_price = 1;
 
-            bool usePurchaseCredit = Instance.Config.Settings.sell_use_purchase_credit;
+            bool usePurchaseCredit = Instance.Config.Settings.SellUsePurchaseCredit;
 
             if (usePurchaseCredit && PlayerItems != null)
             {

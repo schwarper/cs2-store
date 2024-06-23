@@ -2,7 +2,6 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Utils;
-using System.Globalization;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -156,7 +155,7 @@ public static class Item
             return false;
         }
 
-        Credits.Give(player, (int)(playeritem.Price * Instance.Config.Settings.sell_ratio));
+        Credits.Give(player, (int)(playeritem.Price * Instance.Config.Settings.SellRatio));
 
         Unequip(player, item);
 
@@ -228,7 +227,7 @@ public static class Item
 
     public static bool IsPlayerVip(CCSPlayerController player)
     {
-        string vip = Instance.Config.Menu.vip_flag;
+        string vip = Instance.Config.Menu.VipFlag;
 
         return !string.IsNullOrEmpty(vip) && AdminManager.PlayerHasPermissions(player, vip);
     }

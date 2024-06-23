@@ -31,7 +31,7 @@ public static class Item_Armor
             return false;
         }
 
-        var maxarmor = Instance.Config.Settings.max_armor;
+        int maxarmor = Instance.Config.Settings.MaxArmor;
 
         if (maxarmor > 0)
         {

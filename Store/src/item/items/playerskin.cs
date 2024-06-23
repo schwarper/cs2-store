@@ -4,7 +4,6 @@ using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
-using System.Globalization;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -101,7 +100,7 @@ public static class Item_PlayerSkin
 
     public static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
     {
-        var player = @event.Userid;
+        CCSPlayerController? player = @event.Userid;
 
         if (player == null)
         {
@@ -128,7 +127,7 @@ public static class Item_PlayerSkin
     }
     public static void SetDefaultModel(CCSPlayerController player)
     {
-        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels.ct : Instance.Config.DefaultModels.t;
+        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels.CT : Instance.Config.DefaultModels.T;
         int maxIndex = modelsArray.Length;
 
         if (maxIndex > 0)
@@ -137,12 +136,12 @@ public static class Item_PlayerSkin
 
             string model = modelsArray[randomnumber];
 
-            SetPlayerModel(player, model, Instance.Config.Settings.default_model_disable_leg, player.TeamNum);
+            SetPlayerModel(player, model, Instance.Config.Settings.DefaultModelDisableLeg, player.TeamNum);
         }
     }
     private static void SetPlayerModel(CCSPlayerController player, string model, bool disable_leg, int slotNumber)
     {
-        float apply_delay = float.Max(Instance.Config.Settings.apply_playerskin_delay, 0.1f);
+        float apply_delay = float.Max(Instance.Config.Settings.ApplyPlayerskinDelay, 0.1f);
 
         Instance.AddTimer(apply_delay, () =>
         {
@@ -155,7 +154,7 @@ public static class Item_PlayerSkin
 
     private static void Command_Model0(CCSPlayerController? player, CommandInfo info)
     {
-        var flag = Instance.Config.Settings.model0_model1_flag;
+        string flag = Instance.Config.Settings.Model0Model1Flag;
 
         if (string.IsNullOrEmpty(flag) || !AdminManager.PlayerHasPermissions(player, flag))
         {
@@ -174,7 +173,7 @@ public static class Item_PlayerSkin
 
     private static void Command_Model1(CCSPlayerController? player, CommandInfo info)
     {
-        var flag = Instance.Config.Settings.model0_model1_flag;
+        string flag = Instance.Config.Settings.Model0Model1Flag;
 
         if (string.IsNullOrEmpty(flag) || !AdminManager.PlayerHasPermissions(player, flag))
         {

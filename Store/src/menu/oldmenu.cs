@@ -1,7 +1,6 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Menu;
-using System.Globalization;
 using System.Text;
 using static Store.Store;
 using static StoreApi.Store;
@@ -153,13 +152,13 @@ public static class OldMenu
 
         Store_Item? PlayerItems = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"] && p.UniqueId == item["uniqueid"]);
 
-        if (Instance.Config.Menu.enable_selling && !Item.IsPlayerVip(player))
+        if (Instance.Config.Menu.EnableSelling && !Item.IsPlayerVip(player))
         {
-            float sell_ratio = Instance.Config.Settings.sell_ratio;
+            float sell_ratio = Instance.Config.Settings.SellRatio;
 
             int purchase_price = 1;
 
-            bool usePurchaseCredit = Instance.Config.Settings.sell_use_purchase_credit;
+            bool usePurchaseCredit = Instance.Config.Settings.SellUsePurchaseCredit;
 
             if (usePurchaseCredit && PlayerItems != null)
             {

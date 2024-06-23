@@ -66,7 +66,7 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
 
     public void OnConfigParsed(StoreConfig config)
     {
-        if (string.IsNullOrEmpty(config.Database.host) || string.IsNullOrEmpty(config.Database.name) || string.IsNullOrEmpty(config.Database.user))
+        if (string.IsNullOrEmpty(config.Database.Host) || string.IsNullOrEmpty(config.Database.Name) || string.IsNullOrEmpty(config.Database.User))
         {
             throw new Exception("You need to setup Database credentials in config.");
         }

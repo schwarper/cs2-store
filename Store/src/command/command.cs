@@ -15,13 +15,13 @@ public static class Command
 
         Dictionary<IEnumerable<string>, (string description, CommandInfo.CommandCallback handler)> commands = new()
         {
-            {config.Commands.credits, ("Show credits", Command_Credits)},
-            {config.Commands.store, ("Store menu", Command_Store)},
-            {config.Commands.inventory, ("Open inventory menu", Command_Inv)},
-            {config.Commands.givecredits, ("Give credits", Command_GiveCredits)},
-            {config.Commands.gift, ("Gift", Command_Gift)},
-            {config.Commands.resetplayer, ("Reset player's inventory", Command_ResetPlayer)},
-            {config.Commands.resetdatabase, ("Reset database", Command_ResetDatabase)}
+            {config.Commands.Credits, ("Show credits", Command_Credits)},
+            {config.Commands.Store, ("Store menu", Command_Store)},
+            {config.Commands.Inventory, ("Open inventory menu", Command_Inv)},
+            {config.Commands.GiveCredits, ("Give credits", Command_GiveCredits)},
+            {config.Commands.Gift, ("Gift", Command_Gift)},
+            {config.Commands.ResetPlayer, ("Reset player's inventory", Command_ResetPlayer)},
+            {config.Commands.ResetDatabase, ("Reset database", Command_ResetDatabase)}
         };
 
         foreach (KeyValuePair<IEnumerable<string>, (string description, CommandInfo.CommandCallback handler)> commandPair in commands)

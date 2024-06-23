@@ -3,7 +3,6 @@ using CounterStrikeSharp.API.Core;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
-using Serilog.Core;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -33,11 +32,11 @@ public static class Database
     {
         MySqlConnectionStringBuilder builder = new()
         {
-            Server = config.Database.host,
-            Database = config.Database.name,
-            UserID = config.Database.user,
-            Password = config.Database.password,
-            Port = config.Database.port,
+            Server = config.Database.Host,
+            Database = config.Database.Name,
+            UserID = config.Database.User,
+            Password = config.Database.Password,
+            Port = config.Database.Port,
             Pooling = true,
             MinimumPoolSize = 0,
             MaximumPoolSize = 640,
@@ -52,7 +51,7 @@ public static class Database
 
         try
         {
-            string equipTableName = config.Settings.database_equip_table_name;
+            string equipTableName = config.Settings.DatabaseEquipTableName;
 
             await connection.ExecuteAsync(@"
                 CREATE TABLE IF NOT EXISTS store_players (
@@ -138,7 +137,7 @@ public static class Database
                 SqlMapper.GridReader multiQuery = await connection.QueryMultipleAsync(@"
                 SELECT * FROM store_players WHERE SteamID = @SteamID;
                 SELECT * FROM store_items WHERE SteamID = @SteamID AND(DateOfExpiration > @Now OR DateOfExpiration = '0001-01-01 00:00:00');
-                SELECT * FROM " + Instance.Config.Settings.database_equip_table_name + @" WHERE SteamID = @SteamID"
+                SELECT * FROM " + Instance.Config.Settings.DatabaseEquipTableName + @" WHERE SteamID = @SteamID"
                 ,
                 new
                 {
@@ -160,8 +159,8 @@ public static class Database
                         {
                             SteamID = SteamID,
                             PlayerName = PlayerName,
-                            Credits = Instance.Config.Credits.start,
-                            OriginalCredits = Instance.Config.Credits.start,
+                            Credits = Instance.Config.Credits.Start,
+                            OriginalCredits = Instance.Config.Credits.Start,
                             DateOfJoin = DateTime.Now,
                             DateOfLastJoin = DateTime.Now,
                             bPlayerIsLoaded = true,
@@ -256,7 +255,7 @@ public static class Database
             {
                 SteamId,
                 PlayerName,
-                Credits = Instance.Config.Credits.start,
+                Credits = Instance.Config.Credits.Start,
                 DateOfJoin = DateTime.Now,
                 DateOfLastJoin = DateTime.Now
             });
@@ -337,7 +336,7 @@ public static class Database
     public static void SavePlayerEquipment(CCSPlayerController player, Store_Equipment item)
     {
         ExecuteAsync(@"
-                INSERT INTO " + Instance.Config.Settings.database_equip_table_name + @" (
+                INSERT INTO " + Instance.Config.Settings.DatabaseEquipTableName + @" (
                     SteamID, Type, UniqueId, Slot
                 ) VALUES (
                     @SteamID, @Type, @UniqueId, @Slot
@@ -355,7 +354,7 @@ public static class Database
     public static void RemovePlayerEquipment(CCSPlayerController player, string UniqueId)
     {
         ExecuteAsync(@"
-                    DELETE FROM " + Instance.Config.Settings.database_equip_table_name + @" WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
+                    DELETE FROM " + Instance.Config.Settings.DatabaseEquipTableName + @" WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
                 "
             ,
             new
@@ -369,7 +368,7 @@ public static class Database
     {
         ExecuteAsync(@"
                 DELETE FROM store_items WHERE SteamID = @SteamID; 
-                DELETE FROM " + Instance.Config.Settings.database_equip_table_name + @" WHERE SteamID = @SteamID
+                DELETE FROM " + Instance.Config.Settings.DatabaseEquipTableName + @" WHERE SteamID = @SteamID
             "
             ,
             new
@@ -386,7 +385,7 @@ public static class Database
 
             connection.Query(@"DROP TABLE store_players");
             connection.Query(@"DROP TABLE store_items");
-            connection.Query($@"DROP TABLE {Instance.Config.Settings.database_equip_table_name}");
+            connection.Query($@"DROP TABLE {Instance.Config.Settings.DatabaseEquipTableName}");
         });
     }
 }
