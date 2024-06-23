@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
+using Serilog.Core;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -11,7 +12,6 @@ namespace Store;
 public static class Database
 {
     public static string GlobalDatabaseConnectionString { get; set; } = string.Empty;
-    private static string equipTableName = "store_equipments";
 
     public static async Task<MySqlConnection> ConnectAsync()
     {
@@ -31,18 +31,13 @@ public static class Database
 
     public static async Task CreateDatabaseAsync(StoreConfig config)
     {
-        if (config.Settings.TryGetValue("database_equip_table_name", out string? tablename))
-        {
-            equipTableName = tablename;
-        }
-
         MySqlConnectionStringBuilder builder = new()
         {
-            Server = config.Database["host"],
-            Database = config.Database["name"],
-            UserID = config.Database["user"],
-            Password = config.Database["password"],
-            Port = uint.Parse(config.Database["port"]),
+            Server = config.Database.host,
+            Database = config.Database.name,
+            UserID = config.Database.user,
+            Password = config.Database.password,
+            Port = config.Database.port,
             Pooling = true,
             MinimumPoolSize = 0,
             MaximumPoolSize = 640,
@@ -57,6 +52,8 @@ public static class Database
 
         try
         {
+            string equipTableName = config.Settings.database_equip_table_name;
+
             await connection.ExecuteAsync(@"
                 CREATE TABLE IF NOT EXISTS store_players (
                     id INT NOT NULL AUTO_INCREMENT,
@@ -130,7 +127,7 @@ public static class Database
 
     }
 
-    public static async Task LoadPlayerAsync(CCSPlayerController player, ulong SteamID, String PlayerName)
+    public static async Task LoadPlayerAsync(CCSPlayerController player, ulong SteamID, string PlayerName)
     {
         async Task LoadDataAsync(int attempt = 1)
         {
@@ -141,7 +138,7 @@ public static class Database
                 SqlMapper.GridReader multiQuery = await connection.QueryMultipleAsync(@"
                 SELECT * FROM store_players WHERE SteamID = @SteamID;
                 SELECT * FROM store_items WHERE SteamID = @SteamID AND(DateOfExpiration > @Now OR DateOfExpiration = '0001-01-01 00:00:00');
-                SELECT * FROM " + equipTableName + @" WHERE SteamID = @SteamID"
+                SELECT * FROM " + Instance.Config.Settings.database_equip_table_name + @" WHERE SteamID = @SteamID"
                 ,
                 new
                 {
@@ -163,8 +160,8 @@ public static class Database
                         {
                             SteamID = SteamID,
                             PlayerName = PlayerName,
-                            Credits = Instance.Config.Credits["start"],
-                            OriginalCredits = Instance.Config.Credits["start"],
+                            Credits = Instance.Config.Credits.start,
+                            OriginalCredits = Instance.Config.Credits.start,
                             DateOfJoin = DateTime.Now,
                             DateOfLastJoin = DateTime.Now,
                             bPlayerIsLoaded = true,
@@ -227,10 +224,11 @@ public static class Database
             }
             catch (Exception ex)
             {
-                Instance.Logger.LogError($"Error load player {SteamID} attempt {attempt}: ex:{ex.Message}");
+                Instance.Logger.LogError("Error load player {SteamID} attempt {attempt}: ex:{ErrorMessage}", SteamID, attempt, ex.Message);
+
                 if (attempt < 3)
                 {
-                    Instance.Logger.LogInformation($"Retrying to load player {SteamID} (attempt: {attempt + 1})");
+                    Instance.Logger.LogInformation("Retrying to load player {SteamID} (attempt: {attempt})", SteamID, attempt + 1);
                     await Task.Delay(5000);
                     await LoadDataAsync(attempt + 1);
                 }
@@ -245,9 +243,7 @@ public static class Database
         await LoadDataAsync();
     }
 
-
-
-    public static void InsertNewPlayer(ulong SteamId, String PlayerName)
+    public static void InsertNewPlayer(ulong SteamId, string PlayerName)
     {
         ExecuteAsync(@"
                 INSERT INTO store_players (
@@ -260,7 +256,7 @@ public static class Database
             {
                 SteamId,
                 PlayerName,
-                Credits = Instance.Config.Credits["start"],
+                Credits = Instance.Config.Credits.start,
                 DateOfJoin = DateTime.Now,
                 DateOfLastJoin = DateTime.Now
             });
@@ -341,7 +337,7 @@ public static class Database
     public static void SavePlayerEquipment(CCSPlayerController player, Store_Equipment item)
     {
         ExecuteAsync(@"
-                INSERT INTO " + equipTableName + @" (
+                INSERT INTO " + Instance.Config.Settings.database_equip_table_name + @" (
                     SteamID, Type, UniqueId, Slot
                 ) VALUES (
                     @SteamID, @Type, @UniqueId, @Slot
@@ -359,7 +355,7 @@ public static class Database
     public static void RemovePlayerEquipment(CCSPlayerController player, string UniqueId)
     {
         ExecuteAsync(@"
-                    DELETE FROM " + equipTableName + @" WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
+                    DELETE FROM " + Instance.Config.Settings.database_equip_table_name + @" WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
                 "
             ,
             new
@@ -373,7 +369,7 @@ public static class Database
     {
         ExecuteAsync(@"
                 DELETE FROM store_items WHERE SteamID = @SteamID; 
-                DELETE FROM " + equipTableName + @" WHERE SteamID = @SteamID
+                DELETE FROM " + Instance.Config.Settings.database_equip_table_name + @" WHERE SteamID = @SteamID
             "
             ,
             new
@@ -390,9 +386,7 @@ public static class Database
 
             connection.Query(@"DROP TABLE store_players");
             connection.Query(@"DROP TABLE store_items");
-            connection.Query($@"DROP TABLE {equipTableName}");
+            connection.Query($@"DROP TABLE {Instance.Config.Settings.database_equip_table_name}");
         });
-
-        Server.ExecuteCommand("_restart");
     }
 }

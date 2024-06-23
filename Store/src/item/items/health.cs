@@ -30,10 +30,7 @@ public static class Item_Health
             return false;
         }
 
-        if (!int.TryParse(Instance.Config.Settings["max_health"], out int maxhealth))
-        {
-            return false;
-        }
+        var maxhealth = Instance.Config.Settings.max_health;
 
         int currentHealth = playerPawn.GetHealth();
         int pawnMaxHealth = playerPawn.MaxHealth;

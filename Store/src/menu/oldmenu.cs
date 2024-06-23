@@ -153,17 +153,14 @@ public static class OldMenu
 
         Store_Item? PlayerItems = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"] && p.UniqueId == item["uniqueid"]);
 
-        if (Instance.Config.Menu["enable_selling"] == "1" && !Item.IsPlayerVip(player))
+        if (Instance.Config.Menu.enable_selling && !Item.IsPlayerVip(player))
         {
-            float sell_ratio = 1.0f;
-
-            if (Instance.Config.Settings.TryGetValue("sell_ratio", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float ratio))
-            {
-                sell_ratio = ratio;
-            }
+            float sell_ratio = Instance.Config.Settings.sell_ratio;
 
             int purchase_price = 1;
-            bool usePurchaseCredit = Instance.Config.Settings.TryGetValue("sell_use_purchase_credit", out string? useCreditsValue) && useCreditsValue == "1";
+
+            bool usePurchaseCredit = Instance.Config.Settings.sell_use_purchase_credit;
+
             if (usePurchaseCredit && PlayerItems != null)
             {
                 purchase_price = PlayerItems.Price;

@@ -31,10 +31,7 @@ public static class Item_Armor
             return false;
         }
 
-        if (!int.TryParse(Instance.Config.Settings["max_armor"], out int maxarmor))
-        {
-            return false;
-        }
+        var maxarmor = Instance.Config.Settings.max_armor;
 
         if (maxarmor > 0)
         {

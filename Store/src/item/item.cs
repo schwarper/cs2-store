@@ -156,14 +156,7 @@ public static class Item
             return false;
         }
 
-        float sell_ratio = 1.0f;
-
-        if (Instance.Config.Settings.TryGetValue("sell_ratio", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float ratio))
-        {
-            sell_ratio = ratio;
-        }
-
-        Credits.Give(player, (int)(playeritem.Price * sell_ratio));
+        Credits.Give(player, (int)(playeritem.Price * Instance.Config.Settings.sell_ratio));
 
         Unequip(player, item);
 
@@ -235,7 +228,7 @@ public static class Item
 
     public static bool IsPlayerVip(CCSPlayerController player)
     {
-        string vip = Instance.Config.Menu["vip_flag"];
+        string vip = Instance.Config.Menu.vip_flag;
 
         return !string.IsNullOrEmpty(vip) && AdminManager.PlayerHasPermissions(player, vip);
     }
