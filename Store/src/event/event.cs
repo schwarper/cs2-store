@@ -42,7 +42,7 @@ public static class Event
 
     public static void StartCreditsTimer()
     {
-        Instance.AddTimer(Instance.Config.Credits["interval_active_inactive"], () =>
+        Instance.AddTimer(Instance.Config.Credits.IntervalActiveInActive, () =>
         {
             if (GameRules.IgnoreWarmUp())
             {
@@ -69,18 +69,18 @@ public static class Event
                 {
                     case CsTeam.Terrorist:
                     case CsTeam.CounterTerrorist:
-                        if (Instance.Config.Credits["amount_active"] > 0)
+                        if (Instance.Config.Credits.AmountActive > 0)
                         {
-                            Credits.Give(player, Instance.Config.Credits["amount_active"]);
-                            player.PrintToChatMessage("credits_earned<active>", Instance.Config.Credits["amount_active"]);
+                            Credits.Give(player, Instance.Config.Credits.AmountActive);
+                            player.PrintToChatMessage("credits_earned<active>", Instance.Config.Credits.AmountActive);
                         }
                         break;
 
                     case CsTeam.Spectator:
-                        if (Instance.Config.Credits["amount_inactive"] > 0)
+                        if (Instance.Config.Credits.AmountInActive > 0)
                         {
-                            Credits.Give(player, Instance.Config.Credits["amount_inactive"]);
-                            player.PrintToChatMessage("credits_earned<inactive>", Instance.Config.Credits["amount_inactive"]);
+                            Credits.Give(player, Instance.Config.Credits.AmountInActive);
+                            player.PrintToChatMessage("credits_earned<inactive>", Instance.Config.Credits.AmountInActive);
                         }
                         break;
                 }
@@ -108,8 +108,7 @@ public static class Event
         .Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)
         .ToList();
 
-        string store_equipmentTableName = Instance.Config.Settings.TryGetValue("database_equip_table_name", out string? tablename) ? tablename : "store_equipment";
-
+        string store_equipmentTableName = Instance.Config.Settings.DatabaseEquipTableName;
 
         foreach (Store_Item? item in itemsToRemove)
         {
@@ -122,12 +121,9 @@ public static class Event
 
     public static void OnServerPrecacheResources(ResourceManifest manifest)
     {
-        foreach (string[] models in Instance.Config.DefaultModels.Values)
+        foreach (string? model in Instance.Config.DefaultModels.CT.Concat(Instance.Config.DefaultModels.T))
         {
-            foreach (string model in models)
-            {
-                manifest.AddResource(model);
-            }
+            manifest.AddResource(model);
         }
 
         Instance.GlobalStoreItemTypes.ForEach((type) =>
@@ -187,9 +183,9 @@ public static class Event
             return HookResult.Continue;
         }
 
-        if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
+        if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, value: out _))
         {
-            value = new Player();
+            Player value = new();
             Instance.GlobalDictionaryPlayer.Add(player, value);
         }
 
@@ -240,11 +236,11 @@ public static class Event
             Database.SavePlayer(victim);
         });
 
-        if (Instance.Config.Credits["amount_kill"] > 0)
+        if (Instance.Config.Credits.AmountKill > 0)
         {
-            Credits.Give(attacker, Instance.Config.Credits["amount_kill"]);
+            Credits.Give(attacker, Instance.Config.Credits.AmountKill);
 
-            attacker.PrintToChat(Instance.Config.Tag + Instance.Localizer["credits_earned<kill>", Instance.Config.Credits["amount_kill"]]);
+            attacker.PrintToChat(Instance.Config.Tag + Instance.Localizer["credits_earned<kill>", Instance.Config.Credits.AmountKill]);
         }
 
         return HookResult.Continue;

@@ -4,7 +4,6 @@ using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
-using System.Globalization;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -22,6 +21,7 @@ public static class Item_PlayerSkin
         Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
         Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
+        Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
         Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart, HookMode.Pre);
     }
     public static void OnMapStart()
@@ -53,7 +53,7 @@ public static class Item_PlayerSkin
             return false;
         }
 
-        SetPlayerModel(player, item["uniqueid"], item["disable_leg"], int.Parse(item["slot"]));
+        SetPlayerModel(player, item["uniqueid"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]));
 
         return true;
     }
@@ -92,24 +92,30 @@ public static class Item_PlayerSkin
 
         Instance.AddTimer(0.1f, () =>
         {
-            Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == player.TeamNum);
-
-            if (item == null || ForceModelDefault)
-            {
-                SetDefaultModel(player);
-            }
-            else
-            {
-                Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
-
-                if (itemdata == null)
-                {
-                    return;
-                }
-
-                SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"], item.Slot);
-            }
+            ChangeModel(player, player.TeamNum);
         });
+
+        return HookResult.Continue;
+    }
+
+    public static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
+    {
+        CCSPlayerController? player = @event.Userid;
+
+        if (player == null)
+        {
+            return HookResult.Continue;
+        }
+
+        if (@event.Disconnect || !player.PawnIsAlive)
+        {
+            return HookResult.Continue;
+        }
+
+        if (@event.Team == 2 || @event.Team == 3)
+        {
+            ChangeModel(player, player.TeamNum);
+        }
 
         return HookResult.Continue;
     }
@@ -121,7 +127,7 @@ public static class Item_PlayerSkin
     }
     public static void SetDefaultModel(CCSPlayerController player)
     {
-        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels["ct"] : Instance.Config.DefaultModels["t"];
+        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels.CT : Instance.Config.DefaultModels.T;
         int maxIndex = modelsArray.Length;
 
         if (maxIndex > 0)
@@ -130,17 +136,12 @@ public static class Item_PlayerSkin
 
             string model = modelsArray[randomnumber];
 
-            SetPlayerModel(player, model, Instance.Config.Settings["default_model_disable_leg"], player.TeamNum);
+            SetPlayerModel(player, model, Instance.Config.Settings.DefaultModelDisableLeg, player.TeamNum);
         }
     }
-    private static void SetPlayerModel(CCSPlayerController player, string model, string disable_leg, int slotNumber)
+    private static void SetPlayerModel(CCSPlayerController player, string model, bool disable_leg, int slotNumber)
     {
-        float apply_delay = 0.1f;
-
-        if (Instance.Config.Settings.TryGetValue("apply_delay", out string? value) && float.TryParse(value, CultureInfo.InvariantCulture, out float delay))
-        {
-            apply_delay = float.MaxNumber(0.1f, delay);
-        }
+        float apply_delay = float.Max(Instance.Config.Settings.ApplyPlayerskinDelay, 0.1f);
 
         Instance.AddTimer(apply_delay, () =>
         {
@@ -153,14 +154,9 @@ public static class Item_PlayerSkin
 
     private static void Command_Model0(CCSPlayerController? player, CommandInfo info)
     {
-        if (Instance.Config.Settings.TryGetValue("model0_model1_flag", out string? value) && !string.IsNullOrEmpty(value))
-        {
-            if (!AdminManager.PlayerHasPermissions(player, value))
-            {
-                return;
-            }
-        }
-        else
+        string flag = Instance.Config.Settings.Model0Model1Flag;
+
+        if (string.IsNullOrEmpty(flag) || !AdminManager.PlayerHasPermissions(player, flag))
         {
             return;
         }
@@ -177,14 +173,9 @@ public static class Item_PlayerSkin
 
     private static void Command_Model1(CCSPlayerController? player, CommandInfo info)
     {
-        if (Instance.Config.Settings.TryGetValue("model0_model1_flag", out string? value) && !string.IsNullOrEmpty(value))
-        {
-            if (!AdminManager.PlayerHasPermissions(player, value))
-            {
-                return;
-            }
-        }
-        else
+        string flag = Instance.Config.Settings.Model0Model1Flag;
+
+        if (string.IsNullOrEmpty(flag) || !AdminManager.PlayerHasPermissions(player, flag))
         {
             return;
         }
@@ -202,12 +193,33 @@ public static class Item_PlayerSkin
                     continue;
                 }
 
-                SetPlayerModel(target, item.UniqueId, itemdata["disable_leg"], item.Slot);
+                SetPlayerModel(target, item.UniqueId, itemdata["disable_leg"] is "true" or "1", item.Slot);
             }
         }
 
         Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_model1", player?.PlayerName ?? Instance.Localizer["Console"]]);
 
         ForceModelDefault = false;
+    }
+
+    private static void ChangeModel(CCSPlayerController player, int teamnum)
+    {
+        Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == teamnum);
+
+        if (item == null || ForceModelDefault)
+        {
+            SetDefaultModel(player);
+        }
+        else
+        {
+            Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
+
+            if (itemdata == null)
+            {
+                return;
+            }
+
+            SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"] is "true" or "1", item.Slot);
+        }
     }
 }

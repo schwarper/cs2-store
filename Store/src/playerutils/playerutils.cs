@@ -18,7 +18,7 @@ public static class PlayerUtils
             player.PrintToChat(builder.ToString());
         }
     }
-    static public void ChangeModel(this CCSPlayerPawn pawn, string model, string disableleg)
+    static public void ChangeModel(this CCSPlayerPawn pawn, string model, bool disableleg)
     {
         if (model == string.Empty)
         {
@@ -31,7 +31,7 @@ public static class PlayerUtils
 
             Color originalRender = pawn.Render;
 
-            if (disableleg == "true")
+            if (disableleg)
             {
                 pawn.Render = Color.FromArgb(254, originalRender.R, originalRender.G, originalRender.B);
             }
