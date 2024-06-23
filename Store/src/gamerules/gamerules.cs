@@ -11,7 +11,7 @@ public static class GameRules
 
     public static bool IgnoreWarmUp()
     {
-        return Convert.ToBoolean(Instance.Config.Credits.IgnoreWarmup) && GlobalGameRules.WarmupPeriod;
+        return Instance.Config.Credits.IgnoreWarmup && GlobalGameRules.WarmupPeriod;
     }
 
     public static bool IsPistolRound()
