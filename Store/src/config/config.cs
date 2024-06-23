@@ -60,7 +60,7 @@ public class StoreConfig : BasePluginConfig
         public string Model0Model1Flag { get; set; } = "@css/root";
     }
 
-    [JsonPropertyName("TagPrefix")] public string Tag { get; set; } = "{red} [Store]";
+    [JsonPropertyName("TagPrefix")] public string Tag { get; set; } = "{red}[Store] ";
     [JsonPropertyName("Database")] public Config_Database Database { get; set; } = new Config_Database();
     [JsonPropertyName("Commands")] public Config_Command Commands { get; set; } = new Config_Command();
     [JsonPropertyName("DefaultModels")] public Config_DefaultModel DefaultModels { get; set; } = new Config_DefaultModel();
