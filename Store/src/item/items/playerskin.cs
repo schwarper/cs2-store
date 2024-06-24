@@ -53,7 +53,10 @@ public static class Item_PlayerSkin
             return false;
         }
 
-        SetPlayerModel(player, item["uniqueid"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]));
+        if (player.TeamNum == int.Parse(item["slot"]))
+        {
+            player.ChangeModelDelay(item["uniqueid"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]));
+        }
 
         return true;
     }
@@ -71,11 +74,17 @@ public static class Item_PlayerSkin
 
         if (player.TeamNum == int.Parse(item["slot"]))
         {
-            SetDefaultModel(player);
+            var defaultModel = GetDefaultModel(player);
+
+            if (defaultModel.HasValue)
+            {
+                player.ChangeModelDelay(defaultModel.Value.modelname, defaultModel.Value.disableleg, player.TeamNum);
+            }
         }
 
         return true;
     }
+
     public static HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
@@ -90,10 +99,12 @@ public static class Item_PlayerSkin
             return HookResult.Continue;
         }
 
-        Instance.AddTimer(0.1f, () =>
+        var modelData = GetModel(player, player.TeamNum);
+
+        if (modelData.HasValue)
         {
-            ChangeModel(player, player.TeamNum);
-        });
+            player.ChangeModelDelay(modelData.Value.modelname, modelData.Value.disableleg, player.TeamNum);
+        }
 
         return HookResult.Continue;
     }
@@ -114,7 +125,12 @@ public static class Item_PlayerSkin
 
         if (@event.Team == 2 || @event.Team == 3)
         {
-            ChangeModel(player, player.TeamNum);
+            var modelDatas = GetModel(player, @event.Team);
+
+            if (modelDatas.HasValue)
+            {
+                player.PlayerPawn.Value!.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg);
+            }
         }
 
         return HookResult.Continue;
@@ -124,32 +140,6 @@ public static class Item_PlayerSkin
     {
         ForceModelDefault = false;
         return HookResult.Continue;
-    }
-    public static void SetDefaultModel(CCSPlayerController player)
-    {
-        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels.CT : Instance.Config.DefaultModels.T;
-        int maxIndex = modelsArray.Length;
-
-        if (maxIndex > 0)
-        {
-            int randomnumber = Instance.Random.Next(0, maxIndex - 1);
-
-            string model = modelsArray[randomnumber];
-
-            SetPlayerModel(player, model, Instance.Config.Settings.DefaultModelDisableLeg, player.TeamNum);
-        }
-    }
-    private static void SetPlayerModel(CCSPlayerController player, string model, bool disable_leg, int slotNumber)
-    {
-        float apply_delay = float.Max(Instance.Config.Settings.ApplyPlayerskinDelay, 0.1f);
-
-        Instance.AddTimer(apply_delay, () =>
-        {
-            if (player.IsValid && player.TeamNum == slotNumber && player.PawnIsAlive)
-            {
-                player.PlayerPawn.Value?.ChangeModel(model, disable_leg);
-            }
-        }, TimerFlags.STOP_ON_MAPCHANGE);
     }
 
     private static void Command_Model0(CCSPlayerController? player, CommandInfo info)
@@ -163,7 +153,12 @@ public static class Item_PlayerSkin
 
         foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
-            SetDefaultModel(target);
+            var modelDatas = GetDefaultModel(target);
+
+            if (modelDatas.HasValue)
+            {
+                target.PlayerPawn.Value!.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg);
+            }
         }
 
         Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_model0", player?.PlayerName ?? Instance.Localizer["Console"]]);
@@ -182,18 +177,11 @@ public static class Item_PlayerSkin
 
         foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
-            Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == target.SteamID && p.Type == "playerskin" && p.Slot == target.TeamNum);
+            var modelDatas = GetModel(target, target.TeamNum);
 
-            if (item != null)
+            if (modelDatas.HasValue)
             {
-                Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
-
-                if (itemdata == null)
-                {
-                    continue;
-                }
-
-                SetPlayerModel(target, item.UniqueId, itemdata["disable_leg"] is "true" or "1", item.Slot);
+                target.PlayerPawn.Value!.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg);
             }
         }
 
@@ -202,24 +190,46 @@ public static class Item_PlayerSkin
         ForceModelDefault = false;
     }
 
-    private static void ChangeModel(CCSPlayerController player, int teamnum)
+    private static (string modelname, bool disableleg)? GetModel(CCSPlayerController player, int teamnum)
     {
         Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == teamnum);
 
         if (item == null || ForceModelDefault)
         {
-            SetDefaultModel(player);
+            return GetDefaultModel(player);
         }
         else
         {
-            Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
-
-            if (itemdata == null)
-            {
-                return;
-            }
-
-            SetPlayerModel(player, item.UniqueId, itemdata["disable_leg"] is "true" or "1", item.Slot);
+            return GetStoreModel(player, item);
         }
+    }
+
+    private static (string modelname, bool disableleg)? GetDefaultModel(CCSPlayerController player)
+    {
+        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels.CT : Instance.Config.DefaultModels.T;
+        int maxIndex = modelsArray.Length;
+
+        if (maxIndex > 0)
+        {
+            int randomnumber = Instance.Random.Next(0, maxIndex - 1);
+
+            string model = modelsArray[randomnumber];
+
+            return (model, Instance.Config.Settings.DefaultModelDisableLeg);
+        }
+
+        return null;
+    }
+
+    private static (string modelname, bool disableleg)? GetStoreModel(CCSPlayerController player, Store_Equipment item)
+    {
+        Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
+
+        if (itemdata == null)
+        {
+            return null;
+        }
+
+        return (item.UniqueId, itemdata["disable_leg"] is "true" or "1");
     }
 }
