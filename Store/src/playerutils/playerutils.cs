@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
+using CounterStrikeSharp.API.Modules.Timers;
 using System.Drawing;
 using System.Text;
 using static Store.Store;
@@ -18,6 +19,20 @@ public static class PlayerUtils
             player.PrintToChat(builder.ToString());
         }
     }
+
+    static public void ChangeModelDelay(this CCSPlayerController player, string model, bool disableleg, int slotNumber)
+    {
+        float apply_delay = float.Max(Instance.Config.Settings.ApplyPlayerskinDelay, 0.1f);
+
+        Instance.AddTimer(apply_delay, () =>
+        {
+            if (player.IsValid && player.TeamNum == slotNumber && player.PawnIsAlive)
+            {
+                player.PlayerPawn.Value?.ChangeModel(model, disableleg);
+            }
+        }, TimerFlags.STOP_ON_MAPCHANGE);
+    }
+
     static public void ChangeModel(this CCSPlayerPawn pawn, string model, bool disableleg)
     {
         if (model == string.Empty)
