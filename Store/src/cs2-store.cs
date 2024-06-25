@@ -46,6 +46,7 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
         Item_Smoke.OnPluginStart();
         Item_Sound.OnPluginStart();
         Item_Speed.OnPluginStart();
+        Item_Tag.OnPluginStart();
         Item_Tracer.OnPluginStart();
         Item_Trail.OnPluginStart();
         Item_Weapon.OnPluginStart();
