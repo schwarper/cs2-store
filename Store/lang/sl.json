@@ -44,6 +44,10 @@
   "menu_store<grenadetrail>": "Granatna sled",
   "menu_store<tracer>": "Sledilec",
   "menu_store<colorskins>": "Barvne kože",
+  "menu_store<scoretag>": "Oznake za Rezultatna tabla",
+  "menu_store<chattag>": "Oznake za klepet",
+  "menu_store<chatcolor>": "Barve klepeta",
+  "menu_store<namecolor>": "Barve imena",
 
   "menu_store<t_title>": "T Modeli",
   "menu_store<ct_title>": "CT Modeli",

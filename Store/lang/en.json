@@ -44,6 +44,10 @@
   "menu_store<grenadetrail>": "Grenade Trail",
   "menu_store<tracer>": "Tracer",
   "menu_store<colorskins>": "Colorskins",
+  "menu_store<scoretag>": "Scoreboard tags",
+  "menu_store<chattag>": "Chat tags",
+  "menu_store<chatcolor>": "Chat colors",
+  "menu_store<namecolor>": "Name colors",
 
   "menu_store<t_title>": "T Models",
   "menu_store<ct_title>": "CT Models",
