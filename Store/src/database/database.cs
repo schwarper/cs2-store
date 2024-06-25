@@ -10,11 +10,11 @@ namespace Store;
 
 public static class Database
 {
-    public static string GlobalDatabaseConnectingString { get; set; } = string.Empty;
+    public static string GlobalDatabaseConnectionString { get; set; } = string.Empty;
 
     public static async Task<MySqlConnection> ConnectAsync()
     {
-        MySqlConnection connection = new(GlobalDatabaseConnectingString);
+        MySqlConnection connection = new(GlobalDatabaseConnectionString);
         await connection.OpenAsync();
         return connection;
     }
@@ -44,7 +44,7 @@ public static class Database
             AllowZeroDateTime = true
         };
 
-        GlobalDatabaseConnectingString = builder.ConnectionString;
+        GlobalDatabaseConnectionString = builder.ConnectionString;
 
         using MySqlConnection connection = await ConnectAsync();
         using MySqlTransaction transaction = await connection.BeginTransactionAsync();
