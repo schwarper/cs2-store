@@ -11,9 +11,9 @@ public class StoreAPI : IStoreApi
     {
     }
 
-    public string GetDatabasestring()
+    public string GetDatabaseString()
     {
-        return Database.GlobalDatabaseConnectionstring;
+        return Database.GlobalDatabaseConnectingString;
     }
 
     public int GetPlayerCredits(CCSPlayerController player)

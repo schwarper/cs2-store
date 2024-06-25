@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Menu;
+using System.Text;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -12,10 +13,10 @@ public static class OldMenu
     {
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
-            stringBuilder builder = new();
+            StringBuilder builder = new();
             builder.AppendFormat(Instance.Localizer[display, args]);
 
-            menu.AddMenuOption(builder.Tostring(), onSelect);
+            menu.AddMenuOption(builder.ToString(), onSelect);
         }
     }
 
@@ -23,10 +24,10 @@ public static class OldMenu
     {
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
-            stringBuilder builder = new();
+            StringBuilder builder = new();
             builder.AppendFormat(Instance.Localizer["menu_store<title>", Credits.Get(player)]);
 
-            CenterHtmlMenu menu = new(builder.Tostring(), Instance);
+            CenterHtmlMenu menu = new(builder.ToString(), Instance);
 
             foreach (KeyValuePair<string, Dictionary<string, Dictionary<string, string>>> category in Instance.Config.Items)
             {
@@ -35,13 +36,13 @@ public static class OldMenu
                     continue;
                 }
 
-                stringBuilder builderkey = new();
+                StringBuilder builderkey = new();
                 builderkey.AppendFormat(Instance.Localizer[$"menu_store<{category.Key}>"]);
 
-                menu.AddMenuOption(builderkey.Tostring(), (CCSPlayerController player, ChatMenuOption option) =>
+                menu.AddMenuOption(builderkey.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
                 {
                     player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
-                    DisplayItems(player, builderkey.Tostring(), category.Value, inventory);
+                    DisplayItems(player, builderkey.ToString(), category.Value, inventory);
                 });
             }
 
@@ -66,13 +67,13 @@ public static class OldMenu
 
                 using (new WithTemporaryCulture(player.GetLanguage()))
                 {
-                    stringBuilder builder = new();
+                    StringBuilder builder = new();
                     builder.AppendFormat(Instance.Localizer[$"menu_store<{(Slot == 2 ? "t" : "ct")}_title>"]);
 
-                    menu.AddMenuOption(builder.Tostring(), (CCSPlayerController player, ChatMenuOption option) =>
+                    menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
                     {
                         player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
-                        DisplayItem(player, inventory, builder.Tostring(), playerSkinItems.Where(p => p.Value.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && int.Parse(p.Value["slot"]) == Slot).ToDictionary(p => p.Key, p => p.Value));
+                        DisplayItem(player, inventory, builder.ToString(), playerSkinItems.Where(p => p.Value.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && int.Parse(p.Value["slot"]) == Slot).ToDictionary(p => p.Key, p => p.Value));
                     });
                 }
             }
@@ -204,7 +205,7 @@ public static class OldMenu
 
         if (PlayerItems != null && PlayerItems.DateOfExpiration > DateTime.MinValue)
         {
-            menu.AddMenuOption(PlayerItems.DateOfExpiration.Tostring(), (p, o) => { }, true);
+            menu.AddMenuOption(PlayerItems.DateOfExpiration.ToString(), (p, o) => { }, true);
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);

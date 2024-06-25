@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Timers;
 using System.Drawing;
+using System.Text;
 using static Store.Store;
 
 namespace Store;
@@ -13,9 +14,9 @@ public static class PlayerUtils
     {
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
-            stringBuilder builder = new(Instance.Config.Tag);
+            StringBuilder builder = new(Instance.Config.Tag);
             builder.AppendFormat(Instance.Localizer[message], args);
-            player.PrintToChat(builder.Tostring());
+            player.PrintToChat(builder.ToString());
         }
     }
 

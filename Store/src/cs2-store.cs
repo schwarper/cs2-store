@@ -71,7 +71,7 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
             throw new Exception("You need to setup Database credentials in config.");
         }
 
-        config.Tag = stringExtensions.ReplaceColorTags(config.Tag);
+        config.Tag = StringExtensions.ReplaceColorTags(config.Tag);
 
         Task.Run(async () =>
         {
