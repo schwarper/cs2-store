@@ -10,11 +10,11 @@ namespace Store;
 
 public static class Database
 {
-    public static string GlobalDatabaseConnectionString { get; set; } = string.Empty;
+    public static string GlobalDatabaseConnectionstring { get; set; } = string.Empty;
 
     public static async Task<MySqlConnection> ConnectAsync()
     {
-        MySqlConnection connection = new(GlobalDatabaseConnectionString);
+        MySqlConnection connection = new(GlobalDatabaseConnectionstring);
         await connection.OpenAsync();
         return connection;
     }
@@ -30,7 +30,7 @@ public static class Database
 
     public static async Task CreateDatabaseAsync(StoreConfig config)
     {
-        MySqlConnectionStringBuilder builder = new()
+        MySqlConnectionstringBuilder builder = new()
         {
             Server = config.Database.Host,
             Database = config.Database.Name,
@@ -44,7 +44,7 @@ public static class Database
             AllowZeroDateTime = true
         };
 
-        GlobalDatabaseConnectionString = builder.ConnectionString;
+        GlobalDatabaseConnectionstring = builder.Connectionstring;
 
         using MySqlConnection connection = await ConnectAsync();
         using MySqlTransaction transaction = await connection.BeginTransactionAsync();
@@ -117,13 +117,12 @@ public static class Database
         Credits.SetOriginal(player, -1);
         Credits.Set(player, -1);
         ulong steamid = player.SteamID;
-        String PlayerName = player.PlayerName;
+        string PlayerName = player.PlayerName;
 
         Task.Run(async () =>
         {
             await LoadPlayerAsync(player, steamid, PlayerName);
         });
-
     }
 
     public static async Task LoadPlayerAsync(CCSPlayerController player, ulong SteamID, string PlayerName)

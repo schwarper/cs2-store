@@ -1,6 +1,5 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using System.Text;
 using static Store.Store;
 
 namespace Store;
@@ -118,7 +117,7 @@ public class WasdMenuPlayer
         if (CurrentChoice == null || MainMenu == null)
             return;
 
-        StringBuilder builder = new();
+        stringBuilder builder = new();
         int i = 0;
         LinkedListNode<IWasdMenuOption>? option = MenuStart!;
         if (option.Value.Parent?.Title != "")
@@ -145,6 +144,6 @@ public class WasdMenuPlayer
         builder.AppendLine("<br>" +
                            $"{Instance.Localizer["menu.bottom.text"]}<br>");
         builder.AppendLine("</div>");
-        CenterHtml = builder.ToString();
+        CenterHtml = builder.Tostring();
     }
 }

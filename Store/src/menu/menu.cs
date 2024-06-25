@@ -1,8 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
-using System.Text;
-using static CounterStrikeSharp.API.Core.Listeners;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -63,10 +61,10 @@ public static class Menu
     {
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
-            StringBuilder builder = new();
+            stringBuilder builder = new();
             builder.AppendFormat(Instance.Localizer[display, args]);
 
-            menu.Add(builder.ToString(), onSelect);
+            menu.Add(builder.Tostring(), onSelect);
         }
     }
 
@@ -80,10 +78,10 @@ public static class Menu
 
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
-            StringBuilder builder = new();
+            stringBuilder builder = new();
             builder.AppendFormat(Instance.Localizer["menu_store<title>", Credits.Get(player)]);
 
-            IWasdMenu menu = WasdManager.CreateMenu(builder.ToString());
+            IWasdMenu menu = WasdManager.CreateMenu(builder.Tostring());
 
             foreach (KeyValuePair<string, Dictionary<string, Dictionary<string, string>>> category in Instance.Config.Items)
             {
@@ -92,13 +90,13 @@ public static class Menu
                     continue;
                 }
 
-                StringBuilder builderkey = new();
+                stringBuilder builderkey = new();
                 builderkey.AppendFormat(Instance.Localizer[$"menu_store<{category.Key}>"]);
 
-                menu.Add(builderkey.ToString(), (CCSPlayerController player, IWasdMenuOption option) =>
+                menu.Add(builderkey.Tostring(), (CCSPlayerController player, IWasdMenuOption option) =>
                 {
                     player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
-                    DisplayItems(player, builderkey.ToString(), category.Value, inventory, option);
+                    DisplayItems(player, builderkey.Tostring(), category.Value, inventory, option);
                 });
             }
 
@@ -125,13 +123,13 @@ public static class Menu
 
                 using (new WithTemporaryCulture(player.GetLanguage()))
                 {
-                    StringBuilder builder = new();
+                    stringBuilder builder = new();
                     builder.AppendFormat(Instance.Localizer[$"menu_store<{(Slot == 2 ? "t" : "ct")}_title>"]);
 
-                    menu.Add(builder.ToString(), (CCSPlayerController player, IWasdMenuOption option) =>
+                    menu.Add(builder.Tostring(), (CCSPlayerController player, IWasdMenuOption option) =>
                     {
                         player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
-                        DisplayItem(player, inventory, builder.ToString(), playerSkinItems.Where(p => p.Value.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && int.Parse(p.Value["slot"]) == Slot).ToDictionary(p => p.Key, p => p.Value), option);
+                        DisplayItem(player, inventory, builder.Tostring(), playerSkinItems.Where(p => p.Value.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && int.Parse(p.Value["slot"]) == Slot).ToDictionary(p => p.Key, p => p.Value), option);
                     });
                 }
             }
@@ -267,7 +265,7 @@ public static class Menu
 
         if (PlayerItems != null && PlayerItems.DateOfExpiration > DateTime.MinValue)
         {
-            menu.Add(PlayerItems.DateOfExpiration.ToString(), (p, o) => { DisplayItemOption(player, item); });
+            menu.Add(PlayerItems.DateOfExpiration.Tostring(), (p, o) => { DisplayItemOption(player, item); });
         }
 
         WasdManager.OpenSubMenu(player, menu);

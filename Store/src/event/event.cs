@@ -166,6 +166,7 @@ public static class Event
     private static void OnClientAuthorized(int playerSlot, SteamID steamId)
     {
         CCSPlayerController? player = Utilities.GetPlayerFromSlot(playerSlot);
+
         if (player == null)
         {
             return;

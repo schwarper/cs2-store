@@ -185,7 +185,16 @@ public static class Command
             return;
         }
 
+        Instance.GlobalStorePlayers.Clear();
+        Instance.GlobalStorePlayerItems.Clear();
+        Instance.GlobalStorePlayerEquipments.Clear();
+
         Database.ResetDatabase();
+
+        foreach (CCSPlayerController target in Utilities.GetPlayers())
+        {
+            Database.LoadPlayer(target);
+        }
     }
 
     [CommandHelper(minArgs: 1, whoCanExecute: CommandUsage.CLIENT_AND_SERVER)]
