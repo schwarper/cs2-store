@@ -46,6 +46,7 @@ public class StoreConfig : BasePluginConfig
         public bool EnableSelling { get; set; } = true;
         public bool UseWASDMenu { get; set; } = true;
         public string VipFlag { get; set; } = "@css/root";
+        public string MenuPressSound { get; set; } = "sounds/buttons/bell1.vsnd";
     }
 
     public class Config_Setting

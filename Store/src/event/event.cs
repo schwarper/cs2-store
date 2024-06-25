@@ -88,8 +88,6 @@ public static class Event
         }, TimerFlags.REPEAT);
     }
 
-
-
     public static void OnMapStart(string mapname)
     {
         Instance.GlobalStoreItemTypes.ForEach((type) =>
@@ -134,6 +132,8 @@ public static class Event
 
     public static void OnTick()
     {
+        Menu.OnTick();
+
         Instance.GlobalTickrate++;
 
         if (Instance.GlobalTickrate % 10 != 0)

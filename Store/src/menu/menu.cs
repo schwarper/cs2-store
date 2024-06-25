@@ -46,8 +46,6 @@ public static class Menu
             return HookResult.Continue;
         });
 
-        Instance.RegisterListener<OnTick>(OnTick);
-
         if (hotReload)
         {
             foreach (CCSPlayerController pl in Utilities.GetPlayers())
