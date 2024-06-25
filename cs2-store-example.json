@@ -52,8 +52,11 @@
   },
   "Menu": {
     "EnableSelling": true,
+    "EnableConfirmMenu": true,
     "UseWASDMenu": true,
-    "VipFlag": "@css/root"
+    "VipFlag": "@css/root",
+    "MenuPressSoundYes": "",
+    "MenuPressSoundNo": ""
   },
   "Settings": {
     "MaxHealth": 0,
@@ -299,6 +302,38 @@
         "slot": "1",
         "color": "0 255 0",
         "enable": "true"
+      }
+    },
+    "scoretag": {
+      "1": {
+        "name": "Test",
+        "uniqueid": "scoretag_test",
+        "type": "scoretag",
+        "scoretag": "Test"
+      }
+    },
+    "chattag": {
+      "1": {
+        "name": "Test",
+        "uniqueid": "chattag_test",
+        "type": "chattag",
+        "chattag": "Test"
+      }
+    },
+    "chatcolor": {
+      "1": {
+        "name": "Red",
+        "uniqueid": "chatcolor_red",
+        "type": "chatcolor",
+        "chatcolor": "{red}"
+      }
+    },
+    "namecolor": {
+      "1": {
+        "name": "Red",
+        "uniqueid": "namecolor_red",
+        "type": "namecolor",
+        "chatcolor": "{red}"
       }
     }
   },
