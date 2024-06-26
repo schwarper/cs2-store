@@ -1,0 +1,30 @@
+{
+    "Prefix": "{red}[Store] {white}",
+
+    "You are already in": "Você acabou de entrar para jogar a cara ou coroa.",
+    "Must be an integer": "O valor que você deve inserir tem que ser um número inteiro.",
+    "No enough credits": "Você não tem créditos suficientes para apostar.",
+    "Min coinflip": "O valor que você colocou deve ser mais alto que {green}{0} {white}.",
+    "Max coinflip": "O valor que você colocou deve ser menor que {green}{0} {white}.",
+    "Cannot join during warmup": "Você não pode participar do cara ou coroa durante o aquecimento.",
+    "Coinflip feature is disabled": "O cara ou coroa está {darkred}desativado{white}. Você não foi cobrado.",
+    "Announce coinflip": "O cara ou coroa está {green}aberto {white}para apostas!",
+
+    "No duel invitations": "Você não tem nenhum pedido de duelo",
+    "Duel request sent": "Você desafiou {blue}{0} {white}para um cara ou coroa valendo {green}{1} {white}créditos. Esperando ele aceitar.",
+    "You declined the duel": "Você {darkred}negou {white}o pedido de duelo",
+    "Duel request": "{blue}{0} {white}te desafiou para um cara ou coroa por {green}{1} {white}créditos!",
+    "Cannot challenge yourself": "Você não pode se desafiar",
+    "Duel win message": "Você {green}ganhou {white}o cara ou coroa contra {blue}{0} {white}e ganhou {green}{1} {white}créditos",
+    "Duel lose message": "Você {darkred}perdeu {white}o cara ou coroa contra {blue}{0} {white}e perdeu {green}{1} {white}créditos",
+    "Duel feature is disabled": "O duelo está atualmente {darkred}desativado{white}. Você não foi cobrado",
+
+    "menu_title": "Cara ou coroa [Sua aposta: {0}]",
+    "menu_options": "{0} [{1}x]",
+
+    "Heads": "Cara",
+    "Tails": "Coroa",
+
+    "Join coinflip": "{blue}{0} {white}apostou {green}{1} {white}créditos em {2}.",
+    "Winner coinflip": "Lado sorteado: {red}{0}"
+}
