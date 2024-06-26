@@ -1,5 +1,7 @@
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Utils;
+using Microsoft.Extensions.Logging;
 using TagsApi;
 using static Store.Store;
 using static StoreApi.Store;
@@ -13,19 +15,26 @@ public static class Item_Tag
 
     public static void OnPluginStart()
     {
-        tagApi = ITagApi.Capability.Get();
-
-        if (tagApi == null)
+        try
         {
-            return;
+            tagApi = ITagApi.Capability.Get();
+
+            if (tagApi == null)
+            {
+                return;
+            }
+
+            Item.RegisterType("scoretag", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+            Item.RegisterType("chattag", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+            Item.RegisterType("chatcolor", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+            Item.RegisterType("namecolor", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+
+            Instance.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
         }
-
-        Item.RegisterType("scoretag", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-        Item.RegisterType("chattag", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-        Item.RegisterType("chatcolor", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-        Item.RegisterType("namecolor", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-
-        Instance.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
+        catch (Exception)
+        {
+            Instance.Logger.LogInformation("Tagsapi couldn't be found, skipped it.");
+        }
     }
     public static void OnMapStart()
     {
