@@ -8,6 +8,20 @@ Discord nickname: schwarper
 
 Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 
+# Installation
+
+1. Download the plugin:
+    * Download the plugin from https://github.com/schwarper/cs2-store/releases.
+2. Install the plugin files:
+    * Place the contents of the `plugins` file in the `addons/counterstrikesharp/plugins` folder.
+    * Place the contents of the `shared` file in the `addons/counterstrikesharp/shared` folder.
+3. Restart or load the plugin:
+    * Restart your server or load the plugin using the command: `css_plugins load cs2-store`
+4. Configure the plugin settings:
+    * Once the plugin has loaded successfully, configure your settings in the `cs2-store.json` file located in the `addons/counterstrikesharp/config/plugins/` folder. In this file you can set database information, plugin settings and define items.
+5. Finish the installation:
+    * Restart your server or reload the plugin for the settings to take effect.
+
 # Images
 
 ![image](https://github.com/schwarper/cs2-store/assets/75811921/d0edc64e-6475-4d04-b5c7-0ea03686d1e6)
