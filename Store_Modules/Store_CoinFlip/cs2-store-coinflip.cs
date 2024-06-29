@@ -74,7 +74,7 @@ public class Store_CoinFlipConfig : BasePluginConfig
 
 public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
 {
-    public override string ModuleName => "[Store Module] CoinFlip";
+    public override string ModuleName => "Store Module [CoinFlip]";
     public override string ModuleVersion => "0.0.1";
     public override string ModuleAuthor => "Nathy & Schwarper";
 
