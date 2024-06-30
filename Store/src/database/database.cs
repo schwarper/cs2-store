@@ -117,13 +117,12 @@ public static class Database
         Credits.SetOriginal(player, -1);
         Credits.Set(player, -1);
         ulong steamid = player.SteamID;
-        String PlayerName = player.PlayerName;
+        string PlayerName = player.PlayerName;
 
         Task.Run(async () =>
         {
             await LoadPlayerAsync(player, steamid, PlayerName);
         });
-
     }
 
     public static async Task LoadPlayerAsync(CCSPlayerController player, ulong SteamID, string PlayerName)

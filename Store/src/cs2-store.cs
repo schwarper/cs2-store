@@ -10,7 +10,7 @@ namespace Store;
 public class Store : BasePlugin, IPluginConfig<StoreConfig>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "0.2.5";
+    public override string ModuleVersion => "0.2.6";
     public override string ModuleAuthor => "schwarper";
 
     public StoreConfig Config { get; set; } = new StoreConfig();
@@ -46,6 +46,7 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
         Item_Smoke.OnPluginStart();
         Item_Sound.OnPluginStart();
         Item_Speed.OnPluginStart();
+        Item_Tag.OnPluginStart();
         Item_Tracer.OnPluginStart();
         Item_Trail.OnPluginStart();
         Item_Weapon.OnPluginStart();

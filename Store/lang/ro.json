@@ -44,6 +44,10 @@
   "menu_store<grenadetrail>": "Urmă de grenadă",
   "menu_store<tracer>": "Trasor",
   "menu_store<colorskins>": "Skinuri colorate",
+  "menu_store<scoretag>": "Etichete Tabloul de bord",
+  "menu_store<chattag>": "Etichete chat",
+  "menu_store<chatcolor>": "Culori chat",
+  "menu_store<namecolor>": "Culori nume",
 
   "menu_store<t_title>": "Modele T",
   "menu_store<ct_title>": "Modele CT",

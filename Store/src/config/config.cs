@@ -44,8 +44,11 @@ public class StoreConfig : BasePluginConfig
     public class Config_Menu
     {
         public bool EnableSelling { get; set; } = true;
+        public bool EnableConfirmMenu { get; set; } = true;
         public bool UseWASDMenu { get; set; } = true;
         public string VipFlag { get; set; } = "@css/root";
+        public string MenuPressSoundYes { get; set; } = string.Empty;
+        public string MenuPressSoundNo { get; set; } = string.Empty;
     }
 
     public class Config_Setting

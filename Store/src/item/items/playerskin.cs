@@ -2,7 +2,6 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
-using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
 using static Store.Store;
 using static StoreApi.Store;
@@ -74,7 +73,7 @@ public static class Item_PlayerSkin
 
         if (player.TeamNum == int.Parse(item["slot"]))
         {
-            var defaultModel = GetDefaultModel(player);
+            (string modelname, bool disableleg)? defaultModel = GetDefaultModel(player);
 
             if (defaultModel.HasValue)
             {
@@ -99,7 +98,7 @@ public static class Item_PlayerSkin
             return HookResult.Continue;
         }
 
-        var modelData = GetModel(player, player.TeamNum);
+        (string modelname, bool disableleg)? modelData = GetModel(player, player.TeamNum);
 
         if (modelData.HasValue)
         {
@@ -125,7 +124,7 @@ public static class Item_PlayerSkin
 
         if (@event.Team == 2 || @event.Team == 3)
         {
-            var modelDatas = GetModel(player, @event.Team);
+            (string modelname, bool disableleg)? modelDatas = GetModel(player, @event.Team);
 
             if (modelDatas.HasValue)
             {
@@ -153,7 +152,7 @@ public static class Item_PlayerSkin
 
         foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
-            var modelDatas = GetDefaultModel(target);
+            (string modelname, bool disableleg)? modelDatas = GetDefaultModel(target);
 
             if (modelDatas.HasValue)
             {
@@ -177,7 +176,7 @@ public static class Item_PlayerSkin
 
         foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
-            var modelDatas = GetModel(target, target.TeamNum);
+            (string modelname, bool disableleg)? modelDatas = GetModel(target, target.TeamNum);
 
             if (modelDatas.HasValue)
             {
