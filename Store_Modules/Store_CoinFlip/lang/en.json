@@ -1,0 +1,30 @@
+{
+    "Prefix": "{red}[Store] {white}",
+
+    "You are already in": "You already joined the coinflip.",
+    "Must be an integer": "The value you entered must be an integer.",
+    "No enough credits": "You don't have enough credits.",
+    "Min coinflip": "The value you entered must be higher than {green}{0} {white}.",
+    "Max coinflip": "The value you entered must be lower than {green}{0} {white}.",
+    "Cannot join during warmup": "You can't join the coinflip during warmup.",
+    "Coinflip feature is disabled": "Coinflip is currently {darkred}disabled{white}. You were not charged.",
+    "Announce coinflip": "Coinflip is {green}open {white}for bets!",
+
+    "No duel invitations": "You don't have any duel request",
+    "Duel request sent": "You challenged {blue}{0} {white}to a coin flip duel for {green}{1} {white}credits. Waiting for them to accept.",
+    "You declined the duel": "You {darkred}denied {white}the duel request",
+    "Duel request": "{blue}{0} {white}has challenged you to a coin flip duel for {green}{1} {white}credits!",
+    "Cannot challenge yourself": "You can not challenge yourself",
+    "Duel win message": "You {green}won {white}the coin flip duel against {blue}{0} {white}and earned {green}{1} {white}credits",
+    "Duel lose message": "You {darkred}lost {white}the coin flip duel against {blue}{0} {white}and lost {green}{1} {white}credits",
+    "Duel feature is disabled": "Duel is currently {darkred}disabled{white}. You were not charged",
+
+    "menu_title": "Coinflip [Your bet: {0}]",
+    "menu_options": "{0} [{1}x]",
+
+    "Heads": "Heads",
+    "Tails": "Tails",
+
+    "Join coinflip": "{blue}{0} {white}bet {green}{1} {white}credits on {green}{2}.",
+    "Winner coinflip": "Winner coin: {0}"
+}
