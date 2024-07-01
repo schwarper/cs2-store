@@ -46,7 +46,6 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
         Item_Smoke.OnPluginStart();
         Item_Sound.OnPluginStart();
         Item_Speed.OnPluginStart();
-        Item_Tag.OnPluginStart();
         Item_Tracer.OnPluginStart();
         Item_Trail.OnPluginStart();
         Item_Weapon.OnPluginStart();
@@ -63,6 +62,11 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
     public override void Unload(bool hotReload)
     {
         Event.Unload();
+    }
+
+    public override void OnAllPluginsLoaded(bool hotReload)
+    {
+        Item_Tag.OnAllPluginsLoaded();
     }
 
     public void OnConfigParsed(StoreConfig config)

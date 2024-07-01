@@ -89,9 +89,12 @@ public static class Item
 
         if (currentitem != null)
         {
-            Dictionary<string, string> citem = GetItem(currentitem.Type, currentitem.UniqueId)!;
+            Dictionary<string, string>? citem = GetItem(currentitem.Type, currentitem.UniqueId);
 
-            Unequip(player, citem);
+            if (citem != null)
+            {
+                Unequip(player, citem);
+            }
         }
 
         if (type.Equip(player, item) == false)

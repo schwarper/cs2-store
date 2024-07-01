@@ -4,9 +4,7 @@ using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Menu;
-using CounterStrikeSharp.API.Modules.Utils;
 using StoreApi;
-using System.Drawing;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -57,7 +55,7 @@ public class Store_CoinFlipConfig : BasePluginConfig
         { "multiplier", 2 },
         { "probability", 50 }
     };
-    
+
     [JsonPropertyName("gif_enable")]
     public bool ShowWinnerGif { get; set; } = true;
 
@@ -66,7 +64,7 @@ public class Store_CoinFlipConfig : BasePluginConfig
 
     [JsonPropertyName("tails_gif_or_image")]
     public string TailsImage { get; set; } = "https://c.tenor.com/Gv5d5zs4sisAAAAC/tenor.gif";
-    
+
     [JsonPropertyName("gif_display_duration")]
     public float GifDisplayDuration { get; set; } = 4.0f;
 
@@ -79,10 +77,10 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
     public override string ModuleAuthor => "Nathy & Schwarper";
 
     public IStoreApi? StoreApi { get; set; }
-    public Dictionary<string, Dictionary<CCSPlayerController, int>> GlobalCoinFlip { get; set; } = new();
+    public Dictionary<string, Dictionary<CCSPlayerController, int>> GlobalCoinFlip { get; set; } = [];
     public Random Random { get; set; } = new();
     public Store_CoinFlipConfig Config { get; set; } = new Store_CoinFlipConfig();
-    public List<string> Options = new() { "Heads", "Tails" };
+    public List<string> Options = ["Heads", "Tails"];
     private string? winnerOption = null;
     private bool shouldShowWinnerGif = false;
 
@@ -94,7 +92,7 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
 
         foreach (string option in Options)
         {
-            GlobalCoinFlip.Add(option, new Dictionary<CCSPlayerController, int>());
+            GlobalCoinFlip.Add(option, []);
         }
 
         RegisterListener<Listeners.OnTick>(OnTick);
@@ -102,22 +100,22 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
 
     private void CreateCommands()
     {
-        foreach (var cmd in Config.BetCommands)
+        foreach (string cmd in Config.BetCommands)
         {
             AddCommand($"css_{cmd}", "Coinflip Bet", Command_CoinFlip);
         }
 
-        foreach (var cmd in Config.SendDuelCommands)
+        foreach (string cmd in Config.SendDuelCommands)
         {
             AddCommand($"css_{cmd}", "Coinflip send duel", Command_DuelCoinFlip);
         }
 
-        foreach (var cmd in Config.AcceptDuelCommands)
+        foreach (string cmd in Config.AcceptDuelCommands)
         {
             AddCommand($"css_{cmd}", "Coinflip accept duel", Command_AcceptDuel);
         }
 
-        foreach (var cmd in Config.DeclineDuelCommands)
+        foreach (string cmd in Config.DeclineDuelCommands)
         {
             AddCommand($"css_{cmd}", "Coinflip decline duel", Command_DeclineDuel);
         }
@@ -142,7 +140,7 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
 
         Config = config;
     }
-    
+
     [CommandHelper(minArgs: 1, usage: "[nick] [amount]")]
     public void Command_DuelCoinFlip(CCSPlayerController? player, CommandInfo info)
     {
@@ -162,8 +160,8 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
             return;
         }
 
-        var targetResult = info.GetArgTargetResult(1);
-        var targetPlayer = targetResult.Players.FirstOrDefault();
+        CounterStrikeSharp.API.Modules.Commands.Targeting.TargetResult targetResult = info.GetArgTargetResult(1);
+        CCSPlayerController? targetPlayer = targetResult.Players.FirstOrDefault();
 
         if (targetPlayer == player)
         {
@@ -229,7 +227,7 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
             return;
         }
 
-        if (!PendingDuels.TryGetValue(player, out var duelInfo))
+        if (!PendingDuels.TryGetValue(player, out DuelInfo? duelInfo))
         {
             info.ReplyToCommand(Localizer["Prefix"] + Localizer["No duel invitations"]);
             return;
@@ -257,10 +255,10 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
 
     public void StartDuel(CCSPlayerController target, DuelInfo duelInfo)
     {
-        var challenger = duelInfo.Challenger;
-        var credits = duelInfo.Credits;
+        CCSPlayerController challenger = duelInfo.Challenger;
+        int credits = duelInfo.Credits;
 
-        if (StoreApi.GetPlayerCredits(challenger) < credits || StoreApi.GetPlayerCredits(target) < credits)
+        if (StoreApi!.GetPlayerCredits(challenger) < credits || StoreApi.GetPlayerCredits(target) < credits)
         {
             target.PrintToChat(Localizer["Prefix"] + Localizer["No enough credits"]);
             challenger.PrintToChat(Localizer["Prefix"] + Localizer["No enough credits"]);
@@ -284,11 +282,11 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
         PendingDuels.Remove(target);
     }
 
-    private Dictionary<CCSPlayerController, DuelInfo> PendingDuels = new();
+    private readonly Dictionary<CCSPlayerController, DuelInfo> PendingDuels = [];
 
     public class DuelInfo
     {
-        public CCSPlayerController Challenger { get; set; }
+        public CCSPlayerController Challenger { get; set; } = null!;
         public int Credits { get; set; }
     }
 
@@ -440,7 +438,7 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
 
         shouldShowWinnerGif = true;
 
-        AddTimer(Config.GifDisplayDuration, () => 
+        AddTimer(Config.GifDisplayDuration, () =>
         {
             shouldShowWinnerGif = false;
             winnerOption = null;
@@ -458,7 +456,7 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
 
         PrintToChatAll(Localizer["Winner coinflip"], Localizer[option]);
         Pay(option);
-        
+
         winnerOption = option;
 
         foreach (string opt in Options)
@@ -473,7 +471,7 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
         {
             string gifUrl = winnerOption == "Heads" ? Config.HeadsImage : Config.TailsImage;
 
-            foreach (var player in Utilities.GetPlayers())
+            foreach (CCSPlayerController player in Utilities.GetPlayers())
             {
                 if (player != null && player.IsValid)
                 {

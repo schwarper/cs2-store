@@ -17,6 +17,11 @@ public static class Item_Respawn
     }
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
+        if (player.Team is not CsTeam.Terrorist and CsTeam.CounterTerrorist)
+        {
+            return false;
+        }
+
         player.Respawn();
 
         return true;
