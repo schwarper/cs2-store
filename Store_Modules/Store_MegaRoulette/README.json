@@ -1,0 +1,30 @@
+// config file generated at path /configs/plugins/cs2-store-megaroulette
+
+{
+  "min_megaroulette": 0, // min bet
+  "max_megaroulette": 3000, // max bet
+  "roulette_commands": [
+    "css_megaroulette" // commands to trigger megaroulette
+  ],
+  "red": {
+    "multiplier": 2, // Multiplier
+    "probability": 60 // probability
+  },
+  "blue": {
+    "multiplier": 3,
+    "probability": 25
+  },
+  "magenta": {
+    "multiplier": 5,
+    "probability": 13
+  },
+  "gold": {
+    "multiplier": 50,
+    "probability": 2
+  },
+// Dont change the name of the colors only on lang
+// Sum all the probabilities; they must all add up to a result equal to 100
+// You choose the multiplier if u want  
+"ConfigVersion": 1 //Dont touch this
+}
+

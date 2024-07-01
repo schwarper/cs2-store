@@ -1,0 +1,20 @@
+{
+    "Prefix": "{red}[Store] ",
+
+    "You are already in": "{white}You already joined the roulette.",
+    "Must be an integer": "{white}The value you entered must be an integer.",
+    "No enough credits": "{white}You don't have enough credits.",
+    "Min roulette": "{white}The value you entered must be higher than {green}{0} {white}.",
+    "Max roulette": "{white}The value you entered must be lower than {green}{0} {white}.",
+    "Cannot join during warmup": "{white}You can't join the roulette during warmup.",
+
+    "menu_title": "Roulette [Your bet: {0}]",
+    "menu_options": "{0} [{1}x]",
+
+    "Red": "Red",
+    "Blue": "Blue",
+    "Green": "Green",
+
+    "Join roulette": "{blue}{0} {white}bet {green}{1} {white}credits on {2}{3}.",
+    "Winner roulette": "{white}Winner color: {0}{1}"
+}
