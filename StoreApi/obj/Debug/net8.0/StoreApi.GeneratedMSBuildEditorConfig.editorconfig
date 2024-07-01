@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = StoreApi
-build_property.ProjectDir = C:\Users\Acer\Desktop\Mert\cs2-store-main\StoreApi\
+build_property.ProjectDir = C:\Users\Mert\Desktop\cs2-store-main\StoreApi\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

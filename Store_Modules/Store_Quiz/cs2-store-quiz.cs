@@ -1,13 +1,8 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
-using CounterStrikeSharp.API.Modules.Utils;
 using StoreApi;
-using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using System.Threading;
 
 namespace Store_Quiz
 {
@@ -62,7 +57,7 @@ namespace Store_Quiz
 
             quizTimer = new Timer(AskQuestion, null, Timeout.Infinite, Timeout.Infinite);
             StartQuizTimer();
-            
+
             AddCommandListener("say", OnPlayerChatAll);
             AddCommandListener("say_team", OnPlayerChatTeam);
         }
@@ -91,7 +86,7 @@ namespace Store_Quiz
                 }
 
                 questionAnswered = false;
-                var question = Config.Questions[currentQuestionIndex];
+                Question question = Config.Questions[currentQuestionIndex];
 
                 Server.NextFrame(() =>
                 {
@@ -111,8 +106,8 @@ namespace Store_Quiz
 
             if (!questionAnswered)
             {
-                var answer = message.GetArg(1);
-                var currentQuestion = Config.Questions[currentQuestionIndex];
+                string answer = message.GetArg(1);
+                Question currentQuestion = Config.Questions[currentQuestionIndex];
 
                 if (answer.Equals(currentQuestion.Answer, StringComparison.OrdinalIgnoreCase))
                 {
@@ -140,8 +135,8 @@ namespace Store_Quiz
 
             if (!questionAnswered)
             {
-                var answer = message.GetArg(1);
-                var currentQuestion = Config.Questions[currentQuestionIndex];
+                string answer = message.GetArg(1);
+                Question currentQuestion = Config.Questions[currentQuestionIndex];
 
                 if (answer.Equals(currentQuestion.Answer, StringComparison.OrdinalIgnoreCase))
                 {
