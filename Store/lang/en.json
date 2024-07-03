@@ -49,6 +49,7 @@
   "menu_store<chatcolor>": "Chat colors",
   "menu_store<namecolor>": "Name colors",
   "menu_store<customweapon>": "Custom Weapons",
+  "menu_store<sound>": "Sounds",
 
   "menu_store<t_title>": "T Models",
   "menu_store<ct_title>": "CT Models",

@@ -49,6 +49,7 @@
   "menu_store<chatcolor>": "聊天颜色",
   "menu_store<namecolor>": "姓名颜色",
   "menu_store<customweapon>": "定制武器",
+  "menu_store<sound>": "声音",
 
   "menu_store<t_title>": "T阵营模型",
   "menu_store<ct_title>": "CT阵营模型",

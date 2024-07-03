@@ -49,6 +49,7 @@
   "menu_store<chatcolor>": "Culori chat",
   "menu_store<namecolor>": "Culori nume",
   "menu_store<customweapon>": "Arme personalizate",
+  "menu_store<sound>": "Sunete",
 
   "menu_store<t_title>": "Modele T",
   "menu_store<ct_title>": "Modele CT",

@@ -49,6 +49,7 @@
 	"menu_store<chatcolor>": "Цвета чата",
 	"menu_store<namecolor>": "Цвета имен",
 	"menu_store<customweapon>": "Пользовательское оружие",
+	"menu_store<sound>": "Звуки",
 
 	"menu_store<t_title>": "Модели t",
 	"menu_store<ct_title>": "Модели ct",
