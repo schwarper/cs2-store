@@ -121,11 +121,11 @@ public static class Item_Trail
         }
         else
         {
-            CreateParticle(absorigin, playertrail.UniqueId, lifetime, itemdata);
+            CreateParticle(absorigin, playertrail.UniqueId, lifetime, itemdata, player);
         }
     }
 
-    public static void CreateParticle(Vector absOrigin, string effectName, float lifetime, Dictionary<string, string> itemdata)
+    public static void CreateParticle(Vector absOrigin, string effectName, float lifetime, Dictionary<string, string> itemdata, CCSPlayerController player)
     {
         CParticleSystem? entity = Utilities.CreateEntityByName<CParticleSystem>("info_particle_system");
 
@@ -158,6 +158,7 @@ public static class Item_Trail
         entity.DispatchSpawn();
         entity.Teleport(absOrigin, angle, new Vector());
         entity.AcceptInput(acceptinputvalue!);
+        entity.AcceptInput("FollowEntity", player.PlayerPawn?.Value!, player.PlayerPawn?.Value!, "!activator");
 
         Instance.AddTimer(lifetime, () =>
         {
