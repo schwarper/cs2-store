@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cs2-store-coinflip", "Store
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cs2-store-quiz", "Store_Modules\Store_Quiz\cs2-store-quiz.csproj", "{F8265845-FD60-4ED3-83EA-5B01D615BADA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cs2-store-crash", "Store_Modules\Store_Crash\cs2-store-crash.csproj", "{DF274969-3DF7-46C2-91E3-87C5EF6A8385}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{F8265845-FD60-4ED3-83EA-5B01D615BADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8265845-FD60-4ED3-83EA-5B01D615BADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8265845-FD60-4ED3-83EA-5B01D615BADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF274969-3DF7-46C2-91E3-87C5EF6A8385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF274969-3DF7-46C2-91E3-87C5EF6A8385}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF274969-3DF7-46C2-91E3-87C5EF6A8385}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF274969-3DF7-46C2-91E3-87C5EF6A8385}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

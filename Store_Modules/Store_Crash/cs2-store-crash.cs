@@ -132,7 +132,7 @@ public class Store_Crash : BasePlugin, IPluginConfig<Store_CrashConfig>
 
     private void StartCrashGame(CCSPlayerController player, int credits, float targetMultiplier, float crashMultiplier)
     {
-        StoreApi.GivePlayerCredits(player, -credits);
+        StoreApi!.GivePlayerCredits(player, -credits);
         player.PrintToChat(Localizer["Bet placed", credits, targetMultiplier]);
 
         var game = new CrashGame(player, credits, targetMultiplier, crashMultiplier);
@@ -168,7 +168,7 @@ public class Store_Crash : BasePlugin, IPluginConfig<Store_CrashConfig>
         if (actualMultiplier >= targetMultiplier)
         {
             int winnings = (int)(game.BetCredits * targetMultiplier);
-            StoreApi.GivePlayerCredits(game.Player, winnings);
+            StoreApi!.GivePlayerCredits(game.Player, winnings);
             game.Player.PrintToChat(Localizer["Bet win", winnings.ToString(), targetMultiplier.ToString("0.00"), actualMultiplier.ToString("0.00")]);
         }
         else
