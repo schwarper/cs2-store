@@ -1,4 +1,4 @@
-﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
@@ -26,7 +26,29 @@ public class Store_CrashConfig : BasePluginConfig
     public float MultiplierIncrement { get; set; } = 0.01f;
 
     [JsonPropertyName("crash_commands")]
-    public List<string> CrashCommands { get; set; } = ["crash"];
+    public List<string> CrashCommands { get; set; } = new() { "crash" };
+
+    [JsonPropertyName("multiplier_ranges")]
+    public List<MultiplierRange> MultiplierRanges { get; set; } = new()
+    {
+        new MultiplierRange { Start = 1.0f, End = 2.0f, Chance = 55 },
+        new MultiplierRange { Start = 2.0f, End = 3.0f, Chance = 25 },
+        new MultiplierRange { Start = 3.0f, End = 4.0f, Chance = 10 },
+        new MultiplierRange { Start = 4.0f, End = 5.0f, Chance = 7 },
+        new MultiplierRange { Start = 5.0f, End = 15.0f, Chance = 3 }
+    };
+}
+
+public class MultiplierRange
+{
+    [JsonPropertyName("start")]
+    public float Start { get; set; }
+
+    [JsonPropertyName("end")]
+    public float End { get; set; }
+
+    [JsonPropertyName("chance")]
+    public int Chance { get; set; }
 }
 
 public class CrashGame
@@ -52,7 +74,7 @@ public class CrashGame
 public class Store_Crash : BasePlugin, IPluginConfig<Store_CrashConfig>
 {
     public override string ModuleName => "Store Module [Crash]";
-    public override string ModuleVersion => "0.0.1";
+    public override string ModuleVersion => "0.1.0";
     public override string ModuleAuthor => "Nathy";
 
     private readonly Random random = new();
@@ -183,26 +205,18 @@ public class Store_Crash : BasePlugin, IPluginConfig<Store_CrashConfig>
     private float SimulateCrashMultiplier()
     {
         int randomNumber = random.Next(1, 101);
+        int accumulatedChance = 0;
 
-        if (randomNumber <= 80)
+        foreach (var range in Config.MultiplierRanges)
         {
-            return (float)Math.Round(1.0 + random.NextDouble(), 2);
+            accumulatedChance += range.Chance;
+
+            if (randomNumber <= accumulatedChance)
+            {
+                return (float)Math.Round(range.Start + random.NextDouble() * (range.End - range.Start), 2);
+            }
         }
-        else if (randomNumber <= 90)
-        {
-            return (float)Math.Round(2.0 + random.NextDouble(), 2);
-        }
-        else if (randomNumber <= 95)
-        {
-            return (float)Math.Round(3.0 + random.NextDouble(), 2);
-        }
-        else if (randomNumber <= 99)
-        {
-            return (float)Math.Round(5.0 + random.NextDouble(), 2);
-        }
-        else
-        {
-            return (float)Math.Round(6.0 + random.NextDouble() * 10, 2);
-        }
+
+        return Config.MultiplierRanges.Last().End;
     }
 }
