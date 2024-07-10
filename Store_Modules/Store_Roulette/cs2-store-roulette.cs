@@ -184,7 +184,7 @@ public class Store_Roulette : BasePlugin, IPluginConfig<Store_RouletteConfig>
         GlobalRoulette[color].Add(player, credits);
 
         char chatcolor = FindChatColor(color);
-        PrintToChatAll("Join roulette", player.PlayerName, credits, chatcolor, Localizer[color.Name]);
+        Server.PrintToChatAll(Localizer["Prefix"] + Localizer["Join roulette", player.PlayerName, credits, chatcolor, Localizer[color.Name]]);
     }
 
     [GameEventHandler(HookMode.Pre)]
@@ -237,7 +237,7 @@ public class Store_Roulette : BasePlugin, IPluginConfig<Store_RouletteConfig>
 
         char chatcolor = FindChatColor(color);
 
-        PrintToChatAll("Winner roulette", chatcolor, Localizer[color.Name]);
+        Server.PrintToChatAll(Localizer["Prefix"] + Localizer["Winner roulette", chatcolor, Localizer[color.Name]]);
         Pay(color);
 
         foreach (Color colorx in Colors)
@@ -310,18 +310,5 @@ public class Store_Roulette : BasePlugin, IPluginConfig<Store_RouletteConfig>
             KnownColor.Green => Config.Green["multiplier"],
             _ => ChatColors.White
         };
-    }
-
-    public void PrintToChatAll(string message, params object[] args)
-    {
-        foreach (CCSPlayerController player in Utilities.GetPlayers())
-        {
-            using (new WithTemporaryCulture(player.GetLanguage()))
-            {
-                StringBuilder builder = new(Localizer["Prefix"]);
-                builder.AppendFormat(Localizer[message], args);
-                player.PrintToChat(builder.ToString());
-            }
-        }
     }
 }
