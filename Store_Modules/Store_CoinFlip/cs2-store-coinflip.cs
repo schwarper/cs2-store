@@ -73,7 +73,7 @@ public class Store_CoinFlipConfig : BasePluginConfig
 public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
 {
     public override string ModuleName => "Store Module [CoinFlip]";
-    public override string ModuleVersion => "0.0.1";
+    public override string ModuleVersion => "0.0.2";
     public override string ModuleAuthor => "Nathy & Schwarper";
 
     public IStoreApi? StoreApi { get; set; }
@@ -389,7 +389,7 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
         StoreApi.GivePlayerCredits(player, -credits);
         GlobalCoinFlip[option].Add(player, credits);
 
-        PrintToChatAll(Localizer["Join coinflip"], player.PlayerName, credits, Localizer[option]);
+        Server.PrintToChatAll(Localizer["Prefix"] + Localizer["Join coinflip", player.PlayerName, credits, Localizer[option]]);
     }
 
     [GameEventHandler(HookMode.Pre)]
@@ -402,7 +402,7 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
 
         if (Config.EnableCoinflipStartOfRound)
         {
-            PrintToChatAll(Localizer["Announce coinflip"]);
+            Server.PrintToChatAll(Localizer["Prefix"] + Localizer["Announce coinflip"]);
             Pay();
         }
 
@@ -454,7 +454,7 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
             throw new Exception("StoreApi could not be located.");
         }
 
-        PrintToChatAll(Localizer["Winner coinflip"], Localizer[option]);
+        Server.PrintToChatAll(Localizer["Prefix"] + Localizer["Winner coinflip", Localizer[option]]);
         Pay(option);
 
         winnerOption = option;
@@ -530,18 +530,5 @@ public class Store_CoinFlip : BasePlugin, IPluginConfig<Store_CoinFlipConfig>
             "Tails" => Config.Tails["multiplier"],
             _ => 1
         };
-    }
-
-    public void PrintToChatAll(string message, params object[] args)
-    {
-        foreach (CCSPlayerController player in Utilities.GetPlayers())
-        {
-            using (new WithTemporaryCulture(player.GetLanguage()))
-            {
-                StringBuilder builder = new(Localizer["Prefix"]);
-                builder.AppendFormat(Localizer[message], args);
-                player.PrintToChat(builder.ToString());
-            }
-        }
     }
 }
