@@ -26,7 +26,7 @@ public class Store_CrashConfig : BasePluginConfig
     public float MultiplierIncrement { get; set; } = 0.01f;
 
     [JsonPropertyName("crash_commands")]
-    public List<string> CrashCommands { get; set; } = new() { "crash" };
+    public List<string> CrashCommands { get; set; } = ["crash"];
 
     [JsonPropertyName("multiplier_ranges")]
     public List<MultiplierRange> MultiplierRanges { get; set; } = new()
