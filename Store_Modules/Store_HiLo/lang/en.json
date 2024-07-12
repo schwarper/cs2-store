@@ -1,4 +1,5 @@
 {
+    "Prefix": "{red}[Hi-Lo] {white}",
     "Bet placed": "{red}[Hi-Lo] {green}{0} {white}credits have been placed",
     "Initial multiplier": "{red}[Hi-Lo] {white}The initial multiplier is: {green}{0}x",
     "Current card": "{red}[Hi-Lo] {white}The current card is: {red}{0}",
