@@ -1,4 +1,4 @@
-﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Attributes.Registration;
 using CounterStrikeSharp.API.Modules.Commands;
@@ -200,14 +200,17 @@ namespace Store_HiLo
         {
             string nextCard = DrawCard();
             bool guessedCorrectly = false;
+            float bonusFactor = 1.0f;
 
             if (guess == "more")
             {
                 guessedCorrectly = CompareCards(nextCard, game.CurrentCard) > 0;
+                bonusFactor = GetBonusFactor(game.CurrentCard, true);
             }
             else if (guess == "less")
             {
                 guessedCorrectly = CompareCards(nextCard, game.CurrentCard) < 0;
+                bonusFactor = GetBonusFactor(game.CurrentCard, false);
             }
             else if (guess == "equal")
             {
@@ -225,7 +228,8 @@ namespace Store_HiLo
                 }
                 else
                 {
-                    game.CurrentMultiplier *= (float)Math.Pow(1.5, game.CorrectGuesses);
+                    float multiplierIncrease = 1.2f + (game.CorrectGuesses * 0.05f);
+                    game.CurrentMultiplier *= multiplierIncrease * bonusFactor;
                 }
 
                 player.PrintToChat(Localizer["Current multiplier", game.CurrentMultiplier.ToString("F2")]);
@@ -235,8 +239,46 @@ namespace Store_HiLo
             }
             else
             {
-                player.PrintToChat(Localizer["Incorrect guess"]);
-                EndGame(player, game);
+                player.PrintToChat(Localizer["Incorrect guess", nextCard]);
+                EndGame(player, game, false);
+            }
+        }
+
+        private float GetBonusFactor(string currentCard, bool isHigher)
+        {
+            int currentValue = Array.IndexOf(cardValues, currentCard.Substring(0, currentCard.Length - 1));
+            
+            if (isHigher)
+            {
+                if (currentValue == cardValues.Length - 1)
+                {
+                    return 1.0f;
+                }
+
+                int options = cardValues.Length - 1 - currentValue;
+                return options switch
+                {
+                    1 => 2.0f,
+                    2 => 1.5f,
+                    3 => 1.3f,
+                    _ => 1.0f
+                };
+            }
+            else
+            {
+                if (currentValue == 0)
+                {
+                    return 1.0f;
+                }
+
+                int options = currentValue;
+                return options switch
+                {
+                    1 => 2.0f,
+                    2 => 1.5f,
+                    3 => 1.3f,
+                    _ => 1.0f 
+                };
             }
         }
 
@@ -244,8 +286,11 @@ namespace Store_HiLo
         {
             if (cashout)
             {
-                int profit = (int)((game.BetCredits * game.CurrentMultiplier) - game.BetCredits);
-                player.PrintToChat(Localizer["Cash out", game.BetCredits, game.CurrentMultiplier.ToString("F2"), game.BetCredits, profit]);
+                int winnings = (int)(game.BetCredits * game.CurrentMultiplier);
+                int profit = winnings - game.BetCredits;
+                StoreApi!.GivePlayerCredits(player, winnings);
+
+                player.PrintToChat(Localizer["Cash out", game.BetCredits, game.CurrentMultiplier.ToString("F2"), winnings, profit]);
             }
             else
             {
@@ -257,16 +302,10 @@ namespace Store_HiLo
             activeGames.Remove(player.SteamID.ToString());
         }
 
-
         private void Cashout(CCSPlayerController player, HiLoGame game)
         {
-            int winnings = (int)(game.BetCredits * game.CurrentMultiplier);
-            StoreApi!.GivePlayerCredits(player, winnings);
-
-            EndGame(player, game, cashout: true);
+            EndGame(player, game, true);
         }
-
-
 
         private string DrawCard()
         {
