@@ -110,25 +110,25 @@ namespace Store_HiLo
 
             if (!int.TryParse(info.GetArg(1), out int credits))
             {
-                info.ReplyToCommand(Localizer["Invalid amount of credits"]);
+                info.ReplyToCommand(Localizer["Prefix"] + Localizer["Invalid amount of credits"]);
                 return;
             }
 
             if (credits < Config.MinBet)
             {
-                info.ReplyToCommand(Localizer["Minimum bet amount", Config.MinBet]);
+                info.ReplyToCommand(Localizer["Prefix"] + Localizer["Minimum bet amount", Config.MinBet]);
                 return;
             }
 
             if (credits > Config.MaxBet)
             {
-                info.ReplyToCommand(Localizer["Maximum bet amount", Config.MaxBet]);
+                info.ReplyToCommand(Localizer["Prefix"] + Localizer["Maximum bet amount", Config.MaxBet]);
                 return;
             }
 
             if (StoreApi.GetPlayerCredits(player) < credits)
             {
-                info.ReplyToCommand(Localizer["Not enough credits"]);
+                info.ReplyToCommand(Localizer["Prefix"] + Localizer["Not enough credits"]);
                 return;
             }
 
@@ -139,13 +139,13 @@ namespace Store_HiLo
         private void StartHiLoGame(CCSPlayerController player, int credits, string initialCard)
         {
             StoreApi!.GivePlayerCredits(player, -credits);
-            player.PrintToChat(Localizer["Bet placed", credits]);
+            player.PrintToChat(Localizer["Prefix"] + Localizer["Bet placed", credits]);
 
             var game = new HiLoGame(player, credits, initialCard);
             activeGames[player.SteamID.ToString()] = game;
 
-            player.PrintToChat(Localizer["Current card", game.CurrentCard]);
-            player.PrintToChat(Localizer["Make guess"]);
+            player.PrintToChat(Localizer["Prefix"] + Localizer["Current card", game.CurrentCard]);
+            player.PrintToChat(Localizer["Prefix"] + Localizer["Make guess"]);
         }
 
         [CommandHelper(minArgs: 0)]
@@ -153,7 +153,7 @@ namespace Store_HiLo
         {
             if (player == null || !activeGames.TryGetValue(player.SteamID.ToString(), out HiLoGame? game) || !game.IsActive)
             {
-                info.ReplyToCommand(Localizer["No active game"]);
+                info.ReplyToCommand(Localizer["Prefix"] + Localizer["No active game"]);
                 return;
             }
 
@@ -165,7 +165,7 @@ namespace Store_HiLo
         {
             if (player == null || !activeGames.TryGetValue(player.SteamID.ToString(), out HiLoGame? game) || !game.IsActive)
             {
-                info.ReplyToCommand(Localizer["No active game"]);
+                info.ReplyToCommand(Localizer["Prefix"] + Localizer["No active game"]);
                 return;
             }
 
@@ -177,7 +177,7 @@ namespace Store_HiLo
         {
             if (player == null || !activeGames.TryGetValue(player.SteamID.ToString(), out HiLoGame? game) || !game.IsActive)
             {
-                info.ReplyToCommand(Localizer["No active game"]);
+                info.ReplyToCommand(Localizer["Prefix"] + Localizer["No active game"]);
                 return;
             }
 
@@ -189,7 +189,7 @@ namespace Store_HiLo
         {
             if (player == null || !activeGames.TryGetValue(player.SteamID.ToString(), out HiLoGame? game) || !game.IsActive)
             {
-                info.ReplyToCommand(Localizer["No active game"]);
+                info.ReplyToCommand(Localizer["Prefix"] + Localizer["No active game"]);
                 return;
             }
 
@@ -219,7 +219,7 @@ namespace Store_HiLo
 
             if (guessedCorrectly)
             {
-                player.PrintToChat(Localizer["Correct guess"]);
+                player.PrintToChat(Localizer["Prefix"] + Localizer["Correct guess"]);
                 game.CorrectGuesses++;
 
                 if (guess == "equal")
@@ -232,14 +232,14 @@ namespace Store_HiLo
                     game.CurrentMultiplier *= multiplierIncrease * bonusFactor;
                 }
 
-                player.PrintToChat(Localizer["Current multiplier", game.CurrentMultiplier.ToString("F2")]);
+                player.PrintToChat(Localizer["Prefix"] + Localizer["Current multiplier", game.CurrentMultiplier.ToString("F2")]);
 
                 game.CurrentCard = nextCard;
-                player.PrintToChat(Localizer["Current card", game.CurrentCard]);
+                player.PrintToChat(Localizer["Prefix"] + Localizer["Current card", game.CurrentCard]);
             }
             else
             {
-                player.PrintToChat(Localizer["Incorrect guess", nextCard]);
+                player.PrintToChat(Localizer["Prefix"] + Localizer["Incorrect guess", nextCard]);
                 EndGame(player, game, false);
             }
         }
@@ -290,12 +290,12 @@ namespace Store_HiLo
                 int profit = winnings - game.BetCredits;
                 StoreApi!.GivePlayerCredits(player, winnings);
 
-                player.PrintToChat(Localizer["Cash out", game.BetCredits, game.CurrentMultiplier.ToString("F2"), winnings, profit]);
+                player.PrintToChat(Localizer["Prefix"] + Localizer["Cash out", game.BetCredits, game.CurrentMultiplier.ToString("F2"), winnings, profit]);
             }
             else
             {
                 int lostCredits = game.BetCredits * (game.CorrectGuesses > 0 ? (int)Math.Pow(2.0, game.CorrectGuesses) : 1);
-                player.PrintToChat(Localizer["Game ended", game.CorrectGuesses, game.CurrentMultiplier.ToString("F2"), lostCredits, game.BetCredits]);
+                player.PrintToChat(Localizer["Prefix"] + Localizer["Game ended", game.CorrectGuesses, game.CurrentMultiplier.ToString("F2"), lostCredits, game.BetCredits]);
             }
 
             game.IsActive = false;
