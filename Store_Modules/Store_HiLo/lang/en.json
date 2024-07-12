@@ -1,0 +1,17 @@
+{
+    "Prefix": "{red}[Hi-Lo] {white}",
+    "Bet placed": "{red}[Hi-Lo] {green}{0} {white}credits have been placed",
+    "Initial multiplier": "{red}[Hi-Lo] {white}The initial multiplier is: {green}{0}x",
+    "Current card": "{red}[Hi-Lo] {white}The current card is: {red}{0}",
+    "Make guess": "{red}[Hi-Lo] {white}Make a guess: '{green}!high{white}', '{blue}!low{white}', '{orange}!equal{white}' or cashout with '{red}!cashout{white}'",
+    "Correct guess": "{red}[Hi-Lo] {white}You guessed {green}correctly{white}! Your multiplier increased",
+    "Current multiplier": "{red}[Hi-Lo] {white}Your current multiplier is: {green}{0}x",
+    "Incorrect guess": "{red}[Hi-Lo] {white}Your guess was {red}incorrect{white}. The next card was {red}{0}",
+    "Cash out": "{red}[Hi-Lo] {white}You cashed out with {green}{0} {white}credits and a multiplier of {green}{1}x{white}. Total: {green}{2}{white}, profited {green}{3} {white}credits",
+    "Game ended": "{red}[Hi-Lo] {white}Game ended. You guessed {green}{0} {white}consecutive times{white}. Your final multiplier was {green}{1}x{white}. You lost {green}{2} {white}credits, you bet: {green}{3}{white}",
+    "No active game": "{red}[Hi-Lo] {white}You don't have an active Hi-Lo game. Start one with '{green}!hilo <bet>{white}'",
+    "Invalid amount of credits": "{red}[Hi-Lo] {white}Invalid amount of credits. Please enter a valid number",
+    "Minimum bet amount": "{red}[Hi-Lo] {white}The minimum bet amount is {green}{0} {white}credits",
+    "Maximum bet amount": "{red}[Hi-Lo] {white}The maximum bet amount is {green}{0} {white}credits",
+    "Not enough credits": "{red}[Hi-Lo] {white}You don't have enough credits to place this bet"
+}

@@ -1,0 +1,17 @@
+{
+    "Prefix": "{red}[Hi-Lo] {white}",
+    "Bet placed": "{red}[Hi-Lo] {white} Você apostou {green}{0} {white}créditos",
+    "Initial multiplier": "{red}[Hi-Lo] {white}O multiplicador inicial é: {green}{0}x",
+    "Current card": "{red}[Hi-Lo] {white}Carta atual: {red}{0}",
+    "Make guess": "{red}[Hi-Lo] {white}Dê um palpite: '{green}!high{white}', '{blue}!low{white}', '{orange}!equal{white}' or cashout with '{red}!cashout{white}'",
+    "Correct guess": "{red}[Hi-Lo] {white}Você palpitou {green}corretamente{white}! Seu multiplicador aumentou",
+    "Current multiplier": "{red}[Hi-Lo] {white}Seu multiplicador atual é: {green}{0}x",
+    "Incorrect guess": "{red}[Hi-Lo] {white}Seu palpite estava {red}incorreto{white}. A próxima carta era {red}{0}",
+    "Cash out": "{red}[Hi-Lo] {white}Você retirou {green}{0} {white}créditos com um multiplicador de {green}{1}x{white}. Total: {green}{2}{white}, lucro de {green}{3} {white}créditos.",
+    "Game ended": "{red}[Hi-Lo] {white}Fim de jogo. Você palpitou {green}{0} {white}vezes consecutivas{white}. Seu multiplicador final era {green}{1}x{white}. Você perdeu {green}{2} {white}créditos, sua aposta: {green}{3}{white}",
+    "No active game": "{red}[Hi-Lo] {white}Você não tem um jogo de Hi-Lo ativo. Comece um com '{green}!hilo <bet>{white}'",
+    "Invalid amount of credits": "{red}[Hi-Lo] {white}Quantidade inválida de créditos. Por favor, insira um número válido",
+    "Minimum bet amount": "{red}[Hi-Lo] {white}O mínimo para aposta é {green}{0} {white}créditos",
+    "Maximum bet amount": "{red}[Hi-Lo] {white}O máximo para aposta é {green}{0} {white}créditos",
+    "Not enough credits": "{red}[Hi-Lo] {white}Você não tem créditos o suficiente para essa aposta"
+}
