@@ -1,0 +1,11 @@
+{
+    "Prefix": "{red}[Slot Machine] {white}",
+    "Invalid amount of credits": "Invalid amount of credits. Please enter a valid number",
+    "Minimum bet amount": "Minimum bet amount is {green}{0} {white}credits",
+    "Maximum bet amount": "Maximum bet amount is {green}{0} {white}credits",
+    "Not enough credits": "You don't have enough credits to place this bet",
+    "Result": "Result: {green}{0}",
+    "Winnings": "Winnings: {green}{0} {white}credits",
+    "2 Symbols": "Two matching symbols! Partial reward: {green}{0} {white}credits",
+    "You lost your bet": "You lost your bet of {green}{0} {white}credits"
+}
