@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +36,9 @@ public class Store_SlotMachineConfig : BasePluginConfig
 
     [JsonPropertyName("slot_timers")]
     public SlotTimersConfig SlotTimers { get; set; } = new SlotTimersConfig();
+
+    [JsonPropertyName("partial_win_percentage")]
+    public int PartialWinPercentage { get; set; } = 50;
 
     [JsonIgnore]
     public List<string> Emojis => RewardMultipliers.Keys.ToList();
@@ -180,7 +183,7 @@ namespace Store_SlotMachine
 
             if (multiplier == 1)
             {
-                winnings = game.BetAmount / 2;
+                winnings = game.BetAmount * Config.PartialWinPercentage / 100;
             }
 
             StoreApi!.GivePlayerCredits(game.Player, winnings);
