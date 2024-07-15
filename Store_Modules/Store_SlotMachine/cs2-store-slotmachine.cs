@@ -40,6 +40,9 @@ public class Store_SlotMachineConfig : BasePluginConfig
     [JsonPropertyName("partial_win_percentage")]
     public int PartialWinPercentage { get; set; } = 50;
 
+    [JsonPropertyName("sequential_symbols_only")]
+    public bool SequentialSymbolsOnly { get; set; } = false;
+
     [JsonIgnore]
     public List<string> Emojis => RewardMultipliers.Keys.ToList();
 }
@@ -217,10 +220,22 @@ namespace Store_SlotMachine
             {
                 return Config.RewardMultipliers[results[0]].Multiplier;
             }
-            else if (results.Distinct().Count() == 2)
+
+            if (Config.SequentialSymbolsOnly)
             {
-                return 1;
+                if (results[0] == results[1] || results[1] == results[2])
+                {
+                    return 1;
+                }
             }
+            else
+            {
+                if (results[0] == results[1] || results[1] == results[2] || results[0] == results[2])
+                {
+                    return 1;
+                }
+            }
+
             return 0;
         }
 
