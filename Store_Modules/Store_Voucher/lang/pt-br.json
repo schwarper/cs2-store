@@ -1,0 +1,9 @@
+{
+    "Prefix": "{red}[Voucher] {white}",
+
+    "No permission to generate voucher": "Você não tem permissão para gerar vales",
+    "Not enough credits": "Você não tem créditos o suficiente para gerar esses vales",
+    "Generated voucher": "Vale gerado: {gold}{0} {white}no valor de {green}{1} {white}créditos",
+    "Voucher redeemed successfully": "Vale resgatado com sucesso. Você recebeu {green}{0} {white}créditos",
+    "Invalid or already used": "Vale inválido ou já resgatado"
+}
