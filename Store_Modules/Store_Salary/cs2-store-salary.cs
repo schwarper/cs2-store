@@ -22,7 +22,7 @@ public class Store_SalaryConfig : BasePluginConfig
     };
 
     [JsonPropertyName("salary_command")]
-    public List<string> SalaryCommand { get; set; } = new() { "salary" };
+    public List<string> SalaryCommand { get; set; } = ["salary"];
 
     [JsonPropertyName("database_host")]
     public string DatabaseHost { get; set; } = "localhost";
