@@ -1,0 +1,7 @@
+{
+    "Prefix": "{red}[Salary] {white}",
+
+    "Salary already claimed": "You have already claimed your salary. Next claim in {green}{0} {white}hours, {green}{1} {white}minutes, and {green}{2} {white}seconds",
+    "Salary received": "You have received your salary of {green}{0} {white}credits",
+    "No salary available": "You do not have a salary available to claim"
+}
