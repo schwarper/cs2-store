@@ -1,5 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Admin;
+using CounterStrikeSharp.API.Modules.Entities;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
@@ -61,6 +63,7 @@ public static class Database
                     Credits INT NOT NULL,
                     DateOfJoin DATETIME NOT NULL,
                     DateOfLastJoin DATETIME NOT NULL,
+                    Vip BOOLEAN NOT NULL,
                     PRIMARY KEY (id),
                     UNIQUE KEY id (id),
                     UNIQUE KEY SteamID (SteamID)
@@ -91,11 +94,18 @@ public static class Database
             await connection.ExecuteAsync($@"
                 DELETE FROM {equipTableName}
                     WHERE NOT EXISTS (
-                    SELECT 1 FROM store_items
-                    WHERE store_items.Type = {equipTableName}.Type
-                    AND store_items.UniqueId = {equipTableName}.UniqueId
-                    AND store_items.SteamID = {equipTableName}.SteamID
-                )", transaction: transaction);
+                        SELECT 1 FROM store_items
+                        WHERE store_items.Type = {equipTableName}.Type
+                        AND store_items.UniqueId = {equipTableName}.UniqueId
+                        AND store_items.SteamID = {equipTableName}.SteamID
+                    )
+                    AND EXISTS (
+                        SELECT 1 
+                        FROM store_players
+                        WHERE store_players.SteamID = {equipTableName}.SteamID
+                        AND store_players.Vip = FALSE
+                    )
+                ;", transaction: transaction);
 
             await transaction.CommitAsync();
         }
@@ -106,6 +116,22 @@ public static class Database
         }
     }
 
+    public static void UpdateVip(CCSPlayerController player)
+    {
+        ExecuteAsync(@"
+            UPDATE
+                store_players
+            SET
+                Vip = @Vip
+            WHERE
+                SteamID = @SteamID;
+        ",
+        new
+        {
+            Vip = AdminManager.PlayerHasPermissions(player, Instance.Config.Menu.VipFlag),
+            SteamId = player.SteamID
+        });
+    }
 
     public static void LoadPlayer(CCSPlayerController player)
     {
@@ -187,7 +213,6 @@ public static class Database
 
                             Instance.GlobalStorePlayers.Add(playerData);
                         }
-
                     }
 
                     foreach (Store_Item newItem in items)
@@ -245,9 +270,9 @@ public static class Database
     {
         ExecuteAsync(@"
                 INSERT INTO store_players (
-                    SteamID, PlayerName, Credits, DateOfJoin, DateOfLastJoin
+                    SteamID, PlayerName, Credits, DateOfJoin, DateOfLastJoin, Vip
                 ) VALUES (
-                    @SteamID, @PlayerName, @Credits, @DateOfJoin, @DateOfLastJoin
+                    @SteamID, @PlayerName, @Credits, @DateOfJoin, @DateOfLastJoin, FALSE
                 );"
             ,
             new

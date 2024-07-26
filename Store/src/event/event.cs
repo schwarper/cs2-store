@@ -190,6 +190,8 @@ public static class Event
             Instance.GlobalDictionaryPlayer.Add(player, value);
         }
 
+        Database.UpdateVip(player);
+
         return HookResult.Continue;
     }
 
