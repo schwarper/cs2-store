@@ -116,6 +116,22 @@ public static class Database
         }
     }
 
+    public static void UpdateVip(CCSPlayerController player)
+    {
+        ExecuteAsync(@"
+            UPDATE
+                store_players
+            SET
+                Vip = @Vip
+            WHERE
+                SteamID = @SteamID;
+        ",
+        new
+        {
+            Vip = AdminManager.PlayerHasPermissions(player, Instance.Config.Menu.VipFlag),
+            SteamId = player.SteamID
+        });
+    }
 
     public static void LoadPlayer(CCSPlayerController player)
     {
@@ -162,8 +178,6 @@ public static class Database
 
                 Server.NextFrame(() =>
                 {
-                    bool isVip = AdminManager.PlayerHasPermissions(player, Instance.Config.Menu.VipFlag);
-
                     if (playerData == null)
                     {
                         Store_Player newPlayer = new()
@@ -178,7 +192,7 @@ public static class Database
                         };
 
                         Instance.GlobalStorePlayers.Add(newPlayer);
-                        InsertNewPlayer(SteamID, PlayerName, isVip);
+                        InsertNewPlayer(SteamID, PlayerName);
                     }
                     else
                     {
@@ -199,20 +213,6 @@ public static class Database
 
                             Instance.GlobalStorePlayers.Add(playerData);
                         }
-
-                        ExecuteAsync(@"
-                            UPDATE
-                                store_players
-                            SET
-                                Vip = @Vip
-                            WHERE
-                                SteamID = @SteamID;
-                        ",
-                        new
-                        {
-                            Vip = isVip,
-                            SteamId = player.SteamID
-                        });
                     }
 
                     foreach (Store_Item newItem in items)
@@ -266,13 +266,13 @@ public static class Database
         await LoadDataAsync();
     }
 
-    public static void InsertNewPlayer(ulong SteamId, string PlayerName, bool Vip)
+    public static void InsertNewPlayer(ulong SteamId, string PlayerName)
     {
         ExecuteAsync(@"
                 INSERT INTO store_players (
                     SteamID, PlayerName, Credits, DateOfJoin, DateOfLastJoin, Vip
                 ) VALUES (
-                    @SteamID, @PlayerName, @Credits, @DateOfJoin, @DateOfLastJoin, @Vip
+                    @SteamID, @PlayerName, @Credits, @DateOfJoin, @DateOfLastJoin, FALSE
                 );"
             ,
             new
@@ -281,8 +281,7 @@ public static class Database
                 PlayerName,
                 Credits = Instance.Config.Credits.Start,
                 DateOfJoin = DateTime.Now,
-                DateOfLastJoin = DateTime.Now,
-                Vip
+                DateOfLastJoin = DateTime.Now
             });
     }
 
