@@ -1,0 +1,12 @@
+{
+    "Prefix": "{red}[Referral Codes] {white}",
+
+    "Your referral code": "Your referral code is: {green}{0}",
+    "Already used referral code": "You have already used a referral code",
+    "Invalid referral code": "Invalid referral code",
+    "You used a referral code": "You used a referral code from {blue}{0}{white}! You received {green}{1} {white}credits",
+    "Cannot use own referral": "You cannot use your own referral code",
+    "Invite count": "Your code has been used {green}{0} {white}times",
+    "Dont have referral": "You don't have a referral code yet. Please, generate one first",
+    "Threshold bonus": "Your code has been used {green}{0} {white}times! You got a bonus of {green}{1} {white}credits"
+}

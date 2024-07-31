@@ -1,0 +1,12 @@
+{
+    "Prefix": "{red}[Referral Codes] {white}",
+
+    "Your referral code": "Seu código de convite: {0}",
+    "Already used referral code": "Você já usou um código de convite.",
+    "Invalid referral code": "Código de convite inválido",
+    "You used a referral code": "Você usou um código de convite de {blue}{0}{white}! Você recebeu {green}{1} {white}créditos",
+    "Cannot use own referral": "Você não pode usar seu próprio código de convite",
+    "Invite count": "Seu código foi usado {green}{0} {white}vezes",
+    "Dont have referral": "Você não tem um código de convite ainda. Por favor, gere um primeiro",
+    "Threshold bonus": "Seu código foi usado {green}{0} {white}vezes! Você recebeu um bônus de {green}{1} {white}créditos"
+}
