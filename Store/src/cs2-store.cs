@@ -10,7 +10,7 @@ namespace Store;
 public class Store : BasePlugin, IPluginConfig<StoreConfig>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "0.2.8";
+    public override string ModuleVersion => "0.2.9";
     public override string ModuleAuthor => "schwarper";
 
     public StoreConfig Config { get; set; } = new StoreConfig();
@@ -63,11 +63,6 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
     public override void Unload(bool hotReload)
     {
         Event.Unload();
-    }
-
-    public override void OnAllPluginsLoaded(bool hotReload)
-    {
-        Item_Tag.OnAllPluginsLoaded();
     }
 
     public void OnConfigParsed(StoreConfig config)
