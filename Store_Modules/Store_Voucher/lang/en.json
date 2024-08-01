@@ -1,9 +1,0 @@
-{
-    "Prefix": "{red}[Voucher] {white}",
-
-    "No permission to generate voucher": "You do not have permission to generate vouchers",
-    "Not enough credits": "You do not have enough credits to generate these vouchers",
-    "Generated voucher": "Generated voucher: {gold}{0} {white}worth {green}{1} {white}credits",
-    "Voucher redeemed successfully": "Voucher redeemed successfully. You received {green}{0} {white}credits",
-    "Invalid or already used": "Invalid or already used voucher code"
-}

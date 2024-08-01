@@ -1,7 +1,0 @@
-{
-    "Prefix": "{red}[Salary] {white}",
-
-    "Salary already claimed": "Você já reivindicou seu salário. Próximo resgate em {green}{0} {white}horas, {green}{1} {white}minutos, e {green}{2} {white}segundos",
-    "Salary received": "Você recebeu seu salário de {green}{0} {white}créditos",
-    "No salary available": "Você não tem um salário disponível para reivindicar"
-}
