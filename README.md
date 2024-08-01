@@ -8,6 +8,29 @@ Discord nickname: schwarper
 
 Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 
+# Approved modules
+[Crash by NaathySz](https://github.com/NaathySz/Store-Crash)
+
+[Quiz by NaathySz](https://github.com/NaathySz/Store-Quiz)
+
+[SlotMachine by NaathySz](https://github.com/NaathySz/Store-SlotMachine)
+
+[HiLo by NaathySz](https://github.com/NaathySz/Store-HiLo)
+
+[NameBonus by NaathySz](https://github.com/NaathySz/Store-NameBonus)
+
+[CoinFlip by NaathySz](https://github.com/NaathySz/Store-CoinFlip)
+
+[ReferralCodes by NaathySz](https://github.com/NaathySz/Store-ReferralCodes)
+
+[Daily by NaathySz](https://github.com/NaathySz/Store-Daily)
+
+[Salary by NaathySz](https://github.com/NaathySz/Store-Salary)
+
+[Voucher by NaathySz](https://github.com/NaathySz/Store-Voucher)
+
+[TopList by NaathySz](https://github.com/NaathySz/Store-TopList)
+
 # Installation
 
 1. Download the plugin:
