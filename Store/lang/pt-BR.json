@@ -52,6 +52,7 @@
   "menu_store<sound>": "Sons",
   "menu_store<equipment>": "Equipamentos",
 
+  "menu_store<all_title>": "Modelos em comum",
   "menu_store<t_title>": "Modelos T",
   "menu_store<ct_title>": "Modelos CT",
   "menu_store<purchase>": "{0} - [{1}]",

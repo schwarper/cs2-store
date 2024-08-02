@@ -52,6 +52,7 @@
   "menu_store<sound>": "声音",
   "menu_store<equipment>": "设备",
 
+  "menu_store<all_title>": "共同模型",
   "menu_store<t_title>": "T阵营模型",
   "menu_store<ct_title>": "CT阵营模型",
   "menu_store<purchase>": "{0} - [{1}]",

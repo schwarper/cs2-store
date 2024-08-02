@@ -52,6 +52,7 @@
   "menu_store<sound>": "Zvoki",
   "menu_store<equipment>": "Oprema",
 
+  "menu_store<all_title>": "Skupni Modeli",
   "menu_store<t_title>": "T Modeli",
   "menu_store<ct_title>": "CT Modeli",
   "menu_store<purchase>": "{0} - [{1}]",

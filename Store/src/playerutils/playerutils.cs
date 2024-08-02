@@ -26,10 +26,12 @@ public static class PlayerUtils
 
         Instance.AddTimer(apply_delay, () =>
         {
-            if (player.IsValid && player.TeamNum == slotNumber && player.PawnIsAlive)
+            if (!player.IsValid || !player.PawnIsAlive || (slotNumber != 1 && player.TeamNum != slotNumber))
             {
-                player.PlayerPawn.Value?.ChangeModel(model, disableleg);
+                return;
             }
+
+            player.PlayerPawn.Value?.ChangeModel(model, disableleg);
         }, TimerFlags.STOP_ON_MAPCHANGE);
     }
 

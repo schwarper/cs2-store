@@ -52,6 +52,7 @@
   "menu_store<sound>": "Sunete",
   "menu_store<equipment>": "Echipamente",
 
+  "menu_store<all_title>": "Modele în comun",
   "menu_store<t_title>": "Modele T",
   "menu_store<ct_title>": "Modele CT",
   "menu_store<purchase>": "{0} - [{1}]",

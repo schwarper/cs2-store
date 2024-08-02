@@ -115,7 +115,7 @@ public static class Menu
             if (prev != null)
                 menu.Prev = prev.Parent?.Options?.Find(prev);
 
-            foreach (int Slot in new[] { 2, 3 })
+            foreach (int Slot in new[] { 1, 2, 3 })
             {
                 if (inventory && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false)))
                 {
@@ -125,7 +125,7 @@ public static class Menu
                 using (new WithTemporaryCulture(player.GetLanguage()))
                 {
                     StringBuilder builder = new();
-                    builder.AppendFormat(Instance.Localizer[$"menu_store<{(Slot == 2 ? "t" : "ct")}_title>"]);
+                    builder.AppendFormat(Instance.Localizer[$"menu_store<{(Slot == 1 ? "all" : Slot == 2 ? "t" : "ct")}_title>"]);
 
                     menu.Add(builder.ToString(), (CCSPlayerController player, IWasdMenuOption option) =>
                     {

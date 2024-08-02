@@ -52,6 +52,7 @@
 	"menu_store<sound>": "Звуки",
 	"menu_store<equipment>": "Обладнання",
 
+	"menu_store<all_title>": "Загальні моделі",
 	"menu_store<t_title>": "Моделі t",
 	"menu_store<ct_title>": "Моделі ct",
 	"menu_store<purchase>": "{0} - [{1}]",

@@ -52,10 +52,7 @@ public static class Item_PlayerSkin
             return false;
         }
 
-        if (player.TeamNum == int.Parse(item["slot"]))
-        {
-            player.ChangeModelDelay(item["uniqueid"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]));
-        }
+        player.ChangeModelDelay(item["uniqueid"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]));
 
         return true;
     }
@@ -71,14 +68,11 @@ public static class Item_PlayerSkin
             return false;
         }
 
-        if (player.TeamNum == int.Parse(item["slot"]))
-        {
-            (string modelname, bool disableleg)? defaultModel = GetDefaultModel(player);
+        (string modelname, bool disableleg)? defaultModel = GetDefaultModel(player);
 
-            if (defaultModel.HasValue)
-            {
-                player.ChangeModelDelay(defaultModel.Value.modelname, defaultModel.Value.disableleg, player.TeamNum);
-            }
+        if (defaultModel.HasValue)
+        {
+            player.ChangeModelDelay(defaultModel.Value.modelname, defaultModel.Value.disableleg, player.TeamNum);
         }
 
         return true;
