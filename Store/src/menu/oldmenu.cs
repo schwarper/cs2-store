@@ -9,14 +9,14 @@ namespace Store;
 
 public static class OldMenu
 {
-    public static void AddMenuOption(CCSPlayerController player, CenterHtmlMenu menu, Action<CCSPlayerController, ChatMenuOption> onSelect, string display, params object[] args)
+    public static void AddMenuOption(CCSPlayerController player, CenterHtmlMenu menu, Action<CCSPlayerController, ChatMenuOption> onSelect, bool disabled, string display, params object[] args)
     {
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
             StringBuilder builder = new();
             builder.AppendFormat(Instance.Localizer[display, args]);
 
-            menu.AddMenuOption(builder.ToString(), onSelect);
+            menu.AddMenuOption(builder.ToString(), onSelect, disabled);
         }
     }
 
@@ -31,7 +31,7 @@ public static class OldMenu
 
             foreach (KeyValuePair<string, Dictionary<string, Dictionary<string, string>>> category in Instance.Config.Items)
             {
-                if ((inventory || Item.IsPlayerVip(player)) && !category.Value.Values.Any(item => Item.PlayerHas(player, item["type"], item["uniqueid"], false)))
+                if (inventory && !category.Value.Values.Any(item => Item.PlayerHas(player, item["type"], item["uniqueid"], false)))
                 {
                     continue;
                 }
@@ -58,9 +58,9 @@ public static class OldMenu
         {
             CenterHtmlMenu menu = new(key, Instance);
 
-            foreach (int Slot in new[] { 2, 3 })
+            foreach (int Slot in new[] { 1, 2, 3 })
             {
-                if ((inventory || Item.IsPlayerVip(player)) && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false)))
+                if (inventory && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false)))
                 {
                     continue;
                 }
@@ -68,7 +68,7 @@ public static class OldMenu
                 using (new WithTemporaryCulture(player.GetLanguage()))
                 {
                     StringBuilder builder = new();
-                    builder.AppendFormat(Instance.Localizer[$"menu_store<{(Slot == 2 ? "t" : "ct")}_title>"]);
+                    builder.AppendFormat(Instance.Localizer[$"menu_store<{(Slot == 1 ? "all" : Slot == 2 ? "t" : "ct")}_title>"]);
 
                     menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
                     {
@@ -99,7 +99,7 @@ public static class OldMenu
                 continue;
             }
 
-            if ((inventory || Item.IsPlayerVip(player)) && !Item.PlayerHas(player, item["type"], item["uniqueid"], false))
+            if (inventory && !Item.PlayerHas(player, item["type"], item["uniqueid"], false))
             {
                 continue;
             }
@@ -111,7 +111,7 @@ public static class OldMenu
                 {
                     player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
                     DisplayItemOption(player, item);
-                }, item["name"]);
+                }, false, item["name"]);
             }
             else if (!inventory && !isHidden)
             {
@@ -136,7 +136,7 @@ public static class OldMenu
                         }
                     }
 
-                }, "menu_store<purchase>", item["name"], item["price"]);
+                }, false, "menu_store<purchase>", item["name"], item["price"]);
             }
         }
 
@@ -157,7 +157,7 @@ public static class OldMenu
                 player.PrintToChatMessage("Purchase Unequip", item["name"]);
 
                 DisplayItemOption(player, item);
-            }, "menu_store<unequip>");
+            }, false, "menu_store<unequip>");
         }
         else
         {
@@ -169,7 +169,7 @@ public static class OldMenu
                 player.PrintToChatMessage("Purchase Equip", item["name"]);
 
                 DisplayItemOption(player, item);
-            }, "menu_store<equip>");
+            }, false, "menu_store<equip>");
         }
 
         Store_Item? PlayerItems = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"] && p.UniqueId == item["uniqueid"]);
@@ -199,7 +199,7 @@ public static class OldMenu
                     player.PrintToChatMessage("Item Sell", item["name"]);
 
                     MenuManager.CloseActiveMenu(player);
-                }, "menu_store<sell>", sellingPrice);
+                }, false, "menu_store<sell>", sellingPrice);
             }
         }
 
@@ -213,7 +213,9 @@ public static class OldMenu
 
     public static void DisplayConfirmationMenu(CCSPlayerController player, Dictionary<string, string> item)
     {
-        CenterHtmlMenu menu = new(Instance.Localizer["menu_store<confirm_title>", item["name"], item["price"]], Instance);
+        CenterHtmlMenu menu = new(Instance.Localizer["menu_store<confirm_title>"], Instance);
+
+        AddMenuOption(player, menu, (p, o) => { }, true, "menu_store<confirm_item>", item["name"], item["price"]);
 
         AddMenuOption(player, menu, (p, o) =>
         {
@@ -224,16 +226,17 @@ public static class OldMenu
             }
             else
             {
+                MenuManager.CloseActiveMenu(player);
                 player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundNo}");
             }
 
-        }, "menu_store<yes>");
+        }, false, "menu_store<yes>");
 
         AddMenuOption(player, menu, (p, o) =>
         {
             player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundNo}");
             MenuManager.CloseActiveMenu(player);
-        }, "menu_store<no>");
+        }, false, "menu_store<no>");
 
         menu.Open(player);
     }

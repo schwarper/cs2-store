@@ -52,15 +52,17 @@
   "menu_store<sound>": "Zvoki",
   "menu_store<equipment>": "Oprema",
 
+  "menu_store<all_title>": "Skupni Modeli",
   "menu_store<t_title>": "T Modeli",
   "menu_store<ct_title>": "CT Modeli",
   "menu_store<purchase>": "{0} - [{1}]",
   "menu_store<equip>": "AKTIVIRAJ",
   "menu_store<unequip>": "DEAKTIVIRAJ",
   "menu_store<sell>": "PRODAJ [{0}]",
-  "menu_store<confirm_title>": "Nakup? {0} - {1} krediti",
+  "menu_store<confirm_title>": "Nakup?",
   "menu_store<yes>": "Da",
   "menu_store<no>": "Ne",
+  "menu_store<confirm_item>": "{0} - {1} krediti",
 
   "css_credits": "{white}Trenutno imaš {green}{0} {white}kreditov.",
   "css_givecredits<player>": "{blue}{0} {white}je dal {lightblue}{2} kredite {white}igralcu {green}{1}{white}.",

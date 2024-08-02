@@ -85,15 +85,23 @@ public static class Item
             return false;
         }
 
-        Store_Equipment? currentitem = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"] && item.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && p.Slot == int.Parse(item["slot"]));
+        var currentitems = Instance.GlobalStorePlayerEquipments.FindAll(p =>
+            p.SteamID == player.SteamID &&
+            p.Type == item["type"] &&
+            (type.Type == "playerskin" && item["slot"] == "1" || p.Slot == 1) ||
+            p.Slot == int.Parse(item["slot"])
+        ).ToList();
 
-        if (currentitem != null)
+        if (currentitems.Count > 0)
         {
-            Dictionary<string, string>? citem = GetItem(currentitem.Type, currentitem.UniqueId);
-
-            if (citem != null)
+            foreach (var currentitem in currentitems)
             {
-                Unequip(player, citem);
+                Dictionary<string, string>? citem = GetItem(currentitem.Type, currentitem.UniqueId);
+
+                if (citem != null)
+                {
+                    Unequip(player, citem);
+                }
             }
         }
 
@@ -177,6 +185,13 @@ public static class Item
         Dictionary<string, string>? item = GetItem(type, UniqueId);
 
         if (item == null)
+        {
+            return false;
+        }
+
+        Store_Item_Types? itemtype = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item["type"]);
+
+        if (itemtype?.Equipable == false)
         {
             return false;
         }
