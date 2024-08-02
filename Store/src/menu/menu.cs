@@ -117,6 +117,19 @@ public static class Menu
 
             foreach (int Slot in new[] { 1, 2, 3 })
             {
+                if (Slot == 1 && !playerSkinItems.Any(p => p.Value.TryGetValue("slot", out string? slot) && slot == "1"))
+                {
+                    continue;
+                }
+                if (Slot == 2 && !playerSkinItems.Any(p => p.Value.TryGetValue("slot", out string? slot) && slot == "2"))
+                {
+                    continue;
+                }
+                if (Slot == 3 && !playerSkinItems.Any(p => p.Value.TryGetValue("slot", out string? slot) && slot == "3"))
+                {
+                    continue;
+                }
+                
                 if (inventory && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false)))
                 {
                     continue;
