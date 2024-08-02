@@ -86,7 +86,7 @@ public static class Menu
 
             foreach (KeyValuePair<string, Dictionary<string, Dictionary<string, string>>> category in Instance.Config.Items)
             {
-                if ((inventory || Item.IsPlayerVip(player)) && !category.Value.Values.Any(item => Item.PlayerHas(player, item["type"], item["uniqueid"], false)))
+                if (inventory && !category.Value.Values.Any(item => Item.PlayerHas(player, item["type"], item["uniqueid"], false)))
                 {
                     continue;
                 }
@@ -117,7 +117,7 @@ public static class Menu
 
             foreach (int Slot in new[] { 2, 3 })
             {
-                if ((inventory || Item.IsPlayerVip(player)) && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false)))
+                if (inventory && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false)))
                 {
                     continue;
                 }
@@ -158,7 +158,7 @@ public static class Menu
                 continue;
             }
 
-            if ((inventory || Item.IsPlayerVip(player)) && !Item.PlayerHas(player, item["type"], item["uniqueid"], false))
+            if (inventory && !Item.PlayerHas(player, item["type"], item["uniqueid"], false))
             {
                 continue;
             }
@@ -278,6 +278,8 @@ public static class Menu
         if (prev != null)
             menu.Prev = prev.Parent?.Options?.Find(prev);
 
+        AddMenuOption(player, menu, (p, o) => { }, "menu_store<confirm_item>", item["name"], item["price"]);
+
         AddMenuOption(player, menu, (p, o) =>
         {
             if (Item.Purchase(p, item))
@@ -287,6 +289,7 @@ public static class Menu
             }
             else
             {
+                WasdManager.CloseSubMenu(p);
                 player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundNo}");
             }
         }, "menu_store<yes>");

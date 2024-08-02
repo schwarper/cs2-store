@@ -58,9 +58,10 @@
   "menu_store<equip>": "KUŞAN",
   "menu_store<unequip>": "BIRAK",
   "menu_store<sell>": "SAT [{0}]",
-  "menu_store<confirm_title>": "Satın alıyorsun? {0} - {1} kredi",
+  "menu_store<confirm_title>": "Satın alıyor musun?",
   "menu_store<yes>": "Evet",
   "menu_store<no>": "Hayır",
+  "menu_store<confirm_item>": "{0} - {1} kredi",
 
   "css_credits": "{green}{0} {white}kredin bulunmaktadır.",
   "css_givecredits<player>": "{blue}{0}{white}, {green}{1} {white}adlı oyuncuya {green}{2} kredi {white}verdi.",

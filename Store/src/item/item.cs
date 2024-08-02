@@ -181,6 +181,13 @@ public static class Item
             return false;
         }
 
+        Store_Item_Types? itemtype = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item["type"]);
+
+        if (itemtype?.Equipable == false)
+        {
+            return false;
+        }
+
         if (!ignoreVip && IsPlayerVip(player))
         {
             return true;

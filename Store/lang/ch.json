@@ -58,9 +58,10 @@
   "menu_store<equip>": "装备",
   "menu_store<unequip>": "脱下",
   "menu_store<sell>": "出售 [{0}]",
-  "menu_store<confirm_title>": "购买？{0} - {1} 积分",
+  "menu_store<confirm_title>": "购买？",
   "menu_store<yes>": "是",
   "menu_store<no>": "否",
+  "menu_store<confirm_item>": "{0} - {1} 积分",
 
   "css_credits": "{white}金币余额: {green}{0} {white}.",
   "css_givecredits<player>": "{blue}{0}{white}给了{green}{2}金币{white}到{green}{1}{white}账户里.",

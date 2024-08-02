@@ -58,9 +58,10 @@
   "menu_store<equip>": "ECHIPEAZĂ",
   "menu_store<unequip>": "DEZ-ECHIPEAZĂ",
   "menu_store<sell>": "VINDE [{0}]",
-  "menu_store<confirm_title>": "Cumperi? {0} - {1} credite",
+  "menu_store<confirm_title>": "Cumperi?",
   "menu_store<yes>": "Da",
   "menu_store<no>": "Nu",
+  "menu_store<confirm_item>": "{0} - {1} credite",
 
   "css_credits": "{white}Ai {green}{0} {white}credite.",
   "css_givecredits<player>": "{blue}{0} {white}a dat {green}{2} credite {white}către {green}{1}{white}.",

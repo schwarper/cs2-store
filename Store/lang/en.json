@@ -58,9 +58,10 @@
   "menu_store<equip>": "EQUIP",
   "menu_store<unequip>": "UNEQUIP",
   "menu_store<sell>": "SELL [{0}]",
-  "menu_store<confirm_title>": "Buying {0} - {1} credits?",
+  "menu_store<confirm_title>": "Buying?",
   "menu_store<yes>": "Yes",
   "menu_store<no>": "No",
+  "menu_store<confirm_item>": "{0} - {1} credits",
 
   "css_credits": "{white}You have {green}{0} {white}credits.",
   "css_givecredits<player>": "{blue}{0} {white}gave {green}{2} credits {white}to {green}{1}{white}.",
