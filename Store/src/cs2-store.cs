@@ -34,6 +34,7 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
         Menu.SetSettings(hotReload);
 
         Item_Armor.OnPluginStart();
+        Item_Bunnyhop.OnPluginStart();
         Item_ColoredSkin.OnPluginStart();
         Item_CustomWeapon.OnPluginStart();
         Item_Godmode.OnPluginStart();

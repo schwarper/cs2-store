@@ -134,6 +134,13 @@ public static class Event
     {
         Menu.OnTick();
 
+        var players = Utilities.GetPlayers().Where(p => p.PawnIsAlive).ToList();
+
+        foreach (var player in players)
+        {
+            Item_Bunnyhop.OnTick(player);
+        }
+
         Instance.GlobalTickrate++;
 
         if (Instance.GlobalTickrate % 10 != 0)
@@ -145,11 +152,6 @@ public static class Event
 
         foreach (CCSPlayerController player in Utilities.GetPlayers())
         {
-            if (!player.PawnIsAlive)
-            {
-                continue;
-            }
-
             Item_Trail.OnTick(player);
             Item_ColoredSkin.OnTick(player);
             Item_GrenadeTrail.OnTick();
