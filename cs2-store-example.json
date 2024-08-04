@@ -162,6 +162,14 @@
         "type": "sound",
         "price": "0",
         "enable": "true"
+      },
+      "6": {
+        "name": "Bunnyhop",
+        "uniqueid": "bunnyhop",
+        "type": "bunnyhop",
+        "price": "0",
+        "maxSpeed": "320.0",
+        "enable": "true"
       }
     },
     "gravity": {
