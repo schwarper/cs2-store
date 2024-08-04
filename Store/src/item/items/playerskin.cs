@@ -185,7 +185,7 @@ public static class Item_PlayerSkin
 
     private static (string modelname, bool disableleg)? GetModel(CCSPlayerController player, int teamnum)
     {
-        Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && p.Slot == teamnum);
+        Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && (p.Slot == teamnum || p.Slot == 1));
 
         if (item == null || ForceModelDefault)
         {
