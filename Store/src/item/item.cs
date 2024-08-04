@@ -85,7 +85,7 @@ public static class Item
             return false;
         }
 
-        var currentitems = Instance.GlobalStorePlayerEquipments.FindAll(p =>
+        List<Store_Equipment> currentitems = Instance.GlobalStorePlayerEquipments.FindAll(p =>
             p.SteamID == player.SteamID &&
             p.Type == item["type"] &&
             (type.Type == "playerskin" && item["slot"] == "1" || p.Slot == 1) ||
@@ -94,7 +94,7 @@ public static class Item
 
         if (currentitems.Count > 0)
         {
-            foreach (var currentitem in currentitems)
+            foreach (Store_Equipment? currentitem in currentitems)
             {
                 Dictionary<string, string>? citem = GetItem(currentitem.Type, currentitem.UniqueId);
 

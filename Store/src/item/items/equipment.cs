@@ -41,7 +41,8 @@ public static class Item_Equipment
     public static void Equip(CCSPlayerController player)
     {
         UnEquip(player);
-        Instance.AddTimer(0.1f, () => {
+        Instance.AddTimer(0.1f, () =>
+        {
             Store_Equipment? playerItems = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "equipment");
             if (playerItems == null) return;
 
@@ -56,7 +57,7 @@ public static class Item_Equipment
     }
     public static void UnEquip(CCSPlayerController player)
     {
-        if (Equipment.TryGetValue(player.SteamID, out var entity))
+        if (Equipment.TryGetValue(player.SteamID, out CBaseModelEntity? entity))
         {
             if (entity.IsValid) entity.Remove();
             Equipment.Remove(player.SteamID);
@@ -65,9 +66,10 @@ public static class Item_Equipment
 
     public static void CreateItem(CCSPlayerController player, string itemName)
     {
-        var entity = Utilities.CreateEntityByName<CBaseModelEntity>("prop_dynamic_override");
+        CBaseModelEntity? entity = Utilities.CreateEntityByName<CBaseModelEntity>("prop_dynamic_override");
 
-        Instance.AddTimer(0.1f, () => {
+        Instance.AddTimer(0.1f, () =>
+        {
             entity!.Globalname = $"{player.SteamID}({itemName})#{RandomString(6)}";
             entity.SetModel(itemName);
             entity.DispatchSpawn();
@@ -85,8 +87,8 @@ public static class Item_Equipment
     public static string RandomString(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        var random = new Random();
-        var result = new char[length];
+        Random random = new();
+        char[] result = new char[length];
         for (int i = 0; i < length; i++)
             result[i] = chars[random.Next(chars.Length)];
 

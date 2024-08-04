@@ -134,9 +134,9 @@ public static class Event
     {
         Menu.OnTick();
 
-        var players = Utilities.GetPlayers().Where(p => p.PawnIsAlive).ToList();
+        List<CCSPlayerController> players = Utilities.GetPlayers().Where(p => p.PawnIsAlive).ToList();
 
-        foreach (var player in players)
+        foreach (CCSPlayerController? player in players)
         {
             Item_Bunnyhop.OnTick(player);
         }

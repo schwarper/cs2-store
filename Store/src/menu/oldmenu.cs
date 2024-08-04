@@ -60,7 +60,8 @@ public static class OldMenu
 
             foreach (int Slot in new[] { 1, 2, 3 })
             {
-                if (inventory && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false)))
+                if ((!playerSkinItems.Any(p => p.Value.TryGetValue("slot", out string? slot) && slot == Slot.ToString())) ||
+                    (inventory && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false))))
                 {
                     continue;
                 }
