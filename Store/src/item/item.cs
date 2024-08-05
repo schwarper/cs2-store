@@ -85,12 +85,12 @@ public static class Item
             return false;
         }
 
-        List<Store_Equipment> currentitems = Instance.GlobalStorePlayerEquipments.FindAll(p =>
+        List<Store_Equipment> currentitems = [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
             p.SteamID == player.SteamID &&
-            p.Type == item["type"] &&
-            (type.Type == "playerskin" && item["slot"] == "1" || p.Slot == 1) ||
-            p.Slot == int.Parse(item["slot"])
-        ).ToList();
+            p.Type == type.Type &&
+            ((type.Type == "playerskin" && (item["slot"] == "1" || p.Slot == 1)) ||
+            p.Slot == int.Parse(item["slot"]))
+        )];
 
         if (currentitems.Count > 0)
         {
