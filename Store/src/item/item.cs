@@ -100,7 +100,6 @@ public static class Item
 
                 if (citem != null)
                 {
-                    Server.PrintToChatAll($"UNEQUIP {currentitem.Type} {currentitem.UniqueId}");
                     Unequip(player, citem);
                 }
             }
