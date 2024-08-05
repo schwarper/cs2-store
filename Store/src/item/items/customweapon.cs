@@ -166,22 +166,35 @@ public static class Item_CustomWeapon
         {
             if (player.PawnIsAlive)
             {
-                CBasePlayerWeapon? weapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+                CBasePlayerWeapon? weapon = Get(player, item["weapon"]);
 
-                if (weapon != null && weapon.DesignerName.Contains(item["weapon"]))
+                if (weapon != null)
                 {
+                    var equip = weapon == player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+
                     if (isEquip)
                     {
-                        UpdateModel(player, weapon, item["uniqueid"], true);
+                        UpdateModel(player, weapon, item["uniqueid"], equip);
                     }
                     else
                     {
-                        ResetWeapon(player, weapon, true);
+                        ResetWeapon(player, weapon, equip);
                     }
                 }
             }
 
             return true;
+        }
+        private static CBasePlayerWeapon? Get(CCSPlayerController player, string weaponName)
+        {
+            var activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+
+            if (activeWeapon != null && activeWeapon.DesignerName.Contains(weaponName))
+            {
+                return activeWeapon;
+            }
+
+            return player.PlayerPawn.Value?.WeaponServices?.MyWeapons?.FirstOrDefault(p => p.Value != null && p.Value.DesignerName.Contains(weaponName))?.Value;
         }
         private static unsafe CBaseViewModel? ViewModel(CCSPlayerController player)
         {
