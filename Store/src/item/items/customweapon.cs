@@ -1,9 +1,8 @@
-﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Runtime.InteropServices;
-using static CounterStrikeSharp.API.Core.Listeners;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -98,14 +97,14 @@ public static class Item_CustomWeapon
                 return;
             }
 
-            var playerequipments = Item.GetPlayerEquipments(player).Where(p => p.SteamID == player.SteamID && p.Type == "customweapon");
+            IEnumerable<Store_Equipment> playerequipments = Item.GetPlayerEquipments(player).Where(p => p.SteamID == player.SteamID && p.Type == "customweapon");
 
             if (!playerequipments.Any())
             {
                 return;
             }
 
-            var designerName = weapon.DesignerName;
+            string designerName = weapon.DesignerName;
 
             if (designerName.Contains("bayonet"))
             {
@@ -114,7 +113,7 @@ public static class Item_CustomWeapon
 
             CBasePlayerWeapon? activeweapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
 
-            foreach (var playerequipment in playerequipments)
+            foreach (Store_Equipment? playerequipment in playerequipments)
             {
                 Dictionary<string, string>? itemdata = Item.GetItem(playerequipment.Type, playerequipment.UniqueId);
 
@@ -208,19 +207,19 @@ public static class Item_CustomWeapon
         }
         private static unsafe CBaseViewModel? ViewModel(CCSPlayerController player)
         {
-            var handle = player.PlayerPawn.Value?.ViewModelServices?.Handle;
+            nint? handle = player.PlayerPawn.Value?.ViewModelServices?.Handle;
 
             if (handle == null || !handle.HasValue)
             {
                 return null;
             }
 
-            CCSPlayer_ViewModelServices viewModelServices = new CCSPlayer_ViewModelServices(handle.Value);
+            CCSPlayer_ViewModelServices viewModelServices = new(handle.Value);
 
             nint ptr = viewModelServices.Handle + Schema.GetSchemaOffset("CCSPlayer_ViewModelServices", "m_hViewModel");
             Span<nint> viewModels = MemoryMarshal.CreateSpan(ref ptr, 3);
 
-            var viewModel = new CHandle<CBaseViewModel>(viewModels[0]);
+            CHandle<CBaseViewModel> viewModel = new(viewModels[0]);
 
             return viewModel.Value;
         }
