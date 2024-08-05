@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Runtime.InteropServices;
+using static CounterStrikeSharp.API.Core.Listeners;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -68,6 +69,7 @@ public static class Item_CustomWeapon
 
         return true;
     }
+
     public static void OnEntityCreated(CEntityInstance entity)
     {
         if (!customweaponExists)
@@ -84,7 +86,7 @@ public static class Item_CustomWeapon
 
         Server.NextWorldUpdate(() =>
         {
-            if (weapon.OriginalOwnerXuidLow == 0)
+            if (!weapon.IsValid || weapon.OriginalOwnerXuidLow <= 0)
             {
                 return;
             }
@@ -96,34 +98,46 @@ public static class Item_CustomWeapon
                 return;
             }
 
-            Store_Equipment? playerequipment = Item.GetPlayerEquipments(player).FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "customweapon");
+            var playerequipments = Item.GetPlayerEquipments(player).Where(p => p.SteamID == player.SteamID && p.Type == "customweapon");
 
-            if (playerequipment == null)
+            if (!playerequipments.Any())
             {
                 return;
             }
 
-            Dictionary<string, string>? itemdata = Item.GetItem(playerequipment.Type, playerequipment.UniqueId);
+            var designerName = weapon.DesignerName;
 
-            if (itemdata == null)
+            if (designerName.Contains("bayonet"))
             {
-                return;
-            }
-
-            if (!weapon.DesignerName.Contains(itemdata["weapon"]))
-            {
-                return;
+                designerName = "weapon_knife";
             }
 
             CBasePlayerWeapon? activeweapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
 
-            if (activeweapon != null && weapon == activeweapon)
+            foreach (var playerequipment in playerequipments)
             {
-                Weapon.UpdateModel(player, activeweapon, itemdata["uniqueid"], true);
-            }
-            else
-            {
-                Weapon.UpdateModel(player, weapon, itemdata["uniqueid"], false);
+                Dictionary<string, string>? itemdata = Item.GetItem(playerequipment.Type, playerequipment.UniqueId);
+
+                if (itemdata == null)
+                {
+                    continue;
+                }
+
+                if (!designerName.Contains(itemdata["weapon"]))
+                {
+                    continue;
+                }
+
+                if (activeweapon != null && weapon == activeweapon)
+                {
+                    Weapon.UpdateModel(player, activeweapon, itemdata["uniqueid"], true);
+                }
+                else
+                {
+                    Weapon.UpdateModel(player, weapon, itemdata["uniqueid"], false);
+                }
+
+                break;
             }
         });
     }
@@ -152,56 +166,63 @@ public static class Item_CustomWeapon
 
         return HookResult.Continue;
     }
-}
 
-public class Weapon
-{
-    public static unsafe CBaseViewModel ViewModel(CCSPlayerController player)
+    public static class Weapon
     {
-        CCSPlayer_ViewModelServices viewModelServices = new(player.PlayerPawn.Value!.ViewModelServices!.Handle);
-
-        nint ptr = viewModelServices.Handle + Schema.GetSchemaOffset("CCSPlayer_ViewModelServices", "m_hViewModel");
-        Span<nint> viewModels = MemoryMarshal.CreateSpan(ref ptr, 3);
-
-        CHandle<CBaseViewModel> viewModel = new(viewModels[0]);
-
-        return viewModel.Value!;
-    }
-    public static unsafe string GetViewModel(CCSPlayerController player)
-    {
-        return ViewModel(player).VMName;
-    }
-    public static unsafe void SetViewModel(CCSPlayerController player, string model)
-    {
-        ViewModel(player).SetModel(model);
-    }
-    public static void UpdateModel(CCSPlayerController player, CBasePlayerWeapon weapon, string model, bool update)
-    {
-        weapon.Globalname = $"{GetViewModel(player)},{model}";
-        weapon.SetModel(model);
-
-        if (update)
+        public static unsafe string GetViewModel(CCSPlayerController player)
         {
-            SetViewModel(player, model);
+            return ViewModel(player)?.VMName ?? string.Empty;
         }
-    }
-    public static void ResetWeapon(CCSPlayerController player, CBasePlayerWeapon weapon, bool update)
-    {
-        string globalname = weapon.Globalname;
-
-        if (string.IsNullOrEmpty(globalname))
+        public static unsafe void SetViewModel(CCSPlayerController player, string model)
         {
-            return;
+            ViewModel(player)?.SetModel(model);
         }
-
-        string[] globalnamedata = globalname.Split(',');
-
-        weapon.Globalname = string.Empty;
-        weapon.SetModel(globalnamedata[0]);
-
-        if (update)
+        public static void UpdateModel(CCSPlayerController player, CBasePlayerWeapon weapon, string model, bool update)
         {
-            SetViewModel(player, globalnamedata[0]);
+            weapon.Globalname = $"{GetViewModel(player)},{model}";
+            weapon.SetModel(model);
+
+            if (update)
+            {
+                SetViewModel(player, model);
+            }
+        }
+        public static void ResetWeapon(CCSPlayerController player, CBasePlayerWeapon weapon, bool update)
+        {
+            string globalname = weapon.Globalname;
+
+            if (string.IsNullOrEmpty(globalname))
+            {
+                return;
+            }
+
+            string[] globalnamedata = globalname.Split(',');
+
+            weapon.Globalname = string.Empty;
+            weapon.SetModel(globalnamedata[0]);
+
+            if (update)
+            {
+                SetViewModel(player, globalnamedata[0]);
+            }
+        }
+        private static unsafe CBaseViewModel? ViewModel(CCSPlayerController player)
+        {
+            var handle = player.PlayerPawn.Value?.ViewModelServices?.Handle;
+
+            if (handle == null || !handle.HasValue)
+            {
+                return null;
+            }
+
+            CCSPlayer_ViewModelServices viewModelServices = new CCSPlayer_ViewModelServices(handle.Value);
+
+            nint ptr = viewModelServices.Handle + Schema.GetSchemaOffset("CCSPlayer_ViewModelServices", "m_hViewModel");
+            Span<nint> viewModels = MemoryMarshal.CreateSpan(ref ptr, 3);
+
+            var viewModel = new CHandle<CBaseViewModel>(viewModels[0]);
+
+            return viewModel.Value;
         }
     }
 }
