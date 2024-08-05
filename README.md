@@ -8,6 +8,23 @@ Discord nickname: schwarper
 
 Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 
+# Warnings
+
+1. If you are using a custom weapon item, the settings should be as follows. You need to set the weapon name in the weapon section. You will also need to set the FollowCS2ServerGuidelines value from the core.json file to false.
+   ```json
+   "1": {
+        "name": "Store Ak47",
+        "uniqueid": "........vmdl",
+        "type": "customweapon",
+        "weapon": "ak47",
+        "price": "0",
+        "slot": "1",
+        "enable": "true"
+      }
+   ```
+
+2. You need to use [cs2-tags](https://github.com/schwarper/cs2-tags) plugin for tag items. If you are not using it, you will need to upload tagapi files to the cs2-store folder in plugins. If you do use it, it is sufficient to have the api file in the shared file.
+
 # Approved modules
 [Crash by NaathySz](https://github.com/NaathySz/Store-Crash)
 
