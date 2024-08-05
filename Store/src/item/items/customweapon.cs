@@ -42,41 +42,16 @@ public static class Item_CustomWeapon
     }
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (player.PawnIsAlive)
-        {
-            CBasePlayerWeapon? weapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
-
-            if (weapon != null && weapon.DesignerName.Contains(item["weapon"]))
-            {
-                Weapon.UpdateModel(player, weapon, item["uniqueid"], true);
-            }
-        }
-
-        return true;
+        return Weapon.HandleEquip(player, item, true);
     }
     public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (player.PawnIsAlive)
-        {
-            CBasePlayerWeapon? weapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
-
-            if (weapon != null && weapon.DesignerName.Contains(item["weapon"]))
-            {
-                Weapon.ResetWeapon(player, weapon, true);
-            }
-        }
-
-        return true;
+        return Weapon.HandleEquip(player, item, false);
     }
 
     public static void OnEntityCreated(CEntityInstance entity)
     {
-        if (!customweaponExists)
-        {
-            return;
-        }
-
-        if (!entity.DesignerName.StartsWith("weapon_"))
+        if (!customweaponExists || !entity.DesignerName.StartsWith("weapon_"))
         {
             return;
         }
@@ -97,19 +72,14 @@ public static class Item_CustomWeapon
                 return;
             }
 
-            IEnumerable<Store_Equipment> playerequipments = Item.GetPlayerEquipments(player).Where(p => p.SteamID == player.SteamID && p.Type == "customweapon");
+            List<Store_Equipment> playerequipments = Item.GetPlayerEquipments(player).Where(p => p.SteamID == player.SteamID && p.Type == "customweapon").ToList();
 
-            if (!playerequipments.Any())
+            if (playerequipments.Count == 0)
             {
                 return;
             }
 
-            string designerName = weapon.DesignerName;
-
-            if (designerName.Contains("bayonet"))
-            {
-                designerName = "weapon_knife";
-            }
+            string designerName = weapon.DesignerName.Contains("bayonet") ? "weapon_knife" : weapon.DesignerName;
 
             CBasePlayerWeapon? activeweapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
 
@@ -117,25 +87,12 @@ public static class Item_CustomWeapon
             {
                 Dictionary<string, string>? itemdata = Item.GetItem(playerequipment.Type, playerequipment.UniqueId);
 
-                if (itemdata == null)
+                if (itemdata == null || !designerName.Contains(itemdata["weapon"]))
                 {
                     continue;
                 }
 
-                if (!designerName.Contains(itemdata["weapon"]))
-                {
-                    continue;
-                }
-
-                if (activeweapon != null && weapon == activeweapon)
-                {
-                    Weapon.UpdateModel(player, activeweapon, itemdata["uniqueid"], true);
-                }
-                else
-                {
-                    Weapon.UpdateModel(player, weapon, itemdata["uniqueid"], false);
-                }
-
+                Weapon.UpdateModel(player, weapon, itemdata["uniqueid"], weapon == activeweapon);
                 break;
             }
         });
@@ -204,6 +161,27 @@ public static class Item_CustomWeapon
             {
                 SetViewModel(player, globalnamedata[0]);
             }
+        }
+        public static bool HandleEquip(CCSPlayerController player, Dictionary<string, string> item, bool isEquip)
+        {
+            if (player.PawnIsAlive)
+            {
+                CBasePlayerWeapon? weapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+
+                if (weapon != null && weapon.DesignerName.Contains(item["weapon"]))
+                {
+                    if (isEquip)
+                    {
+                        UpdateModel(player, weapon, item["uniqueid"], true);
+                    }
+                    else
+                    {
+                        ResetWeapon(player, weapon, true);
+                    }
+                }
+            }
+
+            return true;
         }
         private static unsafe CBaseViewModel? ViewModel(CCSPlayerController player)
         {
