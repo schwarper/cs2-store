@@ -41,7 +41,7 @@ public abstract class Store
         public required Action MapStart;
         public required Action<ResourceManifest> ServerPrecacheResources;
         public required Func<CCSPlayerController, Dictionary<string, string>, bool> Equip;
-        public required Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip;
+        public required Func<CCSPlayerController, Dictionary<string, string>, bool, bool> Unequip;
         public required bool Equipable;
         public bool? Alive;
     }

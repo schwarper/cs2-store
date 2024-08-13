@@ -44,7 +44,7 @@ public static class Item_CustomWeapon
     {
         return Weapon.HandleEquip(player, item, true);
     }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return Weapon.HandleEquip(player, item, false);
     }
@@ -170,7 +170,7 @@ public static class Item_CustomWeapon
 
                 if (weapon != null)
                 {
-                    var equip = weapon == player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+                    bool equip = weapon == player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
 
                     if (isEquip)
                     {
@@ -187,7 +187,7 @@ public static class Item_CustomWeapon
         }
         private static CBasePlayerWeapon? Get(CCSPlayerController player, string weaponName)
         {
-            var activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+            CBasePlayerWeapon? activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
 
             if (activeWeapon != null && activeWeapon.DesignerName.Contains(weaponName))
             {

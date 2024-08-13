@@ -29,7 +29,7 @@ public static class Database
         });
     }
 
-    public static async Task CreateDatabaseAsync(StoreConfig config)
+    public static async Task CreateDatabaseAsync(Config config)
     {
         MySqlConnectionStringBuilder builder = new()
         {

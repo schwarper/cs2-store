@@ -100,7 +100,7 @@ public static class Item
 
                 if (citem != null)
                 {
-                    Unequip(player, citem);
+                    Unequip(player, citem, false);
                 }
             }
         }
@@ -133,7 +133,7 @@ public static class Item
         return true;
     }
 
-    public static bool Unequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool Unequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item["type"]);
 
@@ -142,7 +142,7 @@ public static class Item
             return false;
         }
 
-        if (type.Unequip(player, item) == false)
+        if (type.Unequip(player, item, update) == false)
         {
             return false;
         }
@@ -168,7 +168,7 @@ public static class Item
 
         Credits.Give(player, (int)(playeritem.Price * Instance.Config.Settings.SellRatio));
 
-        Unequip(player, item);
+        Unequip(player, item, true);
 
         Instance.GlobalStorePlayerItems.Remove(playeritem);
 
@@ -250,7 +250,7 @@ public static class Item
         return !string.IsNullOrEmpty(vip) && AdminManager.PlayerHasPermissions(player, vip);
     }
 
-    public static void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip, bool Equipable, bool? Alive)
+    public static void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool, bool> Unequip, bool Equipable, bool? Alive)
     {
         Instance.GlobalStoreItemTypes.Add(new Store_Item_Types
         {
