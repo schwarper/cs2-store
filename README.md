@@ -48,6 +48,8 @@ Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 
 [TopList by NaathySz](https://github.com/NaathySz/Store-TopList)
 
+[Vip by NaathySz](https://github.com/NaathySz/Store-Vip)
+
 # Installation
 
 1. Download the plugin:
