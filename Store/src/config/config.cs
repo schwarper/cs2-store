@@ -32,14 +32,14 @@ public static class Config_Config
 
     private static void LoadConfig(string configPath)
     {
-        var configText = File.ReadAllText(configPath);
-        var model = Toml.ToModel(configText);
+        string configText = File.ReadAllText(configPath);
+        TomlTable model = Toml.ToModel(configText);
 
-        var tagTable = (TomlTable)model["Tag"];
-        var config_tag = StringExtensions.ReplaceColorTags(tagTable["Tag"].ToString()!);
+        TomlTable tagTable = (TomlTable)model["Tag"];
+        string config_tag = StringExtensions.ReplaceColorTags(tagTable["Tag"].ToString()!);
 
-        var dbTable = (TomlTable)model["DatabaseConnection"];
-        var config_database = new Config_DatabaseConnection
+        TomlTable dbTable = (TomlTable)model["DatabaseConnection"];
+        Config_DatabaseConnection config_database = new()
         {
             Host = dbTable["Host"].ToString()!,
             Port = uint.Parse(dbTable["Port"].ToString()!),
@@ -54,50 +54,50 @@ public static class Config_Config
             throw new Exception("You need to setup Database credentials in config.");
         }
 
-        var commandsTable = (TomlTable)model["Commands"];
-        var creditsList = new List<string>();
-        foreach (var item in (TomlArray)commandsTable["Credits"])
+        TomlTable commandsTable = (TomlTable)model["Commands"];
+        List<string> creditsList = [];
+        foreach (object? item in (TomlArray)commandsTable["Credits"])
         {
             creditsList.Add(item!.ToString()!);
         }
 
-        var storeList = new List<string>();
-        foreach (var item in (TomlArray)commandsTable["Store"])
+        List<string> storeList = [];
+        foreach (object? item in (TomlArray)commandsTable["Store"])
         {
             storeList.Add(item!.ToString()!);
         }
 
-        var inventoryList = new List<string>();
-        foreach (var item in (TomlArray)commandsTable["Inventory"])
+        List<string> inventoryList = [];
+        foreach (object? item in (TomlArray)commandsTable["Inventory"])
         {
             inventoryList.Add(item!.ToString()!);
         }
 
-        var giveCreditsList = new List<string>();
-        foreach (var item in (TomlArray)commandsTable["GiveCredits"])
+        List<string> giveCreditsList = [];
+        foreach (object? item in (TomlArray)commandsTable["GiveCredits"])
         {
             giveCreditsList.Add(item!.ToString()!);
         }
 
-        var giftList = new List<string>();
-        foreach (var item in (TomlArray)commandsTable["Gift"])
+        List<string> giftList = [];
+        foreach (object? item in (TomlArray)commandsTable["Gift"])
         {
             giftList.Add(item!.ToString()!);
         }
 
-        var resetPlayerList = new List<string>();
-        foreach (var item in (TomlArray)commandsTable["ResetPlayer"])
+        List<string> resetPlayerList = [];
+        foreach (object? item in (TomlArray)commandsTable["ResetPlayer"])
         {
             resetPlayerList.Add(item!.ToString()!);
         }
 
-        var resetDatabaseList = new List<string>();
-        foreach (var item in (TomlArray)commandsTable["ResetDatabase"])
+        List<string> resetDatabaseList = [];
+        foreach (object? item in (TomlArray)commandsTable["ResetDatabase"])
         {
             resetDatabaseList.Add(item!.ToString()!);
         }
 
-        var config_commands = new Config_Commands
+        Config_Commands config_commands = new()
         {
             Credits = [.. creditsList],
             Store = [.. storeList],
@@ -108,27 +108,27 @@ public static class Config_Config
             ResetDatabase = [.. resetDatabaseList]
         };
 
-        var defaultModelsTable = (TomlTable)model["DefaultModels"];
-        var terroristList = new List<string>();
-        foreach (var item in (TomlArray)defaultModelsTable["Terrorist"])
+        TomlTable defaultModelsTable = (TomlTable)model["DefaultModels"];
+        List<string> terroristList = [];
+        foreach (object? item in (TomlArray)defaultModelsTable["Terrorist"])
         {
             terroristList.Add(item!.ToString()!);
         }
 
-        var counterTerroristList = new List<string>();
-        foreach (var item in (TomlArray)defaultModelsTable["CounterTerrorist"])
+        List<string> counterTerroristList = [];
+        foreach (object? item in (TomlArray)defaultModelsTable["CounterTerrorist"])
         {
             counterTerroristList.Add(item!.ToString()!);
         }
 
-        var config_defaultModels = new Config_DefaultModels
+        Config_DefaultModels config_defaultModels = new()
         {
             Terrorist = [.. terroristList],
             CounterTerrorist = [.. counterTerroristList]
         };
 
-        var creditsTable = (TomlTable)model["Credits"];
-        var config_credits = new Config_Credits
+        TomlTable creditsTable = (TomlTable)model["Credits"];
+        Config_Credits config_credits = new()
         {
             Start = int.Parse(creditsTable["Start"].ToString()!),
             IntervalActiveInActive = int.Parse(creditsTable["IntervalActiveInActive"].ToString()!),
@@ -138,8 +138,8 @@ public static class Config_Config
             IgnoreWarmup = bool.Parse(creditsTable["IgnoreWarmup"].ToString()!)
         };
 
-        var menuTable = (TomlTable)model["Menu"];
-        var config_menu = new Config_Menu
+        TomlTable menuTable = (TomlTable)model["Menu"];
+        Config_Menu config_menu = new()
         {
             EnableSelling = bool.Parse(menuTable["EnableSelling"].ToString()!),
             EnableConfirmMenu = bool.Parse(menuTable["EnableConfirmMenu"].ToString()!),
@@ -149,8 +149,8 @@ public static class Config_Config
             MenuPressSoundNo = menuTable["MenuPressSoundNo"].ToString()!
         };
 
-        var settingsTable = (TomlTable)model["Settings"];
-        var config_settings = new Config_Settings
+        TomlTable settingsTable = (TomlTable)model["Settings"];
+        Config_Settings config_settings = new()
         {
             MaxHealth = int.Parse(settingsTable["MaxHealth"].ToString()!),
             MaxArmor = int.Parse(settingsTable["MaxArmor"].ToString()!),

@@ -1,10 +1,8 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -134,8 +132,8 @@ public static class Item_CustomWeapon
     {
         public static string GetDesignerName(CBasePlayerWeapon weapon)
         {
-            var weaponDesignerName = weapon.DesignerName;
-            var weaponIndex = weapon.AttributeManager.Item.ItemDefinitionIndex;
+            string weaponDesignerName = weapon.DesignerName;
+            ushort weaponIndex = weapon.AttributeManager.Item.ItemDefinitionIndex;
 
             weaponDesignerName = (weaponDesignerName, weaponIndex) switch
             {
@@ -209,14 +207,14 @@ public static class Item_CustomWeapon
         }
         private static CBasePlayerWeapon? Get(CCSPlayerController player, string weaponName)
         {
-            var weaponServices = player.PlayerPawn?.Value?.WeaponServices;
+            CPlayer_WeaponServices? weaponServices = player.PlayerPawn?.Value?.WeaponServices;
 
             if (weaponServices == null)
             {
                 return null;
             }
 
-            var activeWeapon = weaponServices.ActiveWeapon?.Value;
+            CBasePlayerWeapon? activeWeapon = weaponServices.ActiveWeapon?.Value;
 
             if (activeWeapon != null && GetDesignerName(activeWeapon) == weaponName)
             {

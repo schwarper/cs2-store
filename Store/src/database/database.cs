@@ -4,9 +4,9 @@ using CounterStrikeSharp.API.Modules.Admin;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
+using static Store.Config_Config;
 using static Store.Store;
 using static StoreApi.Store;
-using static Store.Config_Config;
 
 namespace Store;
 

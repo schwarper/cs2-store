@@ -1,6 +1,5 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
-using static Store.Store;
 using static Store.Config_Config;
 
 namespace Store;
