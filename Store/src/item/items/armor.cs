@@ -1,7 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
-using static Store.Store;
+using static Store.Config_Config;
 
 namespace Store;
 
@@ -31,7 +31,7 @@ public static class Item_Armor
             return false;
         }
 
-        int maxarmor = Instance.Config.Settings.MaxArmor;
+        int maxarmor = Config.Settings.MaxArmor;
 
         if (maxarmor > 0)
         {

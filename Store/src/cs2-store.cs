@@ -7,13 +7,13 @@ using static StoreApi.Store;
 
 namespace Store;
 
-public class Store : BasePlugin, IPluginConfig<Config>
+public class Store : BasePlugin, IPluginConfig<Item_Config>
 {
     public override string ModuleName => "Store";
     public override string ModuleVersion => "1.2";
     public override string ModuleAuthor => "schwarper";
 
-    public Config Config { get; set; } = new Config();
+    public Item_Config Config { get; set; } = new Item_Config();
     public List<Store_Player> GlobalStorePlayers { get; set; } = [];
     public List<Store_Item> GlobalStorePlayerItems { get; set; } = [];
     public List<Store_Equipment> GlobalStorePlayerEquipments { get; set; } = [];
@@ -66,19 +66,9 @@ public class Store : BasePlugin, IPluginConfig<Config>
         Event.Unload();
     }
 
-    public void OnConfigParsed(Config config)
+    public void OnConfigParsed(Item_Config config)
     {
-        if (string.IsNullOrEmpty(config.Database.Host) || string.IsNullOrEmpty(config.Database.Name) || string.IsNullOrEmpty(config.Database.User))
-        {
-            throw new Exception("You need to setup Database credentials in config.");
-        }
-
-        config.Tag = StringExtensions.ReplaceColorTags(config.Tag);
-
-        Task.Run(async () =>
-        {
-            await Database.CreateDatabaseAsync(config);
-        });
+        Config_Config.Load();
 
         Config = config;
     }

@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
 using static Store.Store;
 using static StoreApi.Store;
+using static Store.Config_Config;
 
 namespace Store;
 
@@ -14,14 +15,17 @@ public static class Item_PlayerSkin
 
     public static void OnPluginStart()
     {
-        Instance.AddCommand("css_model0", "Model0", Command_Model0);
-        Instance.AddCommand("css_model1", "Model1", Command_Model1);
-
         Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
-        Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
-        Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
-        Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart, HookMode.Pre);
+        if (Item.GetItemsByType("playerskin").Count > 0)
+        {
+            Instance.AddCommand("css_model0", "Model0", Command_Model0);
+            Instance.AddCommand("css_model1", "Model1", Command_Model1);
+
+            Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
+            Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
+            Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart, HookMode.Pre);
+        }
     }
     public static void OnMapStart()
     {
@@ -127,7 +131,7 @@ public static class Item_PlayerSkin
 
             if (modelDatas.HasValue)
             {
-                player.PlayerPawn.Value!.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg);
+                player.ChangeModelDelay(modelDatas.Value.modelname, modelDatas.Value.disableleg, @event.Team);
             }
         }
 
@@ -142,7 +146,7 @@ public static class Item_PlayerSkin
 
     private static void Command_Model0(CCSPlayerController? player, CommandInfo info)
     {
-        string flag = Instance.Config.Settings.Model0Model1Flag;
+        string flag = Config.Settings.Model0Model1Flag;
 
         if (string.IsNullOrEmpty(flag) || !AdminManager.PlayerHasPermissions(player, flag))
         {
@@ -159,14 +163,14 @@ public static class Item_PlayerSkin
             }
         }
 
-        Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_model0", player?.PlayerName ?? Instance.Localizer["Console"]]);
+        Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_model0", player?.PlayerName ?? Instance.Localizer["Console"]]);
 
         ForceModelDefault = true;
     }
 
     private static void Command_Model1(CCSPlayerController? player, CommandInfo info)
     {
-        string flag = Instance.Config.Settings.Model0Model1Flag;
+        string flag = Config.Settings.Model0Model1Flag;
 
         if (string.IsNullOrEmpty(flag) || !AdminManager.PlayerHasPermissions(player, flag))
         {
@@ -183,7 +187,7 @@ public static class Item_PlayerSkin
             }
         }
 
-        Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_model1", player?.PlayerName ?? Instance.Localizer["Console"]]);
+        Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_model1", player?.PlayerName ?? Instance.Localizer["Console"]]);
 
         ForceModelDefault = false;
     }
@@ -198,13 +202,13 @@ public static class Item_PlayerSkin
         }
         else
         {
-            return GetStoreModel(player, item);
+            return GetStoreModel(item);
         }
     }
 
     private static (string modelname, bool disableleg)? GetDefaultModel(CCSPlayerController player)
     {
-        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Instance.Config.DefaultModels.CT : Instance.Config.DefaultModels.T;
+        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels.CounterTerrorist : Config.DefaultModels.Terrorist;
         int maxIndex = modelsArray.Length;
 
         if (maxIndex > 0)
@@ -213,13 +217,13 @@ public static class Item_PlayerSkin
 
             string model = modelsArray[randomnumber];
 
-            return (model, Instance.Config.Settings.DefaultModelDisableLeg);
+            return (model, Config.Settings.DefaultModelDisableLeg);
         }
 
         return null;
     }
 
-    private static (string modelname, bool disableleg)? GetStoreModel(CCSPlayerController player, Store_Equipment item)
+    private static (string modelname, bool disableleg)? GetStoreModel(Store_Equipment item)
     {
         Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
 

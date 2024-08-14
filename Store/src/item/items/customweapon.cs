@@ -1,8 +1,10 @@
-using CounterStrikeSharp.API;
+﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Entities.Constants;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -84,15 +86,14 @@ public static class Item_CustomWeapon
                 return;
             }
 
-            string designerName = weapon.DesignerName.Contains("bayonet") ? "weapon_knife" : weapon.DesignerName;
-
+            string weaponDesignerName = Weapon.GetDesignerName(weapon);
             CBasePlayerWeapon? activeweapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
 
             foreach (Store_Equipment? playerequipment in playerequipments)
             {
                 Dictionary<string, string>? itemdata = Item.GetItem(playerequipment.Type, playerequipment.UniqueId);
 
-                if (itemdata == null || !designerName.Contains(itemdata["weapon"]))
+                if (itemdata == null || weaponDesignerName != itemdata["weapon"])
                 {
                     continue;
                 }
@@ -102,6 +103,7 @@ public static class Item_CustomWeapon
             }
         });
     }
+
     public static HookResult OnItemEquip(EventItemEquip @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
@@ -130,6 +132,21 @@ public static class Item_CustomWeapon
 
     public static class Weapon
     {
+        public static string GetDesignerName(CBasePlayerWeapon weapon)
+        {
+            var weaponDesignerName = weapon.DesignerName;
+            var weaponIndex = weapon.AttributeManager.Item.ItemDefinitionIndex;
+
+            weaponDesignerName = (weaponDesignerName, weaponIndex) switch
+            {
+                var (name, _) when name.Contains("bayonet") => "weapon_knife",
+                ("weapon_m4a1", 60) => "weapon_m4a1_silencer",
+                ("weapon_hkp2000", 61) => "weapon_usp_silencer",
+                _ => weaponDesignerName
+            };
+
+            return weaponDesignerName;
+        }
         public static unsafe string GetViewModel(CCSPlayerController player)
         {
             return ViewModel(player)?.VMName ?? string.Empty;
@@ -192,14 +209,21 @@ public static class Item_CustomWeapon
         }
         private static CBasePlayerWeapon? Get(CCSPlayerController player, string weaponName)
         {
-            CBasePlayerWeapon? activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+            var weaponServices = player.PlayerPawn?.Value?.WeaponServices;
 
-            if (activeWeapon != null && activeWeapon.DesignerName.Contains(weaponName))
+            if (weaponServices == null)
+            {
+                return null;
+            }
+
+            var activeWeapon = weaponServices.ActiveWeapon?.Value;
+
+            if (activeWeapon != null && GetDesignerName(activeWeapon) == weaponName)
             {
                 return activeWeapon;
             }
 
-            return player.PlayerPawn.Value?.WeaponServices?.MyWeapons?.FirstOrDefault(p => p.Value != null && p.Value.DesignerName.Contains(weaponName))?.Value;
+            return weaponServices.MyWeapons.SingleOrDefault(p => p.Value != null && GetDesignerName(p.Value) == weaponName)?.Value;
         }
         private static unsafe CBaseViewModel? ViewModel(CCSPlayerController player)
         {

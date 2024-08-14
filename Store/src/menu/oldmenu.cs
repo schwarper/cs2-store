@@ -4,6 +4,7 @@ using CounterStrikeSharp.API.Modules.Menu;
 using System.Text;
 using static Store.Store;
 using static StoreApi.Store;
+using static Store.Config_Config;
 
 namespace Store;
 
@@ -41,7 +42,7 @@ public static class OldMenu
 
                 menu.AddMenuOption(builderkey.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
                 {
-                    player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
+                    player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                     DisplayItems(player, builderkey.ToString(), category.Value, inventory);
                 });
             }
@@ -73,7 +74,7 @@ public static class OldMenu
 
                     menu.AddMenuOption(builder.ToString(), (CCSPlayerController player, ChatMenuOption option) =>
                     {
-                        player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
+                        player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                         DisplayItem(player, inventory, builder.ToString(), playerSkinItems.Where(p => p.Value.TryGetValue("slot", out string? slot) && !string.IsNullOrEmpty(slot) && int.Parse(p.Value["slot"]) == Slot).ToDictionary(p => p.Key, p => p.Value));
                     });
                 }
@@ -110,7 +111,7 @@ public static class OldMenu
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
-                    player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
+                    player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                     DisplayItemOption(player, item);
                 }, false, item["name"]);
             }
@@ -118,21 +119,21 @@ public static class OldMenu
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
-                    if (Instance.Config.Menu.EnableConfirmMenu)
+                    if (Config.Menu.EnableConfirmMenu)
                     {
-                        player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
+                        player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                         DisplayConfirmationMenu(player, item);
                     }
                     else
                     {
                         if (Item.Purchase(player, item))
                         {
-                            player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
+                            player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                             DisplayItemOption(player, item);
                         }
                         else
                         {
-                            player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundNo}");
+                            player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
                             WasdManager.CloseMenu(player);
                         }
                     }
@@ -152,7 +153,7 @@ public static class OldMenu
         {
             AddMenuOption(player, menu, (player, option) =>
             {
-                player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
+                player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                 Item.Unequip(player, item, true);
 
                 player.PrintToChatMessage("Purchase Unequip", item["name"]);
@@ -164,7 +165,7 @@ public static class OldMenu
         {
             AddMenuOption(player, menu, (player, option) =>
             {
-                player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
+                player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                 Item.Equip(player, item);
 
                 player.PrintToChatMessage("Purchase Equip", item["name"]);
@@ -175,13 +176,13 @@ public static class OldMenu
 
         Store_Item? PlayerItems = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == item["type"] && p.UniqueId == item["uniqueid"]);
 
-        if (Instance.Config.Menu.EnableSelling && !Item.IsPlayerVip(player))
+        if (Config.Menu.EnableSelling && !Item.IsPlayerVip(player))
         {
-            float sell_ratio = Instance.Config.Settings.SellRatio;
+            float sell_ratio = Config.Settings.SellRatio;
 
             int purchase_price = 1;
 
-            bool usePurchaseCredit = Instance.Config.Settings.SellUsePurchaseCredit;
+            bool usePurchaseCredit = Config.Settings.SellUsePurchaseCredit;
 
             if (usePurchaseCredit && PlayerItems != null)
             {
@@ -194,7 +195,7 @@ public static class OldMenu
             {
                 AddMenuOption(player, menu, (player, option) =>
                 {
-                    player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
+                    player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                     Item.Sell(player, item);
 
                     player.PrintToChatMessage("Item Sell", item["name"]);
@@ -222,20 +223,20 @@ public static class OldMenu
         {
             if (Item.Purchase(p, item))
             {
-                player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
+                player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                 DisplayItemOption(p, item);
             }
             else
             {
                 MenuManager.CloseActiveMenu(player);
-                player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundNo}");
+                player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
             }
 
         }, false, "menu_store<yes>");
 
         AddMenuOption(player, menu, (p, o) =>
         {
-            player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundNo}");
+            player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
             MenuManager.CloseActiveMenu(player);
         }, false, "menu_store<no>");
 

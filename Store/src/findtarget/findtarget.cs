@@ -2,6 +2,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Commands.Targeting;
 using static Store.Store;
+using static Store.Config_Config;
 
 namespace Store;
 
@@ -26,14 +27,14 @@ public static class FindTarget
         {
             if (!ignoreMessage)
             {
-                command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["No matching client"]);
+                command.ReplyToCommand(Config.Tag + Instance.Localizer["No matching client"]);
             }
 
             return (new List<CCSPlayerController>(), string.Empty);
         }
         else if (singletarget && targetresult.Players.Count > 1)
         {
-            command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["More than one client matched"]);
+            command.ReplyToCommand(Config.Tag + Instance.Localizer["More than one client matched"]);
             return (new List<CCSPlayerController>(), string.Empty);
         }
 
