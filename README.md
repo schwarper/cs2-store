@@ -16,7 +16,7 @@ Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
         "name": "Store Ak47",
         "uniqueid": "........vmdl",
         "type": "customweapon",
-        "weapon": "ak47",
+        "weapon": "weapon_ak47",
         "price": "0",
         "slot": "1",
         "enable": "true"
