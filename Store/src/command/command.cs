@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Entities;
+using static Store.Config_Config;
 using static Store.Store;
 
 namespace Store;
@@ -11,17 +12,17 @@ public static class Command
 {
     public static void Load()
     {
-        StoreConfig config = Instance.Config;
+        Config_Commands config = Config.Commands;
 
         Dictionary<IEnumerable<string>, (string description, CommandInfo.CommandCallback handler)> commands = new()
         {
-            {config.Commands.Credits, ("Show credits", Command_Credits)},
-            {config.Commands.Store, ("Store menu", Command_Store)},
-            {config.Commands.Inventory, ("Open inventory menu", Command_Inv)},
-            {config.Commands.GiveCredits, ("Give credits", Command_GiveCredits)},
-            {config.Commands.Gift, ("Gift", Command_Gift)},
-            {config.Commands.ResetPlayer, ("Reset player's inventory", Command_ResetPlayer)},
-            {config.Commands.ResetDatabase, ("Reset database", Command_ResetDatabase)}
+            {config.Credits, ("Show credits", Command_Credits)},
+            {config.Store, ("Store menu", Command_Store)},
+            {config.Inventory, ("Open inventory menu", Command_Inv)},
+            {config.GiveCredits, ("Give credits", Command_GiveCredits)},
+            {config.Gift, ("Gift", Command_Gift)},
+            {config.ResetPlayer, ("Reset player's inventory", Command_ResetPlayer)},
+            {config.ResetDatabase, ("Reset database", Command_ResetDatabase)}
         };
 
         foreach (KeyValuePair<IEnumerable<string>, (string description, CommandInfo.CommandCallback handler)> commandPair in commands)
@@ -76,13 +77,13 @@ public static class Command
         {
             if (!SteamID.TryParse(command.GetArg(1), out SteamID? steamId) || steamId == null)
             {
-                command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["Must be a steamid"]);
+                command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be a steamid"]);
                 return;
             }
 
             if (!int.TryParse(command.GetArg(2), out int credits))
             {
-                command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["Must be an integer"]);
+                command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be an integer"]);
                 return;
             }
 
@@ -90,7 +91,7 @@ public static class Command
 
             if (playerdata == null)
             {
-                command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["No matching client"]);
+                command.ReplyToCommand(Config.Tag + Instance.Localizer["No matching client"]);
                 return;
             }
 
@@ -98,13 +99,13 @@ public static class Command
 
             Database.ExecuteAsync("UPDATE store_players SET Credits = Credits + @Credits WHERE SteamId = @SteamId;", new { Credits = credits, @SteamID = steamId.SteamId64 });
 
-            Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_givecredits<steamid>", player?.PlayerName ?? "Console", steamId.SteamId64, credits]);
+            Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_givecredits<steamid>", player?.PlayerName ?? "Console", steamId.SteamId64, credits]);
             return;
         }
 
         if (!int.TryParse(command.GetArg(2), out int value))
         {
-            command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["Must be an integer"]);
+            command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be an integer"]);
             return;
         }
 
@@ -115,11 +116,11 @@ public static class Command
 
         if (players.Count == 1)
         {
-            Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_givecredits<player>", player?.PlayerName ?? "Console", targetname, value]);
+            Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_givecredits<player>", player?.PlayerName ?? "Console", targetname, value]);
         }
         else
         {
-            Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_givecredits<multiple>", player?.PlayerName ?? "Console", targetname, value]);
+            Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_givecredits<multiple>", player?.PlayerName ?? "Console", targetname, value]);
         }
     }
 
@@ -140,7 +141,7 @@ public static class Command
 
         if (players.Count > 1)
         {
-            command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["More than one client matched"]);
+            command.ReplyToCommand(Config.Tag + Instance.Localizer["More than one client matched"]);
             return;
         }
 
@@ -148,19 +149,19 @@ public static class Command
 
         if (target == player)
         {
-            command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["No gift yourself"]);
+            command.ReplyToCommand(Config.Tag + Instance.Localizer["No gift yourself"]);
             return;
         }
 
         if (!int.TryParse(command.GetArg(2), out int value))
         {
-            command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["Must be an integer"]);
+            command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be an integer"]);
             return;
         }
 
         if (value <= 0)
         {
-            command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["Must be higher than zero"]);
+            command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be higher than zero"]);
             return;
         }
 
@@ -207,7 +208,7 @@ public static class Command
         {
             if (!SteamID.TryParse(command.GetArg(1), out SteamID? steamId) || steamId == null)
             {
-                command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["Must be a steamid"]);
+                command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be a steamid"]);
                 return;
             }
 
@@ -215,7 +216,7 @@ public static class Command
 
             if (playerdata == null)
             {
-                command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["No matching client"]);
+                command.ReplyToCommand(Config.Tag + Instance.Localizer["No matching client"]);
                 return;
             }
 
@@ -229,13 +230,13 @@ public static class Command
                  new { @SteamID = steamId.SteamId64 });
 
 
-            Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_reset", player?.PlayerName ?? "Console", steamId.SteamId64]);
+            Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_reset", player?.PlayerName ?? "Console", steamId.SteamId64]);
             return;
         }
 
         if (players.Count > 1)
         {
-            command.ReplyToCommand(Instance.Config.Tag + Instance.Localizer["More than one client matched"]);
+            command.ReplyToCommand(Config.Tag + Instance.Localizer["More than one client matched"]);
             return;
         }
 
@@ -247,6 +248,6 @@ public static class Command
 
         Database.ResetPlayer(target);
 
-        Server.PrintToChatAll(Instance.Config.Tag + Instance.Localizer["css_reset", player?.PlayerName ?? "Console", target.PlayerName]);
+        Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_reset", player?.PlayerName ?? "Console", target.PlayerName]);
     }
 }

@@ -4,6 +4,7 @@ using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
 using static CounterStrikeSharp.API.Core.Listeners;
+using static Store.Config_Config;
 using static Store.Store;
 using static StoreApi.Store;
 using Player = StoreApi.Store.Player;
@@ -42,7 +43,7 @@ public static class Event
 
     public static void StartCreditsTimer()
     {
-        Instance.AddTimer(Instance.Config.Credits.IntervalActiveInActive, () =>
+        Instance.AddTimer(Config.Credits.IntervalActiveInActive, () =>
         {
             if (GameRules.IgnoreWarmUp())
             {
@@ -69,18 +70,18 @@ public static class Event
                 {
                     case CsTeam.Terrorist:
                     case CsTeam.CounterTerrorist:
-                        if (Instance.Config.Credits.AmountActive > 0)
+                        if (Config.Credits.AmountActive > 0)
                         {
-                            Credits.Give(player, Instance.Config.Credits.AmountActive);
-                            player.PrintToChatMessage("credits_earned<active>", Instance.Config.Credits.AmountActive);
+                            Credits.Give(player, Config.Credits.AmountActive);
+                            player.PrintToChatMessage("credits_earned<active>", Config.Credits.AmountActive);
                         }
                         break;
 
                     case CsTeam.Spectator:
-                        if (Instance.Config.Credits.AmountInActive > 0)
+                        if (Config.Credits.AmountInActive > 0)
                         {
-                            Credits.Give(player, Instance.Config.Credits.AmountInActive);
-                            player.PrintToChatMessage("credits_earned<inactive>", Instance.Config.Credits.AmountInActive);
+                            Credits.Give(player, Config.Credits.AmountInActive);
+                            player.PrintToChatMessage("credits_earned<inactive>", Config.Credits.AmountInActive);
                         }
                         break;
                 }
@@ -106,7 +107,7 @@ public static class Event
         .Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)
         .ToList();
 
-        string store_equipmentTableName = Instance.Config.Settings.DatabaseEquipTableName;
+        string store_equipmentTableName = Config.DatabaseConnection.DatabaseEquipTableName;
 
         foreach (Store_Item? item in itemsToRemove)
         {
@@ -119,7 +120,7 @@ public static class Event
 
     public static void OnServerPrecacheResources(ResourceManifest manifest)
     {
-        foreach (string? model in Instance.Config.DefaultModels.CT.Concat(Instance.Config.DefaultModels.T))
+        foreach (string? model in Config.DefaultModels.CounterTerrorist.Concat(Config.DefaultModels.Terrorist))
         {
             manifest.AddResource(model);
         }
@@ -241,11 +242,11 @@ public static class Event
             Database.SavePlayer(victim);
         });
 
-        if (Instance.Config.Credits.AmountKill > 0)
+        if (Config.Credits.AmountKill > 0)
         {
-            Credits.Give(attacker, Instance.Config.Credits.AmountKill);
+            Credits.Give(attacker, Config.Credits.AmountKill);
 
-            attacker.PrintToChat(Instance.Config.Tag + Instance.Localizer["credits_earned<kill>", Instance.Config.Credits.AmountKill]);
+            attacker.PrintToChat(Config.Tag + Instance.Localizer["credits_earned<kill>", Config.Credits.AmountKill]);
         }
 
         return HookResult.Continue;

@@ -1,6 +1,6 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
-using static Store.Store;
+using static Store.Config_Config;
 
 namespace Store;
 
@@ -30,7 +30,7 @@ public static class Item_Health
             return false;
         }
 
-        int maxhealth = Instance.Config.Settings.MaxHealth;
+        int maxhealth = Config.Settings.MaxHealth;
 
         int currentHealth = playerPawn.GetHealth();
         int pawnMaxHealth = playerPawn.MaxHealth;
@@ -66,7 +66,7 @@ public static class Item_Health
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

@@ -1,19 +1,18 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
-using CounterStrikeSharp.API.Core.Translations;
 using StoreApi;
 using static StoreApi.Store;
 
 namespace Store;
 
-public class Store : BasePlugin, IPluginConfig<StoreConfig>
+public class Store : BasePlugin, IPluginConfig<Item_Config>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "1.1";
+    public override string ModuleVersion => "1.2";
     public override string ModuleAuthor => "schwarper";
 
-    public StoreConfig Config { get; set; } = new StoreConfig();
+    public Item_Config Config { get; set; } = new Item_Config();
     public List<Store_Player> GlobalStorePlayers { get; set; } = [];
     public List<Store_Item> GlobalStorePlayerItems { get; set; } = [];
     public List<Store_Equipment> GlobalStorePlayerEquipments { get; set; } = [];
@@ -66,24 +65,9 @@ public class Store : BasePlugin, IPluginConfig<StoreConfig>
         Event.Unload();
     }
 
-    public override void OnAllPluginsLoaded(bool hotReload)
+    public void OnConfigParsed(Item_Config config)
     {
-        Item_Tag.OnAllPluginsLoaded();
-    }
-
-    public void OnConfigParsed(StoreConfig config)
-    {
-        if (string.IsNullOrEmpty(config.Database.Host) || string.IsNullOrEmpty(config.Database.Name) || string.IsNullOrEmpty(config.Database.User))
-        {
-            throw new Exception("You need to setup Database credentials in config.");
-        }
-
-        config.Tag = StringExtensions.ReplaceColorTags(config.Tag);
-
-        Task.Run(async () =>
-        {
-            await Database.CreateDatabaseAsync(config);
-        });
+        Config_Config.Load();
 
         Config = config;
     }

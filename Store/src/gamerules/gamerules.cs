@@ -1,7 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Cvars;
-using static Store.Store;
+using static Store.Config_Config;
 
 namespace Store;
 
@@ -11,7 +11,7 @@ public static class GameRules
 
     public static bool IgnoreWarmUp()
     {
-        return Instance.Config.Credits.IgnoreWarmup && GlobalGameRules.WarmupPeriod;
+        return Config.Credits.IgnoreWarmup && GlobalGameRules.WarmupPeriod;
     }
 
     public static bool IsPistolRound()

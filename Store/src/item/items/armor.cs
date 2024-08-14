@@ -1,7 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
-using static Store.Store;
+using static Store.Config_Config;
 
 namespace Store;
 
@@ -9,7 +9,7 @@ public static class Item_Armor
 {
     public static void OnPluginStart()
     {
-        Item.RegisterType("armor", OnMapStart, OnServerPrecacheResources, OnEquip, OnUneuip, false, true);
+        Item.RegisterType("armor", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
     }
     public static void OnMapStart()
     {
@@ -31,7 +31,7 @@ public static class Item_Armor
             return false;
         }
 
-        int maxarmor = Instance.Config.Settings.MaxArmor;
+        int maxarmor = Config.Settings.MaxArmor;
 
         if (maxarmor > 0)
         {
@@ -72,7 +72,7 @@ public static class Item_Armor
 
         return true;
     }
-    public static bool OnUneuip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

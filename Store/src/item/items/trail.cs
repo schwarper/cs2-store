@@ -10,8 +10,8 @@ namespace Store;
 
 public static class Item_Trail
 {
-    static readonly Vector[] GlobalTrailLastOrigin = new Vector[64];
-    static readonly Vector[] GlobalTrailEndOrigin = new Vector[64];
+    private static readonly Vector[] GlobalTrailLastOrigin = new Vector[64];
+    private static readonly Vector[] GlobalTrailEndOrigin = new Vector[64];
     private static bool trailExists = false;
 
     public static void OnPluginStart()
@@ -51,7 +51,7 @@ public static class Item_Trail
     {
         return true;
     }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }
