@@ -66,11 +66,6 @@ public class Store : BasePlugin, IPluginConfig<Config>
         Event.Unload();
     }
 
-    public override void OnAllPluginsLoaded(bool hotReload)
-    {
-        Item_Tag.OnAllPluginsLoaded();
-    }
-
     public void OnConfigParsed(Config config)
     {
         if (string.IsNullOrEmpty(config.Database.Host) || string.IsNullOrEmpty(config.Database.Name) || string.IsNullOrEmpty(config.Database.User))

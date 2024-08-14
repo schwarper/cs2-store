@@ -34,6 +34,11 @@ public static class Item_Equipment
     }
     public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
+        if (!update)
+        {
+            return true;
+        }
+
         UnEquip(player);
         return true;
     }

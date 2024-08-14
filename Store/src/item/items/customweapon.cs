@@ -46,6 +46,11 @@ public static class Item_CustomWeapon
     }
     public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
+        if (!update)
+        {
+            return true;
+        }
+
         return Weapon.HandleEquip(player, item, false);
     }
 
