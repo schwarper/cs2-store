@@ -28,7 +28,7 @@ public static class Item_ColoredSkin
     {
         return true;
     }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         player.PlayerPawn.Value?.ColorSkin(Color.White);
         return true;

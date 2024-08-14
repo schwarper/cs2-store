@@ -19,7 +19,7 @@ public static class Vec
         float dy = vector2.Y - vector1.Y;
         float dz = vector2.Z - vector1.Z;
 
-        return (float)Math.Sqrt(dx * dx + dy * dy + dz * dz);
+        return (float)Math.Sqrt((dx * dx) + (dy * dy) + (dz * dz));
     }
 
     public static void Copy(Vector vector1, Vector vector2)

@@ -36,7 +36,7 @@ public static class Item_Sound
 
         return true;
     }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

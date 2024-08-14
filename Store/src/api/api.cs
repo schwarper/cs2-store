@@ -41,6 +41,11 @@ public class StoreAPI : IStoreApi
         return Credits.Give(player, credits);
     }
 
+    public bool Item_Give(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        return Item.Give(player, item);
+    }
+
     public bool Item_Purchase(CCSPlayerController player, Dictionary<string, string> item)
     {
         return Item.Purchase(player, item);
@@ -51,9 +56,9 @@ public class StoreAPI : IStoreApi
         return Item.Equip(player, item);
     }
 
-    public bool Item_Unequip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool Item_Unequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
-        return Item.Unequip(player, item);
+        return Item.Unequip(player, item, update);
     }
 
     public bool Item_Sell(CCSPlayerController player, Dictionary<string, string> item)
@@ -76,6 +81,11 @@ public class StoreAPI : IStoreApi
         return Item.IsInJson(type, UniqueId);
     }
 
+    public bool IsPlayerVip(CCSPlayerController player)
+    {
+        return Item.IsPlayerVip(player);
+    }
+
     public Dictionary<string, string>? GetItem(string type, string UniqueId)
     {
         return Item.GetItem(type, UniqueId);
@@ -96,12 +106,7 @@ public class StoreAPI : IStoreApi
         return Item.GetPlayerEquipments(player);
     }
 
-    public bool IsPlayerVip(CCSPlayerController player)
-    {
-        return Item.IsPlayerVip(player);
-    }
-
-    public void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool> Unequip, bool Equipable, bool? Alive)
+    public void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool, bool> Unequip, bool Equipable, bool? Alive)
     {
         Item.RegisterType(Type, MapStart, ServerPrecacheResources, Equip, Unequip, Equipable, Alive);
     }

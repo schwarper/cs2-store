@@ -11,7 +11,7 @@ public static class Command
 {
     public static void Load()
     {
-        StoreConfig config = Instance.Config;
+        Config config = Instance.Config;
 
         Dictionary<IEnumerable<string>, (string description, CommandInfo.CommandCallback handler)> commands = new()
         {

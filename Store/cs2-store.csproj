@@ -22,11 +22,4 @@
   <ItemGroup>
 	  <ProjectReference Include="..\StoreApi\StoreApi.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="TagsApi">
-      <HintPath>..\..\cs2-store-main\Store\src\TagsApi\TagsApi.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

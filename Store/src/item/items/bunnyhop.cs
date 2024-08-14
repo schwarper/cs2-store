@@ -2,23 +2,21 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using static Store.Store;
+using static StoreApi.Store;
 
 namespace Store;
 
 public static class Item_Bunnyhop
 {
     private static bool bunnyhopExists = false;
-    private static readonly List<CCSPlayerController> playersList = [];
 
     public static void OnPluginStart()
     {
-        Item.RegisterType("bunnyhop", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
+        Item.RegisterType("bunnyhop", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, false);
 
         if (Item.GetItemsByType("bunnyhop").Count > 0)
         {
             bunnyhopExists = true;
-
-            Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart);
         }
     }
     public static void OnMapStart()
@@ -29,22 +27,11 @@ public static class Item_Bunnyhop
     }
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (playersList.Contains(player))
-        {
-            return false;
-        }
-
-        playersList.Add(player);
         return true;
     }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
-    }
-    private static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
-    {
-        playersList.Clear();
-        return HookResult.Continue;
     }
     public static void OnTick(CCSPlayerController player)
     {
@@ -53,7 +40,9 @@ public static class Item_Bunnyhop
             return;
         }
 
-        if (!playersList.Contains(player))
+        Store_Equipment? playerbunnyhop = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "bunnyhop");
+
+        if (playerbunnyhop == null)
         {
             return;
         }

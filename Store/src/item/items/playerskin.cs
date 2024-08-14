@@ -56,8 +56,13 @@ public static class Item_PlayerSkin
 
         return true;
     }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
+        if (!update)
+        {
+            return true;
+        }
+
         if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot))
         {
             return false;

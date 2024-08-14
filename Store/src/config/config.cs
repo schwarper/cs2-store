@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Store;
 
-public class StoreConfig : BasePluginConfig
+public class Config : BasePluginConfig
 {
     public class Config_Database
     {

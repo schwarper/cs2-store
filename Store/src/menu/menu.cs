@@ -214,7 +214,7 @@ public static class Menu
             AddMenuOption(player, menu, (player, option) =>
             {
                 player.ExecuteClientCommand($"play {Instance.Config.Menu.MenuPressSoundYes}");
-                Item.Unequip(player, item);
+                Item.Unequip(player, item, true);
 
                 player.PrintToChatMessage("Purchase Unequip", item["name"]);
 

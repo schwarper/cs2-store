@@ -8,7 +8,7 @@ namespace Store;
 
 public static class Item_Equipment
 {
-    private static Dictionary<ulong, CBaseModelEntity> Equipment = new();
+    private static Dictionary<ulong, CBaseModelEntity> Equipment = [];
 
     public static void OnPluginStart()
     {
@@ -32,8 +32,13 @@ public static class Item_Equipment
         Equip(player);
         return true;
     }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
+        if (!update)
+        {
+            return true;
+        }
+
         UnEquip(player);
         return true;
     }
