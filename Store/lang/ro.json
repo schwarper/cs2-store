@@ -10,6 +10,7 @@
   "No in pistol round": "{white}Nu poți cumpăra acest obiect {green}{0} {white}în runda de pistol.",
   "No gift yourself": "{white}Nu poți trimite credite către tine însuți.",
   "No type found": "{white}Nu a fost găsit niciun tip.",
+  "Gift timeout": "{white}Trebuie să aștepți {green}{0} secunde {white}pentru a oferi cadoul.",
 
   "t team players": "{green}jucători echipa T {white}",
   "ct team players": "{green}jucători echipa CT {white}",

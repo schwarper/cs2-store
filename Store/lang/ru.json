@@ -10,6 +10,7 @@
 	"No in pistol round": "{white}Вы не сможете купить этот предмет {green}{0} {white} в пистолетном раунде.",
 	"No gift yourself": "{white}Вы не можете подарить кредиты сами себе.",
 	"No type found": "{white}Тип не найден.",
+	"Gift timeout": "{white}Вам нужно подождать {green}{0} секунд {white}перед тем, как отправить подарок.",
 
 	"t team players": "{green}Игроки {white}в команде t team",
 	"ct team players": "{green}Игроки {white}в команде ct team",

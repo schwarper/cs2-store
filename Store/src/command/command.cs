@@ -132,6 +132,12 @@ public static class Command
             return;
         }
 
+        if (Instance.GlobalGiftTimeout[player] > Server.CurrentTime)
+        {
+            command.ReplyToCommand(Config.Tag + Instance.Localizer["Gift timeout", Instance.GlobalGiftTimeout[player] - Server.CurrentTime]);
+            return;
+        }
+
         (List<CCSPlayerController> players, _) = FindTarget.Find(command, 2, false);
 
         if (players == null)
@@ -173,6 +179,8 @@ public static class Command
 
         Credits.Give(player, -value);
         Credits.Give(target, value);
+
+        Instance.GlobalGiftTimeout[player] = Server.CurrentTime + 5.0f;
 
         player.PrintToChatMessage("css_gift<player>", target.PlayerName, value);
         target.PrintToChatMessage("css_gift<target>", player.PlayerName, value);

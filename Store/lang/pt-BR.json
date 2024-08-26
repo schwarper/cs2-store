@@ -10,6 +10,7 @@
   "No in pistol round": "{white}Você não pode comprar este item {green}{0} {white} na rodada de pistola.",
   "No gift yourself": "{white}Você não pode presentear a si mesmo.",
   "No type found": "{white}Nenhum tipo encontrado.",
+  "Gift timeout": "{white}Você precisa esperar {green}{0} segundos {white}para enviar o presente.",
 
   "t team players": "{green}Jogadores de team t{white}",
   "ct team players": "{green}Jogadores de team ct{white}",

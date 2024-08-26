@@ -10,6 +10,7 @@
   "No in pistol round": "{white}Tento predmet nemôžete použiť {green}{0} {white}v pištoľnom kole.",
   "No gift yourself": "{white}Ne morete darovati kreditov samemu sebi.",
   "No type found": "{white}Samemu sebi ne morete podariti kreditov.",
+  "Gift timeout": "{white}Počakati moraš {green}{0} sekund {white}preden lahko podariš darilo.",
 
   "t team players": "{green}Zaporniki",
   "ct team players": "{green}Pazniki",

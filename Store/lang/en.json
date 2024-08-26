@@ -10,6 +10,7 @@
   "No in pistol round": "{white}You cannot buy this item {green}{0} {white} in pistol round.",
   "No gift yourself": "{white}You cannot gift credits to yourself.",
   "No type found": "{white}No type found.",
+  "Gift timeout": "{white}You need to wait {green}{0} seconds {white}to gift.",
 
   "t team players": "{green}t team {white}players",
   "ct team players": "{green}ct team {white}players",

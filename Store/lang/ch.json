@@ -10,6 +10,7 @@
   "No in pistol round": "{white}手枪局无法购买{green}{0}{white}.",
   "No gift yourself": "{white}无法给自己赠送金币.",
   "No type found": "{white}没有找到这个类型,请重新输入.",
+  "Gift timeout": "{white}你需要等待 {green}{0} 秒 {white}后才能赠送.",
 
   "t team players": "{green}T阵营{white}玩家",
   "ct team players": "{green}CT阵营{white}玩家",
