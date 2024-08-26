@@ -134,7 +134,7 @@ public static class Command
 
         if (Instance.GlobalGiftTimeout[player] > Server.CurrentTime)
         {
-            command.ReplyToCommand(Config.Tag + Instance.Localizer["Gift timeout", Instance.GlobalGiftTimeout[player] - Server.CurrentTime]);
+            command.ReplyToCommand(Config.Tag + Instance.Localizer["Gift timeout", Math.Ceiling(Instance.GlobalGiftTimeout[player] - Server.CurrentTime)]);
             return;
         }
 
