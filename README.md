@@ -50,6 +50,12 @@ Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 
 [Vip by NaathySz](https://github.com/NaathySz/Store-Vip)
 
+[DuelDice by NaathySz](https://github.com/NaathySz/Store-DuelDice)
+
+[Math by NaathySz](https://github.com/NaathySz/Store-MathQuiz)
+
+[Cases by NaathySz](https://github.com/NaathySz/Store-Cases)
+
 # Installation
 
 1. Download the plugin:
