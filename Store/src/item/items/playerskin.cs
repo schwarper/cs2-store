@@ -56,7 +56,9 @@ public static class Item_PlayerSkin
             return false;
         }
 
-        player.ChangeModelDelay(item["uniqueid"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]));
+        item.TryGetValue("skin", out var skn);
+
+        player.ChangeModelDelay(item["uniqueid"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]), skn);
 
         return true;
     }
@@ -77,11 +79,11 @@ public static class Item_PlayerSkin
             return false;
         }
 
-        (string modelname, bool disableleg)? defaultModel = GetDefaultModel(player);
+        (string modelname, bool disableleg, string? skin)? defaultModel = GetDefaultModel(player);
 
         if (defaultModel.HasValue)
         {
-            player.ChangeModelDelay(defaultModel.Value.modelname, defaultModel.Value.disableleg, player.TeamNum);
+            player.ChangeModelDelay(defaultModel.Value.modelname, defaultModel.Value.disableleg, player.TeamNum, defaultModel.Value.skin);
         }
 
         return true;
@@ -101,11 +103,11 @@ public static class Item_PlayerSkin
             return HookResult.Continue;
         }
 
-        (string modelname, bool disableleg)? modelData = GetModel(player, player.TeamNum);
+        (string modelname, bool disableleg, string? skin)? modelData = GetModel(player, player.TeamNum);
 
         if (modelData.HasValue)
         {
-            player.ChangeModelDelay(modelData.Value.modelname, modelData.Value.disableleg, player.TeamNum);
+            player.ChangeModelDelay(modelData.Value.modelname, modelData.Value.disableleg, player.TeamNum, modelData.Value.skin);
         }
 
         return HookResult.Continue;
@@ -127,11 +129,11 @@ public static class Item_PlayerSkin
 
         if (@event.Team == 2 || @event.Team == 3)
         {
-            (string modelname, bool disableleg)? modelDatas = GetModel(player, @event.Team);
+            (string modelname, bool disableleg, string? skin)? modelDatas = GetModel(player, @event.Team);
 
             if (modelDatas.HasValue)
             {
-                player.ChangeModelDelay(modelDatas.Value.modelname, modelDatas.Value.disableleg, @event.Team);
+                player.ChangeModelDelay(modelDatas.Value.modelname, modelDatas.Value.disableleg, @event.Team, modelDatas.Value.skin);
             }
         }
 
@@ -155,11 +157,11 @@ public static class Item_PlayerSkin
 
         foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
-            (string modelname, bool disableleg)? modelDatas = GetDefaultModel(target);
+            (string modelname, bool disableleg, string? skin)? modelDatas = GetDefaultModel(target);
 
             if (modelDatas.HasValue)
             {
-                target.PlayerPawn.Value!.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg);
+                target.PlayerPawn.Value!.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg, modelDatas.Value.skin);
             }
         }
 
@@ -179,11 +181,11 @@ public static class Item_PlayerSkin
 
         foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
-            (string modelname, bool disableleg)? modelDatas = GetModel(target, target.TeamNum);
+            (string modelname, bool disableleg, string? skin)? modelDatas = GetModel(target, target.TeamNum);
 
             if (modelDatas.HasValue)
             {
-                target.PlayerPawn.Value!.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg);
+                target.PlayerPawn.Value!.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg, modelDatas.Value.skin);
             }
         }
 
@@ -192,7 +194,7 @@ public static class Item_PlayerSkin
         ForceModelDefault = false;
     }
 
-    private static (string modelname, bool disableleg)? GetModel(CCSPlayerController player, int teamnum)
+    private static (string modelname, bool disableleg, string? skin)? GetModel(CCSPlayerController player, int teamnum)
     {
         Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "playerskin" && (p.Slot == teamnum || p.Slot == 1));
 
@@ -206,7 +208,7 @@ public static class Item_PlayerSkin
         }
     }
 
-    private static (string modelname, bool disableleg)? GetDefaultModel(CCSPlayerController player)
+    private static (string modelname, bool disableleg, string? skin)? GetDefaultModel(CCSPlayerController player)
     {
         string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels.CounterTerrorist : Config.DefaultModels.Terrorist;
         int maxIndex = modelsArray.Length;
@@ -217,13 +219,13 @@ public static class Item_PlayerSkin
 
             string model = modelsArray[randomnumber];
 
-            return (model, Config.Settings.DefaultModelDisableLeg);
+            return (model, Config.Settings.DefaultModelDisableLeg, null);
         }
 
         return null;
     }
 
-    private static (string modelname, bool disableleg)? GetStoreModel(Store_Equipment item)
+    private static (string modelname, bool disableleg, string? skin)? GetStoreModel(Store_Equipment item)
     {
         Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
 
@@ -232,6 +234,8 @@ public static class Item_PlayerSkin
             return null;
         }
 
-        return (item.UniqueId, itemdata["disable_leg"] is "true" or "1");
+        itemdata.TryGetValue("skin", out var skn);
+
+        return (item.UniqueId, itemdata["disable_leg"] is "true" or "1", skn);
     }
 }
