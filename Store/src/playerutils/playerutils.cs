@@ -21,7 +21,7 @@ public static class PlayerUtils
         }
     }
 
-    static public void ChangeModelDelay(this CCSPlayerController player, string model, bool disableleg, int slotNumber)
+    static public void ChangeModelDelay(this CCSPlayerController player, string model, bool disableleg, int slotNumber, string? skin)
     {
         float apply_delay = float.Max(Config.Settings.ApplyPlayerskinDelay, 0.1f);
 
@@ -32,11 +32,11 @@ public static class PlayerUtils
                 return;
             }
 
-            player.PlayerPawn.Value?.ChangeModel(model, disableleg);
+            player.PlayerPawn.Value?.ChangeModel(model, disableleg, skin);
         }, TimerFlags.STOP_ON_MAPCHANGE);
     }
 
-    static public void ChangeModel(this CCSPlayerPawn pawn, string model, bool disableleg)
+    static public void ChangeModel(this CCSPlayerPawn pawn, string model, bool disableleg, string? skin)
     {
         if (model == string.Empty)
         {
@@ -56,6 +56,11 @@ public static class PlayerUtils
             else
             {
                 pawn.Render = Color.FromArgb(255, originalRender.R, originalRender.G, originalRender.B);
+            }
+
+            if (skin != null)
+            {
+                pawn.AcceptInput("Skin", null, pawn, skin);
             }
         });
     }
