@@ -96,7 +96,7 @@ public static class OldMenu
         {
             Dictionary<string, string> item = kvp.Value;
 
-            if (item["enable"] != "true")
+            if (item["enable"] != "true" || !Menu.CheckFlag(player, item))
             {
                 continue;
             }

@@ -156,9 +156,7 @@ public static class Menu
         {
             Dictionary<string, string> item = kvp.Value;
 
-            bool hasPermission = !item.ContainsKey("flag") || (item["flag"] != null && CheckPermissionOrSteamID(player, item["flag"]));
-
-            if (item["enable"] != "true" || !hasPermission)
+            if (item["enable"] != "true" || !CheckFlag(player, item))
             {
                 continue;
             }
@@ -206,31 +204,6 @@ public static class Menu
         }
 
         WasdManager.OpenSubMenu(player, menu);
-    }
-
-    private static bool CheckPermissionOrSteamID(CCSPlayerController player, string key)
-    {
-        if (key.StartsWith("#"))
-        {
-            return AdminManager.PlayerInGroup(player, key[1..]);
-        }
-
-        AdminData? adminData = AdminManager.GetPlayerAdminData(player);
-        if (adminData != null)
-        {
-            string permissionKey = key.StartsWith('@') ? key : "@" + key;
-
-            if (adminData.Flags.Any(flagEntry =>
-                flagEntry.Value.Contains(permissionKey, StringComparer.OrdinalIgnoreCase) ||
-                flagEntry.Value.Any(flag => permissionKey.StartsWith(flag, StringComparison.OrdinalIgnoreCase))))
-            {
-                return true;
-            }
-        }
-
-        return SteamID.TryParse(key, out SteamID? keySteamID) &&
-            keySteamID != null &&
-            Equals(keySteamID, new SteamID(player.SteamID.ToString()));
     }
 
     public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item, IWasdMenuOption? prev = null)
@@ -371,38 +344,37 @@ public static class Menu
         }
     }
 
-    public class SteamID
+    public static bool CheckFlag(CCSPlayerController player, Dictionary<string, string> item)
     {
-        public string Id { get; private set; }
-
-        public SteamID(string id)
+        if (!item.TryGetValue("flag", out var flag) || string.IsNullOrWhiteSpace(flag))
         {
-            Id = id;
+            return true;
         }
 
-        public static bool TryParse(string input, out SteamID? steamID)
+        return CheckPermissionOrSteamID(player, flag);
+    }
+
+    public static bool CheckPermissionOrSteamID(CCSPlayerController player, string key)
+    {
+        if (key.StartsWith('#'))
         {
-            if (!string.IsNullOrEmpty(input))
+            return AdminManager.PlayerInGroup(player, key[1..]);
+        }
+
+        AdminData? adminData = AdminManager.GetPlayerAdminData(player);
+
+        if (adminData != null)
+        {
+            string permissionKey = key.StartsWith('@') ? key : "@" + key;
+
+            if (adminData.Flags.Any(flagEntry =>
+                flagEntry.Value.Contains(permissionKey, StringComparer.OrdinalIgnoreCase) ||
+                flagEntry.Value.Any(flag => permissionKey.StartsWith(flag, StringComparison.OrdinalIgnoreCase))))
             {
-                steamID = new SteamID(input);
                 return true;
             }
-            steamID = null;
-            return false;
         }
 
-        public override bool Equals(object? obj)
-        {
-            if (obj is SteamID other)
-            {
-                return Id == other.Id;
-            }
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+        return key == player.SteamID.ToString();
     }
 }
