@@ -52,6 +52,7 @@
 	"menu_store<customweapon>": "Пользовательское оружие",
 	"menu_store<sound>": "Звуки",
 	"menu_store<equipment>": "Оборудование",
+	"menu_store<link>": "Ссылка",
 
 	"menu_store<all_title>": "Общие модели",
 	"menu_store<t_title>": "Модели t",
