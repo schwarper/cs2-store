@@ -52,6 +52,7 @@
   "menu_store<customweapon>": "定制武器",
   "menu_store<sound>": "声音",
   "menu_store<equipment>": "设备",
+  "menu_store<link>": "链接",
 
   "menu_store<all_title>": "共同模型",
   "menu_store<t_title>": "T阵营模型",

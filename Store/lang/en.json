@@ -52,6 +52,7 @@
   "menu_store<customweapon>": "Custom Weapons",
   "menu_store<sound>": "Sounds",
   "menu_store<equipment>": "Equipments",
+  "menu_store<link>": "Link",
 
   "menu_store<all_title>": "Models in common",
   "menu_store<t_title>": "T Models",
