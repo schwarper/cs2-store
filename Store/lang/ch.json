@@ -58,6 +58,7 @@
   "menu_store<t_title>": "T阵营模型",
   "menu_store<ct_title>": "CT阵营模型",
   "menu_store<purchase>": "{0} - [{1}]",
+  "menu_store<purchase1>": "{0}",
   "menu_store<equip>": "装备",
   "menu_store<unequip>": "脱下",
   "menu_store<sell>": "出售 [{0}]",

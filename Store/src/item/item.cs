@@ -87,9 +87,14 @@ public static class Item
             return false;
         }
 
-        Credits.Give(player, -int.Parse(item["price"]));
+        var price = int.Parse(item["price"]);
 
-        player.PrintToChatMessage("Purchase Succeeded", item["name"]);
+        if (price > 0)
+        {
+            Credits.Give(player, -int.Parse(item["price"]));
+
+            player.PrintToChatMessage("Purchase Succeeded", item["name"]);
+        }
 
         if (type.Equipable)
         {

@@ -58,6 +58,7 @@
   "menu_store<t_title>": "T Models",
   "menu_store<ct_title>": "CT Models",
   "menu_store<purchase>": "{0} - [{1}]",
+  "menu_store<purchase1>": "{0}",
   "menu_store<equip>": "EQUIP",
   "menu_store<unequip>": "UNEQUIP",
   "menu_store<sell>": "SELL [{0}]",

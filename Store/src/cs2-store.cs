@@ -9,7 +9,7 @@ namespace Store;
 public class Store : BasePlugin, IPluginConfig<Item_Config>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "1.5";
+    public override string ModuleVersion => "1.6";
     public override string ModuleAuthor => "schwarper";
 
     public Item_Config Config { get; set; } = new Item_Config();
@@ -41,6 +41,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
         Item_Gravity.OnPluginStart();
         Item_GrenadeTrail.OnPluginStart();
         Item_Health.OnPluginStart();
+        Item_Link.OnPluginStart();
         Item_Open.OnPluginStart();
         Item_PlayerSkin.OnPluginStart();
         Item_Respawn.OnPluginStart();

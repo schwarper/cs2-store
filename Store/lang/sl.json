@@ -58,6 +58,7 @@
   "menu_store<t_title>": "T Modeli",
   "menu_store<ct_title>": "CT Modeli",
   "menu_store<purchase>": "{0} - [{1}]",
+  "menu_store<purchase1>": "{0}",
   "menu_store<equip>": "AKTIVIRAJ",
   "menu_store<unequip>": "DEAKTIVIRAJ",
   "menu_store<sell>": "PRODAJ [{0}]",

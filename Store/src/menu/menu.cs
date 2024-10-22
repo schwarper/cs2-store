@@ -178,32 +178,40 @@ public static class Menu
             }
             else if (!inventory && !isHidden)
             {
-                AddMenuOption(player, menu, (player, option) =>
+                if (int.Parse(item["price"]) <= 0)
                 {
-                    if (Config.Menu.EnableConfirmMenu)
-                    {
-                        player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
-                        DisplayConfirmationMenu(player, item, option);
-                    }
-                    else
-                    {
-                        if (Item.Purchase(player, item))
-                        {
-                            player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
-                            DisplayItemOption(player, item, option);
-                        }
-                        else
-                        {
-                            player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
-                            WasdManager.CloseMenu(player);
-                        }
-                    }
-
-                }, "menu_store<purchase>", item["name"], item["price"]);
+                    AddMenuOption(player, menu, (player, option) => SelectPurchase(player, item, option, false), "menu_store<purchase1>", item["name"]);
+                }
+                else
+                {
+                    AddMenuOption(player, menu, (player, option) => SelectPurchase(player, item, option, true), "menu_store<purchase>", item["name"], item["price"]);
+                }
             }
         }
 
         WasdManager.OpenSubMenu(player, menu);
+    }
+
+    private static void SelectPurchase(CCSPlayerController player, Dictionary<string, string> item, IWasdMenuOption option, bool confirm)
+    {
+        if (confirm && Config.Menu.EnableConfirmMenu)
+        {
+            player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
+            DisplayConfirmationMenu(player, item, option);
+        }
+        else
+        {
+            if (Item.Purchase(player, item))
+            {
+                player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
+                DisplayItemOption(player, item, option);
+            }
+            else
+            {
+                player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
+                WasdManager.CloseMenu(player);
+            }
+        }
     }
 
     public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item, IWasdMenuOption? prev = null)

@@ -107,6 +107,7 @@ public static class OldMenu
             }
 
             bool isHidden = item.ContainsKey("hide") && item["hide"] == "true";
+
             if (Item.PlayerHas(player, item["type"], item["uniqueid"], false))
             {
                 AddMenuOption(player, menu, (player, option) =>
@@ -117,32 +118,40 @@ public static class OldMenu
             }
             else if (!inventory && !isHidden)
             {
-                AddMenuOption(player, menu, (player, option) =>
+                if (int.Parse(item["price"]) <= 0)
                 {
-                    if (Config.Menu.EnableConfirmMenu)
-                    {
-                        player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
-                        DisplayConfirmationMenu(player, item);
-                    }
-                    else
-                    {
-                        if (Item.Purchase(player, item))
-                        {
-                            player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
-                            DisplayItemOption(player, item);
-                        }
-                        else
-                        {
-                            player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
-                            WasdManager.CloseMenu(player);
-                        }
-                    }
-
-                }, false, "menu_store<purchase>", item["name"], item["price"]);
+                    AddMenuOption(player, menu, (player, option) => SelectPurchase(player, item, false), false, "menu_store<purchase1>", item["name"]);
+                }
+                else
+                {
+                    AddMenuOption(player, menu, (player, option) => SelectPurchase(player, item, true), true, "menu_store<purchase>", item["name"], item["price"]);
+                }
             }
         }
 
         MenuManager.OpenCenterHtmlMenu(Instance, player, menu);
+    }
+
+    private static void SelectPurchase(CCSPlayerController player, Dictionary<string, string> item, bool confirm)
+    {
+        if (confirm && Config.Menu.EnableConfirmMenu)
+        {
+            player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
+            DisplayConfirmationMenu(player, item);
+        }
+        else
+        {
+            if (Item.Purchase(player, item))
+            {
+                player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
+                DisplayItemOption(player, item);
+            }
+            else
+            {
+                player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
+                WasdManager.CloseMenu(player);
+            }
+        }
     }
 
     public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item)

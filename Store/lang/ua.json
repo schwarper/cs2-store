@@ -58,6 +58,7 @@
 	"menu_store<t_title>": "Моделі t",
 	"menu_store<ct_title>": "Моделі ct",
 	"menu_store<purchase>": "{0} - [{1}]",
+	"menu_store<purchase1>": "{0}",
 	"menu_store<equip>": "ЕКІПІРОВАТИ",
 	"menu_store<unequip>": "ЗНЯТИ",
 	"menu_store<sell>": "ПРОДАТИ [{0}]",

@@ -1,26 +1,46 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<OutputPath>$(ProjectDir)..\BuildOutput\plugins\cs2-store\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
 
-  <ItemGroup>
-	  <PackageReference Include="CounterStrikeSharp.API" Version="1.0.279" />
-	  <PackageReference Include="Daffer" Version="1.0.3" />
-	  <PackageReference Include="MySqlConnector" Version="2.3.7" />
-	  <PackageReference Include="Tomlyn" Version="0.17.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CounterStrikeSharp.API" Version="1.0.279" />
+		<PackageReference Include="Daffer" Version="1.0.3" />
+		<PackageReference Include="MySqlConnector" Version="2.3.7" />
+		<PackageReference Include="Tomlyn" Version="0.17.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-	  <None Update="lang\**\*.*" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="lang\**\*.*" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 
-  <ItemGroup>
-	  <ProjectReference Include="..\StoreApi\StoreApi.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\StoreApi\StoreApi.csproj" />
+	</ItemGroup>
+
+	<Target Name="ExcludeStoreApiFiles" AfterTargets="Build">
+		<Delete Files="$(OutputPath)StoreApi.dll" />
+		<Delete Files="$(OutputPath)StoreApi.pdb" />
+	</Target>
+
+	<Target Name="CopyConfigFiles" AfterTargets="Build">
+		<ItemGroup>
+			<FilesToCopy Include="$(ProjectDir)..\config.toml" />
+			<FilesToCopy Include="$(ProjectDir)..\cs2-store.json" />
+		</ItemGroup>
+		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(ProjectDir)..\BuildOutput\configs\plugins\cs2-store\" />
+	</Target>
+
+	<Target Name="CopyNuGetAssemblies" AfterTargets="Build">
+		<Copy SourceFiles="../MySqlConnector.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="../Dapper.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="../Tomlyn.dll" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+	</Target>
+
 </Project>

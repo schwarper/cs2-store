@@ -58,6 +58,7 @@
   "menu_store<t_title>": "T Modelleri",
   "menu_store<ct_title>": "CT Modelleri",
   "menu_store<purchase>": "{0} - [{1}]",
+  "menu_store<purchase1>": "{0}",
   "menu_store<equip>": "KUŞAN",
   "menu_store<unequip>": "BIRAK",
   "menu_store<sell>": "SAT [{0}]",
