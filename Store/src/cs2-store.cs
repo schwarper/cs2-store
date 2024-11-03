@@ -9,7 +9,7 @@ namespace Store;
 public class Store : BasePlugin, IPluginConfig<Item_Config>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "1.6";
+    public override string ModuleVersion => "1.7";
     public override string ModuleAuthor => "schwarper";
 
     public Item_Config Config { get; set; } = new Item_Config();
@@ -22,10 +22,11 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public static Store Instance { get; set; } = new();
     public Random Random { get; set; } = new();
     public Dictionary<CCSPlayerController, float> GlobalGiftTimeout { get; set; } = [];
+    public static StoreAPI Api { get; set; } = new();
 
     public override void Load(bool hotReload)
     {
-        Capabilities.RegisterPluginCapability(IStoreApi.Capability, () => new StoreAPI());
+        Capabilities.RegisterPluginCapability(IStoreApi.Capability, () => Api);
 
         Instance = this;
 

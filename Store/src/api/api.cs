@@ -7,8 +7,29 @@ namespace Store;
 
 public class StoreAPI : IStoreApi
 {
-    public StoreAPI()
+    public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerPurchaseItem;
+    public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerEquipItem;
+    public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerUnequipItem;
+    public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerSellItem;
+
+    public void PlayerPurchaseItem(CCSPlayerController player, Dictionary<string, string> item)
     {
+        OnPlayerPurchaseItem?.Invoke(player, item);
+    }
+
+    public void PlayerEquipItem(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        OnPlayerEquipItem?.Invoke(player, item);
+    }
+
+    public void PlayerUnequipItem(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        OnPlayerUnequipItem?.Invoke(player, item);
+    }
+
+    public void PlayerSellItem(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        OnPlayerSellItem?.Invoke(player, item);
     }
 
     public string GetDatabaseString()

@@ -56,7 +56,7 @@ public static class Item_PlayerSkin
             return false;
         }
 
-        item.TryGetValue("skin", out var skn);
+        item.TryGetValue("skin", out string? skn);
 
         player.ChangeModelDelay(item["uniqueid"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]), skn);
 
@@ -234,7 +234,7 @@ public static class Item_PlayerSkin
             return null;
         }
 
-        itemdata.TryGetValue("skin", out var skn);
+        itemdata.TryGetValue("skin", out string? skn);
 
         return (item.UniqueId, itemdata["disable_leg"] is "true" or "1", skn);
     }

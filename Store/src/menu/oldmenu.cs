@@ -61,8 +61,7 @@ public static class OldMenu
 
             foreach (int Slot in new[] { 1, 2, 3 })
             {
-                if ((!playerSkinItems.Any(p => p.Value.TryGetValue("slot", out string? slot) && slot == Slot.ToString())) ||
-                    (inventory && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false))))
+                if (!Menu.IsAnyItemExistInPlayerSkins(player, Slot, inventory, playerSkinItems))
                 {
                     continue;
                 }
@@ -106,8 +105,6 @@ public static class OldMenu
                 continue;
             }
 
-            bool isHidden = item.ContainsKey("hide") && item["hide"] == "true";
-
             if (Item.PlayerHas(player, item["type"], item["uniqueid"], false))
             {
                 AddMenuOption(player, menu, (player, option) =>
@@ -116,7 +113,7 @@ public static class OldMenu
                     DisplayItemOption(player, item);
                 }, false, item["name"]);
             }
-            else if (!inventory && !isHidden)
+            else if (!inventory && !item.IsHidden())
             {
                 if (int.Parse(item["price"]) <= 0)
                 {
@@ -124,7 +121,7 @@ public static class OldMenu
                 }
                 else
                 {
-                    AddMenuOption(player, menu, (player, option) => SelectPurchase(player, item, true), true, "menu_store<purchase>", item["name"], item["price"]);
+                    AddMenuOption(player, menu, (player, option) => SelectPurchase(player, item, true), false, "menu_store<purchase>", item["name"], item["price"]);
                 }
             }
         }

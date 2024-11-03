@@ -49,8 +49,15 @@ public static class Menu
 
         if (hotReload)
         {
+            Players.Clear();
+
             foreach (CCSPlayerController pl in Utilities.GetPlayers())
             {
+                if (pl.IsBot)
+                {
+                    continue;
+                }
+
                 Players[pl.Slot] = new WasdMenuPlayer
                 {
                     player = pl,
@@ -119,8 +126,7 @@ public static class Menu
 
             foreach (int Slot in new[] { 1, 2, 3 })
             {
-                if ((!playerSkinItems.Any(p => p.Value.TryGetValue("slot", out string? slot) && slot == Slot.ToString())) ||
-                    (inventory && !playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false))))
+                if (!IsAnyItemExistInPlayerSkins(player, Slot, inventory, playerSkinItems))
                 {
                     continue;
                 }
@@ -166,8 +172,6 @@ public static class Menu
                 continue;
             }
 
-            bool isHidden = item.ContainsKey("hide") && item["hide"] == "true";
-
             if (Item.PlayerHas(player, item["type"], item["uniqueid"], false))
             {
                 AddMenuOption(player, menu, (player, option) =>
@@ -176,7 +180,7 @@ public static class Menu
                     DisplayItemOption(player, item, option);
                 }, item["name"]);
             }
-            else if (!inventory && !isHidden)
+            else if (!inventory && !item.IsHidden())
             {
                 if (int.Parse(item["price"]) <= 0)
                 {
@@ -354,7 +358,7 @@ public static class Menu
 
     public static bool CheckFlag(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!item.TryGetValue("flag", out var flag) || string.IsNullOrWhiteSpace(flag))
+        if (!item.TryGetValue("flag", out string? flag) || string.IsNullOrWhiteSpace(flag))
         {
             return true;
         }
@@ -384,5 +388,15 @@ public static class Menu
         }
 
         return key == player.SteamID.ToString();
+    }
+
+    public static bool IsAnyItemExistInPlayerSkins(CCSPlayerController player, int Slot, bool inventory, Dictionary<string, Dictionary<string, string>> playerSkinItems)
+    {
+        return
+            playerSkinItems.Select(i => i.Value).Any(item =>
+                CheckFlag(player, item) &&
+                (item.IsHidden() && Item.PlayerHas(player, item["type"], item["uniqueid"], false) || !item.IsHidden()) &&
+                item.TryGetValue("slot", out string? slot) && slot == Slot.ToString()) ||
+            (inventory && playerSkinItems.Any(item => Item.PlayerHas(player, item.Value["type"], item.Value["uniqueid"], false)));
     }
 }

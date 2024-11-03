@@ -35,7 +35,7 @@ public static class Event
         Instance.RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
         Instance.RegisterListener<OnClientAuthorized>(OnClientAuthorized);
 
-        Instance.AddTimer(5.0F, () =>
+        Instance.AddTimer(5.0f, () =>
         {
             StartCreditsTimer();
         });
@@ -50,16 +50,11 @@ public static class Event
                 return;
             }
 
-            foreach (CCSPlayerController player in Utilities.GetPlayers())
+            List<CCSPlayerController> players = Utilities.GetPlayers();
+
+            foreach (CCSPlayerController player in players)
             {
-                if (player == null
-                    || !player.IsValid
-                    || player.PlayerPawn == null
-                    || !player.PlayerPawn.IsValid
-                    || player.PlayerPawn.Value == null
-                    || player.UserId == null
-                    || player.IsBot
-                    || player.IsHLTV)
+                if (player.IsBot)
                 {
                     continue;
                 }
@@ -95,11 +90,6 @@ public static class Event
         {
             type.MapStart();
         });
-
-        Instance.AddTimer(5.0F, () =>
-        {
-            GameRules.GlobalGameRules = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!;
-        }, TimerFlags.STOP_ON_MAPCHANGE);
 
         Database.ExecuteAsync("DELETE FROM store_items WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);
 

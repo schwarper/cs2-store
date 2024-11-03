@@ -9,6 +9,11 @@ public interface IStoreApi
 {
     public static readonly PluginCapability<IStoreApi?> Capability = new("store:api");
 
+    public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerPurchaseItem;
+    public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerEquipItem;
+    public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerUnequipItem;
+    public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerSellItem;
+
     public string GetDatabaseString();
     public int GetPlayerCredits(CCSPlayerController player);
     public int SetPlayerCredits(CCSPlayerController player, int credits);

@@ -7,20 +7,32 @@ namespace Store;
 
 public static class GameRules
 {
-    public static CCSGameRules GlobalGameRules { get; set; } = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").First().GameRules!;
+    private static CCSGameRulesProxy? GameRulesProxy;
+    private static readonly ConVar mp_halftime = ConVar.Find("mp_halftime")!;
+    private static readonly ConVar mp_maxrounds = ConVar.Find("mp_maxrounds")!;
 
     public static bool IgnoreWarmUp()
     {
-        return Config.Credits.IgnoreWarmup && GlobalGameRules.WarmupPeriod;
+        if (GameRulesProxy?.IsValid is not true)
+        {
+            GameRulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
+        }
+
+        return Config.Credits.IgnoreWarmup && (GameRulesProxy?.GameRules?.WarmupPeriod ?? false);
     }
 
     public static bool IsPistolRound()
     {
-        bool halftime = ConVar.Find("mp_halftime")!.GetPrimitiveValue<bool>();
-        int maxrounds = ConVar.Find("mp_maxrounds")!.GetPrimitiveValue<int>();
+        if (GameRulesProxy?.IsValid is not true)
+        {
+            GameRulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
+        }
 
-        return GlobalGameRules.TotalRoundsPlayed == 0 ||
-               (halftime && maxrounds / 2 == GlobalGameRules.TotalRoundsPlayed) ||
-               GlobalGameRules.GameRestart;
+        bool halftime = mp_halftime.GetPrimitiveValue<bool>();
+        int maxrounds = mp_maxrounds.GetPrimitiveValue<int>();
+
+        return GameRulesProxy?.GameRules?.TotalRoundsPlayed == 0 ||
+               (halftime && maxrounds / 2 == GameRulesProxy?.GameRules?.TotalRoundsPlayed) ||
+               (GameRulesProxy?.GameRules?.GameRestart ?? false);
     }
 }

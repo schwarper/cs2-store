@@ -10,6 +10,8 @@ namespace Store;
 
 public static class Item
 {
+    public static bool IsHidden(this Dictionary<string, string> item) => item.ContainsKey("hide") && item["hide"] == "true";
+
     public static bool Give(CCSPlayerController player, Dictionary<string, string> item)
     {
         Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item["type"]);
@@ -42,6 +44,8 @@ public static class Item
             };
 
             Instance.GlobalStorePlayerItems.Add(playeritem);
+
+            Store.Api.PlayerEquipItem(player, item);
 
             Server.NextFrame(() =>
             {
@@ -87,7 +91,7 @@ public static class Item
             return false;
         }
 
-        var price = int.Parse(item["price"]);
+        int price = int.Parse(item["price"]);
 
         if (price > 0)
         {
@@ -95,6 +99,8 @@ public static class Item
 
             player.PrintToChatMessage("Purchase Succeeded", item["name"]);
         }
+
+        Store.Api.PlayerPurchaseItem(player, item);
 
         if (type.Equipable)
         {
@@ -113,6 +119,8 @@ public static class Item
             };
 
             Instance.GlobalStorePlayerItems.Add(playeritem);
+
+            Store.Api.PlayerEquipItem(player, item);
 
             Server.NextFrame(() =>
             {
@@ -176,6 +184,8 @@ public static class Item
 
         Instance.GlobalStorePlayerEquipments.Add(playeritem);
 
+        Store.Api.PlayerEquipItem(player, item);
+
         Server.NextFrame(() =>
         {
             Database.SavePlayerEquipment(player, playeritem);
@@ -200,6 +210,8 @@ public static class Item
 
         Instance.GlobalStorePlayerEquipments.RemoveAll(p => p.SteamID == player.SteamID && p.UniqueId == item["uniqueid"]);
 
+        Store.Api.PlayerUnequipItem(player, item);
+
         Server.NextFrame(() =>
         {
             Database.RemovePlayerEquipment(player, item["uniqueid"]);
@@ -222,6 +234,8 @@ public static class Item
         Unequip(player, item, true);
 
         Instance.GlobalStorePlayerItems.Remove(playeritem);
+
+        Store.Api.PlayerSellItem(player, item);
 
         Server.NextFrame(() =>
         {
