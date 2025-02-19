@@ -34,7 +34,7 @@ IgnoreWarmup = true
 [Menu]
 EnableSelling = true
 EnableConfirmMenu = true
-UseWASDMenu = true # If you mark it as false, it will be used as CentreHtmlMenu. 
+MenuType = "worldtext" # wasd | html
 VipFlag = "@css/root" # Individuals in possession of the requisite authorisation shall be entitled to utilise equipable items free of charge. Making this field empty will result in the cancellation of Vip.
 MenuPressSoundYes = ""
 MenuPressSoundNo = ""
