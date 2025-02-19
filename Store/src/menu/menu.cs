@@ -80,12 +80,6 @@ public static class Menu
 
     public static void DisplayStore(CCSPlayerController player, bool inventory)
     {
-        if (!Config.Menu.UseWASDMenu)
-        {
-            OldMenu.DisplayStore(player, inventory);
-            return;
-        }
-
         using (new WithTemporaryCulture(player.GetLanguage()))
         {
             StringBuilder builder = new();

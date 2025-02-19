@@ -52,8 +52,24 @@ public static class Command
         {
             return;
         }
+        switch (Config.Menu.MenuType.ToLower())
+        {
+            case "wasd":
+                Menu.DisplayStore(player, false);
+                break;
 
-        Menu.DisplayStore(player, false);
+            case "html":
+            case "center":
+                OldMenu.DisplayStore(player, false);
+                break;
+
+            case "worldtext":
+            case "screen":
+            case "screenmenu":
+                WorldTextMenu.DisplayStore(player, false);
+                break;
+
+        }
     }
 
     [CommandHelper(minArgs: 0, whoCanExecute: CommandUsage.CLIENT_ONLY)]

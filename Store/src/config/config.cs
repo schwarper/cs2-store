@@ -162,7 +162,7 @@ public static class Config_Config
         {
             EnableSelling = bool.Parse(menuTable["EnableSelling"].ToString()!),
             EnableConfirmMenu = bool.Parse(menuTable["EnableConfirmMenu"].ToString()!),
-            UseWASDMenu = bool.Parse(menuTable["UseWASDMenu"].ToString()!),
+            MenuType = menuTable["MenuType"].ToString()!,
             VipFlag = menuTable["VipFlag"].ToString()!,
             MenuPressSoundYes = menuTable["MenuPressSoundYes"].ToString()!,
             MenuPressSoundNo = menuTable["MenuPressSoundNo"].ToString()!
@@ -244,7 +244,7 @@ public static class Config_Config
     {
         public bool EnableSelling { get; set; } = true;
         public bool EnableConfirmMenu { get; set; } = true;
-        public bool UseWASDMenu { get; set; } = true;
+        public string MenuType { get; set; } = "worldtext";
         public string VipFlag { get; set; } = "@css/root";
         public string MenuPressSoundYes { get; set; } = "";
         public string MenuPressSoundNo { get; set; } = "";
