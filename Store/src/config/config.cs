@@ -11,7 +11,7 @@ namespace Store;
 
 public class Item_Config : BasePluginConfig
 {
-    [JsonPropertyName("ItemsNew")] public JsonElement Items { get; set; } = new();
+    [JsonPropertyName("Items")] public JsonElement Items { get; set; } = new();
 }
 
 public static class Config_Config
