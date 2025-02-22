@@ -83,7 +83,7 @@ public static class Item_GrenadeTrail
                 return;
             }
 
-            Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
+            Dictionary<string, string>? itemdata = Item.GetItem(item.UniqueId);
 
             if (itemdata == null)
             {

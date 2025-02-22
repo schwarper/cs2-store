@@ -2,6 +2,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tomlyn;
 using Tomlyn.Model;
@@ -10,7 +11,7 @@ namespace Store;
 
 public class Item_Config : BasePluginConfig
 {
-    [JsonPropertyName("Items")] public Dictionary<string, Dictionary<string, Dictionary<string, string>>> Items { get; set; } = [];
+    [JsonPropertyName("ItemsNew")] public JsonElement Items { get; set; } = new();
 }
 
 public static class Config_Config

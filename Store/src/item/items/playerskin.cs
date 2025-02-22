@@ -227,7 +227,7 @@ public static class Item_PlayerSkin
 
     private static (string modelname, bool disableleg, string? skin)? GetStoreModel(Store_Equipment item)
     {
-        Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
+        Dictionary<string, string>? itemdata = Item.GetItem(item.UniqueId);
 
         if (itemdata == null)
         {

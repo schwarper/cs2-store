@@ -1,7 +1,8 @@
-using CounterStrikeSharp.API;
+﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
 using StoreApi;
+using System.Text.Json;
 using static StoreApi.Store;
 
 namespace Store;
@@ -23,6 +24,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public Random Random { get; set; } = new();
     public Dictionary<CCSPlayerController, float> GlobalGiftTimeout { get; set; } = [];
     public static StoreAPI Api { get; set; } = new();
+    public Dictionary<string, Dictionary<string, string>> Items { get; set; } = [];
 
     public override void Load(bool hotReload)
     {
@@ -32,7 +34,6 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
 
         Event.Load();
         Command.Load();
-        Menu.SetSettings(hotReload);
 
         Item_Armor.OnPluginStart();
         Item_Bunnyhop.OnPluginStart();
@@ -72,6 +73,45 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     {
         Config_Config.Load();
 
+        if (config.Items.ValueKind != JsonValueKind.Object)
+        {
+            throw new Exception("Menü yüklenemedi. JSON hatalı!");
+        }
+
+        var itemsDictionary = new Dictionary<string, Dictionary<string, string>>();
+
+        foreach (var category in config.Items.EnumerateObject())
+        {
+            ExtractItems(category.Value, itemsDictionary);
+        }
+
+        Items = itemsDictionary;
         Config = config;
+    }
+
+    public static void ExtractItems(JsonElement category, Dictionary<string, Dictionary<string, string>> itemsDictionary)
+    {
+        foreach (var subItem in category.EnumerateObject())
+        {
+            if (subItem.Value.ValueKind == JsonValueKind.Object)
+            {
+                if (subItem.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
+                {
+                    string uniqueId = uniqueIdElement.GetString() ?? $"unknown_{subItem.Name}";
+                    var itemData = new Dictionary<string, string>();
+
+                    foreach (var property in subItem.Value.EnumerateObject())
+                    {
+                        itemData[property.Name] = property.Value.ToString();
+                    }
+
+                    itemsDictionary[uniqueId] = itemData;
+                }
+                else
+                {
+                    ExtractItems(subItem.Value, itemsDictionary);
+                }
+            }
+        }
     }
 }

@@ -75,7 +75,7 @@ public static class Database
                     SteamID BIGINT UNSIGNED NOT NULL,
                     Price INT UNSIGNED NOT NULL,
                     Type varchar(16) NOT NULL,
-                    UniqueId varchar(256) NOT NULL,
+                    uniqueId varchar(256) NOT NULL,
                     DateOfPurchase DATETIME NOT NULL,
                     DateOfExpiration DATETIME NOT NULL,
                     PRIMARY KEY (id)
@@ -86,7 +86,7 @@ public static class Database
                     id INT NOT NULL AUTO_INCREMENT,
                     SteamID BIGINT UNSIGNED NOT NULL,
                     Type varchar(16) NOT NULL,
-                    UniqueId varchar(256) NOT NULL,
+                    uniqueId varchar(256) NOT NULL,
                     Slot INT,
                     PRIMARY KEY (id)
                 );", transaction: transaction);
@@ -96,7 +96,7 @@ public static class Database
                     WHERE NOT EXISTS (
                         SELECT 1 FROM store_items
                         WHERE store_items.Type = {equipTableName}.Type
-                        AND store_items.UniqueId = {equipTableName}.UniqueId
+                        AND store_items.uniqueId = {equipTableName}.uniqueId
                         AND store_items.SteamID = {equipTableName}.SteamID
                     )
                     AND EXISTS (
@@ -325,9 +325,9 @@ public static class Database
     {
         ExecuteAsync(@"
                 INSERT INTO store_items (
-                    SteamID, Price, Type, UniqueId, DateOfPurchase, DateOfExpiration
+                    SteamID, Price, Type, uniqueId, DateOfPurchase, DateOfExpiration
                 ) VALUES (
-                    @SteamID, @Price, @Type, @UniqueId, @DateOfPurchase, @DateOfExpiration
+                    @SteamID, @Price, @Type, @uniqueId, @DateOfPurchase, @DateOfExpiration
                 );
            "
             ,
@@ -348,7 +348,7 @@ public static class Database
                 FROM
                     store_items
                 WHERE
-                    SteamID = @SteamID AND UniqueId = @UniqueId;
+                    SteamID = @SteamID AND uniqueId = @uniqueId;
             "
                 ,
                 new
@@ -361,9 +361,9 @@ public static class Database
     {
         ExecuteAsync(@"
                 INSERT INTO " + Config.DatabaseConnection.DatabaseEquipTableName + @" (
-                    SteamID, Type, UniqueId, Slot
+                    SteamID, Type, uniqueId, Slot
                 ) VALUES (
-                    @SteamID, @Type, @UniqueId, @Slot
+                    @SteamID, @Type, @uniqueId, @Slot
                 );
             "
                 ,
@@ -375,16 +375,16 @@ public static class Database
                     item.Slot
                 });
     }
-    public static void RemovePlayerEquipment(CCSPlayerController player, string UniqueId)
+    public static void RemovePlayerEquipment(CCSPlayerController player, string uniqueId)
     {
         ExecuteAsync(@"
-                    DELETE FROM " + Config.DatabaseConnection.DatabaseEquipTableName + @" WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
+                    DELETE FROM " + Config.DatabaseConnection.DatabaseEquipTableName + @" WHERE SteamID = @SteamID AND uniqueId = @uniqueId;
                 "
             ,
             new
             {
                 player.SteamID,
-                UniqueId
+                uniqueId
             });
     }
 

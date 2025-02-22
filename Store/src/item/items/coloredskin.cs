@@ -48,7 +48,7 @@ public static class Item_ColoredSkin
             return;
         }
 
-        Dictionary<string, string>? itemdata = Item.GetItem(playercoloredskin.Type, playercoloredskin.UniqueId);
+        Dictionary<string, string>? itemdata = Item.GetItem(playercoloredskin.UniqueId);
 
         if (itemdata == null)
         {

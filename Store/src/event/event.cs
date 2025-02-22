@@ -101,7 +101,7 @@ public static class Event
 
         foreach (Store_Item? item in itemsToRemove)
         {
-            Database.ExecuteAsync($"DELETE FROM {store_equipmentTableName} WHERE SteamID == @SteamID AND UniqueId == @UniqueId", new { item.SteamID, item.UniqueId });
+            Database.ExecuteAsync($"DELETE FROM {store_equipmentTableName} WHERE SteamID == @SteamID AND uniqueId == @uniqueId", new { item.SteamID, item.UniqueId });
 
             Instance.GlobalStorePlayerItems.Remove(item);
             Instance.GlobalStorePlayerEquipments.RemoveAll(i => i.UniqueId == item.UniqueId);
@@ -123,9 +123,7 @@ public static class Event
 
     public static void OnTick()
     {
-        Menu.OnTick();
-
-        List<CCSPlayerController> players = Utilities.GetPlayers().Where(p => p.PawnIsAlive).ToList();
+        List<CCSPlayerController> players = [.. Utilities.GetPlayers().Where(p => p.PawnIsAlive)];
 
         foreach (CCSPlayerController? player in players)
         {

@@ -69,7 +69,7 @@ public static class Item_Trail
             return;
         }
 
-        Dictionary<string, string>? itemdata = Item.GetItem(playertrail.Type, playertrail.UniqueId);
+        Dictionary<string, string>? itemdata = Item.GetItem(playertrail.UniqueId);
 
         if (itemdata == null)
         {

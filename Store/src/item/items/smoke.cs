@@ -77,7 +77,7 @@ public static class Item_Smoke
             }
             else
             {
-                Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
+                Dictionary<string, string>? itemdata = Item.GetItem(item.UniqueId);
 
                 if (itemdata == null)
                 {
