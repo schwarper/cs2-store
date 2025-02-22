@@ -11,15 +11,8 @@ namespace Store;
 
 public static class PlayerUtils
 {
-    static public void PrintToChatMessage(this CCSPlayerController player, string message, params object[] args)
-    {
-        using (new WithTemporaryCulture(player.GetLanguage()))
-        {
-            StringBuilder builder = new(Config.Tag);
-            builder.AppendFormat(Instance.Localizer[message], args);
-            player.PrintToChat(builder.ToString());
-        }
-    }
+    static public void PrintToChatMessage(this CCSPlayerController player, string message, params object[] args) =>
+        player.PrintToChat(Config.Tag + Instance.Localizer.ForPlayer(player, message, args));
 
     static public void ChangeModelDelay(this CCSPlayerController player, string model, bool disableleg, int slotNumber, string? skin)
     {

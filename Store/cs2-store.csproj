@@ -32,8 +32,8 @@
 
 	<Target Name="CopyConfigFiles" AfterTargets="Build">
 		<ItemGroup>
-			<FilesToCopy Include="$(ProjectDir)..\config.toml" />
-			<FilesToCopy Include="$(ProjectDir)..\cs2-store.json" />
+			<FilesToCopy Include="$(ProjectDir)..\config-example.toml" />
+			<FilesToCopy Include="$(ProjectDir)..\cs2-store-example.json" />
 		</ItemGroup>
 		<Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(ProjectDir)..\BuildOutput\configs\plugins\cs2-store\" />
 	</Target>

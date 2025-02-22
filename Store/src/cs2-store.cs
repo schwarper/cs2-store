@@ -1,6 +1,7 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
+using CS2ScreenMenuAPI;
 using StoreApi;
 using System.Text.Json;
 using static StoreApi.Store;
@@ -60,6 +61,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
             foreach (CCSPlayerController player in Utilities.GetPlayers())
             {
                 Database.LoadPlayer(player);
+                MenuAPI.CloseActiveMenu(player);
             }
         }
     }
@@ -67,6 +69,11 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public override void Unload(bool hotReload)
     {
         Event.Unload();
+
+        foreach (CCSPlayerController player in Utilities.GetPlayers())
+        {
+            MenuAPI.CloseActiveMenu(player);
+        }
     }
 
     public void OnConfigParsed(Item_Config config)

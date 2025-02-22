@@ -11,6 +11,8 @@
   "No gift yourself": "{white}You cannot gift credits to yourself.",
   "No type found": "{white}No type found.",
   "Gift timeout": "{white}You need to wait {green}{0} seconds {white}to gift.",
+  "No purchase because team": "{white}You cannot purchase this item. You need to be in {red}{0} {white}team.",
+  "No equip because team": "{white}You cannot equip this item. You need to be in {red}{0} {white}team.",
 
   "t team players": "{green}t team {white}players",
   "ct team players": "{green}ct team {white}players",

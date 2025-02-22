@@ -11,6 +11,8 @@
   "No gift yourself": "{white}无法给自己赠送金币.",
   "No type found": "{white}没有找到这个类型,请重新输入.",
   "Gift timeout": "{white}你需要等待 {green}{0} 秒 {white}后才能赠送.",
+  "No purchase because team": "{white}您无法购买此物品。您需要加入{red}{0} {white}队伍。",
+  "No equip because team": "{white}您无法装备此物品。您需要加入{red}{0} {white}队伍。",
 
   "t team players": "{green}T阵营{white}玩家",
   "ct team players": "{green}CT阵营{white}玩家",

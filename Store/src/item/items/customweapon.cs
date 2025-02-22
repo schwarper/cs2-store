@@ -5,6 +5,7 @@ using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Runtime.InteropServices;
 using static Store.Store;
+using static StoreApi.Store;
 
 namespace Store;
 
@@ -111,6 +112,11 @@ public static class Item_CustomWeapon
                 }
 
                 string weaponDesignerName = Weapon.GetDesignerName(weapon);
+
+                if (!weaponDesignerName.Contains(itemdata["weapon"]))
+                {
+                    continue;
+                }
 
                 itemdata.TryGetValue("worldmodel", out string? worldmodel);
                 Weapon.UpdateModel(player, weapon, itemdata["uniqueid"], worldmodel, weapon == activeweapon);

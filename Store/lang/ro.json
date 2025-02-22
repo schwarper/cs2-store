@@ -11,6 +11,8 @@
   "No gift yourself": "{white}Nu poți trimite credite către tine însuți.",
   "No type found": "{white}Nu a fost găsit niciun tip.",
   "Gift timeout": "{white}Trebuie să aștepți {green}{0} secunde {white}pentru a oferi cadoul.",
+  "No purchase because team": "{white}Nu poți achiziționa acest articol. Trebuie să fii în echipa {red}{0} {white}.",
+  "No equip because team": "{white}Nu poți echipa acest articol. Trebuie să fii în echipa {red}{0} {white}.",
 
   "t team players": "{green}jucători echipa T {white}",
   "ct team players": "{green}jucători echipa CT {white}",

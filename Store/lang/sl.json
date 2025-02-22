@@ -11,6 +11,8 @@
   "No gift yourself": "{white}Ne morete darovati kreditov samemu sebi.",
   "No type found": "{white}Samemu sebi ne morete podariti kreditov.",
   "Gift timeout": "{white}Počakati moraš {green}{0} sekund {white}preden lahko podariš darilo.",
+  "No purchase because team": "{white}Te predmete ne morete kupiti. Morate biti v ekipi {red}{0} {white}.",
+  "No equip because team": "{white}Te predmete ne morete opremiti. Morate biti v ekipi {red}{0} {white}.",
 
   "t team players": "{green}Zaporniki",
   "ct team players": "{green}Pazniki",

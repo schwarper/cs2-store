@@ -11,6 +11,8 @@
 	"No gift yourself": "{white}Вы не можете подарить кредиты сами себе.",
 	"No type found": "{white}Тип не найден.",
 	"Gift timeout": "{white}Вам нужно подождать {green}{0} секунд {white}перед тем, как отправить подарок.",
+	"No purchase because team": "{white}Вы не можете купить этот предмет. Вы должны быть в команде {red}{0} {white}.",
+	"No equip because team": "{white}Вы не можете экипировать этот предмет. Вы должны быть в команде {red}{0} {white}.",
 
 	"t team players": "{green}Игроки {white}в команде t team",
 	"ct team players": "{green}Игроки {white}в команде ct team",

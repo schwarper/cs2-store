@@ -45,8 +45,6 @@ public static class Item
 
             Instance.GlobalStorePlayerItems.Add(playeritem);
 
-            Store.Api.PlayerEquipItem(player, item);
-
             Server.NextFrame(() =>
             {
                 Database.SavePlayerItem(player, playeritem);
@@ -86,9 +84,18 @@ public static class Item
             return false;
         }
 
-        if (!type.Equipable && !type.Equip(player, item))
+        if (!type.Equipable)
         {
-            return false;
+            if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && player.TeamNum != team)
+            {
+                player.PrintToChatMessage("No purchase because team", (CsTeam)team);
+                return false;
+            }
+
+            if (!type.Equip(player, item))
+            {
+                return false;
+            }
         }
 
         int price = int.Parse(item["price"]);
@@ -141,6 +148,12 @@ public static class Item
 
         if (type == null)
         {
+            return false;
+        }
+
+        if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && player.TeamNum != team) 
+        {
+            player.PrintToChatMessage("No equip because team", (CsTeam)team);
             return false;
         }
 
@@ -203,12 +216,19 @@ public static class Item
             return false;
         }
 
+        var equippedItem = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.UniqueId == item["uniqueid"]);
+
+        if (equippedItem == null)
+        {
+            return false;
+        }
+
         if (type.Unequip(player, item, update) == false)
         {
             return false;
         }
 
-        Instance.GlobalStorePlayerEquipments.RemoveAll(p => p.SteamID == player.SteamID && p.UniqueId == item["uniqueid"]);
+        Instance.GlobalStorePlayerEquipments.Remove(equippedItem);
 
         Store.Api.PlayerUnequipItem(player, item);
 

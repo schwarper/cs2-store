@@ -33,6 +33,7 @@ public static class Event
         Instance.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
         Instance.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
         Instance.RegisterEventHandler<EventPlayerDeath>(OnPlayerDeath);
+        Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
         Instance.RegisterListener<OnClientAuthorized>(OnClientAuthorized);
 
         Instance.AddTimer(5.0f, () =>
@@ -238,6 +239,38 @@ public static class Event
             Credits.Give(attacker, Config.Credits.AmountKill);
 
             attacker.PrintToChat(Config.Tag + Instance.Localizer["credits_earned<kill>", Config.Credits.AmountKill]);
+        }
+
+        return HookResult.Continue;
+    }
+
+    public static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
+    {
+        var player = @event.Userid;
+
+        if (player == null)
+        {
+            return HookResult.Continue;
+        }
+
+        var currentitems = Instance.GlobalStorePlayerEquipments.FindAll(p => p.SteamID == player.SteamID);
+
+        if (currentitems.Count > 0)
+        {
+            foreach (var currentiteam in currentitems)
+            {
+                var item = Item.GetItem(currentiteam.UniqueId);
+
+                if (item == null)
+                {
+                    continue;
+                }
+
+                if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && @event.Team != team)
+                {
+                    Item.Unequip(player, item, true);
+                }
+            }
         }
 
         return HookResult.Continue;
