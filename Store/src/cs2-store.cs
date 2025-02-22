@@ -75,7 +75,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
 
         if (config.Items.ValueKind != JsonValueKind.Object)
         {
-            throw new Exception("Menü yüklenemedi. JSON hatalı!");
+            throw new JsonException();
         }
 
         var itemsDictionary = new Dictionary<string, Dictionary<string, string>>();
