@@ -5,7 +5,6 @@ using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Runtime.InteropServices;
 using static Store.Store;
-using static StoreApi.Store;
 
 namespace Store;
 

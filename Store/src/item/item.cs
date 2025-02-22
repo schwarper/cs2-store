@@ -151,7 +151,7 @@ public static class Item
             return false;
         }
 
-        if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && player.TeamNum != team) 
+        if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && player.TeamNum != team)
         {
             player.PrintToChatMessage("No equip because team", (CsTeam)team);
             return false;

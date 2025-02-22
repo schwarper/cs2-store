@@ -293,6 +293,7 @@
         "1": {
           "name": "Default AK47",
           "uniqueid": "weapons/models/ak47/weapon_rif_ak47.vmdl",
+          "worldmodel": "",
           "type": "customweapon",
           "weapon": "weapon_ak47",
           "price": "0",
