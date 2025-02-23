@@ -1,7 +1,7 @@
-﻿using static Store.Config_Config;
-using CounterStrikeSharp.API.Core;
-using static StoreApi.Store;
+﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
+using static Store.Config_Config;
+using static StoreApi.Store;
 
 namespace Store;
 

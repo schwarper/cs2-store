@@ -1,6 +1,5 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
-using CounterStrikeSharp.API.Modules.Admin;
 using CS2ScreenMenuAPI;
 using CS2ScreenMenuAPI.Internal;
 using System.Text.Json;
