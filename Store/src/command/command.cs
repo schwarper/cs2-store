@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Entities;
+using CS2ScreenMenuAPI.Internal;
 using static Store.Config_Config;
 using static Store.Store;
 
@@ -46,26 +47,12 @@ public static class Command
     }
 
     [CommandHelper(minArgs: 0, whoCanExecute: CommandUsage.CLIENT_ONLY)]
-    public static void Command_Store(CCSPlayerController? player, CommandInfo command)
-    {
-        if (player == null)
-        {
-            return;
-        }
-
-        Menu.DisplayStore(player, false);
-    }
+    public static void Command_Store(CCSPlayerController? player, CommandInfo command) =>
+        Menu.DisplayStoreMenu(player, false);
 
     [CommandHelper(minArgs: 0, whoCanExecute: CommandUsage.CLIENT_ONLY)]
-    public static void Command_Inv(CCSPlayerController? player, CommandInfo command)
-    {
-        if (player == null)
-        {
-            return;
-        }
-
-        Menu.DisplayStore(player, true);
-    }
+    public static void Command_Inv(CCSPlayerController? player, CommandInfo command) =>
+        Menu.DisplayStoreMenu(player, true);
 
     [CommandHelper(minArgs: 2, "<name, #userid, all @ commands> <credits>", whoCanExecute: CommandUsage.CLIENT_AND_SERVER)]
     [RequiresPermissions("@css/root")]

@@ -288,7 +288,7 @@ public static class Item
 
         item.TryGetValue("flag", out string? flag);
 
-        if (Menu.CheckFlag(player, flag, false))
+        if (ScreenTextMenu.CheckFlag(player, flag, false))
         {
             return true;
         }
