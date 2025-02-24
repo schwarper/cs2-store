@@ -172,7 +172,7 @@ public static class ScreenTextMenu
 
         if (playerItem != null)
         {
-            if (Config.Menu.EnableSelling && !Item.IsPlayerVip(player) && !Menu.CheckFlag(player, item))
+            if (Config.Menu.EnableSelling && !Item.IsPlayerVip(player) && !Menu.CheckFlag(player, item, true))
             {
                 int sellingPrice = Menu.GetSellingPrice(item, playerItem);
 

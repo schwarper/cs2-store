@@ -55,11 +55,11 @@ public static class Menu
         return (int)((usePurchaseCredit ? purchase_price : int.Parse(item["price"])) * sell_ratio);
     }
 
-    public static bool CheckFlag(CCSPlayerController player, Dictionary<string, string> item)
+    public static bool CheckFlag(CCSPlayerController player, Dictionary<string, string> item, bool sell = false)
     {
         item.TryGetValue("flag", out string? flag);
 
-        return CheckFlag(player, flag, true);
+        return CheckFlag(player, flag, !sell);
     }
 
     public static bool CheckFlag(CCSPlayerController player, string? flagAll, bool trueifNull)
