@@ -252,12 +252,12 @@ public static class Item_Trail
         if (exist)
         {
             HideTrailPlayerList.Remove(player);
+            player.PrintToCenterHtml("Hidetrails off");
         }
         else
         {
             HideTrailPlayerList.Add(player);
+            player.PrintToCenterHtml("Hidetrails on");
         }
-
-        player.PrintToChat($"Trailler " + (exist ? "görünüyor" : "görünmüyor"));
     }
 }

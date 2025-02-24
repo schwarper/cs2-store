@@ -19,7 +19,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public List<Store_Item> GlobalStorePlayerItems { get; set; } = [];
     public List<Store_Equipment> GlobalStorePlayerEquipments { get; set; } = [];
     public List<Store_Item_Types> GlobalStoreItemTypes { get; set; } = [];
-    public Dictionary<CCSPlayerController, Player> GlobalDictionaryPlayer { get; set; } = [];
+    public Dictionary<CCSPlayerController, PlayerTimer> GlobalDictionaryPlayer { get; set; } = [];
     public int GlobalTickrate { get; set; } = 0;
     public static Store Instance { get; set; } = new();
     public Random Random { get; set; } = new();
@@ -71,9 +71,14 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     {
         Event.Unload();
 
-        foreach (CCSPlayerController player in Utilities.GetPlayers())
+        HashSet<string> ScreenMenuNames = ["worldtext", "screen", "screenmenu"];
+
+        if (ScreenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
         {
-            MenuAPI.CloseActiveMenu(player);
+            foreach (CCSPlayerController player in Utilities.GetPlayers())
+            {
+                MenuAPI.CloseActiveMenu(player);
+            }
         }
     }
 

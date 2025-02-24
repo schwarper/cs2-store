@@ -7,7 +7,6 @@ using static CounterStrikeSharp.API.Core.Listeners;
 using static Store.Config_Config;
 using static Store.Store;
 using static StoreApi.Store;
-using Player = StoreApi.Store.Player;
 
 namespace Store;
 
@@ -177,7 +176,7 @@ public static class Event
 
         if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, value: out _))
         {
-            Player value = new();
+            PlayerTimer value = new();
             Instance.GlobalDictionaryPlayer.Add(player, value);
         }
 
@@ -199,7 +198,7 @@ public static class Event
 
         Item_Trail.HideTrailPlayerList.Remove(player);
 
-        if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
+        if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out PlayerTimer? value))
         {
             return HookResult.Continue;
         }
