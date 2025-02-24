@@ -142,6 +142,7 @@ public static class Item_PlayerSkin
 
     public static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
+        Instance.InspectList.Clear();
         ForceModelDefault = false;
         return HookResult.Continue;
     }
