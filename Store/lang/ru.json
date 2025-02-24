@@ -68,6 +68,7 @@
 	"menu_store<yes>": "Да",
 	"menu_store<no>": "Нет",
 	"menu_store<confirm_item>": "{0} - {1} креди",
+	"menu_store<inspect>": "Проверить",
 
 	"css_credits": "{white}У вас {green}{0} {white}кредитов.",
 	"css_givecredits<player>": "{blue}{0} {white}передал {green}{2} кредитов {white}{green}{1}{white}.",

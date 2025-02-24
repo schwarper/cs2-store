@@ -68,6 +68,7 @@
   "menu_store<yes>": "Evet",
   "menu_store<no>": "Hayır",
   "menu_store<confirm_item>": "{0} - {1} kredi",
+  "menu_store<inspect>": "İncele",
 
   "css_credits": "{green}{0} {white}kredin bulunmaktadır.",
   "css_givecredits<player>": "{blue}{0}{white}, {green}{1} {white}adlı oyuncuya {green}{2} kredi {white}verdi.",

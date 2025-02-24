@@ -1,4 +1,5 @@
-﻿using CounterStrikeSharp.API.Core;
+﻿using CounterStrikeSharp.API;
+using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CS2ScreenMenuAPI;
 using CS2ScreenMenuAPI.Internal;
@@ -119,7 +120,7 @@ public static class ScreenTextMenu
             {
                 if (item["price"] == "0")
                 {
-                    Api.PlayerPurchaseItem(player, item);
+                    Store.Api.PlayerPurchaseItem(player, item);
                     player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                     player.PrintToChatMessage("Purchase Succeeded", item["name"]);
                 }
@@ -206,6 +207,25 @@ public static class ScreenTextMenu
         };
 
         menu.AddMenuOption(player, (p, o) => { }, true, "menu_store<confirm_item>", item["name"], item["price"]);
+
+        if (item["type"] == "playerskin")
+        {
+            float waitTime = 0.0f;
+
+            menu.AddMenuOption(player, (p, o) =>
+            {
+                var currentTime = Server.CurrentTime;
+
+                if (waitTime - currentTime > 0)
+                {
+                    return;
+                }
+
+                waitTime = currentTime + 3.0f;
+
+                Item_PlayerSkin.InspectPlayerSkin(player, item["uniqueid"]);
+            }, false, "menu_store<inspect>");
+        }
 
         menu.AddMenuOption(player, (p, o) =>
         {

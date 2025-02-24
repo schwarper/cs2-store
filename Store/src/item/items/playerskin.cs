@@ -238,4 +238,74 @@ public static class Item_PlayerSkin
 
         return (item.UniqueId, itemdata["disable_leg"] is "true" or "1", skn);
     }
+
+    public static void InspectPlayerSkin(CCSPlayerController player, string model)
+    {
+        CBaseModelEntity? entity = Utilities.CreateEntityByName<CBaseModelEntity>("prop_dynamic");
+
+        if (entity?.IsValid is not true)
+        {
+            return;
+        }
+
+        if (player.PlayerPawn.Value is not CCSPlayerPawn playerPawn)
+        {
+            return;
+        }
+
+        var _origin = GetFrontPosition(playerPawn.AbsOrigin!, playerPawn.EyeAngles);
+        QAngle modelAngles = new(0, playerPawn.EyeAngles.Y + 180, 0);
+
+        entity.Spawnflags = 256u;
+        entity.Collision.SolidType = SolidType_t.SOLID_VPHYSICS;
+        entity.Teleport(_origin, modelAngles, playerPawn.AbsVelocity);
+        entity.DispatchSpawn();
+
+        Server.NextFrame(() =>
+        {
+            if (entity?.IsValid is not true)
+            {
+                return;
+            }
+
+            entity.SetModel(model);
+        });
+
+        Instance.InspectList[entity] = player;
+        Instance.AddTimer(0.5f, () => RotateEntity(player, entity, 0.0f));
+    }
+
+    public static void RotateEntity(CCSPlayerController player, CBaseModelEntity entity, float elapsed)
+    {
+        if (entity?.IsValid is not true)
+        {
+            return;
+        }
+
+        float totalTime = 3.0f;
+        float rotationStep = 120.0f;
+        float interval = 1.0f;
+
+        QAngle currentAngles = entity.AbsRotation!;
+        entity.Teleport(null, new QAngle(currentAngles.X, currentAngles.Y + rotationStep, currentAngles.Z), null);
+
+        if (elapsed < totalTime)
+        {
+            Instance.AddTimer(interval, () => RotateEntity(player, entity, elapsed + interval));
+        }
+        else
+        {
+            Instance.InspectList.Remove(entity);
+            entity.Remove();
+        }
+    }
+
+    public static Vector GetFrontPosition(Vector position, QAngle angles, float distance = 100.0f)
+    {
+        float radYaw = angles.Y * (MathF.PI / 180.0f);
+
+        Vector forward = new Vector(MathF.Cos(radYaw), MathF.Sin(radYaw), 0) * distance;
+
+        return position + forward;
+    }
 }

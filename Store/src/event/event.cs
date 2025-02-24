@@ -20,6 +20,7 @@ public static class Event
         Instance.RemoveListener<OnTick>(OnTick);
         Instance.RemoveListener<OnEntityCreated>(OnEntityCreated);
         Instance.RemoveListener<OnClientAuthorized>(OnClientAuthorized);
+        Instance.RemoveListener<CheckTransmit>(OnCheckTransmit);
     }
 
     public static void Load()
@@ -28,7 +29,7 @@ public static class Event
         Instance.RegisterListener<OnServerPrecacheResources>(OnServerPrecacheResources);
         Instance.RegisterListener<OnTick>(OnTick);
         Instance.RegisterListener<OnEntityCreated>(OnEntityCreated);
-
+        Instance.RegisterListener<CheckTransmit>(OnCheckTransmit);
 
         Instance.RegisterEventHandler<EventPlayerConnectFull>(OnPlayerConnectFull);
         Instance.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
@@ -275,4 +276,29 @@ public static class Event
 
         return HookResult.Continue;
     }
+
+    public static void OnCheckTransmit(CCheckTransmitInfoList infoList)
+    {
+        if (Instance.InspectList.Count == 0)
+        {
+            return;
+        }
+
+        foreach ((CCheckTransmitInfo info, CCSPlayerController? player) in infoList)
+        {
+            if (player == null)
+            {
+                continue;
+            }
+
+            foreach (var (entity, owner) in Instance.InspectList)
+            {
+                if (!ReferenceEquals(owner, player))
+                {
+                    info.TransmitEntities.Remove(entity);
+                }
+            }
+        }
+    }
+
 }

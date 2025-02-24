@@ -68,6 +68,7 @@
   "menu_store<yes>": "Oui",
   "menu_store<no>": "Non,",
   "menu_store<confirm_item>": "{0} - {1} crédits",
+  "menu_store<inspect>": "Inspecter",
 
   "css_credits": "{white}Vous avez {green}{0} {white}crédits.",
   "css_givecredits<player>": "{blue}{0} {white}a donné {green}{2} crédits {white}à {green}{1}{white}.",

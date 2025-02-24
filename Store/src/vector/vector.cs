@@ -33,4 +33,37 @@ public static class Vec
     {
         return vector.LengthSqr() == 0;
     }
+
+    public static Vector Clone(this Vector vector)
+    {
+        var vec = new Vector
+        {
+            X = vector.X,
+            Y = vector.Y,
+            Z = vector.Z
+        };
+        return vec;
+    }
+
+    public static QAngle Clone(this QAngle angles)
+    {
+        var ang = new QAngle
+        {
+            X = angles.X,
+            Y = angles.Y,
+            Z = angles.Z
+        };
+        return ang;
+    }
+
+    public static QAngle Turn180(this QAngle angles)
+    {
+        var ang = new QAngle
+        {
+            X = angles.X,
+            Y = angles.Y / 180,
+            Z = angles.Z
+        };
+        return ang;
+    }
 }

@@ -26,6 +26,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public Dictionary<CCSPlayerController, float> GlobalGiftTimeout { get; set; } = [];
     public static StoreAPI Api { get; set; } = new();
     public Dictionary<string, Dictionary<string, string>> Items { get; set; } = [];
+    public Dictionary<CBaseModelEntity, CCSPlayerController> InspectList { get; set; } = [];
 
     public override void Load(bool hotReload)
     {
