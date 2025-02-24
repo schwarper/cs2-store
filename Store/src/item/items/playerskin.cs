@@ -273,7 +273,7 @@ public static class Item_PlayerSkin
         });
 
         Instance.InspectList[entity] = player;
-        Instance.AddTimer(0.5f, () => RotateEntity(player, entity, 0.0f));
+        Instance.AddTimer(1.0f, () => RotateEntity(player, entity, 0.0f));
     }
 
     public static void RotateEntity(CCSPlayerController player, CBaseModelEntity entity, float elapsed)
@@ -283,8 +283,8 @@ public static class Item_PlayerSkin
             return;
         }
 
-        float totalTime = 3.0f;
-        float rotationStep = 120.0f;
+        float totalTime = 4.0f;
+        float rotationStep = 100.0f;
         float interval = 1.0f;
 
         QAngle currentAngles = entity.AbsRotation!;

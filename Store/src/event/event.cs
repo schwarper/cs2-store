@@ -293,12 +293,11 @@ public static class Event
 
             foreach (var (entity, owner) in Instance.InspectList)
             {
-                if (!ReferenceEquals(owner, player))
+                if (player.SteamID != owner.SteamID)
                 {
                     info.TransmitEntities.Remove(entity);
                 }
             }
         }
     }
-
 }
