@@ -148,7 +148,6 @@ public static class Item
 
         if (type == null)
         {
-            Server.PrintToChatAll($"EQUIP TYPE NULL");
             return false;
         }
 
@@ -180,7 +179,6 @@ public static class Item
 
         if (type.Equip(player, item) == false)
         {
-            Server.PrintToChatAll($"NO EQUIP");
             return false;
         }
 
