@@ -1,8 +1,10 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
 using System.Drawing;
 using System.Globalization;
+using static Store.Config_Config;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -12,6 +14,8 @@ public static class Item_Trail
 {
     private static readonly Vector[] GlobalTrailLastOrigin = new Vector[64];
     private static readonly Vector[] GlobalTrailEndOrigin = new Vector[64];
+    public static HashSet<CCSPlayerController> HideTrailPlayerList { get; set; } = [];
+    public static readonly Dictionary<CEntityInstance, CCSPlayerController> TrailList = [];
     private static bool trailExists = false;
 
     public static void OnPluginStart()
@@ -26,6 +30,11 @@ public static class Item_Trail
             {
                 GlobalTrailLastOrigin[i] = new();
                 GlobalTrailEndOrigin[i] = new();
+            }
+
+            foreach (string command in Config.Commands.HideTrails)
+            {
+                Instance.AddCommand(command, "Hide trails", Command_HideTrails);
             }
         }
     }
@@ -69,7 +78,7 @@ public static class Item_Trail
             return;
         }
 
-        Dictionary<string, string>? itemdata = Item.GetItem(playertrail.Type, playertrail.UniqueId);
+        Dictionary<string, string>? itemdata = Item.GetItem(playertrail.UniqueId);
 
         if (itemdata == null)
         {
@@ -160,12 +169,16 @@ public static class Item_Trail
         entity.AcceptInput(acceptinputvalue!);
         entity.AcceptInput("FollowEntity", player.PlayerPawn?.Value!, player.PlayerPawn?.Value!, "!activator");
 
+        TrailList[entity] = player;
+
         Instance.AddTimer(lifetime, () =>
         {
-            if (entity != null && entity.IsValid)
+            if (entity.IsValid)
             {
                 entity.Remove();
             }
+
+            TrailList.Remove(entity);
         });
     }
 
@@ -214,12 +227,37 @@ public static class Item_Trail
 
         Utilities.SetStateChanged(beam, "CBeam", "m_vecEndPos");
 
+        TrailList[beam] = player;
+
         Instance.AddTimer(lifetime, () =>
         {
-            if (beam != null && beam.DesignerName == "env_beam")
+            if (beam.IsValid)
             {
                 beam.Remove();
             }
+
+            TrailList.Remove(beam);
         });
+    }
+
+    public static void Command_HideTrails(CCSPlayerController? player, CommandInfo info)
+    {
+        if (player == null)
+        {
+            return;
+        }
+
+        bool exist = HideTrailPlayerList.Contains(player);
+
+        if (exist)
+        {
+            HideTrailPlayerList.Remove(player);
+            player.PrintToCenterHtml("Hidetrails off");
+        }
+        else
+        {
+            HideTrailPlayerList.Add(player);
+            player.PrintToCenterHtml("Hidetrails on");
+        }
     }
 }

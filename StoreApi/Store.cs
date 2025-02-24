@@ -45,7 +45,7 @@ public abstract class Store
         public required bool Equipable;
         public bool? Alive;
     }
-    public class Player
+    public class PlayerTimer
     {
         public Timer? CreditIntervalTimer { get; set; }
     }

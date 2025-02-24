@@ -1,131 +1,149 @@
 {
-  "TagPrefix": "{red}[Store] ",
-  "Database": {
-    "Host": "",
-    "Port": 3306,
-    "User": "",
-    "Password": "",
-    "Name": ""
-  },
-  "Commands": {
-    "Credits": [
-      "credits",
-      "tl"
-    ],
-    "Store": [
-      "store",
-      "shop",
-      "market"
-    ],
-    "Inventory": [
-      "inv",
-      "inventory"
-    ],
-    "GiveCredits": [
-      "givecredits"
-    ],
-    "Gift": [
-      "gift"
-    ],
-    "ResetPlayer": [
-      "resetplayer"
-    ],
-    "ResetDatabase": [
-      "resetdatabase"
-    ]
-  },
-  "DefaultModels": {
-    "CT": [
-      "characters/models/ctm_fbi/ctm_fbi_variantb.vmdl"
-    ],
-    "T": [
-      "characters/models/tm_leet/tm_leet_variantj.vmdl"
-    ]
-  },
-  "Credits": {
-    "Start": 0,
-    "IntervalActiveInActive": 60,
-    "AmountActive": 10,
-    "AmountInActive": 1,
-    "AmountKill": 1,
-    "IgnoreWarmup": true
-  },
-  "Menu": {
-    "EnableSelling": true,
-    "EnableConfirmMenu": true,
-    "UseWASDMenu": true,
-    "VipFlag": "@css/root",
-    "MenuPressSoundYes": "",
-    "MenuPressSoundNo": ""
-  },
-  "Settings": {
-    "MaxHealth": 0,
-    "MaxArmor": 0,
-    "SellRatio": 0.6,
-    "ApplyPlayerskinDelay": 0.6,
-    "SellUsePurchaseCredit": false,
-    "DefaultModelDisableLeg": false,
-    "DatabaseEquipTableName": "store_equipments",
-    "Model0Model1Flag": "@css/root"
-  },
   "Items": {
-    "playerskins": {
-      "1": {
-        "name": "Fernandez Frogman",
-        "uniqueid": "characters/models/ctm_diver/ctm_diver_variantb.vmdl",
-        "armModel": "",
-        "type": "playerskin",
-        "price": "0",
-        "slot": "1",
-        "disable_leg": "false",
-        "expiration": "0",
-        "hide": "false",
-        "enable": "true"
+    "Player Skins": {
+      "CT Skins": {
+        "1": {
+          "name": "Operator",
+          "uniqueid": "characters/models/ctm_fbi/ctm_fbi_variantf.vmdl",
+          "armModel": "",
+          "type": "playerskin",
+          "price": "1000",
+          "slot": "3",
+          "disable_leg": "false",
+          "expiration": "86400",
+          "hide": "false",
+          "enable": "true"
+        }
       },
-      "2": {
-        "name": "Number K",
-        "uniqueid": "characters/models/tm_professional/tm_professional_vari.vmdl",
-        "armModel": "",
-        "type": "playerskin",
-        "price": "0",
-        "slot": "2",
-        "disable_leg": "false",
-        "expiration": "0",
-        "hide": "false",
-        "enable": "true"
+      "Admin Skins": {
+        "flag": "@css/ban,@css/unban,76561199165718810",
+        "1": {
+          "name": "Fernandez Frogman [CT]",
+          "uniqueid": "characters/models/ctm_diver/ctm_diver_variantb.vmdl",
+          "armModel": "",
+          "type": "playerskin",
+          "price": "1000",
+          "slot": "3",
+          "team": "3",
+          "disable_leg": "false",
+          "expiration": "0",
+          "hide": "false",
+          "enable": "true"
+        },
+        "2": {
+          "name": "Lieutenant Rex Krikey [ROOT-T]",
+          "uniqueid": "characters/models/ctm_diver/ctm_diver_variantc.vmdl",
+          "armModel": "",
+          "type": "playerskin",
+          "price": "1000",
+          "slot": "2",
+          "flag": "@css/root,76561199165718810",
+          "disable_leg": "false",
+          "expiration": "0",
+          "hide": "false",
+          "enable": "true"
+        }
       },
-      "3": {
-        "name": "Operator",
-        "uniqueid": "characters/models/ctm_fbi/ctm_fbi_variantf.vmdl",
-        "armModel": "",
-        "type": "playerskin",
-        "price": "0",
-        "slot": "3",
-        "disable_leg": "false",
-        "expiration": "86400",
-        "hide": "false",
-        "enable": "true"
+      "Free Skins": {
+        "1": {
+          "name": "Number K [T-CT]",
+          "uniqueid": "characters/models/tm_professional/tm_professional_vari.vmdl",
+          "armModel": "",
+          "type": "playerskin",
+          "price": "0",
+          "slot": "1",
+          "disable_leg": "false",
+          "expiration": "0",
+          "hide": "false",
+          "enable": "true"
+        }
       }
     },
-    "weapons": {
+    "Buy Weapon": {
       "1": {
         "name": "AK47",
         "uniqueid": "weapon_ak47",
         "type": "weapon",
-        "price": "0",
+        "price": "1000",
         "no_pistol_round": "true",
         "enable": "true"
       },
       "2": {
-        "name": "Deagle",
+        "name": "Deagle [T]",
         "uniqueid": "weapon_deagle",
         "type": "weapon",
-        "price": "0",
+        "price": "1000",
+        "team": "2",
+        "no_pistol_round": "true",
+        "enable": "true"
+      },
+      "3": {
+        "name": "Deagle [CT]",
+        "uniqueid": "weapon_deagle",
+        "type": "weapon",
+        "price": "1000",
+        "team": "3",
         "no_pistol_round": "false",
         "enable": "true"
       }
     },
-    "features": {
+    "Features": {
+      "Gravity": {
+        "1": {
+          "name": "0.1",
+          "uniqueid": "gravity0.1",
+          "type": "gravity",
+          "price": "1",
+          "gravityValue": "0.1",
+          "enable": "true"
+        },
+        "2": {
+          "name": "0.2",
+          "uniqueid": "gravity0.2",
+          "type": "gravity",
+          "price": "0",
+          "gravityValue": "0.2",
+          "enable": "true"
+        }
+      },
+      "Speed": {
+        "1": {
+          "name": "1.1f Speed 1 Round",
+          "uniqueid": "speed10",
+          "type": "speed",
+          "price": "0",
+          "speedValue": "1.1",
+          "speedTimerValue": "0",
+          "enable": "true"
+        },
+        "2": {
+          "name": "5 Sec 1.1f Speed",
+          "uniqueid": "speed51.1",
+          "type": "speed",
+          "price": "0",
+          "speedValue": "1.1",
+          "speedTimerValue": "5",
+          "enable": "true"
+        }
+      },
+      "Godmode": {
+        "1": {
+          "name": "5 Sec",
+          "uniqueid": "god5",
+          "type": "godmode",
+          "price": "0",
+          "godmodeTimerValue": "5",
+          "enable": "true"
+        },
+        "2": {
+          "name": "10 Sec",
+          "uniqueid": "god10",
+          "type": "godmode",
+          "price": "0",
+          "godmodeTimerValue": "10",
+          "enable": "true"
+        }
+      },
       "1": {
         "name": "Respawn",
         "uniqueid": "respawn",
@@ -137,7 +155,7 @@
         "name": "50 HP",
         "uniqueid": "health50",
         "type": "health",
-        "price": "0",
+        "price": "1000",
         "healthValue": "50",
         "enable": "true"
       },
@@ -145,7 +163,7 @@
         "name": "10 Armor",
         "uniqueid": "armor10",
         "type": "armor",
-        "price": "0",
+        "price": "1000",
         "armorValue": "10",
         "enable": "true"
       },
@@ -153,82 +171,26 @@
         "name": "Open Doors",
         "uniqueid": "open",
         "type": "open",
-        "price": "0",
+        "price": "1000",
         "enable": "true"
       },
       "5": {
         "name": "Sound",
         "uniqueid": "sounds/ambient/ambience/rainscapes/thunder_close01.vsnd_c",
         "type": "sound",
-        "price": "0",
+        "price": "1000",
         "enable": "true"
       },
       "6": {
         "name": "Bunnyhop",
         "uniqueid": "bunnyhop",
         "type": "bunnyhop",
-        "price": "0",
+        "price": "1000",
         "maxSpeed": "320.0",
         "enable": "true"
       }
     },
-    "gravity": {
-      "1": {
-        "name": "0.1",
-        "uniqueid": "gravity0.1",
-        "type": "gravity",
-        "price": "0",
-        "gravityValue": "0.1",
-        "enable": "true"
-      },
-      "2": {
-        "name": "0.2",
-        "uniqueid": "gravity0.2",
-        "type": "gravity",
-        "price": "0",
-        "gravityValue": "0.2",
-        "enable": "true"
-      }
-    },
-    "speed": {
-      "1": {
-        "name": "1.1f Speed 1 Round",
-        "uniqueid": "speed10",
-        "type": "speed",
-        "price": "0",
-        "speedValue": "1.1",
-        "speedTimerValue": "0",
-        "enable": "true"
-      },
-      "2": {
-        "name": "5 Sec 1.1f Speed",
-        "uniqueid": "speed51.1",
-        "type": "speed",
-        "price": "0",
-        "speedValue": "1.1",
-        "speedTimerValue": "5",
-        "enable": "true"
-      }
-    },
-    "godmode": {
-      "1": {
-        "name": "5 Sec",
-        "uniqueid": "god5",
-        "type": "godmode",
-        "price": "0",
-        "godmodeTimerValue": "5",
-        "enable": "true"
-      },
-      "2": {
-        "name": "10 Sec",
-        "uniqueid": "god10",
-        "type": "godmode",
-        "price": "0",
-        "godmodeTimerValue": "10",
-        "enable": "true"
-      }
-    },
-    "smoke": {
+    "Smoke": {
       "1": {
         "name": "Random",
         "uniqueid": "colorsmoke",
@@ -247,42 +209,55 @@
         "enable": "true"
       }
     },
-    "trail": {
-      "1": {
-        "name": "Energycirc Trail",
-        "uniqueid": "particles/ui/status_levels/ui_status_level_8_energycirc.vpcf",
-        "type": "trail",
-        "price": "0",
-        "slot": "1",
-        "lifetime": "1.3",
-        "acceptInputValue": "Start",
-        "angleValue": "90 0 0",
-        "enable": "true"
+    "Trail": {
+      "Player Trail": {
+        "1": {
+          "name": "Energycirc Trail",
+          "uniqueid": "particles/ui/status_levels/ui_status_level_8_energycirc.vpcf",
+          "type": "trail",
+          "price": "0",
+          "slot": "1",
+          "lifetime": "1.3",
+          "acceptInputValue": "Start",
+          "angleValue": "90 0 0",
+          "enable": "true"
+        },
+        "2": {
+          "name": "Random color trail",
+          "uniqueid": "trailrandomcolor",
+          "type": "trail",
+          "price": "0",
+          "slot": "1",
+          "lifetime": "1.3",
+          "widthValue": "1.0",
+          "color": "",
+          "enable": "true"
+        },
+        "3": {
+          "name": "Green color trail",
+          "uniqueid": "trailgreencolor",
+          "type": "trail",
+          "price": "0",
+          "slot": "1",
+          "lifetime": "1.3",
+          "widthValue": "1.0",
+          "color": "0 255 0",
+          "enable": "true"
+        }
       },
-      "2": {
-        "name": "Random color trail",
-        "uniqueid": "trailrandomcolor",
-        "type": "trail",
-        "price": "0",
-        "slot": "1",
-        "lifetime": "1.3",
-        "widthValue": "1.0",
-        "color": "",
-        "enable": "true"
-      },
-      "3": {
-        "name": "Green color trail",
-        "uniqueid": "trailgreencolor",
-        "type": "trail",
-        "price": "0",
-        "slot": "1",
-        "lifetime": "1.3",
-        "widthValue": "1.0",
-        "color": "0 255 0",
-        "enable": "true"
+      "Grenade Trail": {
+        "1": {
+          "name": "Molotov effect",
+          "uniqueid": "particles/inferno_fx/molotov_fire01.vpcf",
+          "type": "grenadetrail",
+          "price": "0",
+          "slot": "1",
+          "acceptInputValue": "Start",
+          "enable": "true"
+        }
       }
     },
-    "tracer": {
+    "Tracer": {
       "1": {
         "name": "Energycirc Tracer",
         "uniqueid": "particles/ui/status_levels/ui_status_level_8_energycirc.vpcf",
@@ -294,18 +269,7 @@
         "enable": "true"
       }
     },
-    "grenadetrail": {
-      "1": {
-        "name": "Molotov effect",
-        "uniqueid": "particles/inferno_fx/molotov_fire01.vpcf",
-        "type": "grenadetrail",
-        "price": "0",
-        "slot": "1",
-        "acceptInputValue": "Start",
-        "enable": "true"
-      }
-    },
-    "coloredskins": {
+    "Colored Skin": {
       "1": {
         "name": "Random coloredskin",
         "uniqueid": "coloredskin_random",
@@ -324,46 +288,19 @@
         "enable": "true"
       }
     },
-    "scoretag": {
-      "1": {
-        "name": "Test",
-        "uniqueid": "scoretag_test",
-        "type": "scoretag",
-        "price": "0",
-        "slot": "1",
-        "scoretag": "Test"
-      }
-    },
-    "chattag": {
-      "1": {
-        "name": "Test",
-        "uniqueid": "chattag_test",
-        "type": "chattag",
-        "price": "0",
-        "slot": "1",
-        "chattag": "Test"
-      }
-    },
-    "chatcolor": {
-      "1": {
-        "name": "Red",
-        "uniqueid": "chatcolor_red",
-        "type": "chatcolor",
-        "price": "0",
-        "slot": "1",
-        "chatcolor": "{red}"
-      }
-    },
-    "namecolor": {
-      "1": {
-        "name": "Red",
-        "uniqueid": "namecolor_red",
-        "type": "namecolor",
-        "price": "0",
-        "slot": "1",
-        "chatcolor": "{red}"
+    "Custom Weapon": {
+      "AK47": {
+        "1": {
+          "name": "Default AK47",
+          "uniqueid": "weapons/models/ak47/weapon_rif_ak47.vmdl",
+          "worldmodel": "",
+          "type": "customweapon",
+          "weapon": "weapon_ak47",
+          "price": "0",
+          "slot": "1",
+          "enable": "true"
+        }
       }
     }
-  },
-  "ConfigVersion": 1
+  }
 }

@@ -17,6 +17,9 @@ GiveCredits = [ "givecredits" ]
 Gift = [ "gift" ]
 ResetPlayer = [ "resetplayer" ]
 ResetDatabase = [ "resetdatabase" ]
+HideTrails = [ "hidetrails" ]
+PlayerSkinsOff = [ "model0", "modeloff" ]
+PlayerSkinsOn = [ "model1", "modelon" ]
 
 # Should you not wish to utilise the default model, you are free to leave the list blank.
 [DefaultModels]

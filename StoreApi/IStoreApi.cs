@@ -27,9 +27,9 @@ public interface IStoreApi
     public bool Item_Sell(CCSPlayerController player, Dictionary<string, string> item);
     public bool Item_PlayerHas(CCSPlayerController player, string type, string uniqueId, bool ignoreVip);
     public bool Item_PlayerUsing(CCSPlayerController player, string type, string uniqueId);
-    public bool Item_IsInJson(string type, string uniqueId);
+    public bool Item_IsInJson(string uniqueId);
     public bool IsPlayerVip(CCSPlayerController player);
-    public Dictionary<string, string>? GetItem(string type, string uniqueId);
+    public Dictionary<string, string>? GetItem(string uniqueId);
     public List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type);
     public List<Store_Item> GetPlayerItems(CCSPlayerController player);
     public List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player);

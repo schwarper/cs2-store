@@ -46,42 +46,12 @@ public static class Command
     }
 
     [CommandHelper(minArgs: 0, whoCanExecute: CommandUsage.CLIENT_ONLY)]
-    public static void Command_Store(CCSPlayerController? player, CommandInfo command)
-    {
-        if (player == null)
-        {
-            return;
-        }
-        switch (Config.Menu.MenuType.ToLower())
-        {
-            case "wasd":
-                Menu.DisplayStore(player, false);
-                break;
-
-            case "html":
-            case "center":
-                OldMenu.DisplayStore(player, false);
-                break;
-
-            case "worldtext":
-            case "screen":
-            case "screenmenu":
-                WorldTextMenu.DisplayStore(player, false);
-                break;
-
-        }
-    }
+    public static void Command_Store(CCSPlayerController? player, CommandInfo command) =>
+        Menu.DisplayStoreMenu(player, false);
 
     [CommandHelper(minArgs: 0, whoCanExecute: CommandUsage.CLIENT_ONLY)]
-    public static void Command_Inv(CCSPlayerController? player, CommandInfo command)
-    {
-        if (player == null)
-        {
-            return;
-        }
-
-        Menu.DisplayStore(player, true);
-    }
+    public static void Command_Inv(CCSPlayerController? player, CommandInfo command) =>
+        Menu.DisplayStoreMenu(player, true);
 
     [CommandHelper(minArgs: 2, "<name, #userid, all @ commands> <credits>", whoCanExecute: CommandUsage.CLIENT_AND_SERVER)]
     [RequiresPermissions("@css/root")]

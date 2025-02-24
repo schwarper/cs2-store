@@ -54,7 +54,7 @@ public static class Item_Tracer
             return HookResult.Continue;
         }
 
-        Dictionary<string, string>? itemdata = Item.GetItem(playertracer.Type, playertracer.UniqueId);
+        Dictionary<string, string>? itemdata = Item.GetItem(playertracer.UniqueId);
 
         if (itemdata == null)
         {

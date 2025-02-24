@@ -87,19 +87,19 @@ public class StoreAPI : IStoreApi
         return Item.Sell(player, item);
     }
 
-    public bool Item_PlayerHas(CCSPlayerController player, string type, string UniqueId, bool ignoreVip)
+    public bool Item_PlayerHas(CCSPlayerController player, string type, string uniqueId, bool ignoreVip)
     {
-        return Item.PlayerHas(player, type, UniqueId, ignoreVip);
+        return Item.PlayerHas(player, type, uniqueId, ignoreVip);
     }
 
-    public bool Item_PlayerUsing(CCSPlayerController player, string type, string UniqueId)
+    public bool Item_PlayerUsing(CCSPlayerController player, string type, string uniqueId)
     {
-        return Item.PlayerUsing(player, type, UniqueId);
+        return Item.PlayerUsing(player, type, uniqueId);
     }
 
-    public bool Item_IsInJson(string type, string UniqueId)
+    public bool Item_IsInJson(string uniqueId)
     {
-        return Item.IsInJson(type, UniqueId);
+        return Item.IsInJson(uniqueId);
     }
 
     public bool IsPlayerVip(CCSPlayerController player)
@@ -107,9 +107,9 @@ public class StoreAPI : IStoreApi
         return Item.IsPlayerVip(player);
     }
 
-    public Dictionary<string, string>? GetItem(string type, string UniqueId)
+    public Dictionary<string, string>? GetItem(string uniqueId)
     {
-        return Item.GetItem(type, UniqueId);
+        return Item.GetItem(uniqueId);
     }
 
     public List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type)

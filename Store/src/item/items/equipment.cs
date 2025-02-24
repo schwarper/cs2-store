@@ -55,7 +55,7 @@ public static class Item_Equipment
             Store_Equipment? playerItems = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "equipment");
             if (playerItems == null) return;
 
-            Dictionary<string, string>? itemdata = Item.GetItem(playerItems.Type, playerItems.UniqueId);
+            Dictionary<string, string>? itemdata = Item.GetItem(playerItems.UniqueId);
             if (itemdata == null) return;
 
             player.PlayerPawn.Value!.Effects = 1;

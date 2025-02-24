@@ -19,8 +19,15 @@ public static class Item_PlayerSkin
 
         if (Item.GetItemsByType("playerskin").Count > 0)
         {
-            Instance.AddCommand("css_model0", "Model0", Command_Model0);
-            Instance.AddCommand("css_model1", "Model1", Command_Model1);
+            foreach (string command in Config.Commands.ModelOff)
+            {
+                Instance.AddCommand(command, "Turn off playerskins models", Command_Model0);
+            }
+
+            foreach (string command in Config.Commands.ModelOn)
+            {
+                Instance.AddCommand(command, "Turn on playerskins models", Command_Model1);
+            }
 
             Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
             Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
@@ -142,6 +149,7 @@ public static class Item_PlayerSkin
 
     public static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
+        Instance.InspectList.Clear();
         ForceModelDefault = false;
         return HookResult.Continue;
     }
@@ -227,7 +235,7 @@ public static class Item_PlayerSkin
 
     private static (string modelname, bool disableleg, string? skin)? GetStoreModel(Store_Equipment item)
     {
-        Dictionary<string, string>? itemdata = Item.GetItem(item.Type, item.UniqueId);
+        Dictionary<string, string>? itemdata = Item.GetItem(item.UniqueId);
 
         if (itemdata == null)
         {
@@ -237,5 +245,75 @@ public static class Item_PlayerSkin
         itemdata.TryGetValue("skin", out string? skn);
 
         return (item.UniqueId, itemdata["disable_leg"] is "true" or "1", skn);
+    }
+
+    public static void Inspect(CCSPlayerController player, string model)
+    {
+        CBaseModelEntity? entity = Utilities.CreateEntityByName<CBaseModelEntity>("prop_dynamic");
+
+        if (entity?.IsValid is not true)
+        {
+            return;
+        }
+
+        if (player.PlayerPawn.Value is not CCSPlayerPawn playerPawn)
+        {
+            return;
+        }
+
+        Vector _origin = GetFrontPosition(playerPawn.AbsOrigin!, playerPawn.EyeAngles);
+        QAngle modelAngles = new(0, playerPawn.EyeAngles.Y + 180, 0);
+
+        entity.Spawnflags = 256u;
+        entity.Collision.SolidType = SolidType_t.SOLID_VPHYSICS;
+        entity.Teleport(_origin, modelAngles, playerPawn.AbsVelocity);
+        entity.DispatchSpawn();
+
+        Server.NextFrame(() =>
+        {
+            if (entity?.IsValid is not true)
+            {
+                return;
+            }
+
+            entity.SetModel(model);
+        });
+
+        Instance.InspectList[entity] = player;
+        Instance.AddTimer(1.0f, () => RotateEntity(player, entity, 0.0f));
+    }
+
+    public static void RotateEntity(CCSPlayerController player, CBaseModelEntity entity, float elapsed)
+    {
+        if (entity?.IsValid is not true)
+        {
+            return;
+        }
+
+        float totalTime = 4.0f;
+        float rotationStep = 100.0f;
+        float interval = 1.0f;
+
+        QAngle currentAngles = entity.AbsRotation!;
+        entity.Teleport(null, new QAngle(currentAngles.X, currentAngles.Y + rotationStep, currentAngles.Z), null);
+
+        if (elapsed < totalTime)
+        {
+            Instance.AddTimer(interval, () => RotateEntity(player, entity, elapsed + interval));
+        }
+        else
+        {
+            Instance.InspectList.Remove(entity);
+            entity.Remove();
+        }
+    }
+
+    public static Vector GetFrontPosition(Vector position, QAngle angles, float distance = 100.0f)
+    {
+        float radYaw = angles.Y * (MathF.PI / 180.0f);
+
+        Vector forward = new Vector(MathF.Cos(radYaw), MathF.Sin(radYaw), 0) * distance;
+
+        return position + forward;
     }
 }
