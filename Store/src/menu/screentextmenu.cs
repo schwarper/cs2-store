@@ -218,13 +218,10 @@ public static class ScreenTextMenu
 
                 if (waitTime - currentTime > 0)
                 {
-                    Server.PrintToChatAll($"BEKLE");
                     return;
                 }
 
-                waitTime = currentTime + 3.0f;
-
-                Server.PrintToChatAll($"INSPECT");
+                waitTime = currentTime + 5.0f;
 
                 Item_PlayerSkin.InspectPlayerSkin(player, item["uniqueid"]);
             }, false, "menu_store<inspect>");

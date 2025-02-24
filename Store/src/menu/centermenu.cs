@@ -198,7 +198,7 @@ public static class CenterMenu
                     return;
                 }
 
-                waitTime = currentTime + 3.0f;
+                waitTime = currentTime + 5.0f;
 
                 Item_PlayerSkin.InspectPlayerSkin(player, item["uniqueid"]);
             }, false, "menu_store<inspect>");
