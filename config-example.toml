@@ -37,7 +37,7 @@ IgnoreWarmup = true
 [Menu]
 EnableSelling = true
 EnableConfirmMenu = true
-MenuType = "worldtext" # wasd | html
+MenuType = "worldtext" # html
 VipFlag = "@css/root" # Individuals in possession of the requisite authorisation shall be entitled to utilise equipable items free of charge. Making this field empty will result in the cancellation of Vip.
 MenuPressSoundYes = ""
 MenuPressSoundNo = ""
