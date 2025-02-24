@@ -148,6 +148,7 @@ public static class Item
 
         if (type == null)
         {
+            Server.PrintToChatAll($"EQUIP TYPE NULL");
             return false;
         }
 
@@ -179,6 +180,7 @@ public static class Item
 
         if (type.Equip(player, item) == false)
         {
+            Server.PrintToChatAll($"NO EQUIP");
             return false;
         }
 
@@ -216,7 +218,7 @@ public static class Item
             return false;
         }
 
-        var equippedItem = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.UniqueId == item["uniqueid"]);
+        Store_Equipment? equippedItem = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.UniqueId == item["uniqueid"]);
 
         if (equippedItem == null)
         {
@@ -308,7 +310,7 @@ public static class Item
 
     public static Dictionary<string, string>? GetItem(string uniqueId)
     {
-        Instance.Items.TryGetValue(uniqueId, out var item);
+        Instance.Items.TryGetValue(uniqueId, out Dictionary<string, string>? item);
         return item;
     }
 

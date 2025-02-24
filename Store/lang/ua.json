@@ -13,6 +13,7 @@
 	"Gift timeout": "{white}Вам потрібно зачекати {green}{0} секунд {white}щоб зробити подарунок.",
 	"No purchase because team": "{white}Ви не можете придбати цей предмет. Ви повинні бути в команді {red}{0} {white}.",
 	"No equip because team": "{white}Ви не можете екіпірувати цей предмет. Ви повинні бути в команді {red}{0} {white}.",
+	"You need correct weapon": "{white}Вам потрібен {red}{0} {white}для огляду.",
 
 	"t team players": "{green}Гравці {white}у команді t team",
 	"ct team players": "{green}Гравці {white}у команді ct team",
@@ -27,6 +28,8 @@
 	"Item Sell": "{white}Ви {white}продали {green}{0}{white}.",
 	"Godmode expired": "{white}Час вашого богомоду закінчився.",
 	"Speed expired": "{white}Час вашої швидкості закінчився.",
+	"Hidetrails on": "{white}Тепер ви можете бачити сліди.",
+	"Hidetrails off": "{white}Тепер ви не можете бачити сліди.",
 
 	"menu.bottom.text": "           <font color='cyan'>[ WASD - Перемістити ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Виходьте ]",
 	"menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''> <font color='orange'>",

@@ -86,9 +86,9 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
             throw new JsonException();
         }
 
-        var itemsDictionary = new Dictionary<string, Dictionary<string, string>>();
+        Dictionary<string, Dictionary<string, string>> itemsDictionary = [];
 
-        foreach (var category in config.Items.EnumerateObject())
+        foreach (JsonProperty category in config.Items.EnumerateObject())
         {
             ExtractItems(category.Value, itemsDictionary);
         }
@@ -99,16 +99,16 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
 
     public static void ExtractItems(JsonElement category, Dictionary<string, Dictionary<string, string>> itemsDictionary)
     {
-        foreach (var subItem in category.EnumerateObject())
+        foreach (JsonProperty subItem in category.EnumerateObject())
         {
             if (subItem.Value.ValueKind == JsonValueKind.Object)
             {
                 if (subItem.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
                 {
                     string uniqueId = uniqueIdElement.GetString() ?? $"unknown_{subItem.Name}";
-                    var itemData = new Dictionary<string, string>();
+                    Dictionary<string, string> itemData = [];
 
-                    foreach (var property in subItem.Value.EnumerateObject())
+                    foreach (JsonProperty property in subItem.Value.EnumerateObject())
                     {
                         itemData[property.Name] = property.Value.ToString();
                     }

@@ -95,9 +95,7 @@ public static class Event
 
         Database.ExecuteAsync("DELETE FROM store_items WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);
 
-        List<Store_Item> itemsToRemove = Instance.GlobalStorePlayerItems
-        .Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)
-        .ToList();
+        List<Store_Item> itemsToRemove = [.. Instance.GlobalStorePlayerItems.Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)];
 
         string store_equipmentTableName = Config.DatabaseConnection.DatabaseEquipTableName;
 
@@ -199,6 +197,8 @@ public static class Event
             return HookResult.Continue;
         }
 
+        Item_Trail.HideTrailPlayerList.Remove(player);
+
         if (!Instance.GlobalDictionaryPlayer.TryGetValue(player, out Player? value))
         {
             return HookResult.Continue;
@@ -247,20 +247,20 @@ public static class Event
 
     public static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
     {
-        var player = @event.Userid;
+        CCSPlayerController? player = @event.Userid;
 
         if (player == null)
         {
             return HookResult.Continue;
         }
 
-        var currentitems = Instance.GlobalStorePlayerEquipments.FindAll(p => p.SteamID == player.SteamID);
+        List<Store_Equipment> currentitems = Instance.GlobalStorePlayerEquipments.FindAll(p => p.SteamID == player.SteamID);
 
         if (currentitems.Count > 0)
         {
-            foreach (var currentiteam in currentitems)
+            foreach (Store_Equipment currentiteam in currentitems)
             {
-                var item = Item.GetItem(currentiteam.UniqueId);
+                Dictionary<string, string>? item = Item.GetItem(currentiteam.UniqueId);
 
                 if (item == null)
                 {
@@ -279,7 +279,7 @@ public static class Event
 
     public static void OnCheckTransmit(CCheckTransmitInfoList infoList)
     {
-        if (Instance.InspectList.Count == 0)
+        if (Instance.InspectList.Count == 0 && Item_Trail.TrailList.Count == 0)
         {
             return;
         }
@@ -291,9 +291,17 @@ public static class Event
                 continue;
             }
 
-            foreach (var (entity, owner) in Instance.InspectList)
+            foreach ((CBaseModelEntity entity, CCSPlayerController owner) in Instance.InspectList)
             {
                 if (player.SteamID != owner.SteamID)
+                {
+                    info.TransmitEntities.Remove(entity);
+                }
+            }
+
+            foreach ((CEntityInstance entity, CCSPlayerController owner) in Item_Trail.TrailList)
+            {
+                if (player.SteamID != owner.SteamID && Item_Trail.HideTrailPlayerList.Contains(player))
                 {
                     info.TransmitEntities.Remove(entity);
                 }

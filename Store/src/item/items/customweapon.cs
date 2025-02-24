@@ -68,7 +68,7 @@ public static class Item_CustomWeapon
 
         Server.NextWorldUpdate(() =>
         {
-            var weapon = new CBasePlayerWeapon(entity.Handle);
+            CBasePlayerWeapon weapon = new CBasePlayerWeapon(entity.Handle);
 
             if (!weapon.IsValid || weapon.OriginalOwnerXuidLow <= 0)
             {
@@ -99,9 +99,9 @@ public static class Item_CustomWeapon
             }
 
             CBasePlayerWeapon? activeweapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
-            var playerequipments = Item.GetPlayerEquipments(player).Where(p => p.SteamID == player.SteamID && p.Type == "customweapon").ToList();
+            List<StoreApi.Store.Store_Equipment> playerequipments = Item.GetPlayerEquipments(player).Where(p => p.SteamID == player.SteamID && p.Type == "customweapon").ToList();
 
-            foreach (var playerequipment in playerequipments)
+            foreach (StoreApi.Store.Store_Equipment? playerequipment in playerequipments)
             {
                 Dictionary<string, string>? itemdata = Item.GetItem(playerequipment.UniqueId);
 
@@ -143,7 +143,7 @@ public static class Item_CustomWeapon
 
         if (!string.IsNullOrEmpty(globalname))
         {
-            var globalnamesplit = globalname.Split(',');
+            string[] globalnamesplit = globalname.Split(',');
 
             Weapon.SetViewModel(player, globalnamesplit.Length == 2 ? globalnamesplit[2] : globalnamesplit[1]);
         }
@@ -175,7 +175,13 @@ public static class Item_CustomWeapon
         }
         public static unsafe void SetViewModel(CCSPlayerController player, string model)
         {
-            ViewModel(player)?.SetModel(model);
+            string defaultWeapon = GetViewModel(player);
+            ViewModel(player)?.SetModel(defaultWeapon);
+
+            Instance.AddTimer(0.1f, () =>
+            {
+                ViewModel(player)?.SetModel(model);
+            });
         }
         public static void UpdateModel(CCSPlayerController player, CBasePlayerWeapon weapon, string model, string? worldmodel, bool update)
         {
@@ -268,5 +274,43 @@ public static class Item_CustomWeapon
 
             return viewModel.Value;
         }
+    }
+
+    public static void Inspect(CCSPlayerController player, string model, string weapon)
+    {
+        if (player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value is not CBasePlayerWeapon activeWeapon)
+        {
+            return;
+        }
+
+        if (Weapon.GetDesignerName(activeWeapon) != weapon)
+        {
+            player.PrintToChatMessage("You need correct weapon", weapon);
+            return;
+        }
+
+        string globalname = activeWeapon.Globalname;
+        string oldModel;
+
+        if (!string.IsNullOrEmpty(globalname))
+        {
+            string[] globalnamesplit = globalname.Split(',');
+
+            oldModel = globalnamesplit.Length == 2 ? globalnamesplit[2] : globalnamesplit[1];
+        }
+        else
+        {
+            oldModel = Weapon.GetViewModel(player);
+        }
+
+        Weapon.SetViewModel(player, model);
+
+        Instance.AddTimer(5.0f, () =>
+        {
+            if (player.IsValid && player.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value == activeWeapon)
+            {
+                Weapon.SetViewModel(player, oldModel);
+            }
+        });
     }
 }

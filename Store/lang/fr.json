@@ -13,6 +13,7 @@
   "Gift timeout": "{white}Vous devez attendre {green}{0} secondes {white}pour faire un don.",
   "No purchase because team": "{white}Vous ne pouvez pas acheter cet objet. Vous devez être dans l'équipe {red}{0}.",
   "No equip because team": "{white}Vous ne pouvez pas équiper cet objet. Vous devez être dans l'équipe {red}{0}.",
+  "You need correct weapon": "{white}Vous avez besoin de {red}{0} {white}pour inspecter.",
 
   "t team players": "{green}Joueurs de l'équipe {white}T",
   "ct team players": "{green}Joueurs de l'équipe {white}CT",
@@ -27,6 +28,8 @@
   "Item Sell": "{white}Vous avez {white}vendu {green}{0}{white}.",
   "Godmode expired": "{white}Votre temps d'invincibilité est expiré.",
   "Speed expired": "{white}Votre temps de vitesse est expiré.",
+  "Hidetrails on": "{white}Vous pouvez voir les trails maintenant.",
+  "Hidetrails off": "{white}Vous ne pouvez plus voir les trails maintenant.",
 
   "menu.bottom.text": "           <font color='cyan'>[ ZQSD - Se déplacer ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Pour quitter ]",
   "menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''> <font color='orange'>",

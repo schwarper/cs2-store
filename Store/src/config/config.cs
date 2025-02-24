@@ -117,6 +117,24 @@ public static class Config_Config
             resetDatabaseList.Add(item!.ToString()!);
         }
 
+        List<string> hideTrailsList = [];
+        foreach (object? item in (TomlArray)commandsTable["HideTrails"])
+        {
+            hideTrailsList.Add(item!.ToString()!);
+        }
+
+        List<string> model0List = [];
+        foreach (object? item in (TomlArray)commandsTable["PlayerSkinsOff"])
+        {
+            model0List.Add(item!.ToString()!);
+        }
+
+        List<string> model1List = [];
+        foreach (object? item in (TomlArray)commandsTable["PlayerSkinsOn"])
+        {
+            model1List.Add(item!.ToString()!);
+        }
+
         Config_Commands config_commands = new()
         {
             Credits = [.. creditsList],
@@ -125,7 +143,10 @@ public static class Config_Config
             GiveCredits = [.. giveCreditsList],
             Gift = [.. giftList],
             ResetPlayer = [.. resetPlayerList],
-            ResetDatabase = [.. resetDatabaseList]
+            ResetDatabase = [.. resetDatabaseList],
+            HideTrails = [.. hideTrailsList],
+            ModelOff = [.. model0List],
+            ModelOn = [.. model1List]
         };
 
         TomlTable defaultModelsTable = (TomlTable)model["DefaultModels"];
@@ -223,6 +244,9 @@ public static class Config_Config
         public string[] Gift { get; set; } = [];
         public string[] ResetPlayer { get; set; } = [];
         public string[] ResetDatabase { get; set; } = [];
+        public string[] HideTrails { get; set; } = [];
+        public string[] ModelOff { get; set; } = [];
+        public string[] ModelOn { get; set; } = [];
     }
 
     public class Config_DefaultModels

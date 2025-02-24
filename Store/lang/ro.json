@@ -13,6 +13,7 @@
   "Gift timeout": "{white}Trebuie să aștepți {green}{0} secunde {white}pentru a oferi cadoul.",
   "No purchase because team": "{white}Nu poți achiziționa acest articol. Trebuie să fii în echipa {red}{0} {white}.",
   "No equip because team": "{white}Nu poți echipa acest articol. Trebuie să fii în echipa {red}{0} {white}.",
+  "You need correct weapon": "{white}Ai nevoie de {red}{0} {white}pentru a inspecta.",
 
   "t team players": "{green}jucători echipa T {white}",
   "ct team players": "{green}jucători echipa CT {white}",
@@ -27,6 +28,8 @@
   "Item Sell": "{white}Ai {white}vândut {green}{0}{white}.",
   "Godmode expired": "{white}Timpul tău de godmode a expirat.",
   "Speed expired": "{white}Timpul tău de viteză a expirat.",
+  "Hidetrails on": "{white}Acum poți vedea urmele.",
+  "Hidetrails off": "{white}Acum nu mai poți vedea urmele.",
 
   "menu.bottom.text": "           <font color='cyan'>[ WASD - Pentru a te mișca ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - Pentru a ieși ]",
   "menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''> <font color='orange'>",

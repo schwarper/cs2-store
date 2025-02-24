@@ -19,8 +19,15 @@ public static class Item_PlayerSkin
 
         if (Item.GetItemsByType("playerskin").Count > 0)
         {
-            Instance.AddCommand("css_model0", "Model0", Command_Model0);
-            Instance.AddCommand("css_model1", "Model1", Command_Model1);
+            foreach (string command in Config.Commands.ModelOff)
+            {
+                Instance.AddCommand(command, "Turn off playerskins models", Command_Model0);
+            }
+
+            foreach (string command in Config.Commands.ModelOn)
+            {
+                Instance.AddCommand(command, "Turn on playerskins models", Command_Model1);
+            }
 
             Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
             Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
@@ -240,7 +247,7 @@ public static class Item_PlayerSkin
         return (item.UniqueId, itemdata["disable_leg"] is "true" or "1", skn);
     }
 
-    public static void InspectPlayerSkin(CCSPlayerController player, string model)
+    public static void Inspect(CCSPlayerController player, string model)
     {
         CBaseModelEntity? entity = Utilities.CreateEntityByName<CBaseModelEntity>("prop_dynamic");
 
@@ -254,7 +261,7 @@ public static class Item_PlayerSkin
             return;
         }
 
-        var _origin = GetFrontPosition(playerPawn.AbsOrigin!, playerPawn.EyeAngles);
+        Vector _origin = GetFrontPosition(playerPawn.AbsOrigin!, playerPawn.EyeAngles);
         QAngle modelAngles = new(0, playerPawn.EyeAngles.Y + 180, 0);
 
         entity.Spawnflags = 256u;

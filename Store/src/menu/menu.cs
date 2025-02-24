@@ -14,7 +14,7 @@ public static class Menu
             return;
         }
 
-        var menutype = Config.Menu.MenuType.ToLower();
+        string menutype = Config.Menu.MenuType.ToLower();
 
         switch (menutype)
         {
@@ -69,9 +69,9 @@ public static class Menu
             return trueifNull;
         }
 
-        var flags = flagAll.Split(',');
+        string[] flags = flagAll.Split(',');
 
-        foreach (var flag in flags)
+        foreach (string flag in flags)
         {
             if (flag.StartsWith('@') && AdminManager.PlayerHasPermissions(player, flag))
             {

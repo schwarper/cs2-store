@@ -13,6 +13,7 @@
   "Gift timeout": "{white}你需要等待 {green}{0} 秒 {white}后才能赠送.",
   "No purchase because team": "{white}您无法购买此物品。您需要加入{red}{0} {white}队伍。",
   "No equip because team": "{white}您无法装备此物品。您需要加入{red}{0} {white}队伍。",
+  "You need correct weapon": "{white}你需要 {red}{0} {white}来检查。",
 
   "t team players": "{green}T阵营{white}玩家",
   "ct team players": "{green}CT阵营{white}玩家",
@@ -27,6 +28,8 @@
   "Item Sell": "{white}你{white}卖掉了{green}{0}{white}.",
   "Godmode expired": "{white}你的无敌模式已到期.",
   "Speed expired": "{white}你的加速模式已到期.",
+  "Hidetrails on": "{white}你现在可以看到轨迹了。",
+  "Hidetrails off": "{white}你现在无法看到轨迹了。",
 
   "menu.bottom.text": "           <font color='cyan'>[ WASD - 选择 ]</font> <br><font color='purple'>[ <img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/tab.gif' class=''> - 退出 ]",
   "menu.selection.left": "<img src='https://raw.githubusercontent.com/oqyh/cs2-Kill-Sound-GoldKingZ/main/Resources/left.gif' class=''> <font color='orange'>",
