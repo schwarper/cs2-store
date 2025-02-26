@@ -14,6 +14,7 @@
   "No purchase because team": "{white}You cannot purchase this item. You need to be in {red}{0} {white}team.",
   "No equip because team": "{white}You cannot equip this item. You need to be in {red}{0} {white}team.",
   "You need correct weapon": "{white}You need {red}{0} {white}to inspect.",
+  "Players' credits are refreshed": "Players' credits are refreshed.",
 
   "t team players": "{green}t team {white}players",
   "ct team players": "{green}ct team {white}players",

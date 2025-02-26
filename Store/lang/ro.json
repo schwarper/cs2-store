@@ -14,6 +14,7 @@
   "No purchase because team": "{white}Nu poți achiziționa acest articol. Trebuie să fii în echipa {red}{0} {white}.",
   "No equip because team": "{white}Nu poți echipa acest articol. Trebuie să fii în echipa {red}{0} {white}.",
   "You need correct weapon": "{white}Ai nevoie de {red}{0} {white}pentru a inspecta.",
+  "Players' credits are refreshed": "Creditele jucătorilor au fost reîmprospătate.",
 
   "t team players": "{green}jucători echipa T {white}",
   "ct team players": "{green}jucători echipa CT {white}",

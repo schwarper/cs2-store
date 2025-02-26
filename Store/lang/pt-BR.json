@@ -14,6 +14,7 @@
   "No purchase because team": "{white}Você não pode comprar este item. Você precisa estar no time {red}{0} {white}.",
   "No equip because team": "{white}Você não pode equipar este item. Você precisa estar no time {red}{0} {white}.",
   "You need correct weapon": "{white}Você precisa de {red}{0} {white}para inspecionar.",
+  "Players' credits are refreshed": "Os créditos dos jogadores foram atualizados.",
 
   "t team players": "{green}Jogadores de team t{white}",
   "ct team players": "{green}Jogadores de team ct{white}",

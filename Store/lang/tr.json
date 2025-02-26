@@ -14,6 +14,7 @@
   "No purchase because team": "{white}Bu ürünü satın alamazsınız. {red}{0} {white}takımında olmanız gerekiyor.",
   "No equip because team": "{white}Bu ürünü kuşanamazsınız. {red}{0} {white}takımında olmanız gerekiyor.",
   "You need correct weapon": "{white}İncelemek için {red}{0} {white}gerekli.",
+  "Players' credits are refreshed": "Oyuncuların kredileri yenilendi.",
 
   "t team players": "{green}t takımı {white}oyuncularını",
   "ct team players": "{green}ct takımı {white}oyuncularını",

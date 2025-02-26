@@ -117,6 +117,12 @@ public static class Config_Config
             resetDatabaseList.Add(item!.ToString()!);
         }
 
+        List<string> refreshPlayersCredits = [];
+        foreach (object? item in (TomlArray)commandsTable["RefreshPlayersCredits"])
+        {
+            refreshPlayersCredits.Add(item!.ToString()!);
+        }
+
         List<string> hideTrailsList = [];
         foreach (object? item in (TomlArray)commandsTable["HideTrails"])
         {
@@ -144,6 +150,7 @@ public static class Config_Config
             Gift = [.. giftList],
             ResetPlayer = [.. resetPlayerList],
             ResetDatabase = [.. resetDatabaseList],
+            RefreshPlayersCredits = [.. refreshPlayersCredits],
             HideTrails = [.. hideTrailsList],
             ModelOff = [.. model0List],
             ModelOn = [.. model1List]
@@ -244,6 +251,7 @@ public static class Config_Config
         public string[] Gift { get; set; } = [];
         public string[] ResetPlayer { get; set; } = [];
         public string[] ResetDatabase { get; set; } = [];
+        public string[] RefreshPlayersCredits { get; set; } = [];
         public string[] HideTrails { get; set; } = [];
         public string[] ModelOff { get; set; } = [];
         public string[] ModelOn { get; set; } = [];

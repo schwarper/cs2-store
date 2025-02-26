@@ -14,6 +14,7 @@
   "No purchase because team": "{white}Te predmete ne morete kupiti. Morate biti v ekipi {red}{0} {white}.",
   "No equip because team": "{white}Te predmete ne morete opremiti. Morate biti v ekipi {red}{0} {white}.",
   "You need correct weapon": "{white}Potrebujete {red}{0} {white}za pregled.",
+  "Players' credits are refreshed": "Krediti igralcev so bili osveženi.",
 
   "t team players": "{green}Zaporniki",
   "ct team players": "{green}Pazniki",

@@ -14,6 +14,7 @@
 	"No purchase because team": "{white}Вы не можете купить этот предмет. Вы должны быть в команде {red}{0} {white}.",
 	"No equip because team": "{white}Вы не можете экипировать этот предмет. Вы должны быть в команде {red}{0} {white}.",
 	"You need correct weapon": "{white}Вам нужно {red}{0} {white}для осмотра.",
+	"Players' credits are refreshed": "Кредиты игроков обновлены.",
 
 	"t team players": "{green}Игроки {white}в команде t team",
 	"ct team players": "{green}Игроки {white}в команде ct team",

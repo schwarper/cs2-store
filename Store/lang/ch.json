@@ -14,6 +14,7 @@
   "No purchase because team": "{white}您无法购买此物品。您需要加入{red}{0} {white}队伍。",
   "No equip because team": "{white}您无法装备此物品。您需要加入{red}{0} {white}队伍。",
   "You need correct weapon": "{white}你需要 {red}{0} {white}来检查。",
+  "Players' credits are refreshed": "玩家的积分已刷新。",
 
   "t team players": "{green}T阵营{white}玩家",
   "ct team players": "{green}CT阵营{white}玩家",
