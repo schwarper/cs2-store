@@ -19,7 +19,7 @@ public static class Item_Weapon
     {
         if (GameRules.IsPistolRound() && item["no_pistol_round"] == "true")
         {
-            player.PrintToChatMessage("No in pistol round", item["name"]);
+            player.PrintToChatMessage("No in pistol round", Item.GetItemName(player, item));
             return false;
         }
 

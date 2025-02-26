@@ -246,7 +246,7 @@ public static class Command
         Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_reset", player?.PlayerName ?? "Console", target.PlayerName]);
     }
 
-    [CommandHelper(minArgs: 1, whoCanExecute: CommandUsage.SERVER_ONLY)]
+    [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
     public static void Command_RefreshPlayersCredits(CCSPlayerController? player, CommandInfo info)
     {
         var players = Utilities.GetPlayers();

@@ -63,5 +63,8 @@
   "credits_earned<kill>": "{white}Oyuncu öldürdüğünüz için {green}{0} {white}kredi kazandınız.",
 
   "css_model0": "{blue}{0}{white}, oyuncu modellerinin varsayılan zorunluluğunu açtı.",
-  "css_model1": "{blue}{0}{white}, oyuncu modellerinin varsayılan zorunluluğunu kapattı."
+  "css_model1": "{blue}{0}{white}, oyuncu modellerinin varsayılan zorunluluğunu kapattı.",
+
+  "OperatorTestLang": "Operatör",
+  "AdminSkinsTestLang": "Admin Skinleri"
 }

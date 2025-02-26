@@ -1,7 +1,10 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
+using System.Text.Json;
 using static Store.Config_Config;
 using static StoreApi.Store;
+using static Store.Store;
+using CounterStrikeSharp.API.Core.Translations;
 
 namespace Store;
 
@@ -88,5 +91,15 @@ public static class Menu
         }
 
         return false;
+    }
+
+    public static string GetCategoryName(CCSPlayerController player, JsonProperty category)
+    {
+        if (category.Value.TryGetProperty("langname", out var langname))
+        {
+            return Instance.Localizer.ForPlayer(player, langname.ToString());
+        }
+
+        return category.Name;
     }
 }

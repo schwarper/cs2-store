@@ -63,5 +63,8 @@
   "credits_earned<kill>": "{white}Você ganhou {green}{0} créditos {white}por matar um jogador.",
 
   "css_model0": "{blue}{0}{white} ativou o forçamento padrão dos modelos de jogadores",
-  "css_model1": "{blue}{0}{white} desativou o forçamento padrão dos modelos de jogadores."
+  "css_model1": "{blue}{0}{white} desativou o forçamento padrão dos modelos de jogadores.",
+
+  "OperatorTestLang": "Operador",
+  "AdminSkinsTestLang": "Skins de Administrador"
 }

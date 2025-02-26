@@ -63,5 +63,8 @@
   "credits_earned<kill>": "{white}Ai câștigat {green}{0} credite {white}pentru că ai omorât un jucător.",
 
   "css_model0": "{blue}{0}{white} a activat forțarea implicită a modelelor jucătorilor.",
-  "css_model1": "{blue}{0}{white} a dezactivat forțarea implicită a modelelor jucătorilor."
+  "css_model1": "{blue}{0}{white} a dezactivat forțarea implicită a modelelor jucătorilor.",
+
+  "OperatorTestLang": "Operator",
+  "AdminSkinsTestLang": "Skinuri de Administrator"
 }

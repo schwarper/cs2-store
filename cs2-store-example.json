@@ -4,6 +4,7 @@
       "CT Skins": {
         "1": {
           "name": "Operator",
+          "langname": "OperatorTestLang",
           "uniqueid": "characters/models/ctm_fbi/ctm_fbi_variantf.vmdl",
           "armModel": "",
           "type": "playerskin",
@@ -17,6 +18,7 @@
       },
       "Admin Skins": {
         "flag": "@css/ban,@css/unban,76561199165718810",
+        "langname": "AdminSkinsTestLang",
         "1": {
           "name": "Fernandez Frogman [CT]",
           "uniqueid": "characters/models/ctm_diver/ctm_diver_variantb.vmdl",

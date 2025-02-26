@@ -63,5 +63,8 @@
   "credits_earned<kill>": "{white}You earned {green}{0} credits {white}for killing a player.",
 
   "css_model0": "{blue}{0}{white} turned on the default forcing of player models.",
-  "css_model1": "{blue}{0}{white} turned off the default forcing of player models."
+  "css_model1": "{blue}{0}{white} turned off the default forcing of player models.",
+
+  "OperatorTestLang": "Operator",
+  "AdminSkinsTestLang": "Admin Skins"
 }

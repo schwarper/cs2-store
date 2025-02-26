@@ -63,5 +63,8 @@
   "credits_earned<kill>": "{white}Vous avez gagné {green}{0} crédits {white}pour avoir tué un joueur.",
 
   "css_model0": "{blue}{0}{white} a activé les modèles par default pour les joueurs.",
-  "css_model1": "{blue}{0}{white} a désactivé les modèles par default pour les joueurs."
+  "css_model1": "{blue}{0}{white} a désactivé les modèles par default pour les joueurs.",
+
+  "OperatorTestLang": "Opérateur",
+  "AdminSkinsTestLang": "Skins d'Administrateur"
 }

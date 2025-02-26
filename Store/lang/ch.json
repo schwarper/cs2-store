@@ -63,5 +63,8 @@
   "credits_earned<kill>": "{white}击杀玩家,{gold}金币{white}+{green}{0}{white}.",
 
   "css_model0": "{blue}{0}{white} 开启了强制默认模型",
-  "css_model1": "{blue}{0}{white} 关闭了强制默认模型."
+  "css_model1": "{blue}{0}{white} 关闭了强制默认模型.",
+
+  "OperatorTestLang": "操作员",
+  "AdminSkinsTestLang": "管理员皮肤"
 }

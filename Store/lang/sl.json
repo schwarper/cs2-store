@@ -63,5 +63,8 @@
   "credits_earned<kill>": "{white}Dobil si {green}{0} kreditov {white}za uboj igralca.",
 
   "css_model0": "{blue}{0}{white} vklopil privzeto vsiljevanje modelov igralcev.",
-  "css_model1": "{blue}{0}{white} izklopil privzeto vsiljevanje modelov igralcev."
+  "css_model1": "{blue}{0}{white} izklopil privzeto vsiljevanje modelov igralcev.",
+
+  "OperatorTestLang": "Operater",
+  "AdminSkinsTestLang": "Admin Skins"
 }
