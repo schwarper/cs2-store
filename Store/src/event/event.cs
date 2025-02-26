@@ -292,7 +292,7 @@ public static class Event
 
             foreach ((CBaseModelEntity entity, CCSPlayerController owner) in Instance.InspectList)
             {
-                if (player.SteamID != owner.SteamID)
+                if (owner.IsValid && player.SteamID != owner.SteamID)
                 {
                     info.TransmitEntities.Remove(entity);
                 }
@@ -300,7 +300,7 @@ public static class Event
 
             foreach ((CEntityInstance entity, CCSPlayerController owner) in Item_Trail.TrailList)
             {
-                if (player.SteamID != owner.SteamID && Item_Trail.HideTrailPlayerList.Contains(player))
+                if (owner.IsValid && player.SteamID != owner.SteamID && Item_Trail.HideTrailPlayerList.Contains(player))
                 {
                     info.TransmitEntities.Remove(entity);
                 }
