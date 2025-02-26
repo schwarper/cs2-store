@@ -51,12 +51,7 @@ public static class Item_CustomWeapon
     }
     public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
-        if (!update)
-        {
-            return true;
-        }
-
-        return Weapon.HandleEquip(player, item, false);
+        return !update || Weapon.HandleEquip(player, item, false);
     }
 
     public static void OnEntityCreated(CEntityInstance entity)
@@ -68,7 +63,7 @@ public static class Item_CustomWeapon
 
         Server.NextWorldUpdate(() =>
         {
-            CBasePlayerWeapon weapon = new CBasePlayerWeapon(entity.Handle);
+            CBasePlayerWeapon weapon = new(entity.Handle);
 
             if (!weapon.IsValid || weapon.OriginalOwnerXuidLow <= 0)
             {
@@ -80,12 +75,9 @@ public static class Item_CustomWeapon
 
             if (_steamid != null && _steamid.IsValid())
             {
-                player = Utilities.GetPlayers().FirstOrDefault(p => p.IsValid && p.SteamID == _steamid.SteamId64);
-
-                if (player == null)
-                {
-                    player = Utilities.GetPlayerFromSteamId(weapon.OriginalOwnerXuidLow);
-                }
+                player =
+                    Utilities.GetPlayers().FirstOrDefault(p => p.IsValid && p.SteamID == _steamid.SteamId64) ??
+                    Utilities.GetPlayerFromSteamId(weapon.OriginalOwnerXuidLow);
             }
             else
             {
@@ -145,7 +137,7 @@ public static class Item_CustomWeapon
         {
             string[] globalnamesplit = globalname.Split(',');
 
-            Weapon.SetViewModel(player, globalnamesplit.Length == 2 ? globalnamesplit[2] : globalnamesplit[1]);
+            Weapon.SetViewModel(player, globalnamesplit.Length == 2 ? globalnamesplit[2] : globalnamesplit[1], activeweapon);
         }
 
         return HookResult.Continue;
@@ -173,13 +165,18 @@ public static class Item_CustomWeapon
         {
             return ViewModel(player)?.VMName ?? string.Empty;
         }
-        public static unsafe void SetViewModel(CCSPlayerController player, string model)
+        public static unsafe void SetViewModel(CCSPlayerController player, string model, CBasePlayerWeapon activeWeapon)
         {
             string defaultWeapon = GetViewModel(player);
             ViewModel(player)?.SetModel(defaultWeapon);
 
             Instance.AddTimer(0.1f, () =>
             {
+                if (player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value != activeWeapon)
+                {
+                    return;
+                }
+
                 ViewModel(player)?.SetModel(model);
             });
         }
@@ -191,7 +188,7 @@ public static class Item_CustomWeapon
 
             if (update)
             {
-                SetViewModel(player, model);
+                SetViewModel(player, model, weapon);
             }
         }
         public static void ResetWeapon(CCSPlayerController player, CBasePlayerWeapon weapon, bool update)
@@ -210,7 +207,7 @@ public static class Item_CustomWeapon
 
             if (update)
             {
-                SetViewModel(player, globalnamedata[0]);
+                SetViewModel(player, globalnamedata[0], weapon);
             }
         }
         public static bool HandleEquip(CCSPlayerController player, Dictionary<string, string> item, bool isEquip)
@@ -303,13 +300,13 @@ public static class Item_CustomWeapon
             oldModel = Weapon.GetViewModel(player);
         }
 
-        Weapon.SetViewModel(player, model);
+        Weapon.SetViewModel(player, model, activeWeapon);
 
         Instance.AddTimer(5.0f, () =>
         {
             if (player.IsValid && player.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value == activeWeapon)
             {
-                Weapon.SetViewModel(player, oldModel);
+                Weapon.SetViewModel(player, oldModel, activeWeapon);
             }
         });
     }
