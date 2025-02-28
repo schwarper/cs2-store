@@ -137,7 +137,7 @@ public static class Item_CustomWeapon
         {
             string[] globalnamesplit = globalname.Split(',');
 
-            Weapon.SetViewModel(player, globalnamesplit.Length == 2 ? globalnamesplit[2] : globalnamesplit[1], activeweapon);
+            Weapon.SetViewModel(player, globalnamesplit.Length == 3 ? globalnamesplit[2] : globalnamesplit[1], activeweapon);
         }
 
         return HookResult.Continue;
