@@ -137,7 +137,7 @@ public static class Item_CustomWeapon
         {
             string[] globalnamesplit = globalname.Split(',');
 
-            Weapon.SetViewModel(player, globalnamesplit.Length == 3 ? globalnamesplit[2] : globalnamesplit[1], activeweapon);
+            Weapon.SetViewModel(player, globalnamesplit.Length == 3 ? globalnamesplit[2] : globalnamesplit[1], activeweapon, false);
         }
 
         return HookResult.Continue;
@@ -165,20 +165,27 @@ public static class Item_CustomWeapon
         {
             return ViewModel(player)?.VMName ?? string.Empty;
         }
-        public static unsafe void SetViewModel(CCSPlayerController player, string model, CBasePlayerWeapon activeWeapon)
+        public static unsafe void SetViewModel(CCSPlayerController player, string model, CBasePlayerWeapon activeWeapon, bool updateDefaultWeapon)
         {
-            string defaultWeapon = GetViewModel(player);
-            ViewModel(player)?.SetModel(defaultWeapon);
-
-            Instance.AddTimer(0.1f, () =>
+            if (updateDefaultWeapon)
             {
-                if (player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value != activeWeapon)
-                {
-                    return;
-                }
+                string defaultWeapon = GetViewModel(player);
+                ViewModel(player)?.SetModel(defaultWeapon);
 
+                Instance.AddTimer(0.1f, () =>
+                {
+                    if (player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value != activeWeapon)
+                    {
+                        return;
+                    }
+
+                    ViewModel(player)?.SetModel(model);
+                });
+            }
+            else
+            {
                 ViewModel(player)?.SetModel(model);
-            });
+            }
         }
         public static void UpdateModel(CCSPlayerController player, CBasePlayerWeapon weapon, string model, string? worldmodel, bool update)
         {
@@ -188,7 +195,7 @@ public static class Item_CustomWeapon
 
             if (update)
             {
-                SetViewModel(player, model, weapon);
+                SetViewModel(player, model, weapon, true);
             }
         }
         public static void ResetWeapon(CCSPlayerController player, CBasePlayerWeapon weapon, bool update)
@@ -207,7 +214,7 @@ public static class Item_CustomWeapon
 
             if (update)
             {
-                SetViewModel(player, globalnamedata[0], weapon);
+                SetViewModel(player, globalnamedata[0], weapon, false);
             }
         }
         public static bool HandleEquip(CCSPlayerController player, Dictionary<string, string> item, bool isEquip)
@@ -300,13 +307,13 @@ public static class Item_CustomWeapon
             oldModel = Weapon.GetViewModel(player);
         }
 
-        Weapon.SetViewModel(player, model, activeWeapon);
+        Weapon.SetViewModel(player, model, activeWeapon, true);
 
         Instance.AddTimer(5.0f, () =>
         {
             if (player.IsValid && player.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value == activeWeapon)
             {
-                Weapon.SetViewModel(player, oldModel, activeWeapon);
+                Weapon.SetViewModel(player, oldModel, activeWeapon, true);
             }
         });
     }
