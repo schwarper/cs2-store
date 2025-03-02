@@ -54,7 +54,7 @@ public static class ScreenTextMenu
                 }
             }
 
-            var categoryName = Menu.GetCategoryName(player, item);
+            string categoryName = Menu.GetCategoryName(player, item);
 
             menu.AddOption(categoryName, (p, o) => OpenMenu(p, categoryName, item.Value, inventory, mainMenu, menu));
         }
@@ -241,7 +241,7 @@ public static class ScreenTextMenu
         {
             float waitTime = 0.0f;
 
-            Dictionary<string, Action> inspectActions = new Dictionary<string, Action>
+            Dictionary<string, Action> inspectActions = new()
             {
                 { "playerskin", () => Item_PlayerSkin.Inspect(player, item["uniqueid"]) },
                 { "customweapon", () => Item_CustomWeapon.Inspect(player, item["uniqueid"], item["weapon"]) }

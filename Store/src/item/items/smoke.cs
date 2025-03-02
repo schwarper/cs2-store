@@ -15,7 +15,7 @@ public static class Item_Smoke
     {
         Item.RegisterType("smoke", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
-        if (Item.GetItemsByType("smoke").Count > 0)
+        if (Item.IsAnyItemExistInType("smoke"))
         {
             smokeExists = true;
         }

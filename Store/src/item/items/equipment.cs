@@ -14,7 +14,7 @@ public static class Item_Equipment
     {
         Item.RegisterType("equipment", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
-        if (Item.GetItemsByType("equipment").Count > 0)
+        if (Item.IsAnyItemExistInType("equipment"))
         {
             Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
         }

@@ -323,6 +323,11 @@ public static class Item
         return item;
     }
 
+    public static bool IsAnyItemExistInType(string type)
+    {
+        return Instance.Items.Any(kvp => kvp.Value["type"] == type);
+    }
+
     public static List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type)
     {
         return [.. Instance.Items.Where(kvp => kvp.Value["type"] == type)];

@@ -16,7 +16,7 @@ public static class Item_CustomWeapon
     {
         Item.RegisterType("customweapon", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
-        if (Item.GetItemsByType("customweapon").Count > 0)
+        if (Item.IsAnyItemExistInType("customweapon"))
         {
             if (CoreConfig.FollowCS2ServerGuidelines)
             {
@@ -91,7 +91,7 @@ public static class Item_CustomWeapon
             }
 
             CBasePlayerWeapon? activeweapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
-            List<StoreApi.Store.Store_Equipment> playerequipments = Item.GetPlayerEquipments(player).Where(p => p.SteamID == player.SteamID && p.Type == "customweapon").ToList();
+            List<StoreApi.Store.Store_Equipment> playerequipments = [.. Item.GetPlayerEquipments(player).Where(p => p.SteamID == player.SteamID && p.Type == "customweapon")];
 
             foreach (StoreApi.Store.Store_Equipment? playerequipment in playerequipments)
             {
@@ -135,7 +135,7 @@ public static class Item_CustomWeapon
 
         if (!string.IsNullOrEmpty(globalname))
         {
-            var model = Weapon.GetModelFromGlobalName(globalname);
+            string model = Weapon.GetModelFromGlobalName(globalname);
 
             Weapon.SetViewModel(player, model, activeweapon, false);
         }

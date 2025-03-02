@@ -17,7 +17,7 @@ public static class Item_PlayerSkin
     {
         Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
-        if (Item.GetItemsByType("playerskin").Count > 0)
+        if (Item.IsAnyItemExistInType("playerskin"))
         {
             foreach (string command in Config.Commands.ModelOff)
             {
