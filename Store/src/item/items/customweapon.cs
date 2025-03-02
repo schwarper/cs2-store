@@ -300,7 +300,7 @@ public static class Item_CustomWeapon
         {
             string[] globalnamesplit = globalname.Split(',');
 
-            oldModel = globalnamesplit.Length == 2 ? globalnamesplit[2] : globalnamesplit[1];
+            oldModel = globalnamesplit.Length == 3 ? globalnamesplit[2] : globalnamesplit[1];
         }
         else
         {
