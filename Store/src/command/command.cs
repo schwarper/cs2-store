@@ -22,7 +22,8 @@ public static class Command
             {config.GiveCredits, ("Give credits", Command_GiveCredits)},
             {config.Gift, ("Gift", Command_Gift)},
             {config.ResetPlayer, ("Reset player's inventory", Command_ResetPlayer)},
-            {config.ResetDatabase, ("Reset database", Command_ResetDatabase)}
+            {config.ResetDatabase, ("Reset database", Command_ResetDatabase)},
+            {config.RefreshPlayersCredits, ("Refresh players' credits", Command_RefreshPlayersCredits)}
         };
 
         foreach (KeyValuePair<IEnumerable<string>, (string description, CommandInfo.CommandCallback handler)> commandPair in commands)
@@ -243,5 +244,20 @@ public static class Command
         Database.ResetPlayer(target);
 
         Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_reset", player?.PlayerName ?? "Console", target.PlayerName]);
+    }
+
+    [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
+    public static void Command_RefreshPlayersCredits(CCSPlayerController? player, CommandInfo info)
+    {
+        var players = Utilities.GetPlayers();
+
+        foreach (var target in players)
+        {
+            Database.SavePlayer(target);
+        }
+
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine(Config.Tag + Instance.Localizer["Players' credits are refreshed"]);
+        Console.ResetColor();
     }
 }

@@ -1,5 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Utils;
 using static Store.Config_Config;
@@ -11,6 +12,16 @@ namespace Store;
 public static class Item
 {
     public static bool IsHidden(this Dictionary<string, string> item) => item.ContainsKey("hide") && item["hide"] == "true";
+
+    public static string GetItemName(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        if (item.TryGetValue("langname", out var langname))
+        {
+            return Instance.Localizer.ForPlayer(player, langname);
+        }
+
+        return item["name"];
+    }
 
     public static bool Give(CCSPlayerController player, Dictionary<string, string> item)
     {
@@ -104,7 +115,7 @@ public static class Item
         {
             Credits.Give(player, -int.Parse(item["price"]));
 
-            player.PrintToChatMessage("Purchase Succeeded", item["name"]);
+            player.PrintToChatMessage("Purchase Succeeded", GetItemName(player, item));
         }
 
         Store.Api.PlayerPurchaseItem(player, item);
@@ -310,6 +321,11 @@ public static class Item
     {
         Instance.Items.TryGetValue(uniqueId, out Dictionary<string, string>? item);
         return item;
+    }
+
+    public static bool IsAnyItemExistInType(string type)
+    {
+        return Instance.Items.Any(kvp => kvp.Value["type"] == type);
     }
 
     public static List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type)

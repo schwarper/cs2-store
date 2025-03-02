@@ -14,6 +14,7 @@
   "No purchase because team": "{white}您无法购买此物品。您需要加入{red}{0} {white}队伍。",
   "No equip because team": "{white}您无法装备此物品。您需要加入{red}{0} {white}队伍。",
   "You need correct weapon": "{white}你需要 {red}{0} {white}来检查。",
+  "Players' credits are refreshed": "玩家的积分已刷新。",
 
   "t team players": "{green}T阵营{white}玩家",
   "ct team players": "{green}CT阵营{white}玩家",
@@ -62,5 +63,8 @@
   "credits_earned<kill>": "{white}击杀玩家,{gold}金币{white}+{green}{0}{white}.",
 
   "css_model0": "{blue}{0}{white} 开启了强制默认模型",
-  "css_model1": "{blue}{0}{white} 关闭了强制默认模型."
+  "css_model1": "{blue}{0}{white} 关闭了强制默认模型.",
+
+  "OperatorTestLang": "操作员",
+  "AdminSkinsTestLang": "管理员皮肤"
 }

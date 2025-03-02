@@ -14,6 +14,7 @@
   "No purchase because team": "{white}Vous ne pouvez pas acheter cet objet. Vous devez être dans l'équipe {red}{0}.",
   "No equip because team": "{white}Vous ne pouvez pas équiper cet objet. Vous devez être dans l'équipe {red}{0}.",
   "You need correct weapon": "{white}Vous avez besoin de {red}{0} {white}pour inspecter.",
+  "Players' credits are refreshed": "Les crédits des joueurs sont réinitialisés.",
 
   "t team players": "{green}Joueurs de l'équipe {white}T",
   "ct team players": "{green}Joueurs de l'équipe {white}CT",
@@ -62,5 +63,8 @@
   "credits_earned<kill>": "{white}Vous avez gagné {green}{0} crédits {white}pour avoir tué un joueur.",
 
   "css_model0": "{blue}{0}{white} a activé les modèles par default pour les joueurs.",
-  "css_model1": "{blue}{0}{white} a désactivé les modèles par default pour les joueurs."
+  "css_model1": "{blue}{0}{white} a désactivé les modèles par default pour les joueurs.",
+
+  "OperatorTestLang": "Opérateur",
+  "AdminSkinsTestLang": "Skins d'Administrateur"
 }

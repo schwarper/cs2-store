@@ -14,7 +14,7 @@ public static class Item_Bunnyhop
     {
         Item.RegisterType("bunnyhop", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, false);
 
-        if (Item.GetItemsByType("bunnyhop").Count > 0)
+        if (Item.IsAnyItemExistInType("bunnyhop"))
         {
             bunnyhopExists = true;
         }

@@ -28,7 +28,7 @@ public static class ScreenTextMenu
 
         mainMenu ??= menu;
 
-        List<JsonProperty> items = elementData.EnumerateObject().Where(prop => prop.Name != "flag").ToList();
+        List<JsonProperty> items = [.. elementData.EnumerateObject().Where(prop => prop.Name != "flag" && prop.Name != "langname")];
 
         foreach (JsonProperty item in items)
         {
@@ -54,7 +54,9 @@ public static class ScreenTextMenu
                 }
             }
 
-            menu.AddOption(item.Name, (p, o) => OpenMenu(p, item.Name, item.Value, inventory, mainMenu, menu));
+            string categoryName = Menu.GetCategoryName(player, item);
+
+            menu.AddOption(categoryName, (p, o) => OpenMenu(p, categoryName, item.Value, inventory, mainMenu, menu));
         }
 
         if (menu.IsSubMenu)
@@ -87,17 +89,17 @@ public static class ScreenTextMenu
             {
                 player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                 DisplayItemOption(player, item, mainMenu, parentMenu);
-            }, false, item["name"]);
+            }, false, Item.GetItemName(player, item));
         }
         else if (!inventory && !item.IsHidden())
         {
             if (int.Parse(item["price"]) <= 0)
             {
-                menu.AddMenuOption(player, (player, option) => SelectPurchase(player, item, false, mainMenu), false, "menu_store<purchase1>", item["name"]);
+                menu.AddMenuOption(player, (player, option) => SelectPurchase(player, item, false, mainMenu), false, "menu_store<purchase1>", Item.GetItemName(player, item));
             }
             else
             {
-                menu.AddMenuOption(player, (player, option) => SelectPurchase(player, item, true, mainMenu), false, "menu_store<purchase>", item["name"], item["price"]);
+                menu.AddMenuOption(player, (player, option) => SelectPurchase(player, item, true, mainMenu), false, "menu_store<purchase>", Item.GetItemName(player, item), item["price"]);
             }
         }
     }
@@ -122,7 +124,7 @@ public static class ScreenTextMenu
                 {
                     Store.Api.PlayerPurchaseItem(player, item);
                     player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
-                    player.PrintToChatMessage("Purchase Succeeded", item["name"]);
+                    player.PrintToChatMessage("Purchase Succeeded", Item.GetItemName(player, item));
                 }
                 else
                 {
@@ -134,7 +136,7 @@ public static class ScreenTextMenu
 
     public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item, ScreenMenu mainMenu, ScreenMenu parentMenu)
     {
-        ScreenMenu menu = new(item["name"], Instance)
+        ScreenMenu menu = new(Item.GetItemName(player, item), Instance)
         {
             ParentMenu = parentMenu,
             IsSubMenu = true
@@ -149,7 +151,7 @@ public static class ScreenTextMenu
                 player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                 Item.Unequip(player, item, true);
 
-                player.PrintToChatMessage("Purchase Unequip", item["name"]);
+                player.PrintToChatMessage("Purchase Unequip", Item.GetItemName(player, item));
 
                 DisplayItemOption(player, item, mainMenu, parentMenu);
             }, false, "menu_store<unequip>");
@@ -161,7 +163,7 @@ public static class ScreenTextMenu
                 if (Item.Equip(player, item))
                 {
                     player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
-                    player.PrintToChatMessage("Purchase Equip", item["name"]);
+                    player.PrintToChatMessage("Purchase Equip", Item.GetItemName(player, item));
                 }
 
                 DisplayItemOption(player, item, mainMenu, parentMenu);
@@ -182,7 +184,7 @@ public static class ScreenTextMenu
                     {
                         player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                         Item.Sell(player, item);
-                        player.PrintToChatMessage("Item Sell", item["name"]);
+                        player.PrintToChatMessage("Item Sell", Item.GetItemName(player, item));
 
                         MenuAPI.OpenMenu(Instance, player, mainMenu);
                     }, false, "menu_store<sell>", sellingPrice);
@@ -206,7 +208,7 @@ public static class ScreenTextMenu
             IsSubMenu = true
         };
 
-        menu.AddMenuOption(player, (p, o) => { }, true, "menu_store<confirm_item>", item["name"], item["price"]);
+        menu.AddMenuOption(player, (p, o) => { }, true, "menu_store<confirm_item>", Item.GetItemName(player, item), item["price"]);
 
         menu.AddInspectOption(player, item);
 
@@ -239,7 +241,7 @@ public static class ScreenTextMenu
         {
             float waitTime = 0.0f;
 
-            Dictionary<string, Action> inspectActions = new Dictionary<string, Action>
+            Dictionary<string, Action> inspectActions = new()
             {
                 { "playerskin", () => Item_PlayerSkin.Inspect(player, item["uniqueid"]) },
                 { "customweapon", () => Item_CustomWeapon.Inspect(player, item["uniqueid"], item["weapon"]) }

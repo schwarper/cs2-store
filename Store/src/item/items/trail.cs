@@ -22,7 +22,7 @@ public static class Item_Trail
     {
         Item.RegisterType("trail", OnMapStart, ServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
-        if (Item.GetItemsByType("trail").Count > 0)
+        if (Item.IsAnyItemExistInType("trail"))
         {
             trailExists = true;
 

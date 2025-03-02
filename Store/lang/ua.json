@@ -14,6 +14,7 @@
 	"No purchase because team": "{white}Ви не можете придбати цей предмет. Ви повинні бути в команді {red}{0} {white}.",
 	"No equip because team": "{white}Ви не можете екіпірувати цей предмет. Ви повинні бути в команді {red}{0} {white}.",
 	"You need correct weapon": "{white}Вам потрібен {red}{0} {white}для огляду.",
+	"Players' credits are refreshed": "Кредити гравців оновлено.",
 
 	"t team players": "{green}Гравці {white}у команді t team",
 	"ct team players": "{green}Гравці {white}у команді ct team",
@@ -62,5 +63,8 @@
 	"credits_earned<kill>": "{white}Ви заробили {green}{0} кредитів {white}за вбивство гравця.",
 
 	"css_model0": "{blue}{0}{white} увімкнено форсування моделей гравців за замовчуванням.",
-	"css_model1": "{blue}{0}{white} вимкнено вирівнювання моделей гравців за замовчуванням."
+	"css_model1": "{blue}{0}{white} вимкнено вирівнювання моделей гравців за замовчуванням.",
+
+	"OperatorTestLang": "Оператор",
+	"AdminSkinsTestLang": "Адмінскіни"
 }
