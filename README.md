@@ -8,22 +8,16 @@ Discord nickname: schwarper
 
 Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 
-# Warnings
+# Installation
 
-1. If you are using a custom weapon item, the settings should be as follows. You need to set the weapon name in the weapon section. You will also need to set the FollowCS2ServerGuidelines value from the core.json file to false.
-   ```json
-   "1": {
-        "name": "Store Ak47",
-        "uniqueid": "........vmdl",
-        "type": "customweapon",
-        "weapon": "weapon_ak47",
-        "price": "0",
-        "slot": "1",
-        "enable": "true"
-      }
-   ```
-
-2. You need to use [cs2-tags](https://github.com/schwarper/cs2-tags) plugin for tag items. If you are not using it, you will need to upload tagapi files to the cs2-store folder in plugins. If you do use it, it is sufficient to have the api file in the shared file.
+1. Download the plugin:
+* Download the plugin from https://github.com/schwarper/cs2-store/releases.
+2. Install the plugin files:
+* Place the contents of the downloaded zip file in the `addons/counterstrikesharp` folder.
+3. Configure the plugin settings:
+* For the first installation: You will need to change the names of the files in the `addons/counterstrikesharp/configs/plugins/cs2-store/` folder. They should be called 'cs2-store.json' and 'cs2-store.toml'. In the json file you need to set the item setting. In the tomlyn file you need to set the plugin settings. You will also need to set the database settings in this file.
+4. Restart or install the plugin:
+* Restart your server or reload the plugin for the settings to take effect. Send the command `css_plugins reload cs2-store` from the server.
 
 # Approved modules
 [Crash by NaathySz](https://github.com/NaathySz/Store-Crash)
@@ -55,20 +49,6 @@ Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 [Math by NaathySz](https://github.com/NaathySz/Store-MathQuiz)
 
 [Cases by NaathySz](https://github.com/NaathySz/Store-Cases)
-
-# Installation
-
-1. Download the plugin:
-    * Download the plugin from https://github.com/schwarper/cs2-store/releases.
-2. Install the plugin files:
-    * Place the contents of the `plugins` file in the `addons/counterstrikesharp/plugins` folder.
-    * Place the contents of the `shared` file in the `addons/counterstrikesharp/shared` folder.
-3. Restart or load the plugin:
-    * Restart your server or load the plugin using the command: `css_plugins load cs2-store`
-4. Configure the plugin settings:
-    * Once the plugin has loaded successfully, configure your settings in the `cs2-store.json` file located in the `addons/counterstrikesharp/config/plugins/` folder. In this file you can set database information, plugin settings and define items.
-5. Finish the installation:
-    * Restart your server or reload the plugin for the settings to take effect.
 
 # Images
 
