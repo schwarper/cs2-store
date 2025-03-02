@@ -135,9 +135,9 @@ public static class Item_CustomWeapon
 
         if (!string.IsNullOrEmpty(globalname))
         {
-            string[] globalnamesplit = globalname.Split(',');
+            var model = Weapon.GetModelFromGlobalName(globalname);
 
-            Weapon.SetViewModel(player, globalnamesplit.Length == 3 ? globalnamesplit[2] : globalnamesplit[1], activeweapon, false);
+            Weapon.SetViewModel(player, model, activeweapon, false);
         }
 
         return HookResult.Continue;
@@ -145,6 +145,17 @@ public static class Item_CustomWeapon
 
     public static class Weapon
     {
+        public static string GetModelFromGlobalName(string globalname)
+        {
+            string[] globalnamesplit = globalname.Split(',');
+
+            if (!string.IsNullOrEmpty(globalnamesplit[2]))
+            {
+                return globalnamesplit[2];
+            }
+
+            return globalnamesplit[1];
+        }
         public static string GetDesignerName(CBasePlayerWeapon weapon)
         {
             string weaponDesignerName = weapon.DesignerName;
@@ -230,7 +241,6 @@ public static class Item_CustomWeapon
                     if (isEquip)
                     {
                         item.TryGetValue("worldmodel", out string? worldmodel);
-
                         UpdateModel(player, weapon, item["uniqueid"], worldmodel, equip);
                     }
                     else
@@ -298,9 +308,7 @@ public static class Item_CustomWeapon
 
         if (!string.IsNullOrEmpty(globalname))
         {
-            string[] globalnamesplit = globalname.Split(',');
-
-            oldModel = globalnamesplit.Length == 3 ? globalnamesplit[2] : globalnamesplit[1];
+            oldModel = Weapon.GetModelFromGlobalName(globalname);
         }
         else
         {
