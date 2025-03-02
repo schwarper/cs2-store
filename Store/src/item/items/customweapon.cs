@@ -1,10 +1,10 @@
-﻿using CounterStrikeSharp.API;
-using CounterStrikeSharp.API.Core;
+﻿using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Modules.Utils;
+using CounterStrikeSharp.API;
+using static Store.Store;
 using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Memory;
-using CounterStrikeSharp.API.Modules.Utils;
 using System.Runtime.InteropServices;
-using static Store.Store;
 
 namespace Store;
 
@@ -135,9 +135,9 @@ public static class Item_CustomWeapon
 
         if (!string.IsNullOrEmpty(globalname))
         {
-            string model = Weapon.GetModelFromGlobalName(globalname);
+            string model = Weapon.GetFromGlobalName(globalname, Weapon.GlobalNameData.ViewModel);
 
-            Weapon.SetViewModel(player, model, activeweapon, false);
+            Weapon.SetViewModel(player, model, activeweapon, true);
         }
 
         return HookResult.Continue;
@@ -145,17 +145,12 @@ public static class Item_CustomWeapon
 
     public static class Weapon
     {
-        public static string GetModelFromGlobalName(string globalname)
+        public enum GlobalNameData
         {
-            string[] globalnamesplit = globalname.Split(',');
-
-            if (!string.IsNullOrEmpty(globalnamesplit[2]))
-            {
-                return globalnamesplit[2];
-            }
-
-            return globalnamesplit[1];
-        }
+            ViewModelDefault,
+            ViewModel,
+            WorldModel
+        };
         public static string GetDesignerName(CBasePlayerWeapon weapon)
         {
             string weaponDesignerName = weapon.DesignerName;
@@ -172,12 +167,26 @@ public static class Item_CustomWeapon
 
             return weaponDesignerName;
         }
+        public static string GetFromGlobalName(string globalname, GlobalNameData data)
+        {
+            string[] globalnamesplit = globalname.Split(',');
+
+            return data switch
+            {
+                GlobalNameData.ViewModelDefault => globalnamesplit[0],
+                GlobalNameData.ViewModel => globalnamesplit[1],
+                GlobalNameData.WorldModel => !string.IsNullOrEmpty(globalnamesplit[2]) ? globalnamesplit[2] : globalnamesplit[1],
+                _ => throw new NotImplementedException(),
+            };
+        }
         public static unsafe string GetViewModel(CCSPlayerController player)
         {
             return ViewModel(player)?.VMName ?? string.Empty;
         }
         public static unsafe void SetViewModel(CCSPlayerController player, string model, CBasePlayerWeapon activeWeapon, bool updateDefaultWeapon)
         {
+            ViewModel(player)?.SetModel(model);
+            /*
             if (updateDefaultWeapon)
             {
                 string defaultWeapon = GetViewModel(player);
@@ -197,6 +206,11 @@ public static class Item_CustomWeapon
             {
                 ViewModel(player)?.SetModel(model);
             }
+            */
+        }
+        public static void SetWorldModel(CBasePlayerWeapon weapon, string model)
+        {
+            weapon.SetModel(model);
         }
         public static void UpdateModel(CCSPlayerController player, CBasePlayerWeapon weapon, string model, string? worldmodel, bool update)
         {
@@ -218,14 +232,14 @@ public static class Item_CustomWeapon
                 return;
             }
 
-            string[] globalnamedata = globalname.Split(',');
+            var oldmodel = GetFromGlobalName(globalname, GlobalNameData.ViewModelDefault);
 
             weapon.Globalname = string.Empty;
-            weapon.SetModel(globalnamedata[0]);
+            weapon.SetModel(oldmodel);
 
             if (update)
             {
-                SetViewModel(player, globalnamedata[0], weapon, false);
+                SetViewModel(player, oldmodel, weapon, false);
             }
         }
         public static bool HandleEquip(CCSPlayerController player, Dictionary<string, string> item, bool isEquip)
@@ -308,7 +322,7 @@ public static class Item_CustomWeapon
 
         if (!string.IsNullOrEmpty(globalname))
         {
-            oldModel = Weapon.GetModelFromGlobalName(globalname);
+            oldModel = Weapon.GetFromGlobalName(globalname, Weapon.GlobalNameData.ViewModel);
         }
         else
         {
@@ -317,7 +331,7 @@ public static class Item_CustomWeapon
 
         Weapon.SetViewModel(player, model, activeWeapon, true);
 
-        Instance.AddTimer(5.0f, () =>
+        Instance.AddTimer(3.0f, () =>
         {
             if (player.IsValid && player.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value == activeWeapon)
             {
