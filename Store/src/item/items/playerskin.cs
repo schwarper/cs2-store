@@ -247,7 +247,7 @@ public static class Item_PlayerSkin
         return (itemdata["model"], itemdata["disable_leg"] is "true" or "1", skn);
     }
 
-    public static void Inspect(CCSPlayerController player, string model)
+    public static void Inspect(CCSPlayerController player, string model, string? skin)
     {
         CBaseModelEntity? entity = Utilities.CreateEntityByName<CBaseModelEntity>("prop_dynamic");
 
@@ -277,6 +277,11 @@ public static class Item_PlayerSkin
             }
 
             entity.SetModel(model);
+
+            if (skin != null)
+            {
+                entity.AcceptInput("Skin", null, entity, skin);
+            }
         });
 
         Instance.InspectList[entity] = player;

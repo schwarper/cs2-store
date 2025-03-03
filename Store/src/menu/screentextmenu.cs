@@ -241,23 +241,13 @@ public static class ScreenTextMenu
         {
             float waitTime = 0.0f;
 
-            Dictionary<string, Action> inspectActions = new()
-            {
-                { "playerskin", () => Item_PlayerSkin.Inspect(player, item["model"]) },
-                { "customweapon", () => Item_CustomWeapon.Inspect(player, item["model"], item["weapon"]) }
-            };
-
             menu.AddMenuOption(player, (p, o) =>
             {
                 if (Server.CurrentTime < waitTime)
                     return;
 
                 waitTime = Server.CurrentTime + 5.0f;
-
-                if (inspectActions.TryGetValue(item["type"], out Action? action))
-                {
-                    action();
-                }
+                Menu.InspectAction(player, item, item["type"]);
             }, false, "menu_store<inspect>");
         }
     }
