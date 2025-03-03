@@ -221,8 +221,8 @@ public static class CenterMenu
 
             Dictionary<string, Action> inspectActions = new()
             {
-                { "playerskin", () => Item_PlayerSkin.Inspect(player, item["uniqueid"]) },
-                { "customweapon", () => Item_CustomWeapon.Inspect(player, item["uniqueid"], item["weapon"]) }
+                { "playerskin", () => Item_PlayerSkin.Inspect(player, item["model"]) },
+                { "customweapon", () => Item_CustomWeapon.Inspect(player, item["model"], item["weapon"]) }
             };
 
             menu.AddMenuOption(player, (p, o) =>

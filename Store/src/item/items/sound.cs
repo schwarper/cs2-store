@@ -19,7 +19,7 @@ public static class Item_Sound
 
         foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
         {
-            manifest.AddResource(item.Value["uniqueid"]);
+            manifest.AddResource(item.Value["sound"]);
         }
     }
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
@@ -31,7 +31,7 @@ public static class Item_Sound
                 continue;
             }
 
-            target.ExecuteClientCommand($"play {item["uniqueid"]}");
+            target.ExecuteClientCommand($"play {item["sound"]}");
         }
 
         return true;

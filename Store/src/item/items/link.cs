@@ -17,7 +17,7 @@ public static class Item_Link
     }
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        player.ExecuteClientCommandFromServer(item["uniqueid"]);
+        player.ExecuteClientCommandFromServer(item["link"]);
 
         return true;
     }

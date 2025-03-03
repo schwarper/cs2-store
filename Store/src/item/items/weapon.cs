@@ -23,7 +23,7 @@ public static class Item_Weapon
             return false;
         }
 
-        player.GiveNamedItem(item["uniqueid"]);
+        player.GiveNamedItem(item["weapon"]);
 
         return true;
     }

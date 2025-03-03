@@ -28,7 +28,7 @@ public static class Item_Equipment
 
         foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
         {
-            manifest.AddResource(item.Value["uniqueid"]);
+            manifest.AddResource(item.Value["model"]);
         }
     }
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
@@ -50,6 +50,7 @@ public static class Item_Equipment
     public static void Equip(CCSPlayerController player)
     {
         UnEquip(player);
+
         Instance.AddTimer(0.1f, () =>
         {
             Store_Equipment? playerItems = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "equipment");
@@ -61,7 +62,7 @@ public static class Item_Equipment
             player.PlayerPawn.Value!.Effects = 1;
             Utilities.SetStateChanged(player.PlayerPawn.Value!, "CBaseEntity", "m_fEffects");
 
-            CreateItem(player, playerItems.UniqueId);
+            CreateItem(player, itemdata["model"]);
         });
     }
     public static void UnEquip(CCSPlayerController player)

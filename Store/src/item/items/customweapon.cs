@@ -37,7 +37,7 @@ public static class Item_CustomWeapon
 
         foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
         {
-            manifest.AddResource(item.Value["uniqueid"]);
+            manifest.AddResource(item.Value["viewmodel"]);
 
             if (item.Value.TryGetValue("worldmodel", out string? worldmodel) && !string.IsNullOrEmpty(worldmodel))
             {
@@ -110,7 +110,7 @@ public static class Item_CustomWeapon
                 }
 
                 itemdata.TryGetValue("worldmodel", out string? worldmodel);
-                Weapon.UpdateModel(player, weapon, itemdata["uniqueid"], worldmodel, weapon == activeweapon);
+                Weapon.UpdateModel(player, weapon, itemdata["viewmodel"], worldmodel, weapon == activeweapon);
             }
         });
     }
@@ -255,7 +255,7 @@ public static class Item_CustomWeapon
                     if (isEquip)
                     {
                         item.TryGetValue("worldmodel", out string? worldmodel);
-                        UpdateModel(player, weapon, item["uniqueid"], worldmodel, equip);
+                        UpdateModel(player, weapon, item["viewmodel"], worldmodel, equip);
                     }
                     else
                     {

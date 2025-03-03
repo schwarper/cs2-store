@@ -47,9 +47,9 @@ public static class Item_Trail
 
         foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
         {
-            if (item.Value["uniqueid"].Contains(".vpcf"))
+            if (item.Value.TryGetValue("model", out string? model) && !string.IsNullOrEmpty(model))
             {
-                manifest.AddResource(item.Value["uniqueid"]);
+                manifest.AddResource(model);
             }
         }
     }
@@ -130,7 +130,7 @@ public static class Item_Trail
         }
         else
         {
-            CreateParticle(absorigin, playertrail.UniqueId, lifetime, itemdata, player);
+            CreateParticle(absorigin, itemdata["model"], lifetime, itemdata, player);
         }
     }
 

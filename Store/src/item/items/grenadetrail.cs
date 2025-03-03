@@ -29,7 +29,7 @@ public static class Item_GrenadeTrail
 
         foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
         {
-            manifest.AddResource(item.Value["uniqueid"]);
+            manifest.AddResource(item.Value["model"]);
         }
     }
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
@@ -95,7 +95,7 @@ public static class Item_GrenadeTrail
                 acceptinputvalue = "Start";
             }
 
-            particle.EffectName = item.UniqueId;
+            particle.EffectName = itemdata["model"];
             particle.DispatchSpawn();
             particle.Teleport(grenade.AbsOrigin!, new QAngle(), new Vector());
             particle.AcceptInput(acceptinputvalue);

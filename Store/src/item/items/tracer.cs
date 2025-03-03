@@ -27,7 +27,7 @@ public static class Item_Tracer
 
         foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
         {
-            manifest.AddResource(item.Value["uniqueid"]);
+            manifest.AddResource(item.Value["model"]);
         }
     }
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
@@ -73,7 +73,7 @@ public static class Item_Tracer
             acceptinputvalue = "Start";
         }
 
-        entity.SetModel(playertracer.UniqueId);
+        entity.SetModel(itemdata["model"]);
         entity.DispatchSpawn();
         entity.AcceptInput(acceptinputvalue!);
 

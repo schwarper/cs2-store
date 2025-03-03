@@ -5,7 +5,8 @@
         "1": {
           "name": "Operator",
           "langname": "OperatorTestLang",
-          "uniqueid": "characters/models/ctm_fbi/ctm_fbi_variantf.vmdl",
+          "uniqueid": "operator",
+          "model": "characters/models/ctm_fbi/ctm_fbi_variantf.vmdl",
           "armModel": "",
           "type": "playerskin",
           "price": "1000",
@@ -21,7 +22,8 @@
         "langname": "AdminSkinsTestLang",
         "1": {
           "name": "Fernandez Frogman [CT]",
-          "uniqueid": "characters/models/ctm_diver/ctm_diver_variantb.vmdl",
+          "uniqueid": "frogman",
+          "model": "characters/models/ctm_diver/ctm_diver_variantb.vmdl",
           "armModel": "",
           "type": "playerskin",
           "price": "1000",
@@ -34,7 +36,8 @@
         },
         "2": {
           "name": "Lieutenant Rex Krikey [ROOT-T]",
-          "uniqueid": "characters/models/ctm_diver/ctm_diver_variantc.vmdl",
+          "uniqueid": "rexkrikey",
+          "model": "characters/models/ctm_diver/ctm_diver_variantc.vmdl",
           "armModel": "",
           "type": "playerskin",
           "price": "1000",
@@ -49,7 +52,8 @@
       "Free Skins": {
         "1": {
           "name": "Number K [T-CT]",
-          "uniqueid": "characters/models/tm_professional/tm_professional_vari.vmdl",
+          "uniqueid": "numberk",
+          "model": "characters/models/tm_professional/tm_professional_vari.vmdl",
           "armModel": "",
           "type": "playerskin",
           "price": "0",
@@ -64,7 +68,8 @@
     "Buy Weapon": {
       "1": {
         "name": "AK47",
-        "uniqueid": "weapon_ak47",
+        "uniqueid": "buyak47",
+        "weapon": "weapon_ak47",
         "type": "weapon",
         "price": "1000",
         "no_pistol_round": "true",
@@ -72,7 +77,8 @@
       },
       "2": {
         "name": "Deagle [T]",
-        "uniqueid": "weapon_deagle",
+        "uniqueid": "buydeagle",
+        "weapon": "weapon_deagle",
         "type": "weapon",
         "price": "1000",
         "team": "2",
@@ -81,7 +87,8 @@
       },
       "3": {
         "name": "Deagle [CT]",
-        "uniqueid": "weapon_deagle",
+        "uniqueid": "buydeagle",
+        "weapon": "weapon_deagle",
         "type": "weapon",
         "price": "1000",
         "team": "3",
@@ -178,7 +185,8 @@
       },
       "5": {
         "name": "Sound",
-        "uniqueid": "sounds/ambient/ambience/rainscapes/thunder_close01.vsnd_c",
+        "uniqueid": "thunderclose",
+        "sound": "sounds/ambient/ambience/rainscapes/thunder_close01.vsnd_c",
         "type": "sound",
         "price": "1000",
         "enable": "true"
@@ -215,7 +223,8 @@
       "Player Trail": {
         "1": {
           "name": "Energycirc Trail",
-          "uniqueid": "particles/ui/status_levels/ui_status_level_8_energycirc.vpcf",
+          "uniqueid": "energycircltrail",
+          "model": "particles/ui/status_levels/ui_status_level_8_energycirc.vpcf",
           "type": "trail",
           "price": "0",
           "slot": "1",
@@ -250,7 +259,8 @@
       "Grenade Trail": {
         "1": {
           "name": "Molotov effect",
-          "uniqueid": "particles/inferno_fx/molotov_fire01.vpcf",
+          "uniqueid": "molotovfire01",
+          "model": "particles/inferno_fx/molotov_fire01.vpcf",
           "type": "grenadetrail",
           "price": "0",
           "slot": "1",
@@ -262,7 +272,8 @@
     "Tracer": {
       "1": {
         "name": "Energycirc Tracer",
-        "uniqueid": "particles/ui/status_levels/ui_status_level_8_energycirc.vpcf",
+        "uniqueid": "energycirctracer",
+        "model": "particles/ui/status_levels/ui_status_level_8_energycirc.vpcf",
         "type": "tracer",
         "price": "0",
         "slot": "1",
@@ -294,7 +305,8 @@
       "AK47": {
         "1": {
           "name": "Default AK47",
-          "uniqueid": "weapons/models/ak47/weapon_rif_ak47.vmdl",
+          "uniqueid": "defaultak47cw",
+          "viewmodel": "weapons/models/ak47/weapon_rif_ak47.vmdl",
           "worldmodel": "",
           "type": "customweapon",
           "weapon": "weapon_ak47",

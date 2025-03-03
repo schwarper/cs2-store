@@ -43,7 +43,7 @@ public static class Item_PlayerSkin
 
         foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
         {
-            manifest.AddResource(item.Value["uniqueid"]);
+            manifest.AddResource(item.Value["model"]);
 
             if (item.Value.TryGetValue("armModel", out string? armModel) && !string.IsNullOrEmpty(armModel))
             {
@@ -65,7 +65,7 @@ public static class Item_PlayerSkin
 
         item.TryGetValue("skin", out string? skn);
 
-        player.ChangeModelDelay(item["uniqueid"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]), skn);
+        player.ChangeModelDelay(item["model"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]), skn);
 
         return true;
     }
@@ -244,7 +244,7 @@ public static class Item_PlayerSkin
 
         itemdata.TryGetValue("skin", out string? skn);
 
-        return (item.UniqueId, itemdata["disable_leg"] is "true" or "1", skn);
+        return (itemdata["model"], itemdata["disable_leg"] is "true" or "1", skn);
     }
 
     public static void Inspect(CCSPlayerController player, string model)
