@@ -7,32 +7,32 @@ namespace Store;
 
 public static class GameRules
 {
-    private static CCSGameRulesProxy? GameRulesProxy;
-    private static readonly ConVar mp_halftime = ConVar.Find("mp_halftime")!;
-    private static readonly ConVar mp_maxrounds = ConVar.Find("mp_maxrounds")!;
+    private static CCSGameRulesProxy? _gameRulesProxy;
+    private static readonly ConVar _mpHalftime = ConVar.Find("mp_halftime")!;
+    private static readonly ConVar _mpMaxrounds = ConVar.Find("mp_maxrounds")!;
 
     public static bool IgnoreWarmUp()
     {
-        if (GameRulesProxy?.IsValid is not true)
+        if (_gameRulesProxy?.IsValid != true)
         {
-            GameRulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
+            _gameRulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
         }
 
-        return Config.Credits.IgnoreWarmup && (GameRulesProxy?.GameRules?.WarmupPeriod ?? false);
+        return Config.Credits.IgnoreWarmup && (_gameRulesProxy?.GameRules?.WarmupPeriod ?? false);
     }
 
     public static bool IsPistolRound()
     {
-        if (GameRulesProxy?.IsValid is not true)
+        if (_gameRulesProxy?.IsValid != true)
         {
-            GameRulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
+            _gameRulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
         }
 
-        bool halftime = mp_halftime.GetPrimitiveValue<bool>();
-        int maxrounds = mp_maxrounds.GetPrimitiveValue<int>();
+        bool isHalftime = _mpHalftime.GetPrimitiveValue<bool>();
+        int maxRounds = _mpMaxrounds.GetPrimitiveValue<int>();
 
-        return GameRulesProxy?.GameRules?.TotalRoundsPlayed == 0 ||
-               (halftime && maxrounds / 2 == GameRulesProxy?.GameRules?.TotalRoundsPlayed) ||
-               (GameRulesProxy?.GameRules?.GameRestart ?? false);
+        return _gameRulesProxy?.GameRules?.TotalRoundsPlayed == 0 ||
+               (isHalftime && maxRounds / 2 == _gameRulesProxy?.GameRules?.TotalRoundsPlayed) ||
+               (_gameRulesProxy?.GameRules?.GameRestart ?? false);
     }
 }

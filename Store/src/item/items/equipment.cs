@@ -8,7 +8,7 @@ namespace Store;
 
 public static class Item_Equipment
 {
-    private readonly static Dictionary<ulong, CBaseModelEntity> Equipment = [];
+    private static readonly Dictionary<ulong, CBaseModelEntity> _equipment = [];
 
     public static void OnPluginStart()
     {
@@ -19,9 +19,9 @@ public static class Item_Equipment
             Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
         }
     }
-    public static void OnMapStart()
-    {
-    }
+
+    public static void OnMapStart() { }
+
     public static void OnServerPrecacheResources(ResourceManifest manifest)
     {
         List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("equipment");
@@ -31,17 +31,16 @@ public static class Item_Equipment
             manifest.AddResource(item.Value["model"]);
         }
     }
+
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         Equip(player);
         return true;
     }
+
     public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
-        if (!update)
-        {
-            return true;
-        }
+        if (!update) return true;
 
         UnEquip(player);
         return true;
@@ -56,21 +55,24 @@ public static class Item_Equipment
             Store_Equipment? playerItems = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "equipment");
             if (playerItems == null) return;
 
-            Dictionary<string, string>? itemdata = Item.GetItem(playerItems.UniqueId);
-            if (itemdata == null) return;
+            Dictionary<string, string>? itemData = Item.GetItem(playerItems.UniqueId);
+            if (itemData == null) return;
 
-            player.PlayerPawn.Value!.Effects = 1;
-            Utilities.SetStateChanged(player.PlayerPawn.Value!, "CBaseEntity", "m_fEffects");
+            if (player.PlayerPawn?.Value is not { } pawn) return;
 
-            CreateItem(player, itemdata["model"]);
+            pawn.Effects = 1;
+            Utilities.SetStateChanged(pawn, "CBaseEntity", "m_fEffects");
+
+            CreateItem(player, itemData["model"]);
         });
     }
+
     public static void UnEquip(CCSPlayerController player)
     {
-        if (Equipment.TryGetValue(player.SteamID, out CBaseModelEntity? entity))
+        if (_equipment.TryGetValue(player.SteamID, out CBaseModelEntity? entity))
         {
             if (entity.IsValid) entity.Remove();
-            Equipment.Remove(player.SteamID);
+            _equipment.Remove(player.SteamID);
         }
     }
 
@@ -80,11 +82,13 @@ public static class Item_Equipment
 
         Instance.AddTimer(0.1f, () =>
         {
-            entity!.Globalname = $"{player.SteamID}({itemName})#{RandomString(6)}";
+            if (entity == null) return;
+
+            entity.Globalname = $"{player.SteamID}({itemName})#{RandomString(6)}";
             entity.SetModel(itemName);
             entity.DispatchSpawn();
             entity.AcceptInput("FollowEntity", player.PlayerPawn?.Value!, player.PlayerPawn?.Value!, "!activator");
-            Equipment[player.SteamID] = entity;
+            _equipment[player.SteamID] = entity;
         });
     }
 
@@ -98,10 +102,6 @@ public static class Item_Equipment
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         Random random = new();
-        char[] result = new char[length];
-        for (int i = 0; i < length; i++)
-            result[i] = chars[random.Next(chars.Length)];
-
-        return new string(result);
+        return new string([.. Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)])]);
     }
 }

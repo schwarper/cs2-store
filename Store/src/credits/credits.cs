@@ -6,51 +6,39 @@ namespace Store;
 
 public static class Credits
 {
-    public static int Get(CCSPlayerController player)
-    {
-        return Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == player.SteamID)?.Credits ?? -1;
-    }
-    public static int GetOriginal(CCSPlayerController player)
-    {
-        return Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == player.SteamID)?.OriginalCredits ?? -1;
-    }
+    public static Store_Player? GetStorePlayer(CCSPlayerController player) =>
+        Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == player.SteamID);
+
+    public static int Get(CCSPlayerController player) =>
+        GetStorePlayer(player)?.Credits ?? -1;
+
+    public static int GetOriginal(CCSPlayerController player) =>
+        GetStorePlayer(player)?.OriginalCredits ?? -1;
+
     public static int SetOriginal(CCSPlayerController player, int credits)
     {
-        Store_Player? storePlayer = Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == player.SteamID);
+        Store_Player? storePlayer = GetStorePlayer(player);
+        if (storePlayer == null) return -1;
 
-        if (storePlayer != null)
-        {
-            storePlayer.OriginalCredits = credits;
-
-            return storePlayer.OriginalCredits;
-        }
-
-        return -1;
+        storePlayer.OriginalCredits = credits;
+        return storePlayer.OriginalCredits;
     }
+
     public static int Set(CCSPlayerController player, int credits)
     {
-        Store_Player? storePlayer = Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == player.SteamID);
+        Store_Player? storePlayer = GetStorePlayer(player);
+        if (storePlayer == null) return -1;
 
-        if (storePlayer != null)
-        {
-            storePlayer.Credits = credits;
-
-            return storePlayer.Credits;
-        }
-
-        return -1;
+        storePlayer.Credits = credits;
+        return storePlayer.Credits;
     }
+
     public static int Give(CCSPlayerController player, int credits)
     {
-        Store_Player? storePlayer = Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == player.SteamID);
+        Store_Player? storePlayer = GetStorePlayer(player);
+        if (storePlayer == null) return -1;
 
-        if (storePlayer != null)
-        {
-            storePlayer.Credits = Math.Max(storePlayer.Credits + credits, 0);
-
-            return storePlayer.Credits;
-        }
-
-        return -1;
+        storePlayer.Credits = Math.Max(storePlayer.Credits + credits, 0);
+        return storePlayer.Credits;
     }
 }

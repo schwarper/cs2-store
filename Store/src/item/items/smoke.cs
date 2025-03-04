@@ -14,60 +14,35 @@ public static class Item_Smoke
     public static void OnPluginStart()
     {
         Item.RegisterType("smoke", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+        smokeExists = Item.IsAnyItemExistInType("smoke");
+    }
 
-        if (Item.IsAnyItemExistInType("smoke"))
-        {
-            smokeExists = true;
-        }
-    }
-    public static void OnMapStart()
-    {
-    }
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
-    {
-    }
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
-    {
-        return true;
-    }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
-    {
-        return true;
-    }
+    public static void OnMapStart() { }
+
+    public static void OnServerPrecacheResources(ResourceManifest manifest) { }
+
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item) => true;
+
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
+
     public static void OnEntityCreated(CEntityInstance entity)
     {
-        if (!smokeExists)
-        {
+        if (!smokeExists || entity.DesignerName != "smokegrenade_projectile")
             return;
-        }
-
-        if (entity.DesignerName != "smokegrenade_projectile")
-        {
-            return;
-        }
 
         CSmokeGrenadeProjectile grenade = new(entity.Handle);
-
         if (grenade.Handle == IntPtr.Zero)
-        {
             return;
-        }
 
         Server.NextFrame(() =>
         {
             CBasePlayerController? player = grenade.Thrower.Value?.Controller.Value;
-
             if (player == null)
-            {
                 return;
-            }
 
             Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "smoke");
-
             if (item == null)
-            {
                 return;
-            }
 
             if (item.UniqueId == "colorsmoke")
             {
@@ -78,14 +53,10 @@ public static class Item_Smoke
             else
             {
                 Dictionary<string, string>? itemdata = Item.GetItem(item.UniqueId);
-
                 if (itemdata == null)
-                {
                     return;
-                }
 
                 string[] colorValues = itemdata["color"].Split(' ');
-
                 grenade.SmokeColor.X = float.Parse(colorValues[0], CultureInfo.InvariantCulture);
                 grenade.SmokeColor.Y = float.Parse(colorValues[1], CultureInfo.InvariantCulture);
                 grenade.SmokeColor.Z = float.Parse(colorValues[2], CultureInfo.InvariantCulture);

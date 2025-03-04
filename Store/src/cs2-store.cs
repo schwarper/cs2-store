@@ -14,7 +14,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public override string ModuleVersion => "1.9";
     public override string ModuleAuthor => "schwarper";
 
-    public Item_Config Config { get; set; } = new Item_Config();
+    public Item_Config Config { get; set; } = new();
     public List<Store_Player> GlobalStorePlayers { get; set; } = [];
     public List<Store_Item> GlobalStorePlayerItems { get; set; } = [];
     public List<Store_Equipment> GlobalStorePlayerEquipments { get; set; } = [];
@@ -31,7 +31,6 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public override void Load(bool hotReload)
     {
         Capabilities.RegisterPluginCapability(IStoreApi.Capability, () => Api);
-
         Instance = this;
 
         Event.Load();
@@ -59,11 +58,15 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
 
         if (hotReload)
         {
-            foreach (CCSPlayerController player in Utilities.GetPlayers())
+            HashSet<string> screenMenuNames = ["worldtext", "screen", "screenmenu"];
+
+            Utilities.GetPlayers().ForEach(player =>
             {
                 Database.LoadPlayer(player);
-                MenuAPI.CloseActiveMenu(player);
-            }
+
+                if (screenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
+                    MenuAPI.CloseActiveMenu(player);
+            });
         }
     }
 
@@ -71,15 +74,9 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     {
         Event.Unload();
 
-        HashSet<string> ScreenMenuNames = ["worldtext", "screen", "screenmenu"];
-
-        if (ScreenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
-        {
-            foreach (CCSPlayerController player in Utilities.GetPlayers())
-            {
-                MenuAPI.CloseActiveMenu(player);
-            }
-        }
+        HashSet<string> screenMenuNames = ["worldtext", "screen", "screenmenu"];
+        if (screenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
+            Utilities.GetPlayers().ForEach(player => MenuAPI.CloseActiveMenu(player));
     }
 
     public void OnConfigParsed(Item_Config config)
@@ -87,23 +84,16 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
         Config_Config.Load();
 
         if (config.Items.ValueKind != JsonValueKind.Object)
-        {
             throw new JsonException();
-        }
 
-        Dictionary<string, Dictionary<string, string>> itemsDictionary = [];
-
-        foreach (JsonProperty category in config.Items.EnumerateObject())
-        {
-            ExtractItems(category.Value, itemsDictionary);
-        }
-
-        Items = itemsDictionary;
+        Items = ExtractItems(config.Items);
         Config = config;
     }
 
-    public static void ExtractItems(JsonElement category, Dictionary<string, Dictionary<string, string>> itemsDictionary)
+    public static Dictionary<string, Dictionary<string, string>> ExtractItems(JsonElement category)
     {
+        Dictionary<string, Dictionary<string, string>> itemsDictionary = [];
+
         foreach (JsonProperty subItem in category.EnumerateObject())
         {
             if (subItem.Value.ValueKind == JsonValueKind.Object)
@@ -111,20 +101,20 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
                 if (subItem.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
                 {
                     string uniqueId = uniqueIdElement.GetString() ?? $"unknown_{subItem.Name}";
-                    Dictionary<string, string> itemData = [];
-
-                    foreach (JsonProperty property in subItem.Value.EnumerateObject())
-                    {
-                        itemData[property.Name] = property.Value.ToString();
-                    }
+                    Dictionary<string, string> itemData = subItem.Value.EnumerateObject()
+                        .ToDictionary(prop => prop.Name, prop => prop.Value.ToString());
 
                     itemsDictionary[uniqueId] = itemData;
                 }
                 else
                 {
-                    ExtractItems(subItem.Value, itemsDictionary);
+                    Dictionary<string, Dictionary<string, string>> nestedItems = ExtractItems(subItem.Value);
+                    foreach (KeyValuePair<string, Dictionary<string, string>> nestedItem in nestedItems)
+                        itemsDictionary[nestedItem.Key] = nestedItem.Value;
                 }
             }
         }
+
+        return itemsDictionary;
     }
 }

@@ -7,46 +7,34 @@ namespace Store;
 
 public static class Item_Godmode
 {
-    public static void OnPluginStart()
-    {
+    public static void OnPluginStart() =>
         Item.RegisterType("godmode", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
-    }
-    public static void OnMapStart()
-    {
-    }
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
-    {
-    }
+
+    public static void OnMapStart() { }
+
+    public static void OnServerPrecacheResources(ResourceManifest manifest) { }
+
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!float.TryParse(item["godmodeTimerValue"], CultureInfo.InvariantCulture, out float godmode))
+        if (!float.TryParse(item["godmodeTimerValue"], CultureInfo.InvariantCulture, out float godmodeTimerValue))
         {
             return false;
         }
 
-        CCSPlayerPawn? playerPawn = player.PlayerPawn.Value;
+        if (player.PlayerPawn?.Value is not { } playerPawn) return false;
 
-        if (playerPawn == null)
+        if (godmodeTimerValue > 0.0f)
         {
-            return false;
-        }
-
-        if (godmode > 0.0)
-        {
-            Instance.AddTimer(godmode, () =>
+            Instance.AddTimer(godmodeTimerValue, () =>
             {
                 playerPawn.TakesDamage = true;
-
                 player.PrintToChatMessage("Godmode expired");
             });
         }
 
         playerPawn.TakesDamage = false;
+        return true;
+    }
 
-        return true;
-    }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
-    {
-        return true;
-    }
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
 }

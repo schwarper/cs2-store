@@ -2,8 +2,8 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
-using CounterStrikeSharp.API.Modules.Entities;
 using static Store.Config_Config;
+using static Store.FindTarget;
 using static Store.Store;
 
 namespace Store;
@@ -14,7 +14,7 @@ public static class Command
     {
         Config_Commands config = Config.Commands;
 
-        Dictionary<IEnumerable<string>, (string description, CommandInfo.CommandCallback handler)> commands = new()
+        Dictionary<IEnumerable<string>, (string Description, CommandInfo.CommandCallback Handler)> commands = new()
         {
             {config.Credits, ("Show credits", Command_Credits)},
             {config.Store, ("Store menu", Command_Store)},
@@ -26,11 +26,11 @@ public static class Command
             {config.RefreshPlayersCredits, ("Refresh players' credits", Command_RefreshPlayersCredits)}
         };
 
-        foreach (KeyValuePair<IEnumerable<string>, (string description, CommandInfo.CommandCallback handler)> commandPair in commands)
+        foreach ((IEnumerable<string> commandList, (string description, CommandInfo.CommandCallback handler)) in commands)
         {
-            foreach (string command in commandPair.Key)
+            foreach (string command in commandList)
             {
-                Instance.AddCommand($"css_{command}", commandPair.Value.description, commandPair.Value.handler);
+                Instance.AddCommand($"css_{command}", description, handler);
             }
         }
     }
@@ -38,10 +38,7 @@ public static class Command
     [CommandHelper(minArgs: 0, whoCanExecute: CommandUsage.CLIENT_ONLY)]
     public static void Command_Credits(CCSPlayerController? player, CommandInfo command)
     {
-        if (player == null)
-        {
-            return;
-        }
+        if (player == null) return;
 
         player.PrintToChatMessage("css_credits", Credits.Get(player));
     }
@@ -58,103 +55,66 @@ public static class Command
     [RequiresPermissions("@css/root")]
     public static void Command_GiveCredits(CCSPlayerController? player, CommandInfo command)
     {
-        (List<CCSPlayerController> players, string targetname) = FindTarget.Find(command, 2, false, true);
-
-        if (players == null)
+        if (!int.TryParse(command.GetArg(2), out int credits))
         {
-            if (!SteamID.TryParse(command.GetArg(1), out SteamID? steamId) || steamId == null)
-            {
-                command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be a steamid"]);
-                return;
-            }
-
-            if (!int.TryParse(command.GetArg(2), out int credits))
-            {
-                command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be an integer"]);
-                return;
-            }
-
-            StoreApi.Store.Store_Player? playerdata = Instance.GlobalStorePlayers.SingleOrDefault(player => player.SteamID == steamId.SteamId64);
-
-            if (playerdata == null)
-            {
-                command.ReplyToCommand(Config.Tag + Instance.Localizer["No matching client"]);
-                return;
-            }
-
-            playerdata.Credits += credits;
-
-            Database.ExecuteAsync("UPDATE store_players SET Credits = Credits + @Credits WHERE SteamId = @SteamId;", new { Credits = credits, @SteamID = steamId.SteamId64 });
-
-            Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_givecredits<steamid>", player?.PlayerName ?? "Console", steamId.SteamId64, credits]);
+            command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["Must be an integer"]}");
             return;
         }
 
-        if (!int.TryParse(command.GetArg(2), out int value))
+        TargetFind target = Find(command, false, true);
+
+        if (string.IsNullOrEmpty(target.TargetName)) return;
+
+        if (target.StorePlayer != null)
         {
-            command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be an integer"]);
+            target.StorePlayer.Credits += credits;
+
+            Database.ExecuteAsync("UPDATE store_players SET Credits = Credits + @Credits WHERE SteamId = @SteamId;", new { Credits = credits, target.StorePlayer.SteamID });
+
+            Server.PrintToChatAll($"{Config.Tag}{Instance.Localizer["css_givecredits<steamid>", player?.PlayerName ?? "Console", target.TargetName, credits]}");
             return;
         }
 
-        foreach (CCSPlayerController target in players)
+        foreach (CCSPlayerController targetPlayer in target.Players)
         {
-            Credits.Give(target, value);
+            Credits.Give(targetPlayer, credits);
         }
 
-        if (players.Count == 1)
-        {
-            Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_givecredits<player>", player?.PlayerName ?? "Console", targetname, value]);
-        }
-        else
-        {
-            Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_givecredits<multiple>", player?.PlayerName ?? "Console", targetname, value]);
-        }
+        Server.PrintToChatAll($"{Config.Tag}{Instance.Localizer[target.Players.Count == 1 ? "css_givecredits<player>" : "css_givecredits<multiple>", player?.PlayerName ?? "Console", target.TargetName, credits]}");
     }
 
     [CommandHelper(minArgs: 2, "<name, #userid> <credits>", whoCanExecute: CommandUsage.CLIENT_ONLY)]
     public static void Command_Gift(CCSPlayerController? player, CommandInfo command)
     {
-        if (player == null)
-        {
-            return;
-        }
+        if (player == null) return;
 
         if (Instance.GlobalGiftTimeout[player] > Server.CurrentTime)
         {
-            command.ReplyToCommand(Config.Tag + Instance.Localizer["Gift timeout", Math.Ceiling(Instance.GlobalGiftTimeout[player] - Server.CurrentTime)]);
-            return;
-        }
-
-        (List<CCSPlayerController> players, _) = FindTarget.Find(command, 2, false);
-
-        if (players == null)
-        {
-            return;
-        }
-
-        if (players.Count > 1)
-        {
-            command.ReplyToCommand(Config.Tag + Instance.Localizer["More than one client matched"]);
-            return;
-        }
-
-        CCSPlayerController target = players.Single();
-
-        if (target == player)
-        {
-            command.ReplyToCommand(Config.Tag + Instance.Localizer["No gift yourself"]);
+            command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["Gift timeout", Math.Ceiling(Instance.GlobalGiftTimeout[player] - Server.CurrentTime)]}");
             return;
         }
 
         if (!int.TryParse(command.GetArg(2), out int value))
         {
-            command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be an integer"]);
+            command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["Must be an integer"]}");
             return;
         }
 
         if (value <= 0)
         {
-            command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be higher than zero"]);
+            command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["Must be higher than zero"]}");
+            return;
+        }
+
+        TargetFind target = Find(command, true, false);
+
+        if (string.IsNullOrEmpty(target.TargetName)) return;
+
+        CCSPlayerController targetPlayer = target.Players[0];
+
+        if (targetPlayer == player)
+        {
+            command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["No gift yourself"]}");
             return;
         }
 
@@ -165,21 +125,18 @@ public static class Command
         }
 
         Credits.Give(player, -value);
-        Credits.Give(target, value);
+        Credits.Give(targetPlayer, value);
 
         Instance.GlobalGiftTimeout[player] = Server.CurrentTime + 5.0f;
 
-        player.PrintToChatMessage("css_gift<player>", target.PlayerName, value);
-        target.PrintToChatMessage("css_gift<target>", player.PlayerName, value);
+        player.PrintToChatMessage("css_gift<player>", targetPlayer.PlayerName, value);
+        targetPlayer.PrintToChatMessage("css_gift<target>", player.PlayerName, value);
     }
 
     [CommandHelper(minArgs: 0, whoCanExecute: CommandUsage.SERVER_ONLY)]
     public static void Command_ResetDatabase(CCSPlayerController? player, CommandInfo command)
     {
-        if (player != null)
-        {
-            return;
-        }
+        if (player != null) return;
 
         Instance.GlobalStorePlayers.Clear();
         Instance.GlobalStorePlayerItems.Clear();
@@ -197,67 +154,47 @@ public static class Command
     [RequiresPermissions("@css/root")]
     public static void Command_ResetPlayer(CCSPlayerController? player, CommandInfo command)
     {
-        (List<CCSPlayerController> players, string targetname) = FindTarget.Find(command, 2, false);
+        TargetFind target = Find(command, true, true);
 
-        if (players == null)
+        if (string.IsNullOrEmpty(target.TargetName)) return;
+
+        if (target.StorePlayer != null)
         {
-            if (!SteamID.TryParse(command.GetArg(1), out SteamID? steamId) || steamId == null)
-            {
-                command.ReplyToCommand(Config.Tag + Instance.Localizer["Must be a steamid"]);
-                return;
-            }
+            Instance.GlobalStorePlayers.RemoveAll(p => p.SteamID == target.StorePlayer.SteamID);
+            Instance.GlobalStorePlayerItems.RemoveAll(p => p.SteamID == target.StorePlayer.SteamID);
+            Instance.GlobalStorePlayerEquipments.RemoveAll(p => p.SteamID == target.StorePlayer.SteamID);
 
-            StoreApi.Store.Store_Player? playerdata = Instance.GlobalStorePlayers.SingleOrDefault(player => player.SteamID == steamId.SteamId64);
+            Database.ExecuteAsync(
+                "DELETE FROM store_players WHERE SteamId = @SteamId; " +
+                "DELETE FROM store_items WHERE SteamId = @SteamId; " +
+                "DELETE FROM store_equipments WHERE SteamId = @SteamId;",
+                new { target.StorePlayer.SteamID });
 
-            if (playerdata == null)
-            {
-                command.ReplyToCommand(Config.Tag + Instance.Localizer["No matching client"]);
-                return;
-            }
-
-            Instance.GlobalStorePlayers.RemoveAll(p => p.SteamID == steamId.SteamId64);
-            Instance.GlobalStorePlayerItems.RemoveAll(p => p.SteamID == steamId.SteamId64);
-            Instance.GlobalStorePlayerEquipments.RemoveAll(p => p.SteamID == steamId.SteamId64);
-
-            Database.ExecuteAsync("DELETE FROM store_players WHERE SteamId = @SteamId; " +
-                 "DELETE FROM store_items WHERE SteamId = @SteamId; " +
-                 "DELETE FROM store_equipments WHERE SteamId = @SteamId;",
-                 new { @SteamID = steamId.SteamId64 });
-
-
-            Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_reset", player?.PlayerName ?? "Console", steamId.SteamId64]);
+            Server.PrintToChatAll($"{Config.Tag}{Instance.Localizer["css_reset", player?.PlayerName ?? "Console", target.StorePlayer.SteamID]}");
             return;
         }
 
-        if (players.Count > 1)
-        {
-            command.ReplyToCommand(Config.Tag + Instance.Localizer["More than one client matched"]);
-            return;
-        }
+        CCSPlayerController targetPlayer = target.Players[0];
 
-        CCSPlayerController target = players.Single();
+        Credits.Set(targetPlayer, 0);
+        Instance.GlobalStorePlayerItems.RemoveAll(p => p.SteamID == targetPlayer.SteamID);
+        Instance.GlobalStorePlayerEquipments.RemoveAll(p => p.SteamID == targetPlayer.SteamID);
 
-        Credits.Set(target, 0);
-        Instance.GlobalStorePlayerItems.RemoveAll(p => p.SteamID == target.SteamID);
-        Instance.GlobalStorePlayerEquipments.RemoveAll(p => p.SteamID == target.SteamID);
+        Database.ResetPlayer(targetPlayer);
 
-        Database.ResetPlayer(target);
-
-        Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_reset", player?.PlayerName ?? "Console", target.PlayerName]);
+        Server.PrintToChatAll($"{Config.Tag}{Instance.Localizer["css_reset", player?.PlayerName ?? "Console", targetPlayer.PlayerName]}");
     }
 
     [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
     public static void Command_RefreshPlayersCredits(CCSPlayerController? player, CommandInfo info)
     {
-        var players = Utilities.GetPlayers();
-
-        foreach (var target in players)
+        foreach (CCSPlayerController target in Utilities.GetPlayers())
         {
             Database.SavePlayer(target);
         }
 
         Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine(Config.Tag + Instance.Localizer["Players' credits are refreshed"]);
+        Console.WriteLine($"{Config.Tag}{Instance.Localizer["Players' credits are refreshed"]}");
         Console.ResetColor();
     }
 }

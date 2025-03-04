@@ -2,6 +2,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Timers;
+using CounterStrikeSharp.API.Modules.Utils;
 using System.Drawing;
 using static Store.Config_Config;
 using static Store.Store;
@@ -10,30 +11,27 @@ namespace Store;
 
 public static class PlayerUtils
 {
-    static public void PrintToChatMessage(this CCSPlayerController player, string message, params object[] args) =>
-        player.PrintToChat(Config.Tag + Instance.Localizer.ForPlayer(player, message, args));
+    public static void PrintToChatMessage(this CCSPlayerController player, string message, params object[] args) =>
+        player.PrintToChat($"{Config.Tag}{Instance.Localizer.ForPlayer(player, message, args)}");
 
-    static public void ChangeModelDelay(this CCSPlayerController player, string model, bool disableleg, int slotNumber, string? skin)
+    public static void ChangeModelDelay(this CCSPlayerController player, string model, bool disableLeg, int slotNumber, string? skin)
     {
-        float apply_delay = float.Max(Config.Settings.ApplyPlayerskinDelay, 0.1f);
+        float applyDelay = Math.Max(Config.Settings.ApplyPlayerskinDelay, 0.1f);
 
-        Instance.AddTimer(apply_delay, () =>
+        Instance.AddTimer(applyDelay, () =>
         {
             if (!player.IsValid || !player.PawnIsAlive || (slotNumber != 1 && player.TeamNum != slotNumber))
             {
                 return;
             }
 
-            player.PlayerPawn.Value?.ChangeModel(model, disableleg, skin);
+            player.PlayerPawn.Value?.ChangeModel(model, disableLeg, skin);
         }, TimerFlags.STOP_ON_MAPCHANGE);
     }
 
-    static public void ChangeModel(this CCSPlayerPawn pawn, string model, bool disableleg, string? skin)
+    public static void ChangeModel(this CCSPlayerPawn pawn, string model, bool disableLeg, string? skin)
     {
-        if (model == string.Empty)
-        {
-            return;
-        }
+        if (string.IsNullOrEmpty(model)) return;
 
         Server.NextFrame(() =>
         {
@@ -41,23 +39,18 @@ public static class PlayerUtils
 
             Color originalRender = pawn.Render;
 
-            if (disableleg)
-            {
-                pawn.Render = Color.FromArgb(254, originalRender.R, originalRender.G, originalRender.B);
-            }
-            else
-            {
-                pawn.Render = Color.FromArgb(255, originalRender.R, originalRender.G, originalRender.B);
-            }
+            pawn.Render = disableLeg
+                ? Color.FromArgb(254, originalRender.R, originalRender.G, originalRender.B)
+                : Color.FromArgb(255, originalRender.R, originalRender.G, originalRender.B);
 
-            if (skin != null)
+            if (!string.IsNullOrEmpty(skin))
             {
                 pawn.AcceptInput("Skin", null, pawn, skin);
             }
         });
     }
 
-    static public void ColorSkin(this CCSPlayerPawn pawn, Color color)
+    public static void ColorSkin(this CCSPlayerPawn pawn, Color color)
     {
         Color originalRender = pawn.Render;
 
@@ -65,26 +58,47 @@ public static class PlayerUtils
         pawn.RenderMode = RenderMode_t.kRenderTransColor;
         Utilities.SetStateChanged(pawn, "CBaseModelEntity", "m_clrRender");
     }
-    static public int GetHealth(this CCSPlayerPawn pawn)
+
+    public static int GetHealth(this CCSPlayerPawn pawn) =>
+        pawn.Health;
+
+    public static void SetHealth(this CCSPlayerController player, int health)
     {
-        return pawn.Health;
-    }
-    static public void SetHealth(this CCSPlayerController player, int health)
-    {
-        if (player.PlayerPawn == null || player.PlayerPawn.Value == null)
-        {
-            return;
-        }
+        if (player.PlayerPawn?.Value is not { } pawn) return;
 
         player.Health = health;
-        player.PlayerPawn.Value.Health = health;
+        pawn.Health = health;
 
         if (health > 100)
         {
             player.MaxHealth = health;
-            player.PlayerPawn.Value.MaxHealth = health;
+            pawn.MaxHealth = health;
         }
 
-        Utilities.SetStateChanged(player.PlayerPawn.Value, "CBaseEntity", "m_iHealth");
+        Utilities.SetStateChanged(pawn, "CBaseEntity", "m_iHealth");
+    }
+
+    public static void SetArmor(this CCSPlayerPawn playerPawn, int armor)
+    {
+        if (playerPawn.ItemServices != null)
+        {
+            new CCSPlayer_ItemServices(playerPawn.ItemServices.Handle).HasHelmet = true;
+        }
+
+        playerPawn.ArmorValue += armor;
+        Utilities.SetStateChanged(playerPawn, "CCSPlayerPawn", "m_ArmorValue");
+    }
+
+    public static void BunnyHop(this CCSPlayerPawn playerPawn, CCSPlayerController player)
+    {
+        PlayerFlags flags = (PlayerFlags)playerPawn.Flags;
+        PlayerButtons buttons = player.Buttons;
+
+        if (!buttons.HasFlag(PlayerButtons.Jump) || !flags.HasFlag(PlayerFlags.FL_ONGROUND) || playerPawn.MoveType.HasFlag(MoveType_t.MOVETYPE_LADDER))
+        {
+            return;
+        }
+
+        playerPawn.AbsVelocity.Z = 267.0f;
     }
 }
