@@ -1,0 +1,70 @@
+{
+  "No matching client": "{white}Nie znaleziono pasującego klienta",
+  "More than one client matched": "{white}Znaleziono więcej niż jeden pasujący klient",
+  "Must be an integer": "{white}Wartość, którą wpisałeś, musi być liczbą całkowitą",
+  "Must be higher than zero": "{white}Wartość, którą wpisałeś, musi być większa od zera.",
+  "Must be a steamid": "{white}Wartość, którą wpisałeś, musi być prawidłowym steamid",
+  "No credits enough": "{white}Nie masz wystarczającej liczby kredytów.",
+  "You are not alive": "{white}Możesz to kupić tylko, gdy jesteś żywy.",
+  "You are alive": "{white}Możesz to kupić tylko, gdy jesteś martwy.",
+  "No in pistol round": "{white}Nie możesz kupić tego przedmiotu {green}{0} {white}w rundzie pistoletowej.",
+  "No gift yourself": "{white}Nie możesz podarować kredytów sobie.",
+  "No type found": "{white}Nie znaleziono typu.",
+  "Gift timeout": "{white}Musisz poczekać {green}{0} sekund {white}na możliwość podarowania.",
+  "No purchase because team": "{white}Nie możesz kupić tego przedmiotu. Musisz być w drużynie {red}{0} {white}.",
+  "No equip because team": "{white}Nie możesz wyposażyć się w ten przedmiot. Musisz być w drużynie {red}{0} {white}.",
+  "You need correct weapon": "{white}Potrzebujesz {red}{0} {white}, aby sprawdzić.",
+  "Players' credits are refreshed": "Kredyty graczy zostały odświeżone.",
+
+  "t team players": "{green}gracze drużyny t {white}",
+  "ct team players": "{green}gracze drużyny ct {white}",
+  "alive players": "{green}żywi gracze {white}",
+  "all players": "{green}wszyscy gracze {white}",
+  "dead players": "{green}martwi gracze {white}",
+  "Console": "Konsola",
+
+  "Purchase Succeeded": "{white}Zakupiłeś {green}{0}{white}.",
+  "Purchase Equip": "{white}Wyposaż {green}{0}{white}.",
+  "Purchase Unequip": "{white}Zdejmij {green}{0}{white}.",
+  "Item Sell": "{white}Sprzedałeś {green}{0}{white}.",
+  "Godmode expired": "{white}Twój czas trybu boga wygasł.",
+  "Speed expired": "{white}Twój czas szybkości wygasł.",
+  "Hidetrails off": "{white}Teraz możesz widzieć ślady.",
+  "Hidetrails on": "{white}Teraz nie możesz widzieć śladów.",
+
+  "menu_store<title>": "Sklep [Twoje kredyty: {0}]",
+
+  "menu_store<all_title>": "Modele ogólne",
+  "menu_store<t_title>": "Modele T",
+  "menu_store<ct_title>": "Modele CT",
+  "menu_store<purchase>": "{0} - [{1}]",
+  "menu_store<purchase1>": "{0}",
+  "menu_store<equip>": "WYPOSAŻ",
+  "menu_store<unequip>": "ZDEJMIJ",
+  "menu_store<sell>": "SPRZEDAJ [{0}]",
+  "menu_store<confirm_title>": "Kupujesz?",
+  "menu_store<yes>": "Tak",
+  "menu_store<no>": "Nie",
+  "menu_store<confirm_item>": "{0} - {1} kredytów",
+  "menu_store<inspect>": "Zbadaj",
+
+  "css_credits": "{white}Masz {green}{0} {white}kredytów.",
+  "css_givecredits<player>": "{blue}{0} {white}dał {green}{2} kredytów {white}graczowi {green}{1}{white}.",
+  "css_givecredits<steamid>": "{blue}{0} {white}dał {green}{2} kredytów {white}graczowi {green}{1}{white}.",
+  "css_givecredits<multiple>": "{blue}{0} {white}dał {green}{2} kredytów {white}graczom {green}{1}{white}.",
+
+  "css_gift<player>": "{white}Wysłałeś {green}{1}{white} kredytów do {blue}{0}{white}.",
+  "css_gift<target>": "{blue}{0} {white}wysłał Ci {green}{1} {white}kredytów.",
+
+  "css_reset": "{blue}{0}{white} zresetował dane sklepu gracza {green}{1}{white}.",
+
+  "credits_earned<active>": "{white}Zarobiłeś {green}{0} kredytów {white}za bycie aktywnym na serwerze.",
+  "credits_earned<inactive>": "{white}Zarobiłeś {green}{0} kredytów {white}za bycie nieaktywnym na serwerze.",
+  "credits_earned<kill>": "{white}Zarobiłeś {green}{0} kredytów {white}za zabicie gracza.",
+
+  "css_model0": "{blue}{0}{white} włączył wymuszanie domyślnych modeli graczy.",
+  "css_model1": "{blue}{0}{white} wyłączył wymuszanie domyślnych modeli graczy.",
+
+  "OperatorTestLang": "Operator",
+  "AdminSkinsTestLang": "Skórki administratora"
+}
