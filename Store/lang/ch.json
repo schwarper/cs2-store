@@ -65,6 +65,7 @@
   "css_model0": "{blue}{0}{white} 开启了强制默认模型",
   "css_model1": "{blue}{0}{white} 关闭了强制默认模型.",
 
-  "OperatorTestLang": "操作员",
-  "AdminSkinsTestLang": "管理员皮肤"
+  "*FreePlayerSkin*": "免费玩家皮肤",
+  "*CT*": "CT 皮肤",
+  "*Fernandez Frogman [CT]*": "费尔南德斯蛙人 [CT]"
 }

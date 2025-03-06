@@ -1,21 +1,22 @@
 ﻿using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Admin;
 using System.Text.Json;
 using static Store.Config_Config;
-using static StoreApi.Store;
 using static Store.Store;
-using CounterStrikeSharp.API.Core.Translations;
+using static StoreApi.Store;
 
 namespace Store;
 
 public static class Menu
 {
+    public static List<JsonProperty> GetElementJsonProperty(JsonElement element) =>
+        [.. element.EnumerateObject().Where(prop => prop.Name != "flag" && prop.Name != "langname")];
+
     public static void DisplayStoreMenu(CCSPlayerController? player, bool inventory)
     {
         if (player == null)
-        {
             return;
-        }
 
         string menutype = Config.Menu.MenuType.ToLower();
 
@@ -44,62 +45,52 @@ public static class Menu
 
     public static int GetSellingPrice(Dictionary<string, string> item, Store_Item playerItem)
     {
-        float sell_ratio = Config.Settings.SellRatio;
-
-        int purchase_price = 1;
-
+        float sellRatio = Config.Settings.SellRatio;
         bool usePurchaseCredit = Config.Settings.SellUsePurchaseCredit;
 
-        if (usePurchaseCredit && playerItem != null)
-        {
-            purchase_price = playerItem.Price;
-        }
-
-        return (int)((usePurchaseCredit ? purchase_price : int.Parse(item["price"])) * sell_ratio);
+        int purchasePrice = usePurchaseCredit && playerItem != null ? playerItem.Price : int.Parse(item["price"]);
+        return (int)(purchasePrice * sellRatio);
     }
 
     public static bool CheckFlag(CCSPlayerController player, Dictionary<string, string> item, bool sell = false)
     {
         item.TryGetValue("flag", out string? flag);
-
         return CheckFlag(player, flag, !sell);
     }
 
-    public static bool CheckFlag(CCSPlayerController player, string? flagAll, bool trueifNull)
+    public static bool CheckFlag(CCSPlayerController player, string? flagAll, bool trueIfNull)
     {
-        if (string.IsNullOrEmpty(flagAll))
-        {
-            return trueifNull;
-        }
-
-        string[] flags = flagAll.Split(',');
-
-        foreach (string flag in flags)
-        {
-            if (flag.StartsWith('@') && AdminManager.PlayerHasPermissions(player, flag))
-            {
-                return true;
-            }
-            else if (flag.StartsWith('#') && AdminManager.PlayerInGroup(player, flag))
-            {
-                return true;
-            }
-            else if (flag == player.SteamID.ToString())
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return string.IsNullOrEmpty(flagAll)
+            ? trueIfNull
+            : flagAll.Split(',')
+            .Any(flag => (flag.StartsWith('@') && AdminManager.PlayerHasPermissions(player, flag)) ||
+                         (flag.StartsWith('#') && AdminManager.PlayerInGroup(player, flag)) ||
+                         (flag == player.SteamID.ToString()));
     }
 
     public static string GetCategoryName(CCSPlayerController player, JsonProperty category)
     {
-        if (category.Value.TryGetProperty("langname", out var langname))
+        var name = category.Name;
+
+        if (name.StartsWith('*') && name.EndsWith('*'))
         {
-            return Instance.Localizer.ForPlayer(player, langname.ToString());
+            return Instance.Localizer.ForPlayer(player, name);
         }
 
-        return category.Name;
+        return name;
+    }
+
+    public static void InspectAction(CCSPlayerController player, Dictionary<string, string> item, string type)
+    {
+        switch (type)
+        {
+            case "playerskin":
+                item.TryGetValue("skin", out string? skn);
+                Item_PlayerSkin.Inspect(player, item["model"], skn);
+                break;
+            case "customweapon":
+                Item_CustomWeapon.Inspect(player, item["viewmodel"], item["weapon"]);
+                break;
+        }
     }
 }

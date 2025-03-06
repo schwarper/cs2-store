@@ -9,109 +9,67 @@ namespace Store;
 public static class Item_GrenadeTrail
 {
     public static Dictionary<CBaseCSGrenadeProjectile, CParticleSystem> GlobalGrenadeTrail { get; set; } = [];
-    private static bool grenadetrailExists = false;
+    private static bool _grenadeTrailExists = false;
 
     public static void OnPluginStart()
     {
         Item.RegisterType("grenadetrail", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+        _grenadeTrailExists = Item.IsAnyItemExistInType("grenadetrail");
+    }
 
-        if (Item.IsAnyItemExistInType("grenadetrail"))
-        {
-            grenadetrailExists = true;
-        }
-    }
-    public static void OnMapStart()
-    {
-    }
+    public static void OnMapStart() { }
+
     public static void OnServerPrecacheResources(ResourceManifest manifest)
     {
         List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("grenadetrail");
 
         foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
         {
-            manifest.AddResource(item.Value["uniqueid"]);
+            manifest.AddResource(item.Value["model"]);
         }
     }
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
-    {
-        return true;
-    }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
-    {
-        return true;
-    }
+
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item) => true;
+
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
 
     public static void OnEntityCreated(CEntityInstance entity)
     {
-        if (!grenadetrailExists)
-        {
-            return;
-        }
-
-        if (entity.DesignerName != "hegrenade_projectile")
-        {
-            return;
-        }
+        if (!_grenadeTrailExists || entity.DesignerName != "hegrenade_projectile") return;
 
         CBaseCSGrenadeProjectile grenade = new(entity.Handle);
-
-        if (grenade.Handle == IntPtr.Zero)
-        {
-            return;
-        }
+        if (grenade.Handle == IntPtr.Zero) return;
 
         Server.NextFrame(() =>
         {
             CBasePlayerController? player = grenade.Thrower.Value?.Controller.Value;
-
-            if (player == null)
-            {
-                return;
-            }
+            if (player == null) return;
 
             Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "grenadetrail");
-
-            if (item == null)
-            {
-                return;
-            }
+            if (item == null) return;
 
             CParticleSystem? particle = Utilities.CreateEntityByName<CParticleSystem>("info_particle_system");
+            if (particle == null || !particle.IsValid) return;
 
-            if (particle == null || !particle.IsValid)
-            {
-                return;
-            }
+            Dictionary<string, string>? itemData = Item.GetItem(item.UniqueId);
+            if (itemData == null) return;
 
-            Dictionary<string, string>? itemdata = Item.GetItem(item.UniqueId);
+            string acceptInputValue = itemData.TryGetValue("acceptInputValue", out string? value) && !string.IsNullOrEmpty(value) ? value : "Start";
 
-            if (itemdata == null)
-            {
-                return;
-            }
-
-            if (!itemdata.TryGetValue("acceptInputValue", out string? acceptinputvalue) || string.IsNullOrEmpty(acceptinputvalue))
-            {
-                acceptinputvalue = "Start";
-            }
-
-            particle.EffectName = item.UniqueId;
+            particle.EffectName = itemData["model"];
             particle.DispatchSpawn();
             particle.Teleport(grenade.AbsOrigin!, new QAngle(), new Vector());
-            particle.AcceptInput(acceptinputvalue);
+            particle.AcceptInput(acceptInputValue);
 
-            GlobalGrenadeTrail.Add(grenade, particle);
+            GlobalGrenadeTrail[grenade] = particle;
         });
     }
 
     public static void OnTick()
     {
-        if (!grenadetrailExists)
-        {
-            return;
-        }
+        if (!_grenadeTrailExists) return;
 
-        foreach (KeyValuePair<CBaseCSGrenadeProjectile, CParticleSystem> kv in GlobalGrenadeTrail)
+        foreach (KeyValuePair<CBaseCSGrenadeProjectile, CParticleSystem> kv in GlobalGrenadeTrail.ToList())
         {
             CBaseCSGrenadeProjectile grenade = kv.Key;
             CParticleSystem particle = kv.Value;
@@ -121,10 +79,9 @@ public static class Item_GrenadeTrail
                 if (particle.IsValid)
                 {
                     particle.Remove();
-                    GlobalGrenadeTrail.Remove(grenade);
                 }
-
-                return;
+                GlobalGrenadeTrail.Remove(grenade);
+                continue;
             }
 
             particle.Teleport(grenade.AbsOrigin!, grenade.AbsRotation!, grenade.AbsVelocity);

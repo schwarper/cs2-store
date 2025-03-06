@@ -65,6 +65,7 @@
   "css_model0": "{blue}{0}{white} a activé les modèles par default pour les joueurs.",
   "css_model1": "{blue}{0}{white} a désactivé les modèles par default pour les joueurs.",
 
-  "OperatorTestLang": "Opérateur",
-  "AdminSkinsTestLang": "Skins d'Administrateur"
+  "*FreePlayerSkin*": "Skin de joueur gratuit",
+  "*CT*": "Skins CT",
+  "*Fernandez Frogman [CT]*": "Fernandez Frogman [CT]"
 }

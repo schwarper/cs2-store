@@ -65,6 +65,7 @@
   "css_model0": "{blue}{0}{white} ativou o forçamento padrão dos modelos de jogadores",
   "css_model1": "{blue}{0}{white} desativou o forçamento padrão dos modelos de jogadores.",
 
-  "OperatorTestLang": "Operador",
-  "AdminSkinsTestLang": "Skins de Administrador"
+  "*FreePlayerSkin*": "Skin de jogador grátis",
+  "*CT*": "Skins CT",
+  "*Fernandez Frogman [CT]*": "Fernandez Frogman [CT]"
 }

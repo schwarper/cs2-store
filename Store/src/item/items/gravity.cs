@@ -6,36 +6,25 @@ namespace Store;
 
 public static class Item_Gravity
 {
-    public static void OnPluginStart()
-    {
+    public static void OnPluginStart() =>
         Item.RegisterType("gravity", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
-    }
-    public static void OnMapStart()
-    {
-    }
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
-    {
-    }
+
+    public static void OnMapStart() { }
+
+    public static void OnServerPrecacheResources(ResourceManifest manifest) { }
+
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!float.TryParse(item["gravityValue"], CultureInfo.InvariantCulture, out float gravity))
+        if (!float.TryParse(item["gravityValue"], CultureInfo.InvariantCulture, out float gravityValue))
         {
             return false;
         }
 
-        CCSPlayerPawn? playerPawn = player.PlayerPawn.Value;
+        if (player.PlayerPawn?.Value is not { } playerPawn) return false;
 
-        if (playerPawn == null)
-        {
-            return false;
-        }
-
-        playerPawn.GravityScale = gravity;
-
+        playerPawn.GravityScale = gravityValue;
         return true;
     }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
-    {
-        return true;
-    }
+
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
 }

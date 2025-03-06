@@ -33,140 +33,78 @@ public static class Item_Trail
             }
 
             foreach (string command in Config.Commands.HideTrails)
-            {
                 Instance.AddCommand(command, "Hide trails", Command_HideTrails);
-            }
         }
     }
-    public static void OnMapStart()
-    {
-    }
-    public static void ServerPrecacheResources(ResourceManifest manifest)
-    {
-        List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("trail");
 
-        foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
-        {
-            if (item.Value["uniqueid"].Contains(".vpcf"))
-            {
-                manifest.AddResource(item.Value["uniqueid"]);
-            }
-        }
-    }
-    public static void ServerPrecacheResources()
-    {
-    }
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
-    {
-        return true;
-    }
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
-    {
-        return true;
-    }
+    public static void OnMapStart() { }
+
+    public static void ServerPrecacheResources(ResourceManifest manifest) =>
+        Item.GetItemsByType("trail")
+            .Where(item => item.Value.TryGetValue("model", out string? model) && !string.IsNullOrEmpty(model))
+            .ToList()
+            .ForEach(item => manifest.AddResource(item.Value["model"]));
+
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item) => true;
+
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
+
     public static void OnTick(CCSPlayerController player)
     {
         if (!trailExists)
-        {
             return;
-        }
 
         Store_Equipment? playertrail = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "trail");
-
         if (playertrail == null)
-        {
             return;
-        }
 
         Dictionary<string, string>? itemdata = Item.GetItem(playertrail.UniqueId);
-
         if (itemdata == null)
-        {
             return;
-        }
 
         CCSPlayerPawn? playerPawn = player.PlayerPawn.Value;
-
-        if (playerPawn == null)
-        {
+        if (playerPawn == null || playerPawn.AbsOrigin == null)
             return;
-        }
 
-        Vector? absorigin = player.PlayerPawn.Value?.AbsOrigin;
-
-        if (absorigin == null)
-        {
-            return;
-        }
-
+        Vector absorigin = playerPawn.AbsOrigin;
         if (Vec.CalculateDistance(GlobalTrailLastOrigin[player.Slot], absorigin) <= 5.0f)
-        {
             return;
-        }
 
         Vec.Copy(absorigin, GlobalTrailLastOrigin[player.Slot]);
 
-        float lifetime = 1.3f;
-
-        if (itemdata.TryGetValue("lifetime", out string? ltvalue) && float.TryParse(ltvalue, CultureInfo.InvariantCulture, out float lt))
-        {
-            lifetime = lt;
-        }
+        float lifetime = itemdata.TryGetValue("lifetime", out string? ltvalue) && float.TryParse(ltvalue, CultureInfo.InvariantCulture, out float lt) ? lt : 1.3f;
 
         if (itemdata.TryGetValue("color", out string? cvalue))
         {
-            if (string.IsNullOrEmpty(cvalue))
-            {
-                CreateBeam(player, absorigin, lifetime, null, itemdata);
-            }
-            else
-            {
-                string[] colorValues = itemdata["color"].Split(' ');
+            Color? color = null;
 
-                Color color = Color.FromArgb(int.Parse(colorValues[0]), int.Parse(colorValues[1]), int.Parse(colorValues[2]));
-
-                CreateBeam(player, absorigin, lifetime, color, itemdata);
+            if (!string.IsNullOrEmpty(cvalue))
+            {
+                string[] colorValues = cvalue.Split(' ');
+                color = Color.FromArgb(int.Parse(colorValues[0]), int.Parse(colorValues[1]), int.Parse(colorValues[2]));
             }
+
+            CreateBeam(player, absorigin, lifetime, color, itemdata);
         }
         else
         {
-            CreateParticle(absorigin, playertrail.UniqueId, lifetime, itemdata, player);
+            CreateParticle(absorigin, itemdata["model"], lifetime, itemdata, player);
         }
     }
 
     public static void CreateParticle(Vector absOrigin, string effectName, float lifetime, Dictionary<string, string> itemdata, CCSPlayerController player)
     {
         CParticleSystem? entity = Utilities.CreateEntityByName<CParticleSystem>("info_particle_system");
-
         if (entity == null || !entity.IsValid)
-        {
             return;
-        }
 
-        if (!itemdata.TryGetValue("acceptInputValue", out string? acceptinputvalue) || string.IsNullOrEmpty(acceptinputvalue))
-        {
-            acceptinputvalue = "Start";
-        }
-
-        QAngle angle = new();
-
-        if (!itemdata.TryGetValue("angleValue", out string? angleValue) || string.IsNullOrEmpty(angleValue))
-        {
-            angle.X = 90;
-        }
-        else
-        {
-            string[] angleValues = angleValue.Split(' ');
-
-            angle.X = int.Parse(angleValues[0]);
-            angle.Y = int.Parse(angleValues[0]);
-            angle.Z = int.Parse(angleValues[0]);
-        }
+        string acceptinputvalue = itemdata.GetValueOrDefault("acceptInputValue", "Start");
+        QAngle angle = ParseAngle(itemdata.GetValueOrDefault("angleValue", "90 90 90"));
 
         entity.EffectName = effectName;
         entity.DispatchSpawn();
         entity.Teleport(absOrigin, angle, new Vector());
-        entity.AcceptInput(acceptinputvalue!);
+        entity.AcceptInput(acceptinputvalue);
         entity.AcceptInput("FollowEntity", player.PlayerPawn?.Value!, player.PlayerPawn?.Value!, "!activator");
 
         TrailList[entity] = player;
@@ -174,10 +112,7 @@ public static class Item_Trail
         Instance.AddTimer(lifetime, () =>
         {
             if (entity.IsValid)
-            {
                 entity.Remove();
-            }
-
             TrailList.Remove(entity);
         });
     }
@@ -185,43 +120,21 @@ public static class Item_Trail
     public static void CreateBeam(CCSPlayerController player, Vector absOrigin, float lifetime, Color? color, Dictionary<string, string> itemdata)
     {
         CBeam? beam = Utilities.CreateEntityByName<CBeam>("env_beam");
-
         if (beam == null)
-        {
             return;
-        }
 
         if (Vec.IsZero(GlobalTrailEndOrigin[player.Slot]))
-        {
             Vec.Copy(absOrigin, GlobalTrailEndOrigin[player.Slot]);
-            return;
-        }
 
+        color ??= GetRandomColor();
         if (color == null)
-        {
-            KnownColor? randomColorName = (KnownColor?)Enum.GetValues(typeof(KnownColor)).GetValue(Instance.Random.Next(Enum.GetValues(typeof(KnownColor)).Length));
-
-            if (!randomColorName.HasValue)
-            {
-                return;
-            }
-
-            color = Color.FromKnownColor(randomColorName.Value);
-        }
-
-        float width = 1.0f;
-
-        if (itemdata.TryGetValue("lifetime", out string? ltvalue) && float.TryParse(ltvalue, CultureInfo.InvariantCulture, out float fwidth))
-        {
-            width = fwidth;
-        }
+            return;
 
         beam.RenderMode = RenderMode_t.kRenderTransColor;
-        beam.Width = width;
+        beam.Width = itemdata.TryGetValue("width", out string? widthValue) && float.TryParse(widthValue, CultureInfo.InvariantCulture, out float width) ? width : 1.0f;
         beam.Render = (Color)color;
 
         beam.Teleport(absOrigin, new QAngle(), new Vector());
-
         Vec.Copy(GlobalTrailEndOrigin[player.Slot], beam.EndPos);
         Vec.Copy(absOrigin, GlobalTrailEndOrigin[player.Slot]);
 
@@ -232,32 +145,36 @@ public static class Item_Trail
         Instance.AddTimer(lifetime, () =>
         {
             if (beam.IsValid)
-            {
                 beam.Remove();
-            }
-
             TrailList.Remove(beam);
         });
+    }
+
+    private static Color? GetRandomColor()
+    {
+        KnownColor? randomColorName = (KnownColor?)Enum.GetValues(typeof(KnownColor)).GetValue(Instance.Random.Next(Enum.GetValues(typeof(KnownColor)).Length));
+        return randomColorName.HasValue ? Color.FromKnownColor(randomColorName.Value) : null;
+    }
+
+    private static QAngle ParseAngle(string angleValue)
+    {
+        string[] angleValues = angleValue.Split(' ');
+        return new QAngle(int.Parse(angleValues[0]), int.Parse(angleValues[1]), int.Parse(angleValues[2]));
     }
 
     public static void Command_HideTrails(CCSPlayerController? player, CommandInfo info)
     {
         if (player == null)
-        {
             return;
-        }
 
-        bool exist = HideTrailPlayerList.Contains(player);
-
-        if (exist)
+        if (!HideTrailPlayerList.Remove(player))
         {
-            HideTrailPlayerList.Remove(player);
-            player.PrintToCenterHtml("Hidetrails off");
+            HideTrailPlayerList.Add(player);
+            player.PrintToChatMessage("Hidetrails on");
         }
         else
         {
-            HideTrailPlayerList.Add(player);
-            player.PrintToCenterHtml("Hidetrails on");
+            player.PrintToChatMessage("Hidetrails off");
         }
     }
 }

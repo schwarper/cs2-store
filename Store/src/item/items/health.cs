@@ -6,68 +6,40 @@ namespace Store;
 
 public static class Item_Health
 {
-    public static void OnPluginStart()
-    {
+    public static void OnPluginStart() =>
         Item.RegisterType("health", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
-    }
-    public static void OnMapStart()
-    {
-    }
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
-    {
-    }
+
+    public static void OnMapStart() { }
+
+    public static void OnServerPrecacheResources(ResourceManifest manifest) { }
+
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!int.TryParse(item["healthValue"], out int health))
-        {
-            return false;
-        }
+        if (!int.TryParse(item["healthValue"], out int healthValue)) return false;
 
-        CCSPlayerPawn? playerPawn = player.PlayerPawn.Value;
-
-        if (playerPawn == null)
-        {
-            return false;
-        }
-
-        int maxhealth = Config.Settings.MaxHealth;
+        if (player.PlayerPawn?.Value is not { } playerPawn) return false;
 
         int currentHealth = playerPawn.GetHealth();
+        int maxHealth = Config.Settings.MaxHealth;
         int pawnMaxHealth = playerPawn.MaxHealth;
 
-        if (maxhealth > 0)
-        {
-            if (currentHealth >= maxhealth)
-            {
-                return false;
-            }
+        if (maxHealth > 0 && currentHealth >= maxHealth) return false;
+        else if (maxHealth == -1 && currentHealth >= pawnMaxHealth) return false;
 
-            if (currentHealth + health > maxhealth)
-            {
-                health = maxhealth - currentHealth;
-            }
+        int newHealth = currentHealth + healthValue;
+
+        if (maxHealth > 0)
+        {
+            newHealth = Math.Min(newHealth, maxHealth);
+        }
+        else if (maxHealth == -1)
+        {
+            newHealth = Math.Min(newHealth, pawnMaxHealth);
         }
 
-        if (maxhealth == -1)
-        {
-            if (currentHealth >= pawnMaxHealth)
-            {
-                return false;
-            }
-
-            if (currentHealth + health > pawnMaxHealth)
-            {
-                health = pawnMaxHealth - currentHealth;
-            }
-        }
-
-        player.SetHealth(currentHealth + health);
-
+        player.SetHealth(newHealth);
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
-    {
-        return true;
-    }
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
 }

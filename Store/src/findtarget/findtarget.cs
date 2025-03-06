@@ -1,54 +1,71 @@
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Commands.Targeting;
+using CounterStrikeSharp.API.Modules.Entities;
 using static Store.Config_Config;
 using static Store.Store;
+using static StoreApi.Store;
 
 namespace Store;
 
 public static class FindTarget
 {
-    public static (List<CCSPlayerController> players, string targetname) Find
-        (
-            CommandInfo command,
-            int minArgCount,
-            bool singletarget,
-            bool ignoreMessage = false
-        )
+    public class TargetFind
     {
-        if (command.ArgCount < minArgCount)
-        {
-            return (new List<CCSPlayerController>(), string.Empty);
-        }
+        public List<CCSPlayerController> Players = [];
+        public Store_Player? StorePlayer;
+        public string? TargetName;
+    }
 
-        TargetResult targetresult = command.GetArgTargetResult(1);
+    public static TargetFind Find(CommandInfo command, bool singleTarget, bool allowSteamID)
+    {
+        TargetResult targetResult = command.GetArgTargetResult(1);
 
-        if (targetresult.Players.Count == 0)
+        if (targetResult.Players.Count == 0)
         {
-            if (!ignoreMessage)
+            if (allowSteamID && SteamID.TryParse(command.GetArg(1), out SteamID? steamId) && steamId != null)
             {
-                command.ReplyToCommand(Config.Tag + Instance.Localizer["No matching client"]);
+                Store_Player? playerdata = Instance.GlobalStorePlayers.SingleOrDefault(player => player.SteamID == steamId.SteamId64);
+
+                if (playerdata != null)
+                {
+                    return new TargetFind() { StorePlayer = playerdata, TargetName = steamId.SteamId64.ToString() };
+                }
             }
 
-            return (new List<CCSPlayerController>(), string.Empty);
+            command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["No matching client"]}");
+            return new TargetFind();
         }
-        else if (singletarget && targetresult.Players.Count > 1)
+        else if (singleTarget && targetResult.Players.Count > 1)
         {
-            command.ReplyToCommand(Config.Tag + Instance.Localizer["More than one client matched"]);
-            return (new List<CCSPlayerController>(), string.Empty);
+            command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["More than one client matched"]}");
+            return new TargetFind();
         }
 
-        string targetname;
+        string targetName = targetResult.Players.Count == 1
+            ? targetResult.Players[0].PlayerName
+            : GetTargetGroupName(command.GetArg(1), targetResult);
 
-        if (targetresult.Players.Count == 1)
-        {
-            targetname = targetresult.Players.Single().PlayerName;
-        }
-        else
-        {
-            Target.TargetTypeMap.TryGetValue(command.GetArg(1), out TargetType type);
+        return new TargetFind() { Players = targetResult.Players, TargetName = targetName };
+    }
 
-            targetname = type switch
+    public static CCSPlayerController? FindTargetFromWeapon(CBasePlayerWeapon weapon)
+    {
+        SteamID steamId = new(weapon.OriginalOwnerXuidLow);
+
+        CCSPlayerController? player = steamId.IsValid()
+                ? Utilities.GetPlayers().FirstOrDefault(p => p.IsValid && p.SteamID == steamId.SteamId64) ?? Utilities.GetPlayerFromSteamId(weapon.OriginalOwnerXuidLow)
+        : Utilities.GetPlayerFromIndex((int)weapon.OwnerEntity.Index) ?? Utilities.GetPlayerFromIndex((int)weapon.As<CCSWeaponBaseGun>().OwnerEntity.Value!.Index);
+
+        return !string.IsNullOrEmpty(player?.PlayerName) ? player : null;
+    }
+
+    private static string GetTargetGroupName(string targetArg, TargetResult targetResult)
+    {
+        return !Target.TargetTypeMap.TryGetValue(targetArg, out TargetType type)
+            ? targetResult.Players.First().PlayerName
+            : type switch
             {
                 TargetType.GroupAll => Instance.Localizer["all"],
                 TargetType.GroupBots => Instance.Localizer["bots"],
@@ -56,14 +73,11 @@ public static class FindTarget
                 TargetType.GroupAlive => Instance.Localizer["alive"],
                 TargetType.GroupDead => Instance.Localizer["dead"],
                 TargetType.GroupNotMe => Instance.Localizer["notme"],
-                TargetType.PlayerMe => targetresult.Players.First().PlayerName,
+                TargetType.PlayerMe => targetResult.Players.First().PlayerName,
                 TargetType.TeamCt => Instance.Localizer["ct"],
                 TargetType.TeamT => Instance.Localizer["t"],
                 TargetType.TeamSpec => Instance.Localizer["spec"],
-                _ => targetresult.Players.First().PlayerName
+                _ => targetResult.Players.First().PlayerName
             };
-        }
-
-        return (targetresult.Players, targetname);
     }
 }

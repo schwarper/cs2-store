@@ -8,26 +8,20 @@ namespace Store;
 
 public static class Item_ColoredSkin
 {
-    private static bool coloredskinExists = false;
+    private static bool _coloredSkinExists = false;
+
     public static void OnPluginStart()
     {
         Item.RegisterType("coloredskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+        _coloredSkinExists = Item.IsAnyItemExistInType("coloredskin");
+    }
 
-        if (Item.IsAnyItemExistInType("coloredskin"))
-        {
-            coloredskinExists = true;
-        }
-    }
-    public static void OnMapStart()
-    {
-    }
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
-    {
-    }
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
-    {
-        return true;
-    }
+    public static void OnMapStart() { }
+
+    public static void OnServerPrecacheResources(ResourceManifest manifest) { }
+
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item) => true;
+
     public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         player.PlayerPawn.Value?.ColorSkin(Color.White);
@@ -36,41 +30,27 @@ public static class Item_ColoredSkin
 
     public static void OnTick(CCSPlayerController player)
     {
-        if (!coloredskinExists)
-        {
-            return;
-        }
+        if (!_coloredSkinExists) return;
 
-        Store_Equipment? playercoloredskin = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "coloredskin");
+        Store_Equipment? playerColoredSkin = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "coloredskin");
+        if (playerColoredSkin == null) return;
 
-        if (playercoloredskin == null)
-        {
-            return;
-        }
-
-        Dictionary<string, string>? itemdata = Item.GetItem(playercoloredskin.UniqueId);
-
-        if (itemdata == null)
-        {
-            return;
-        }
+        Dictionary<string, string>? itemData = Item.GetItem(playerColoredSkin.UniqueId);
+        if (itemData == null) return;
 
         Color color;
 
-        if (itemdata.TryGetValue("color", out string? scolor) && !string.IsNullOrEmpty(scolor))
+        if (itemData.TryGetValue("color", out string? scolor) && !string.IsNullOrEmpty(scolor))
         {
             string[] colorValues = scolor.Split(' ');
-
             color = Color.FromArgb(int.Parse(colorValues[0]), int.Parse(colorValues[1]), int.Parse(colorValues[2]));
         }
         else
         {
-            KnownColor? randomColorName = (KnownColor?)Enum.GetValues(typeof(KnownColor)).GetValue(Instance.Random.Next(Enum.GetValues(typeof(KnownColor)).Length));
+            Array knownColors = Enum.GetValues(typeof(KnownColor));
+            KnownColor? randomColorName = (KnownColor?)knownColors.GetValue(Instance.Random.Next(knownColors.Length));
 
-            if (!randomColorName.HasValue)
-            {
-                return;
-            }
+            if (!randomColorName.HasValue) return;
 
             color = Color.FromKnownColor(randomColorName.Value);
         }

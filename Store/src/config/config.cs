@@ -55,11 +55,21 @@ public static class Config_Config
         string configText = File.ReadAllText(configPath);
         TomlTable model = Toml.ToModel(configText);
 
-        TomlTable tagTable = (TomlTable)model["Tag"];
-        string config_tag = StringExtensions.ReplaceColorTags(tagTable["Tag"].ToString()!);
+        Config = new Cfg
+        {
+            Tag = StringExtensions.ReplaceColorTags(((TomlTable)model["Tag"])["Tag"].ToString()!),
+            DatabaseConnection = LoadDatabaseConnection((TomlTable)model["DatabaseConnection"]),
+            Commands = LoadCommands((TomlTable)model["Commands"]),
+            DefaultModels = LoadDefaultModels((TomlTable)model["DefaultModels"]),
+            Credits = LoadCredits((TomlTable)model["Credits"]),
+            Menu = LoadMenu((TomlTable)model["Menu"]),
+            Settings = LoadSettings((TomlTable)model["Settings"])
+        };
+    }
 
-        TomlTable dbTable = (TomlTable)model["DatabaseConnection"];
-        Config_DatabaseConnection config_database = new()
+    private static Config_DatabaseConnection LoadDatabaseConnection(TomlTable dbTable)
+    {
+        Config_DatabaseConnection config = new()
         {
             Host = dbTable["Host"].ToString()!,
             Port = uint.Parse(dbTable["Port"].ToString()!),
@@ -69,114 +79,36 @@ public static class Config_Config
             DatabaseEquipTableName = dbTable["DatabaseEquipTableName"].ToString()!
         };
 
-        if (string.IsNullOrEmpty(config_database.Host) || string.IsNullOrEmpty(config_database.Name) || string.IsNullOrEmpty(config_database.User))
-        {
-            throw new Exception("You need to setup Database credentials in config.");
-        }
+        return string.IsNullOrEmpty(config.Host) || string.IsNullOrEmpty(config.Name) || string.IsNullOrEmpty(config.User)
+            ? throw new Exception("You need to setup Database credentials in config.")
+            : config;
+    }
 
-        TomlTable commandsTable = (TomlTable)model["Commands"];
-        List<string> creditsList = [];
-        foreach (object? item in (TomlArray)commandsTable["Credits"])
+    private static Config_Commands LoadCommands(TomlTable commandsTable) =>
+        new()
         {
-            creditsList.Add(item!.ToString()!);
-        }
-
-        List<string> storeList = [];
-        foreach (object? item in (TomlArray)commandsTable["Store"])
-        {
-            storeList.Add(item!.ToString()!);
-        }
-
-        List<string> inventoryList = [];
-        foreach (object? item in (TomlArray)commandsTable["Inventory"])
-        {
-            inventoryList.Add(item!.ToString()!);
-        }
-
-        List<string> giveCreditsList = [];
-        foreach (object? item in (TomlArray)commandsTable["GiveCredits"])
-        {
-            giveCreditsList.Add(item!.ToString()!);
-        }
-
-        List<string> giftList = [];
-        foreach (object? item in (TomlArray)commandsTable["Gift"])
-        {
-            giftList.Add(item!.ToString()!);
-        }
-
-        List<string> resetPlayerList = [];
-        foreach (object? item in (TomlArray)commandsTable["ResetPlayer"])
-        {
-            resetPlayerList.Add(item!.ToString()!);
-        }
-
-        List<string> resetDatabaseList = [];
-        foreach (object? item in (TomlArray)commandsTable["ResetDatabase"])
-        {
-            resetDatabaseList.Add(item!.ToString()!);
-        }
-
-        List<string> refreshPlayersCredits = [];
-        foreach (object? item in (TomlArray)commandsTable["RefreshPlayersCredits"])
-        {
-            refreshPlayersCredits.Add(item!.ToString()!);
-        }
-
-        List<string> hideTrailsList = [];
-        foreach (object? item in (TomlArray)commandsTable["HideTrails"])
-        {
-            hideTrailsList.Add(item!.ToString()!);
-        }
-
-        List<string> model0List = [];
-        foreach (object? item in (TomlArray)commandsTable["PlayerSkinsOff"])
-        {
-            model0List.Add(item!.ToString()!);
-        }
-
-        List<string> model1List = [];
-        foreach (object? item in (TomlArray)commandsTable["PlayerSkinsOn"])
-        {
-            model1List.Add(item!.ToString()!);
-        }
-
-        Config_Commands config_commands = new()
-        {
-            Credits = [.. creditsList],
-            Store = [.. storeList],
-            Inventory = [.. inventoryList],
-            GiveCredits = [.. giveCreditsList],
-            Gift = [.. giftList],
-            ResetPlayer = [.. resetPlayerList],
-            ResetDatabase = [.. resetDatabaseList],
-            RefreshPlayersCredits = [.. refreshPlayersCredits],
-            HideTrails = [.. hideTrailsList],
-            ModelOff = [.. model0List],
-            ModelOn = [.. model1List]
+            Credits = GetStringArray(commandsTable["Credits"]),
+            Store = GetStringArray(commandsTable["Store"]),
+            Inventory = GetStringArray(commandsTable["Inventory"]),
+            GiveCredits = GetStringArray(commandsTable["GiveCredits"]),
+            Gift = GetStringArray(commandsTable["Gift"]),
+            ResetPlayer = GetStringArray(commandsTable["ResetPlayer"]),
+            ResetDatabase = GetStringArray(commandsTable["ResetDatabase"]),
+            RefreshPlayersCredits = GetStringArray(commandsTable["RefreshPlayersCredits"]),
+            HideTrails = GetStringArray(commandsTable["HideTrails"]),
+            ModelOff = GetStringArray(commandsTable["PlayerSkinsOff"]),
+            ModelOn = GetStringArray(commandsTable["PlayerSkinsOn"])
         };
 
-        TomlTable defaultModelsTable = (TomlTable)model["DefaultModels"];
-        List<string> terroristList = [];
-        foreach (object? item in (TomlArray)defaultModelsTable["Terrorist"])
+    private static Config_DefaultModels LoadDefaultModels(TomlTable defaultModelsTable) =>
+        new()
         {
-            terroristList.Add(item!.ToString()!);
-        }
-
-        List<string> counterTerroristList = [];
-        foreach (object? item in (TomlArray)defaultModelsTable["CounterTerrorist"])
-        {
-            counterTerroristList.Add(item!.ToString()!);
-        }
-
-        Config_DefaultModels config_defaultModels = new()
-        {
-            Terrorist = [.. terroristList],
-            CounterTerrorist = [.. counterTerroristList]
+            Terrorist = GetStringArray(defaultModelsTable["Terrorist"]),
+            CounterTerrorist = GetStringArray(defaultModelsTable["CounterTerrorist"])
         };
 
-        TomlTable creditsTable = (TomlTable)model["Credits"];
-        Config_Credits config_credits = new()
+    private static Config_Credits LoadCredits(TomlTable creditsTable) =>
+        new()
         {
             Start = int.Parse(creditsTable["Start"].ToString()!),
             IntervalActiveInActive = int.Parse(creditsTable["IntervalActiveInActive"].ToString()!),
@@ -186,8 +118,8 @@ public static class Config_Config
             IgnoreWarmup = bool.Parse(creditsTable["IgnoreWarmup"].ToString()!)
         };
 
-        TomlTable menuTable = (TomlTable)model["Menu"];
-        Config_Menu config_menu = new()
+    private static Config_Menu LoadMenu(TomlTable menuTable) =>
+        new()
         {
             EnableSelling = bool.Parse(menuTable["EnableSelling"].ToString()!),
             EnableConfirmMenu = bool.Parse(menuTable["EnableConfirmMenu"].ToString()!),
@@ -197,8 +129,8 @@ public static class Config_Config
             MenuPressSoundNo = menuTable["MenuPressSoundNo"].ToString()!
         };
 
-        TomlTable settingsTable = (TomlTable)model["Settings"];
-        Config_Settings config_settings = new()
+    private static Config_Settings LoadSettings(TomlTable settingsTable) =>
+        new()
         {
             MaxHealth = int.Parse(settingsTable["MaxHealth"].ToString()!),
             MaxArmor = int.Parse(settingsTable["MaxArmor"].ToString()!),
@@ -209,17 +141,8 @@ public static class Config_Config
             Model0Model1Flag = settingsTable["Model0Model1Flag"].ToString()!
         };
 
-        Config = new Cfg
-        {
-            Tag = config_tag,
-            DatabaseConnection = config_database,
-            Commands = config_commands,
-            DefaultModels = config_defaultModels,
-            Credits = config_credits,
-            Menu = config_menu,
-            Settings = config_settings
-        };
-    }
+    private static string[] GetStringArray(object tomlArray) =>
+        [.. ((TomlArray)tomlArray).Select(item => item!.ToString()!)];
 
     public class Cfg
     {
