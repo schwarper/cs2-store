@@ -21,9 +21,7 @@ public static class CenterMenu
     {
         CenterHtmlMenu menu = new(title, Instance);
 
-        List<JsonProperty> items = elementData.EnumerateObject()
-            .Where(prop => prop.Name != "flag" && prop.Name != "langname")
-            .ToList();
+        List<JsonProperty> items = Menu.GetElementJsonProperty(elementData);
 
         foreach (JsonProperty item in items)
         {
@@ -79,6 +77,24 @@ public static class CenterMenu
             DisplayItemOption(player, item);
         else if (item["price"] == "0")
         {
+            Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item["type"]);
+
+            if (type == null)
+            {
+                player.PrintToChatMessage("No type found");
+                return;
+            }
+
+            if (type.Alive == true && !player.PawnIsAlive)
+            {
+                player.PrintToChatMessage("You are not alive");
+                return;
+            }
+            else if (type.Alive == false && player.PawnIsAlive)
+            {
+                player.PrintToChatMessage("You are alive");
+                return;
+            }
             Store.Api.PlayerPurchaseItem(player, item);
             player.PrintToChatMessage("Purchase Succeeded", Item.GetItemName(player, item));
         }
@@ -96,9 +112,11 @@ public static class CenterMenu
         {
             menu.AddMenuOption(player, (p, o) =>
             {
-                p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
-                Item.Unequip(p, item, true);
-                p.PrintToChatMessage("Purchase Unequip", Item.GetItemName(p, item));
+                if (Item.Unequip(p, item, true))
+                {
+                    p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
+                    p.PrintToChatMessage("Purchase Unequip", Item.GetItemName(p, item));
+                }
                 DisplayItemOption(p, item);
             }, false, "menu_store<unequip>");
         }

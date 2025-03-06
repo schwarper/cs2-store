@@ -45,7 +45,7 @@ public static class Event
         {
             if (GameRules.IgnoreWarmUp()) return;
 
-            List<CCSPlayerController> players = Utilities.GetPlayers().Where(p => !p.IsBot).ToList();
+            List<CCSPlayerController> players = [.. Utilities.GetPlayers().Where(p => !p.IsBot)];
 
             foreach (CCSPlayerController? player in players)
             {
@@ -72,9 +72,7 @@ public static class Event
 
         Database.ExecuteAsync("DELETE FROM store_items WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);
 
-        List<Store_Item> itemsToRemove = Instance.GlobalStorePlayerItems
-            .Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)
-            .ToList();
+        List<Store_Item> itemsToRemove = [.. Instance.GlobalStorePlayerItems.Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)];
 
         string storeEquipmentTableName = Config.DatabaseConnection.DatabaseEquipTableName;
 
@@ -226,7 +224,7 @@ public static class Event
     {
         if (Instance.InspectList.Count == 0 && Item_Trail.TrailList.Count == 0) return;
 
-        foreach ((CCheckTransmitInfo info, CCSPlayerController player) in infoList)
+        foreach ((CCheckTransmitInfo info, CCSPlayerController? player) in infoList)
         {
             if (player == null) continue;
 

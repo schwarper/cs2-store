@@ -24,8 +24,8 @@ PlayerSkinsOn = [ "model1", "modelon" ]
 
 # Should you not wish to utilise the default model, you are free to leave the list blank.
 [DefaultModels]
-Terrorist = [ "characters/models/ctm_fbi/ctm_fbi_variantb.vmdl" ]
-CounterTerrorist = [ "characters/models/tm_leet/tm_leet_variantj.vmdl" ]
+Terrorist = [ "characters/models/tm_leet/tm_leet_variantj.vmdl" ]
+CounterTerrorist = [ "characters/models/ctm_fbi/ctm_fbi_variantb.vmdl" ]
 
 [Credits]
 Start = 0
@@ -38,7 +38,7 @@ IgnoreWarmup = true
 [Menu]
 EnableSelling = true
 EnableConfirmMenu = true
-MenuType = "worldtext" # html
+MenuType = "worldtext" # html or center for CenterMenu; worldtext, screen or screenmenu for ScreenTextMenu 
 VipFlag = "@css/root" # Individuals in possession of the requisite authorisation shall be entitled to utilise equipable items free of charge. Making this field empty will result in the cancellation of Vip.
 MenuPressSoundYes = ""
 MenuPressSoundNo = ""

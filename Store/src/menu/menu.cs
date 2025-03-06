@@ -10,6 +10,9 @@ namespace Store;
 
 public static class Menu
 {
+    public static List<JsonProperty> GetElementJsonProperty(JsonElement element) =>
+        [.. element.EnumerateObject().Where(prop => prop.Name != "flag" && prop.Name != "langname")];
+
     public static void DisplayStoreMenu(CCSPlayerController? player, bool inventory)
     {
         if (player == null)

@@ -23,7 +23,11 @@ public static class Item
     public static bool Give(CCSPlayerController player, Dictionary<string, string> item)
     {
         Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item["type"]);
-        if (type == null) return false;
+        if (type == null)
+        {
+            player.PrintToChatMessage("No type found");
+            return false;
+        }
 
         if (!type.Equipable && !type.Equip(player, item)) return false;
 
@@ -45,26 +49,51 @@ public static class Item
             Instance.GlobalStorePlayerItems.Add(playerItem);
             Server.NextFrame(() => Database.SavePlayerItem(player, playerItem));
         }
+        else
+        {
+            return false;
+        }
 
         return true;
     }
 
     public static bool Purchase(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (Credits.Get(player) < int.Parse(item["price"])) return false;
+        if (Credits.Get(player) < int.Parse(item["price"]))
+        {
+            player.PrintToChatMessage("No credits enough");
+            return false;
+        }
 
         Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item["type"]);
-        if (type == null) return false;
 
-        if (type.Alive == true && !player.PawnIsAlive) return false;
-        if (type.Alive == false && player.PawnIsAlive) return false;
+        if (type == null)
+        {
+            player.PrintToChatMessage("No type found");
+            return false;
+        }
+
+        if (type.Alive == true && !player.PawnIsAlive)
+        {
+            player.PrintToChatMessage("You are not alive");
+            return false;
+        }
+        else if (type.Alive == false && player.PawnIsAlive)
+        {
+            player.PrintToChatMessage("You are alive");
+            return false;
+        }
 
         if (!type.Equipable)
         {
             if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && player.TeamNum != team)
+            {
+                player.PrintToChatMessage("No purchase because team", (CsTeam)team);
                 return false;
+            }
 
-            if (!type.Equip(player, item)) return false;
+            if (!type.Equip(player, item))
+                return false;
         }
 
         int price = int.Parse(item["price"]);
@@ -95,6 +124,7 @@ public static class Item
             Store.Api.PlayerEquipItem(player, item);
             Server.NextFrame(() => Database.SavePlayerItem(player, playerItem));
         }
+        else return false;
 
         return true;
     }
@@ -105,7 +135,10 @@ public static class Item
         if (type == null) return false;
 
         if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && player.TeamNum != team)
+        {
+            player.PrintToChatMessage("No equip because team", (CsTeam)team);
             return false;
+        }
 
         List<Store_Equipment> currentItems = Instance.GlobalStorePlayerEquipments.FindAll(p =>
             p.SteamID == player.SteamID &&
@@ -180,9 +213,7 @@ public static class Item
         if (!ignoreVip && IsPlayerVip(player)) return true;
 
         item.TryGetValue("flag", out string? flag);
-        return Menu.CheckFlag(player, flag, false)
-            ? true
-            : Instance.GlobalStorePlayerItems.Any(p => p.SteamID == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
+        return Menu.CheckFlag(player, flag, false) || Instance.GlobalStorePlayerItems.Any(p => p.SteamID == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
     }
 
     public static bool PlayerUsing(CCSPlayerController player, string type, string uniqueId) =>
