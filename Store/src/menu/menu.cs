@@ -70,9 +70,14 @@ public static class Menu
 
     public static string GetCategoryName(CCSPlayerController player, JsonProperty category)
     {
-        return category.Value.TryGetProperty("langname", out JsonElement langname)
-            ? Instance.Localizer.ForPlayer(player, langname.ToString())
-            : category.Name;
+        var name = category.Name;
+
+        if (name.StartsWith('*') && name.EndsWith('*'))
+        {
+            return Instance.Localizer.ForPlayer(player, name);
+        }
+
+        return name;
     }
 
     public static void InspectAction(CCSPlayerController player, Dictionary<string, string> item, string type)

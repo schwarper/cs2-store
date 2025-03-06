@@ -2,13 +2,12 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using static Store.Store;
-using static StoreApi.Store;
 
 namespace Store;
 
 public static class Item_Equipment
 {
-    private static readonly Dictionary<ulong, CBaseModelEntity> _equipment = [];
+    private static readonly Dictionary<CCSPlayerController, Dictionary<int, CDynamicProp>> PlayerEquipmentEntities = [];
 
     public static void OnPluginStart()
     {
@@ -17,91 +16,146 @@ public static class Item_Equipment
         if (Item.IsAnyItemExistInType("equipment"))
         {
             Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
+            Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
+            Instance.RegisterEventHandler<EventPlayerDisconnect>(OnPlayerDisconnect);
         }
     }
 
-    public static void OnMapStart() { }
+    public static void OnMapStart() =>
+        PlayerEquipmentEntities.Clear();
 
     public static void OnServerPrecacheResources(ResourceManifest manifest)
     {
         List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("equipment");
 
         foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
-        {
             manifest.AddResource(item.Value["model"]);
-        }
     }
 
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        Equip(player);
+        if (!item.TryGetValue("slot", out string? slotStr) || !int.TryParse(slotStr, out int slot) || slot < 0)
+            return false;
+
+        EquipModel(player, item["model"], slot);
+
         return true;
     }
 
     public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
-        if (!update) return true;
+        if (!item.TryGetValue("slot", out string? slotStr) || !int.TryParse(slotStr, out int slot))
+            return false;
 
-        UnEquip(player);
+        UnEquipModel(player, slot);
+
         return true;
     }
 
-    public static void Equip(CCSPlayerController player)
+    public static void EquipModel(CCSPlayerController player, string model, int slot)
     {
-        UnEquip(player);
+        UnEquipModel(player, slot);
 
-        Instance.AddTimer(0.1f, () =>
+        Server.NextFrame(() =>
         {
-            Store_Equipment? playerItems = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "equipment");
-            if (playerItems == null) return;
+            CDynamicProp? entity = CreateItem(player, model);
+            if (entity != null && entity.IsValid)
+            {
+                if (!PlayerEquipmentEntities.ContainsKey(player))
+                    PlayerEquipmentEntities[player] = [];
 
-            Dictionary<string, string>? itemData = Item.GetItem(playerItems.UniqueId);
-            if (itemData == null) return;
-
-            if (player.PlayerPawn?.Value is not { } pawn) return;
-
-            pawn.Effects = 1;
-            Utilities.SetStateChanged(pawn, "CBaseEntity", "m_fEffects");
-
-            CreateItem(player, itemData["model"]);
+                PlayerEquipmentEntities[player][slot] = entity;
+            }
         });
     }
 
-    public static void UnEquip(CCSPlayerController player)
+    public static void UnEquipModel(CCSPlayerController player, int slot)
     {
-        if (_equipment.TryGetValue(player.SteamID, out CBaseModelEntity? entity))
-        {
-            if (entity.IsValid) entity.Remove();
-            _equipment.Remove(player.SteamID);
-        }
+        if (!PlayerEquipmentEntities.TryGetValue(player, out Dictionary<int, CDynamicProp>? value) || !value.ContainsKey(slot))
+            return;
+
+        CDynamicProp? entity = value[slot];
+
+        if (entity != null && entity.IsValid)
+            entity.Remove();
+
+        value.Remove(slot);
+
+        if (value.Count == 0)
+            PlayerEquipmentEntities.Remove(player);
     }
 
-    public static void CreateItem(CCSPlayerController player, string itemName)
+    public static CDynamicProp? CreateItem(CCSPlayerController player, string model)
     {
-        CBaseModelEntity? entity = Utilities.CreateEntityByName<CBaseModelEntity>("prop_dynamic_override");
+        CCSPlayerPawn? pawn = player.PlayerPawn.Value;
+        if (pawn == null) return null;
 
-        Instance.AddTimer(0.1f, () =>
-        {
-            if (entity == null) return;
+        CDynamicProp? entity = Utilities.CreateEntityByName<CDynamicProp>("prop_dynamic_override");
 
-            entity.Globalname = $"{player.SteamID}({itemName})#{RandomString(6)}";
-            entity.SetModel(itemName);
-            entity.DispatchSpawn();
-            entity.AcceptInput("FollowEntity", player.PlayerPawn?.Value!, player.PlayerPawn?.Value!, "!activator");
-            _equipment[player.SteamID] = entity;
-        });
+        if (entity == null)
+            return null;
+
+        entity.CBodyComponent!.SceneNode!.Owner!.Entity!.Flags &= ~(uint)(1 << 2);
+        entity.SetModel(model);
+        entity.DispatchSpawn();
+        entity.AcceptInput("FollowEntity", pawn, pawn, "!activator");
+
+        return entity;
     }
 
     public static HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
     {
-        Equip(@event.Userid!);
+        CCSPlayerController? player = @event.Userid;
+        if (player == null) return HookResult.Continue;
+
+        List<StoreApi.Store.Store_Equipment> equippedItems = [.. Instance.GlobalStorePlayerEquipments.Where(x => x.SteamID == player.SteamID && x.Type == "equipment")];
+
+        if (PlayerEquipmentEntities.TryGetValue(player, out Dictionary<int, CDynamicProp>? value))
+        {
+            List<int> slotsToRemove = [.. value.Where(kv => !equippedItems.Any(item => item.Slot == kv.Key)).Select(kv => kv.Key)];
+
+            foreach (int slot in slotsToRemove)
+                UnEquipModel(player, slot);
+        }
+
+        foreach (StoreApi.Store.Store_Equipment? item in equippedItems)
+        {
+            if (Item.GetItem(item.UniqueId) is Dictionary<string, string> itemData &&
+                itemData.TryGetValue("model", out string? model) &&
+                itemData.TryGetValue("slot", out string? slotStr) && int.TryParse(slotStr, out int slot))
+            {
+                if (PlayerEquipmentEntities.TryGetValue(player, out Dictionary<int, CDynamicProp>? equipment) &&
+                    equipment.TryGetValue(slot, out CDynamicProp? entity) && entity != null && entity.IsValid)
+                    continue;
+
+                EquipModel(player, model, slot);
+            }
+        }
+
         return HookResult.Continue;
     }
 
-    public static string RandomString(int length)
+    public static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
     {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new();
-        return new string([.. Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)])]);
+        CleanUpModels(@event.Userid);
+        return HookResult.Continue;
+    }
+
+    public static HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
+    {
+        CleanUpModels(@event.Userid);
+        return HookResult.Continue;
+    }
+
+    public static void CleanUpModels(CCSPlayerController? player)
+    {
+        if (player != null && PlayerEquipmentEntities.TryGetValue(player, out Dictionary<int, CDynamicProp>? value))
+        {
+            foreach (CDynamicProp entity in value.Values)
+                if (entity != null && entity.IsValid)
+                    entity.Remove();
+
+            PlayerEquipmentEntities.Remove(player);
+        }
     }
 }

@@ -15,10 +15,17 @@ public static class Item
     public static bool IsHidden(this Dictionary<string, string> item) =>
         item.ContainsKey("hide") && item["hide"] == "true";
 
-    public static string GetItemName(CCSPlayerController player, Dictionary<string, string> item) =>
-        item.TryGetValue("langname", out string? langname)
-            ? Instance.Localizer.ForPlayer(player, langname)
-            : item["name"];
+    public static string GetItemName(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        var name = item["name"];
+
+        if (name.StartsWith('*') && name.EndsWith('*'))
+        {
+            return Instance.Localizer.ForPlayer(player, name);
+        }
+
+        return name;
+    }
 
     public static bool Give(CCSPlayerController player, Dictionary<string, string> item)
     {
@@ -140,11 +147,11 @@ public static class Item
             return false;
         }
 
-        List<Store_Equipment> currentItems = Instance.GlobalStorePlayerEquipments.FindAll(p =>
+        List<Store_Equipment> currentItems = [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
             p.SteamID == player.SteamID &&
             p.Type == type.Type &&
-            ((type.Type == "playerskin" && (item["slot"] == "1" || p.Slot == 1)) || p.Slot == int.Parse(item["slot"]))
-        );
+            (p.Slot == int.Parse(item["slot"]) ||
+            type.Type == "playerskin" && (item["slot"] == "1" || p.Slot == 1)))];
 
         foreach (Store_Equipment currentItem in currentItems)
         {
@@ -179,11 +186,11 @@ public static class Item
         Store_Equipment? equippedItem = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.UniqueId == item["uniqueid"]);
         if (equippedItem == null) return false;
 
-        if (!type.Unequip(player, item, update)) return false;
-
         Instance.GlobalStorePlayerEquipments.Remove(equippedItem);
         Store.Api.PlayerUnequipItem(player, item);
         Server.NextFrame(() => Database.RemovePlayerEquipment(player, item["uniqueid"]));
+
+        if (!type.Unequip(player, item, update)) return false;
 
         return true;
     }

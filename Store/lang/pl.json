@@ -65,6 +65,7 @@
   "css_model0": "{blue}{0}{white} włączył wymuszanie domyślnych modeli graczy.",
   "css_model1": "{blue}{0}{white} wyłączył wymuszanie domyślnych modeli graczy.",
 
-  "OperatorTestLang": "Operator",
-  "AdminSkinsTestLang": "Skórki administratora"
+  "*FreePlayerSkin*": "Darmowa skórka gracza",
+  "*CT*": "Skórki CT",
+  "*Fernandez Frogman [CT]*": "Fernandez Frogman [CT]"
 }

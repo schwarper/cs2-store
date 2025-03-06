@@ -58,7 +58,10 @@ public static class ScreenTextMenu
     {
         Dictionary<string, string> item = Instance.Items[uniqueIdElement.ToString()];
 
-        if (item["enable"] != "true" || !Menu.CheckFlag(player, item) || (inventory && !Item.PlayerHas(player, item["type"], item["uniqueid"], false)))
+        if (item.TryGetValue("enable", out string? enable) && enable != "true")
+            return;
+
+        if (!Menu.CheckFlag(player, item) || (inventory && !Item.PlayerHas(player, item["type"], item["uniqueid"], false)))
             return;
 
         if (Item.PlayerHas(player, item["type"], item["uniqueid"], false))

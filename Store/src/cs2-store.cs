@@ -104,13 +104,16 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
                     Dictionary<string, string> itemData = subItem.Value.EnumerateObject()
                         .ToDictionary(prop => prop.Name, prop => prop.Value.ToString());
 
+                    itemData["name"] = subItem.Name;
                     itemsDictionary[uniqueId] = itemData;
                 }
                 else
                 {
                     Dictionary<string, Dictionary<string, string>> nestedItems = ExtractItems(subItem.Value);
                     foreach (KeyValuePair<string, Dictionary<string, string>> nestedItem in nestedItems)
+                    {
                         itemsDictionary[nestedItem.Key] = nestedItem.Value;
+                    }
                 }
             }
         }
