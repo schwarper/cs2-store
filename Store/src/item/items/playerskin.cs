@@ -12,6 +12,8 @@ namespace Store;
 public static class Item_PlayerSkin
 {
     public static bool ForceModelDefault { get; set; } = false;
+    private static bool DisableLeg(Dictionary<string, string> item) =>
+        item.ContainsKey("disable_leg") && item["disable_leg"] is "true" or "1";
 
     public static void OnPluginStart()
     {
@@ -48,7 +50,7 @@ public static class Item_PlayerSkin
         if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot) || ForceModelDefault)
             return false;
 
-        player.ChangeModelDelay(item["model"], item["disable_leg"] is "true" or "1", int.Parse(item["slot"]), item.GetValueOrDefault("skin"));
+        player.ChangeModelDelay(item["model"], DisableLeg(item), int.Parse(item["slot"]), item.GetValueOrDefault("skin"));
         return true;
     }
 
@@ -148,7 +150,7 @@ public static class Item_PlayerSkin
     private static (string modelname, bool disableleg, string? skin)? GetStoreModel(Store_Equipment item)
     {
         Dictionary<string, string>? itemdata = Item.GetItem(item.UniqueId);
-        return itemdata == null ? null : (itemdata["model"], itemdata["disable_leg"] is "true" or "1", itemdata.GetValueOrDefault("skin"));
+        return itemdata == null ? null : (itemdata["model"], DisableLeg(itemdata), itemdata.GetValueOrDefault("skin"));
     }
 
     public static void Inspect(CCSPlayerController player, string model, string? skin)
