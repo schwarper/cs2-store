@@ -74,10 +74,16 @@ public static class Item_Trail
 
         float lifetime = itemdata.TryGetValue("lifetime", out string? ltvalue) && float.TryParse(ltvalue, CultureInfo.InvariantCulture, out float lt) ? lt : 1.3f;
 
-        if (itemdata.TryGetValue("color", out string? cvalue) && !string.IsNullOrEmpty(cvalue))
+        if (itemdata.TryGetValue("color", out string? cvalue))
         {
-            string[] colorValues = cvalue.Split(' ');
-            Color color = Color.FromArgb(int.Parse(colorValues[0]), int.Parse(colorValues[1]), int.Parse(colorValues[2]));
+            Color? color = null;
+
+            if (!string.IsNullOrEmpty(cvalue))
+            {
+                string[] colorValues = cvalue.Split(' ');
+                color = Color.FromArgb(int.Parse(colorValues[0]), int.Parse(colorValues[1]), int.Parse(colorValues[2]));
+            }
+
             CreateBeam(player, absorigin, lifetime, color, itemdata);
         }
         else
