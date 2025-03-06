@@ -78,7 +78,7 @@ public static class PlayerUtils
         Utilities.SetStateChanged(pawn, "CBaseEntity", "m_iHealth");
     }
 
-    public static void SetArmor(this CCSPlayerPawn playerPawn, int armor)
+    public static void GiveArmor(this CCSPlayerPawn playerPawn, int armor)
     {
         if (playerPawn.ItemServices != null)
         {

@@ -11,7 +11,7 @@ public static class Item_Bunnyhop
 
     public static void OnPluginStart()
     {
-        Item.RegisterType("bunnyhop", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, false);
+        Item.RegisterType("bunnyhop", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
 
         _bunnyhopExists = Item.IsAnyItemExistInType("bunnyhop");
     }

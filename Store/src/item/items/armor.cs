@@ -16,15 +16,12 @@ public static class Item_Armor
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!int.TryParse(item["armorValue"], out int armor)) return false;
-
         if (player.PlayerPawn?.Value is not { } playerPawn) return false;
 
         int maxArmor = Config.Settings.MaxArmor;
-        if (maxArmor == -1) maxArmor = 100;
+        if (maxArmor > 0 && playerPawn.ArmorValue >= maxArmor) return false;
 
-        if (playerPawn.ArmorValue >= maxArmor) return false;
-
-        playerPawn.SetArmor(Math.Min(armor, maxArmor - playerPawn.ArmorValue));
+        playerPawn.GiveArmor(Math.Min(armor, maxArmor - playerPawn.ArmorValue));
 
         return true;
     }

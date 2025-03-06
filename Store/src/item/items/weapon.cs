@@ -14,7 +14,7 @@ public static class Item_Weapon
 
     public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (GameRules.IsPistolRound() && item["no_pistol_round"] == "true")
+        if (item.TryGetValue("no_pistol_round", out string? nopistolround) && nopistolround == "true" && GameRules.IsPistolRound())
         {
             player.PrintToChatMessage("No in pistol round", Item.GetItemName(player, item));
             return false;

@@ -149,7 +149,8 @@
       "Kill yourself": {
         "uniqueid": "killurself",
         "type": "link",
-        "link": "kill"
+        "link": "kill",
+        "price": "1000"
       }
     },
     "Smoke": {
