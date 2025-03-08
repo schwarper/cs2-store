@@ -21,19 +21,49 @@ public static class FindTarget
     public static TargetFind Find(CommandInfo command, bool singleTarget, bool allowSteamID)
     {
         TargetResult targetResult = command.GetArgTargetResult(1);
-
         if (targetResult.Players.Count == 0)
         {
-            if (allowSteamID && SteamID.TryParse(command.GetArg(1), out SteamID? steamId) && steamId != null)
+            if (allowSteamID)
             {
-                Store_Player? playerdata = Instance.GlobalStorePlayers.SingleOrDefault(player => player.SteamID == steamId.SteamId64);
+                // Get the argument and remove whitespace
+                string arg = command.GetArg(1).Trim();
 
-                if (playerdata != null)
+                SteamID? steamId = null;
+                // Try the standard parsing method
+                if (!SteamID.TryParse(arg, out steamId) || steamId == null)
                 {
-                    return new TargetFind() { StorePlayer = playerdata, TargetName = steamId.SteamId64.ToString() };
+                    // If standard parsing fails, try converting as a number
+                    if (ulong.TryParse(arg, out ulong steamIdNum))
+                    {
+                        steamId = new SteamID(steamIdNum);
+                    }
+                }
+
+                if (steamId != null)
+                {
+                    Store_Player? playerdata = Instance.GlobalStorePlayers
+                        .SingleOrDefault(player => player.SteamID == steamId.SteamId64);
+
+                    if (playerdata == null)
+                    {
+                         // If not found, create a new offline record (you can adjust this logic as needed)
+                        playerdata = new Store_Player
+                        {
+                            SteamID = steamId.SteamId64,
+                            Credits = 0,
+                            PlayerName = steamId.SteamId64.ToString() // ou outro valor padrão
+                        };
+                        Instance.GlobalStorePlayers.Add(playerdata);
+                    }
+                     // Define the TargetName: if PlayerName is filled and different from SteamID, use it; otherwise, use SteamID.
+                    string finalTargetName = (!string.IsNullOrEmpty(playerdata.PlayerName) && 
+                        playerdata.PlayerName != steamId.SteamId64.ToString())
+                            ? playerdata.PlayerName
+                            : steamId.SteamId64.ToString();
+
+                    return new TargetFind() { StorePlayer = playerdata, TargetName = finalTargetName};
                 }
             }
-
             command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["No matching client"]}");
             return new TargetFind();
         }
