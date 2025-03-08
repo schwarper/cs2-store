@@ -69,7 +69,7 @@ public static class Command
         {
             target.StorePlayer.Credits += credits;
 
-            Database.ExecuteAsync("UPDATE store_players SET Credits = Credits + @Credits WHERE SteamId = @SteamId;", new { Credits = credits, target.StorePlayer.SteamID });
+            Database.ExecuteAsync("UPDATE store_players SET Credits = Credits + @Credits WHERE SteamId = @SteamId;", new { Credits = credits, SteamId = target.StorePlayer.SteamID });
 
             Server.PrintToChatAll($"{Config.Tag}{Instance.Localizer["css_givecredits<steamid>", player?.PlayerName ?? "Console", target.TargetName, credits]}");
             return;
