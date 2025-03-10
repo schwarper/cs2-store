@@ -25,14 +25,10 @@ public static class FindTarget
         {
             if (allowSteamID)
             {
-                // Get the argument and remove whitespace
                 string arg = command.GetArg(1).Trim();
 
-                SteamID? steamId = null;
-                // Try the standard parsing method
-                if (!SteamID.TryParse(arg, out steamId) || steamId == null)
+                if (!SteamID.TryParse(arg, out SteamID? steamId) || steamId == null)
                 {
-                    // If standard parsing fails, try converting as a number
                     if (ulong.TryParse(arg, out ulong steamIdNum))
                     {
                         steamId = new SteamID(steamIdNum);
@@ -46,16 +42,15 @@ public static class FindTarget
 
                     if (playerdata == null)
                     {
-                         // If not found, create a new offline record (you can adjust this logic as needed)
                         playerdata = new Store_Player
                         {
                             SteamID = steamId.SteamId64,
                             Credits = 0,
-                            PlayerName = steamId.SteamId64.ToString() // ou outro valor padrão
+                            PlayerName = steamId.SteamId64.ToString()
                         };
                         Instance.GlobalStorePlayers.Add(playerdata);
                     }
-                     // Define the TargetName: if PlayerName is filled and different from SteamID, use it; otherwise, use SteamID.
+
                     string finalTargetName = (!string.IsNullOrEmpty(playerdata.PlayerName) && 
                         playerdata.PlayerName != steamId.SteamId64.ToString())
                             ? playerdata.PlayerName
