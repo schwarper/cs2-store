@@ -1,0 +1,71 @@
+{
+  "No matching client": "{white}用户不匹配",
+  "More than one client matched": "{white}没有匹配的用户",
+  "Must be an integer": "{white}数量必须为整数",
+  "Must be higher than zero": "{white}数量不能为0",
+  "Must be a steamid": "{white}请输入有效的steamid",
+  "No credits enough": "{white}积分余额不足",
+  "You are not alive": "{white}死亡状态无法购买",
+  "You are alive": "{white}只有死亡后才可购买",
+  "No in pistol round": "{white}手枪局无法购买{green}{0}{white}",
+  "No gift yourself": "{white}无法给自己赠送积分",
+  "No type found": "{white}没有找到这个类型,请重新输入",
+  "Gift timeout": "{white}你需要等待{green}{0}秒{white}后才能赠送",
+  "No purchase because team": "{white}您需要加入{red}{0}{white}阵营才能购买此皮肤！",
+  "No equip because team": "{white}您需要加入{red}{0}{white}阵营才能装备此皮肤！",
+  "You need correct weapon": "{white}你需要拿着{red}{0}{white}才能检视！",
+  "Players' credits are refreshed": "{white}玩家积分已刷新！",
+
+  "t team players": "{green}T阵营{white}玩家",
+  "ct team players": "{green}CT阵营{white}玩家",
+  "alive players": "{green}存活{white}玩家",
+  "all players": "{green}所有{white}玩家",
+  "dead players": "{green}死亡{white}玩家",
+  "Console": "{white}控制台",
+
+  "Purchase Succeeded": "{white}你购买了{green}{0}{white}",
+  "Purchase Equip": "{white}你装备了{green}{0}{white}",
+  "Purchase Unequip": "{white}你取消装备了{green}{0}{white}",
+  "Item Sell": "{white}你{white}卖掉了{green}{0}{white}",
+  "Godmode expired": "{white}你的无敌模式已到期",
+  "Speed expired": "{white}你的加速模式已到期",
+  "Hidetrails off": "{white}轨迹显示{green}已开启{white}！",
+  "Hidetrails on": "{white}轨迹显示{red}已关闭{white}！",
+
+  "menu_store<title>": "商店【 积分余额: {0} 】",
+
+  "menu_store<all_title>": "通用模型",
+  "menu_store<t_title>": "T阵营模型",
+  "menu_store<ct_title>": "CT阵营模型",
+  "menu_store<purchase>": "{0} - [{1}]",
+  "menu_store<purchase1>": "{0}",
+  "menu_store<equip>": "装备",
+  "menu_store<unequip>": "取消装备",
+  "menu_store<sell>": "出售 [{0}]",
+  "menu_store<confirm_title>": "确认购买吗？",
+  "menu_store<yes>": "是",
+  "menu_store<no>": "否",
+  "menu_store<confirm_item>": "{0} - {1} 积分",
+  "menu_store<inspect>": "检视",
+
+  "css_credits": "{white}积分余额: {green}{0} {white}",
+  "css_givecredits<player>": "{blue}{0}{white}给了{green}{2}积分{white}到{green}{1}{white}的账户里",
+  "css_givecredits<steamid>": "{blue}{0}{white}给了{green}{2}积分{white}到{green}{1}{white}的账户里",
+  "css_givecredits<multiple>": "{blue}{0}{white}给了{green}{2}积分{white}到{green}{1}{white}的账户里",
+
+  "css_gift<player>": "{white}你赠送了{green}{1}{white}积分给{blue}{0}{white}",
+  "css_gift<target>": "{blue}{0}{white}赠送了{green}{1}{white}积分给你",
+
+  "css_reset": "{blue}{0}{white}重置了{green}{1}{white}的商店数据",
+
+  "credits_earned<active>": "{white}活跃奖励,{gold}积分{white}+{green}{0}{white}",
+  "credits_earned<inactive>": "{white}非活跃奖励,{gold}积分{white}+{green}{0}{white}",
+  "credits_earned<kill>": "{white}击杀玩家,{gold}积分{white}+{green}{0}{white}",
+
+  "css_model0": "{blue}{0}{white}开启了强制默认模型",
+  "css_model1": "{blue}{0}{white}关闭了强制默认模型",
+
+  "*FreePlayerSkin*": "免费玩家皮肤",
+  "*CT*": "反恐精英",
+  "*Fernandez Frogman [CT]*": "费尔南德斯蛙人 [CT]"
+}
