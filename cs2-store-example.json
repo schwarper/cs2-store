@@ -257,6 +257,47 @@
         "price": "1000",
         "slot": "1"
       }
+    },
+    "Tags": {
+      "Chat Color": {
+        "Red": {
+          "uniqueid": "chatcolorred",
+          "value": "{Red}",
+          "type": "chatcolor",
+          "price": "1000",
+          "slot": "1"
+        }
+      },
+      "Name Color": {
+        "Red": {
+          "uniqueid": "ncred",
+          "value": "{Red}",
+          "type": "namecolor",
+          "price": "1000",
+          "slot": "1"
+        }
+      },
+      "Score Tag": {
+        "King": {
+          "uniqueid": "stking",
+          "value": "King",
+          "pre": "false",
+          "type": "scoretag",
+          "price": "1000",
+          "slot": "1"
+        }
+      },
+      "Chat Tag": {
+        "Queen": {
+          "uniqueid": "ctqueen",
+          "value": "Queen",
+          "pre": "false",
+          "color": "{red}",
+          "type": "chattag",
+          "price": "1000",
+          "slot": "1"
+        }
+      }
     }
   }
 }
