@@ -65,7 +65,7 @@ public static class Item_CustomWeapon
             if (player == null) return;
 
             CBasePlayerWeapon? activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
-            List<StoreApi.Store.Store_Equipment> playerEquipments = [.. Item.GetPlayerEquipments(player).Where(p => p.SteamID == player.SteamID && p.Type == "customweapon")];
+            List<StoreApi.Store.Store_Equipment> playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
 
             foreach (StoreApi.Store.Store_Equipment? playerEquipment in playerEquipments)
             {

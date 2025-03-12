@@ -25,6 +25,12 @@
 		<ProjectReference Include="..\StoreApi\StoreApi.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="TagsApi">
+	    <HintPath>..\TagsApi.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
 	<Target Name="ExcludeStoreApiFiles" AfterTargets="Build">
 		<Delete Files="$(OutputPath)StoreApi.dll" />
 		<Delete Files="$(OutputPath)StoreApi.pdb" />

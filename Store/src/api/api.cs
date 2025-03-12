@@ -75,11 +75,11 @@ public class StoreAPI : IStoreApi
     public List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type) =>
         Item.GetItemsByType(type);
 
-    public List<Store_Item> GetPlayerItems(CCSPlayerController player) =>
-        Item.GetPlayerItems(player);
+    public List<Store_Item> GetPlayerItems(CCSPlayerController player, string? type) =>
+        Item.GetPlayerItems(player, type);
 
-    public List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player) =>
-        Item.GetPlayerEquipments(player);
+    public List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type) =>
+        Item.GetPlayerEquipments(player, type);
 
     public void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool, bool> Unequip, bool Equipable, bool? Alive) =>
         Item.RegisterType(Type, MapStart, ServerPrecacheResources, Equip, Unequip, Equipable, Alive);

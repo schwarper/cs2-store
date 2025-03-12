@@ -11,7 +11,7 @@ namespace Store;
 public class Store : BasePlugin, IPluginConfig<Item_Config>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "2.0";
+    public override string ModuleVersion => "2.1";
     public override string ModuleAuthor => "schwarper";
 
     public Item_Config Config { get; set; } = new();
@@ -40,6 +40,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
         Item_Bunnyhop.OnPluginStart();
         Item_ColoredSkin.OnPluginStart();
         Item_CustomWeapon.OnPluginStart();
+        Item_Equipment.OnPluginStart();
         Item_Godmode.OnPluginStart();
         Item_Gravity.OnPluginStart();
         Item_GrenadeTrail.OnPluginStart();
@@ -51,10 +52,10 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
         Item_Smoke.OnPluginStart();
         Item_Sound.OnPluginStart();
         Item_Speed.OnPluginStart();
+        Item_Tags.OnPluginStart();
         Item_Tracer.OnPluginStart();
         Item_Trail.OnPluginStart();
         Item_Weapon.OnPluginStart();
-        Item_Equipment.OnPluginStart();
 
         if (hotReload)
         {
@@ -73,10 +74,16 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public override void Unload(bool hotReload)
     {
         Event.Unload();
+        Item_Tags.OnPluginEnd();
 
         HashSet<string> screenMenuNames = ["worldtext", "screen", "screenmenu"];
         if (screenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
-            Utilities.GetPlayers().ForEach(player => MenuAPI.CloseActiveMenu(player));
+            Utilities.GetPlayers().ForEach(MenuAPI.CloseActiveMenu);
+    }
+
+    public override void OnAllPluginsLoaded(bool hotReload)
+    {
+        Item_Tags.OnPluginsAllLoaded();
     }
 
     public void OnConfigParsed(Item_Config config)

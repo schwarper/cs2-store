@@ -17,14 +17,9 @@ public static class Item
 
     public static string GetItemName(CCSPlayerController player, Dictionary<string, string> item)
     {
-        var name = item["name"];
+        string name = item["name"];
 
-        if (name.StartsWith('*') && name.EndsWith('*'))
-        {
-            return Instance.Localizer.ForPlayer(player, name);
-        }
-
-        return name;
+        return name.StartsWith('*') && name.EndsWith('*') ? Instance.Localizer.ForPlayer(player, name) : name;
     }
 
     public static bool Give(CCSPlayerController player, Dictionary<string, string> item)
@@ -190,9 +185,7 @@ public static class Item
         Store.Api.PlayerUnequipItem(player, item);
         Server.NextFrame(() => Database.RemovePlayerEquipment(player, item["uniqueid"]));
 
-        if (!type.Unequip(player, item, update)) return false;
-
-        return true;
+        return type.Unequip(player, item, update);
     }
 
     public static bool Sell(CCSPlayerController player, Dictionary<string, string> item)
@@ -235,14 +228,17 @@ public static class Item
     public static bool IsAnyItemExistInType(string type) =>
         Instance.Items.Any(kvp => kvp.Value["type"] == type);
 
+    public static bool IsAnyItemExistInTypes(string[] type) =>
+        Instance.Items.Any(kvp => type.Contains(kvp.Value["type"]));
+
     public static List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type) =>
         [.. Instance.Items.Where(kvp => kvp.Value["type"] == type)];
 
-    public static List<Store_Item> GetPlayerItems(CCSPlayerController player) =>
-        [.. Instance.GlobalStorePlayerItems.Where(item => item.SteamID == player.SteamID)];
+    public static List<Store_Item> GetPlayerItems(CCSPlayerController player, string? type) =>
+        [.. Instance.GlobalStorePlayerItems.Where(item => item.SteamID == player.SteamID && (type == null || type == item.Type))];
 
-    public static List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player) =>
-        [.. Instance.GlobalStorePlayerEquipments.Where(item => item.SteamID == player.SteamID)];
+    public static List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type) =>
+        [.. Instance.GlobalStorePlayerEquipments.Where(item => item.SteamID == player.SteamID && (type == null || type == item.Type))];
 
     public static bool IsPlayerVip(CCSPlayerController player) =>
         !string.IsNullOrEmpty(Config.Menu.VipFlag) && AdminManager.PlayerHasPermissions(player, Config.Menu.VipFlag);

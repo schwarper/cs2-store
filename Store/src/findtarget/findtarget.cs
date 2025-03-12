@@ -51,12 +51,12 @@ public static class FindTarget
                         Instance.GlobalStorePlayers.Add(playerdata);
                     }
 
-                    string finalTargetName = (!string.IsNullOrEmpty(playerdata.PlayerName) && 
+                    string finalTargetName = (!string.IsNullOrEmpty(playerdata.PlayerName) &&
                         playerdata.PlayerName != steamId.SteamId64.ToString())
                             ? playerdata.PlayerName
                             : steamId.SteamId64.ToString();
 
-                    return new TargetFind() { StorePlayer = playerdata, TargetName = finalTargetName};
+                    return new TargetFind() { StorePlayer = playerdata, TargetName = finalTargetName };
                 }
             }
             command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["No matching client"]}");
