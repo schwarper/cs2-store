@@ -19,6 +19,12 @@ public static class Menu
             return;
 
         string menutype = Config.Menu.MenuType.ToLower();
+        
+        try 
+        {
+            CS2ScreenMenuAPI.MenuAPI.CloseActiveMenu(player);
+        } 
+        catch {}
 
         switch (menutype)
         {

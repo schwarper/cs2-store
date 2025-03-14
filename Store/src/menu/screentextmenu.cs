@@ -20,10 +20,14 @@ public static class ScreenTextMenu
 
     public static void OpenMenu(CCSPlayerController player, string title, JsonElement elementData, bool inventory, ScreenMenu? mainMenu = null, ScreenMenu? parentMenu = null)
     {
+        bool isMainMenu = mainMenu == null && parentMenu == null;
+        
         ScreenMenu menu = new(title, Instance)
         {
             ParentMenu = parentMenu,
-            IsSubMenu = true
+            IsSubMenu = !isMainMenu,
+            PostSelectAction = CS2ScreenMenuAPI.Enums.PostSelectAction.Nothing,
+            MenuType = CS2ScreenMenuAPI.Enums.MenuType.Both
         };
 
         mainMenu ??= menu;

@@ -39,13 +39,31 @@ public static class Item_Tags
 
     public static void OnPluginsAllLoaded()
     {
-        _tagApi = ITagApi.Capability.Get() ?? throw new Exception("Tag API not found");
-
-        if (_othersExists)
-            _tagApi.OnMessageProcessPre += OnMessageProcess;
-
-        if (_scoreTagExists)
-            _tagApi.OnTagsUpdatedPre += OnTagsUpdatedPre;
+        try 
+        {
+            _tagApi = ITagApi.Capability.Get();
+            
+            if (_tagApi != null)
+            {
+                if (_othersExists)
+                    _tagApi.OnMessageProcessPre += OnMessageProcess;
+                
+                if (_scoreTagExists)
+                    _tagApi.OnTagsUpdatedPre += OnTagsUpdatedPre;
+                    
+                Console.WriteLine("[Store] TagsApi features successfully loaded");
+            }
+        }
+        catch (KeyNotFoundException)
+        {
+            Console.WriteLine("[Store] TagsApi plugin not found, tag features will be disabled");
+            _tagApi = null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Store] Error loading TagsApi: {ex.Message}");
+            _tagApi = null;
+        }
     }
 
     private static void OnMapStart() { }
