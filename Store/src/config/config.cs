@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
+using CS2MenuManager.API.Menu;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -216,4 +217,13 @@ public static class Config_Config
         public bool DefaultModelDisableLeg { get; set; } = false;
         public string Model0Model1Flag { get; set; } = "@css/root";
     }
+
+    public static readonly Dictionary<string, Type> MenuTypes = new()
+    {
+        { "CenterHtmlMenu", typeof(CenterHtmlMenu) },
+        { "ConsoleMenu", typeof(ConsoleMenu) },
+        { "ChatMenu", typeof(ChatMenu) },
+        { "ScreenMenu", typeof(ScreenMenu) },
+        { "WasdMenu", typeof(WasdMenu) }
+    };
 }

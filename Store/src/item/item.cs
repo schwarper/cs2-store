@@ -213,7 +213,7 @@ public static class Item
         if (!ignoreVip && IsPlayerVip(player)) return true;
 
         item.TryGetValue("flag", out string? flag);
-        return Menu.CheckFlag(player, flag, false) || Instance.GlobalStorePlayerItems.Any(p => p.SteamID == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
+        return MenuBase.CheckFlag(player, flag, false) || Instance.GlobalStorePlayerItems.Any(p => p.SteamID == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
     }
 
     public static bool PlayerUsing(CCSPlayerController player, string type, string uniqueId) =>

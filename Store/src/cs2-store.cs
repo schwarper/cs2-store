@@ -1,7 +1,7 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
-using CS2ScreenMenuAPI;
+using CS2MenuManager.API.Class;
 using StoreApi;
 using System.Text.Json;
 using static StoreApi.Store;
@@ -11,7 +11,7 @@ namespace Store;
 public class Store : BasePlugin, IPluginConfig<Item_Config>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "2.2";
+    public override string ModuleVersion => "2.3";
     public override string ModuleAuthor => "schwarper";
 
     public Item_Config Config { get; set; } = new();
@@ -66,7 +66,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
                 Database.LoadPlayer(player);
 
                 if (screenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
-                    MenuAPI.CloseActiveMenu(player);
+                    MenuManager.CloseActiveMenu(player, CS2MenuManager.API.Enum.CloseMenuAction.Close);
             });
         }
     }
@@ -78,7 +78,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
 
         HashSet<string> screenMenuNames = ["worldtext", "screen", "screenmenu"];
         if (screenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
-            Utilities.GetPlayers().ForEach(MenuAPI.CloseActiveMenu);
+            Utilities.GetPlayers().ForEach((player) => MenuManager.CloseActiveMenu(player, CS2MenuManager.API.Enum.CloseMenuAction.Close));
     }
 
     public override void OnAllPluginsLoaded(bool hotReload)

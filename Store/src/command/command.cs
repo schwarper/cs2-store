@@ -45,11 +45,11 @@ public static class Command
 
     [CommandHelper(minArgs: 0, whoCanExecute: CommandUsage.CLIENT_ONLY)]
     public static void Command_Store(CCSPlayerController? player, CommandInfo command) =>
-        Menu.DisplayStoreMenu(player, false);
+        MenuBase.DisplayStoreMenu(player, false);
 
     [CommandHelper(minArgs: 0, whoCanExecute: CommandUsage.CLIENT_ONLY)]
     public static void Command_Inv(CCSPlayerController? player, CommandInfo command) =>
-        Menu.DisplayStoreMenu(player, true);
+        MenuBase.DisplayStoreMenu(player, true);
 
     [CommandHelper(minArgs: 2, "<name, #userid, all @ commands> <credits>", whoCanExecute: CommandUsage.CLIENT_AND_SERVER)]
     [RequiresPermissions("@css/root")]

@@ -38,7 +38,7 @@ IgnoreWarmup = true
 [Menu]
 EnableSelling = true
 EnableConfirmMenu = true
-MenuType = "worldtext" # html or center for CenterMenu; worldtext, screen or screenmenu for ScreenTextMenu 
+MenuType = "ScreenMenu" # Supported MenuTypes => ConsoleMenu, ChatMenu, CenterHtmlMenu, WasdMenu, ScreenMenu
 VipFlag = "@css/root" # Individuals in possession of the requisite authorisation shall be entitled to utilise equipable items free of charge. Making this field empty will result in the cancellation of Vip.
 MenuPressSoundYes = ""
 MenuPressSoundNo = ""
