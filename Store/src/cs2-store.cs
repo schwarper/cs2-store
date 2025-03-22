@@ -11,7 +11,7 @@ namespace Store;
 public class Store : BasePlugin, IPluginConfig<Item_Config>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "2.3";
+    public override string ModuleVersion => "2.5";
     public override string ModuleAuthor => "schwarper";
 
     public Item_Config Config { get; set; } = new();
