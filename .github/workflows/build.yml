@@ -49,7 +49,7 @@ jobs:
 
       - name: Update ModuleVersion in cs2-store.cs
         run: |
-          sed -i 's/public override string ModuleVersion => "[0-9\.]\+";/public override string ModuleVersion => "2.${{ env.BUILD_NUMBER }}";/' Store/src/cs2-store.cs
+          sed -i '/ModuleVersion/s/".*"/"2.${{ env.BUILD_NUMBER }}"/' Store/src/cs2-store.cs
 
       - name: Build
         run: |
