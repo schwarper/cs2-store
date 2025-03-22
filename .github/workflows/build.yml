@@ -55,6 +55,14 @@ jobs:
         run: |
           dotnet build cs2-store.sln -c Release --no-restore /p:Version=2.${{ env.BUILD_NUMBER }}
 
+      - name: Commit and Push Updated ModuleVersion
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Store/src/cs2-store.cs
+          git commit -m "chore: bump ModuleVersion to 2.${{ env.BUILD_NUMBER }}"
+          git push
+
       - name: Create Release Artifact (ZIP) from BuildOutput
         run: |
           mkdir -p release
