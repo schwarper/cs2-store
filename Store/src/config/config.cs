@@ -85,8 +85,9 @@ public static class Config_Config
             : config;
     }
 
-    private static Config_Commands LoadCommands(TomlTable commandsTable) =>
-        new()
+    private static Config_Commands LoadCommands(TomlTable commandsTable)
+    {
+        return new()
         {
             Credits = GetStringArray(commandsTable["Credits"]),
             Store = GetStringArray(commandsTable["Store"]),
@@ -100,16 +101,20 @@ public static class Config_Config
             ModelOff = GetStringArray(commandsTable["PlayerSkinsOff"]),
             ModelOn = GetStringArray(commandsTable["PlayerSkinsOn"])
         };
+    }
 
-    private static Config_DefaultModels LoadDefaultModels(TomlTable defaultModelsTable) =>
-        new()
+    private static Config_DefaultModels LoadDefaultModels(TomlTable defaultModelsTable)
+    {
+        return new()
         {
             Terrorist = GetStringArray(defaultModelsTable["Terrorist"]),
             CounterTerrorist = GetStringArray(defaultModelsTable["CounterTerrorist"])
         };
+    }
 
-    private static Config_Credits LoadCredits(TomlTable creditsTable) =>
-        new()
+    private static Config_Credits LoadCredits(TomlTable creditsTable)
+    {
+        return new()
         {
             Start = int.Parse(creditsTable["Start"].ToString()!),
             IntervalActiveInActive = int.Parse(creditsTable["IntervalActiveInActive"].ToString()!),
@@ -118,9 +123,11 @@ public static class Config_Config
             AmountKill = int.Parse(creditsTable["AmountKill"].ToString()!),
             IgnoreWarmup = bool.Parse(creditsTable["IgnoreWarmup"].ToString()!)
         };
+    }
 
-    private static Config_Menu LoadMenu(TomlTable menuTable) =>
-        new()
+    private static Config_Menu LoadMenu(TomlTable menuTable)
+    {
+        return new()
         {
             EnableSelling = bool.Parse(menuTable["EnableSelling"].ToString()!),
             EnableConfirmMenu = bool.Parse(menuTable["EnableConfirmMenu"].ToString()!),
@@ -129,9 +136,11 @@ public static class Config_Config
             MenuPressSoundYes = menuTable["MenuPressSoundYes"].ToString()!,
             MenuPressSoundNo = menuTable["MenuPressSoundNo"].ToString()!
         };
+    }
 
-    private static Config_Settings LoadSettings(TomlTable settingsTable) =>
-        new()
+    private static Config_Settings LoadSettings(TomlTable settingsTable)
+    {
+        return new()
         {
             MaxHealth = int.Parse(settingsTable["MaxHealth"].ToString()!),
             MaxArmor = int.Parse(settingsTable["MaxArmor"].ToString()!),
@@ -141,9 +150,12 @@ public static class Config_Config
             DefaultModelDisableLeg = bool.Parse(settingsTable["DefaultModelDisableLeg"].ToString()!),
             Model0Model1Flag = settingsTable["Model0Model1Flag"].ToString()!
         };
+    }
 
-    private static string[] GetStringArray(object tomlArray) =>
-        [.. ((TomlArray)tomlArray).Select(item => item!.ToString()!)];
+    private static string[] GetStringArray(object tomlArray)
+    {
+        return [.. ((TomlArray)tomlArray).Select(item => item!.ToString()!)];
+    }
 
     public class Cfg
     {

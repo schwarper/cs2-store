@@ -12,8 +12,10 @@ namespace Store;
 public static class Item_PlayerSkin
 {
     public static bool ForceModelDefault { get; set; } = false;
-    private static bool DisableLeg(Dictionary<string, string> item) =>
-        item.ContainsKey("disable_leg") && item["disable_leg"] is "true" or "1";
+    private static bool DisableLeg(Dictionary<string, string> item)
+    {
+        return item.ContainsKey("disable_leg") && item["disable_leg"] is "true" or "1";
+    }
 
     public static void OnPluginStart()
     {

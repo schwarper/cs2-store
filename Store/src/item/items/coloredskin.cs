@@ -20,7 +20,10 @@ public static class Item_ColoredSkin
 
     public static void OnServerPrecacheResources(ResourceManifest manifest) { }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item) => true;
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        return true;
+    }
 
     public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {

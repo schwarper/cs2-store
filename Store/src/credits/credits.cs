@@ -6,14 +6,20 @@ namespace Store;
 
 public static class Credits
 {
-    public static Store_Player? GetStorePlayer(CCSPlayerController player) =>
-        Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == player.SteamID);
+    public static Store_Player? GetStorePlayer(CCSPlayerController player)
+    {
+        return Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == player.SteamID);
+    }
 
-    public static int Get(CCSPlayerController player) =>
-        GetStorePlayer(player)?.Credits ?? -1;
+    public static int Get(CCSPlayerController player)
+    {
+        return GetStorePlayer(player)?.Credits ?? -1;
+    }
 
-    public static int GetOriginal(CCSPlayerController player) =>
-        GetStorePlayer(player)?.OriginalCredits ?? -1;
+    public static int GetOriginal(CCSPlayerController player)
+    {
+        return GetStorePlayer(player)?.OriginalCredits ?? -1;
+    }
 
     public static int SetOriginal(CCSPlayerController player, int credits)
     {

@@ -39,18 +39,18 @@ public static class Item_Tags
 
     public static void OnPluginsAllLoaded()
     {
-        try 
+        try
         {
             _tagApi = ITagApi.Capability.Get();
-            
+
             if (_tagApi != null)
             {
                 if (_othersExists)
                     _tagApi.OnMessageProcessPre += OnMessageProcess;
-                
+
                 if (_scoreTagExists)
                     _tagApi.OnTagsUpdatedPre += OnTagsUpdatedPre;
-                    
+
                 Console.WriteLine("[Store] TagsApi features successfully loaded");
             }
         }

@@ -1,6 +1,10 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Admin;
+using CS2MenuManager.API.Class;
+using CS2MenuManager.API.Enum;
+using CS2MenuManager.API.Interface;
+using CS2MenuManager.API.Menu;
 using System.Text.Json;
 using static Store.Config_Config;
 using static Store.Store;
@@ -10,15 +14,17 @@ namespace Store;
 
 public static class MenuBase
 {
-    public static List<JsonProperty> GetElementJsonProperty(JsonElement element) =>
-        [.. element.EnumerateObject().Where(prop => prop.Name != "flag" && prop.Name != "langname")];
+    public static List<JsonProperty> GetElementJsonProperty(JsonElement element)
+    {
+        return [.. element.EnumerateObject().Where(prop => prop.Name != "flag" && prop.Name != "langname")];
+    }
 
     public static void DisplayStoreMenu(CCSPlayerController? player, bool inventory)
     {
         if (player == null)
             return;
 
-        if (!MenuTypes.TryGetValue(Config.Menu.MenuType, out var menuType) || menuType == null)
+        if (!MenuTypes.TryGetValue(Config.Menu.MenuType, out Type? menuType) || menuType == null)
         {
             throw new InvalidOperationException(
                 "Invalid menu type configured. Please use one of the following valid menu types:\n" +
@@ -74,5 +80,28 @@ public static class MenuBase
                 Item_CustomWeapon.Inspect(player, item["viewmodel"], item["weapon"]);
                 break;
         }
+    }
+
+    public static IMenu CreateMenuByType(Type menuType, string title, bool displayResolutionMenu = false)
+    {
+        if (menuType == typeof(ChatMenu))
+            return new ChatMenu(title, Instance);
+        if (menuType == typeof(ConsoleMenu))
+            return new ConsoleMenu(title, Instance);
+        return menuType == typeof(CenterHtmlMenu)
+            ? new CenterHtmlMenu(title, Instance)
+            : menuType == typeof(WasdMenu)
+            ? new WasdMenu(title, Instance)
+            : menuType == typeof(ScreenMenu) ? new ScreenMenu(title, Instance) { ShowResolutionsOption = displayResolutionMenu } : (IMenu)null!;
+    }
+
+    public static void AddMenuOption(this IMenu menu, CCSPlayerController player, DisableOption disableOption, string display, params object[] args)
+    {
+        menu.AddItem(Instance.Localizer.ForPlayer(player, display, args), disableOption);
+    }
+
+    public static void AddMenuOption(this IMenu menu, CCSPlayerController player, Action<CCSPlayerController, ItemOption> callback, string display, params object[] args)
+    {
+        menu.AddItem(Instance.Localizer.ForPlayer(player, display, args), callback);
     }
 }
