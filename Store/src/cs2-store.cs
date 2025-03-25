@@ -29,7 +29,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public Dictionary<CBaseModelEntity, CCSPlayerController> InspectList { get; set; } = [];
 
     public override void Load(bool hotReload)
-    { 
+    {
         Capabilities.RegisterPluginCapability(IStoreApi.Capability, () => Api);
         Instance = this;
 
