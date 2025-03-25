@@ -6,8 +6,10 @@ namespace Store;
 
 public static class Item_Health
 {
-    public static void OnPluginStart() =>
+    public static void OnPluginStart()
+    {
         Item.RegisterType("health", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
+    }
 
     public static void OnMapStart() { }
 
@@ -41,5 +43,8 @@ public static class Item_Health
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    {
+        return true;
+    }
 }

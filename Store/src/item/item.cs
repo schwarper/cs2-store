@@ -12,8 +12,10 @@ namespace Store;
 
 public static class Item
 {
-    public static bool IsHidden(this Dictionary<string, string> item) =>
-        item.ContainsKey("hide") && item["hide"] == "true";
+    public static bool IsHidden(this Dictionary<string, string> item)
+    {
+        return item.ContainsKey("hide") && item["hide"] == "true";
+    }
 
     public static string GetItemName(CCSPlayerController player, Dictionary<string, string> item)
     {
@@ -216,37 +218,58 @@ public static class Item
         return MenuBase.CheckFlag(player, flag, false) || Instance.GlobalStorePlayerItems.Any(p => p.SteamID == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
     }
 
-    public static bool PlayerUsing(CCSPlayerController player, string type, string uniqueId) =>
-        Instance.GlobalStorePlayerEquipments.Any(p => p.SteamID == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
+    public static bool PlayerUsing(CCSPlayerController player, string type, string uniqueId)
+    {
+        return Instance.GlobalStorePlayerEquipments.Any(p => p.SteamID == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
+    }
 
-    public static bool IsInJson(string uniqueId) =>
-        Instance.Items.ContainsKey(uniqueId);
+    public static bool IsInJson(string uniqueId)
+    {
+        return Instance.Items.ContainsKey(uniqueId);
+    }
 
-    public static Dictionary<string, string>? GetItem(string uniqueId) =>
-        Instance.Items.TryGetValue(uniqueId, out Dictionary<string, string>? item) ? item : null;
+    public static Dictionary<string, string>? GetItem(string uniqueId)
+    {
+        return Instance.Items.TryGetValue(uniqueId, out Dictionary<string, string>? item) ? item : null;
+    }
 
-    public static bool IsAnyItemExistInType(string type) =>
-        Instance.Items.Any(kvp => kvp.Value["type"] == type);
+    public static bool IsAnyItemExistInType(string type)
+    {
+        return Instance.Items.Any(kvp => kvp.Value["type"] == type);
+    }
 
-    public static bool IsAnyItemExistInTypes(string[] type) =>
-        Instance.Items.Any(kvp => type.Contains(kvp.Value["type"]));
+    public static bool IsAnyItemExistInTypes(string[] type)
+    {
+        return Instance.Items.Any(kvp => type.Contains(kvp.Value["type"]));
+    }
 
-    public static List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type) =>
-        [.. Instance.Items.Where(kvp => kvp.Value["type"] == type)];
+    public static List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type)
+    {
+        return [.. Instance.Items.Where(kvp => kvp.Value["type"] == type)];
+    }
 
-    public static List<Store_Item> GetPlayerItems(CCSPlayerController player, string? type) =>
-        [.. Instance.GlobalStorePlayerItems.Where(item => item.SteamID == player.SteamID && (type == null || type == item.Type))];
+    public static List<Store_Item> GetPlayerItems(CCSPlayerController player, string? type)
+    {
+        return [.. Instance.GlobalStorePlayerItems.Where(item => item.SteamID == player.SteamID && (type == null || type == item.Type))];
+    }
 
-    public static List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type) =>
-        [.. Instance.GlobalStorePlayerEquipments.Where(item => item.SteamID == player.SteamID && (type == null || type == item.Type))];
+    public static List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type)
+    {
+        return [.. Instance.GlobalStorePlayerEquipments.Where(item => item.SteamID == player.SteamID && (type == null || type == item.Type))];
+    }
 
-    public static bool IsPlayerVip(CCSPlayerController player) =>
-        !string.IsNullOrEmpty(Config.Menu.VipFlag) && AdminManager.PlayerHasPermissions(player, Config.Menu.VipFlag);
+    public static bool IsPlayerVip(CCSPlayerController player)
+    {
+        return !string.IsNullOrEmpty(Config.Menu.VipFlag) && AdminManager.PlayerHasPermissions(player, Config.Menu.VipFlag);
+    }
 
-    public static bool PlayerHasAny(CCSPlayerController player, JsonElement item) =>
-        ExtractItems(item).Values.Any(item => PlayerHas(player, item["type"], item["uniqueid"], false));
+    public static bool PlayerHasAny(CCSPlayerController player, JsonElement item)
+    {
+        return ExtractItems(item).Values.Any(item => PlayerHas(player, item["type"], item["uniqueid"], false));
+    }
 
-    public static void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool, bool> Unequip, bool Equipable, bool? Alive) =>
+    public static void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool, bool> Unequip, bool Equipable, bool? Alive)
+    {
         Instance.GlobalStoreItemTypes.Add(new Store_Item_Types
         {
             Type = Type,
@@ -257,4 +280,5 @@ public static class Item
             Equipable = Equipable,
             Alive = Alive
         });
+    }
 }

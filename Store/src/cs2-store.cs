@@ -66,7 +66,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
                 Database.LoadPlayer(player);
 
                 if (screenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
-                    MenuManager.CloseActiveMenu(player, CS2MenuManager.API.Enum.CloseMenuAction.Close);
+                    MenuManager.CloseActiveMenu(player);
             });
         }
     }
@@ -78,7 +78,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
 
         HashSet<string> screenMenuNames = ["worldtext", "screen", "screenmenu"];
         if (screenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
-            Utilities.GetPlayers().ForEach((player) => MenuManager.CloseActiveMenu(player, CS2MenuManager.API.Enum.CloseMenuAction.Close));
+            Utilities.GetPlayers().ForEach((player) => MenuManager.CloseActiveMenu(player));
     }
 
     public override void OnAllPluginsLoaded(bool hotReload)

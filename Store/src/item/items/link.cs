@@ -5,8 +5,10 @@ namespace Store;
 
 public static class Item_Link
 {
-    public static void OnPluginStart() =>
+    public static void OnPluginStart()
+    {
         Item.RegisterType("link", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, null);
+    }
 
     public static void OnMapStart() { }
 
@@ -18,5 +20,8 @@ public static class Item_Link
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    {
+        return true;
+    }
 }

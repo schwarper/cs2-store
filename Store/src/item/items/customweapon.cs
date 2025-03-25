@@ -44,11 +44,15 @@ public static class Item_CustomWeapon
         }
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item) =>
-        Weapon.HandleEquip(player, item, true);
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        return Weapon.HandleEquip(player, item, true);
+    }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) =>
-        !update || Weapon.HandleEquip(player, item, false);
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    {
+        return !update || Weapon.HandleEquip(player, item, false);
+    }
 
     public static void OnEntityCreated(CEntityInstance entity)
     {
@@ -133,8 +137,10 @@ public static class Item_CustomWeapon
             };
         }
 
-        public static unsafe string GetViewModel(CCSPlayerController player) =>
-            ViewModel(player)?.VMName ?? string.Empty;
+        public static unsafe string GetViewModel(CCSPlayerController player)
+        {
+            return ViewModel(player)?.VMName ?? string.Empty;
+        }
 
         public static unsafe void SetViewModel(CCSPlayerController player, string model)
         {

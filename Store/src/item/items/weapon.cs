@@ -5,8 +5,10 @@ namespace Store;
 
 public static class Item_Weapon
 {
-    public static void OnPluginStart() =>
+    public static void OnPluginStart()
+    {
         Item.RegisterType("weapon", OnMapStart, ServerPrecacheResources, OnEquip, OnUnequip, false, true);
+    }
 
     public static void OnMapStart() { }
 
@@ -24,5 +26,8 @@ public static class Item_Weapon
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    {
+        return true;
+    }
 }

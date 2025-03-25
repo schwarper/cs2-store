@@ -39,15 +39,23 @@ public static class Item_Trail
 
     public static void OnMapStart() { }
 
-    public static void ServerPrecacheResources(ResourceManifest manifest) =>
+    public static void ServerPrecacheResources(ResourceManifest manifest)
+    {
         Item.GetItemsByType("trail")
             .Where(item => item.Value.TryGetValue("model", out string? model) && !string.IsNullOrEmpty(model))
             .ToList()
             .ForEach(item => manifest.AddResource(item.Value["model"]));
+    }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item) => true;
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        return true;
+    }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    {
+        return true;
+    }
 
     public static void OnTick(CCSPlayerController player)
     {

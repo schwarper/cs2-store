@@ -11,8 +11,10 @@ namespace Store;
 
 public static class PlayerUtils
 {
-    public static void PrintToChatMessage(this CCSPlayerController player, string message, params object[] args) =>
+    public static void PrintToChatMessage(this CCSPlayerController player, string message, params object[] args)
+    {
         player.PrintToChat($"{Config.Tag}{Instance.Localizer.ForPlayer(player, message, args)}");
+    }
 
     public static void ChangeModelDelay(this CCSPlayerController player, string model, bool disableLeg, int slotNumber, string? skin)
     {
@@ -59,8 +61,10 @@ public static class PlayerUtils
         Utilities.SetStateChanged(pawn, "CBaseModelEntity", "m_clrRender");
     }
 
-    public static int GetHealth(this CCSPlayerPawn pawn) =>
-        pawn.Health;
+    public static int GetHealth(this CCSPlayerPawn pawn)
+    {
+        return pawn.Health;
+    }
 
     public static void SetHealth(this CCSPlayerController player, int health)
     {

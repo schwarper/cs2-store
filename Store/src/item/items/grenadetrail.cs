@@ -29,9 +29,15 @@ public static class Item_GrenadeTrail
         }
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item) => true;
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        return true;
+    }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    {
+        return true;
+    }
 
     public static void OnEntityCreated(CEntityInstance entity)
     {

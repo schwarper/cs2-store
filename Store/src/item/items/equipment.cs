@@ -21,8 +21,10 @@ public static class Item_Equipment
         }
     }
 
-    public static void OnMapStart() =>
+    public static void OnMapStart()
+    {
         PlayerEquipmentEntities.Clear();
+    }
 
     public static void OnServerPrecacheResources(ResourceManifest manifest)
     {

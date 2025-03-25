@@ -19,12 +19,20 @@ public static class Item_Tracer
 
     public static void OnMapStart() { }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest) =>
+    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    {
         Item.GetItemsByType("tracer").ForEach(item => manifest.AddResource(item.Value["model"]));
+    }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item) => true;
+    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        return true;
+    }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update) => true;
+    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    {
+        return true;
+    }
 
     private static HookResult OnBulletImpact(EventBulletImpact @event, GameEventInfo info)
     {
