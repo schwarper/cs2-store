@@ -9,7 +9,7 @@
   "You are alive": "{white}Vous ne pouvez l'acheter que lorsque vous êtes mort.",
   "No in pistol round": "{white}Vous ne pouvez pas acheter cet article {green}{0} {white} au round pistolet.",
   "No gift yourself": "{white}ous ne pouvez pas vous offrir des crédits à vous-même.",
-  "No type found": "{white}Aucun type trouvé.",
+  "No type found": "{white}Aucun type trouvé. {red}{0}",
   "Gift timeout": "{white}Vous devez attendre {green}{0} secondes {white}pour faire un don.",
   "No purchase because team": "{white}Vous ne pouvez pas acheter cet objet. Vous devez être dans l'équipe {red}{0}.",
   "No equip because team": "{white}Vous ne pouvez pas équiper cet objet. Vous devez être dans l'équipe {red}{0}.",

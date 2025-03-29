@@ -9,7 +9,7 @@
   "You are alive": "{white}Ta predmet lahko kupiš le, ko si mrtev.",
   "No in pistol round": "{white}Tento predmet nemôžete použiť {green}{0} {white}v pištoľnom kole.",
   "No gift yourself": "{white}Ne morete darovati kreditov samemu sebi.",
-  "No type found": "{white}Samemu sebi ne morete podariti kreditov.",
+  "No type found": "{white}Samemu sebi ne morete podariti kreditov. {red}{0}",
   "Gift timeout": "{white}Počakati moraš {green}{0} sekund {white}preden lahko podariš darilo.",
   "No purchase because team": "{white}Te predmete ne morete kupiti. Morate biti v ekipi {red}{0} {white}.",
   "No equip because team": "{white}Te predmete ne morete opremiti. Morate biti v ekipi {red}{0} {white}.",

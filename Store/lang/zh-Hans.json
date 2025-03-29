@@ -9,7 +9,7 @@
   "You are alive": "{white}只有死亡后才可购买",
   "No in pistol round": "{white}手枪局无法购买{green}{0}{white}",
   "No gift yourself": "{white}无法给自己赠送积分",
-  "No type found": "{white}没有找到这个类型,请重新输入",
+  "No type found": "{white}没有找到这个类型,请重新输入. {red}{0}",
   "Gift timeout": "{white}你需要等待{green}{0}秒{white}后才能赠送",
   "No purchase because team": "{white}您需要加入{red}{0}{white}阵营才能购买此皮肤！",
   "No equip because team": "{white}您需要加入{red}{0}{white}阵营才能装备此皮肤！",

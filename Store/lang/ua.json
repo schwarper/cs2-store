@@ -9,7 +9,7 @@
 	"You are alive": "{white}Ви можете купити це лише тоді, коли ви мертві.",
 	"No in pistol round": "{white}Ви не зможете купити цей предмет {green}{0} {white} у пістолетному раунді.",
 	"No gift yourself": "{white}Ви не можете подарувати кредити самому собі.",
-	"No type found": "{white}Тип не знайдено.",
+	"No type found": "{white}Тип не знайдено. {red}{0}",
 	"Gift timeout": "{white}Вам потрібно зачекати {green}{0} секунд {white}щоб зробити подарунок.",
 	"No purchase because team": "{white}Ви не можете придбати цей предмет. Ви повинні бути в команді {red}{0} {white}.",
 	"No equip because team": "{white}Ви не можете екіпірувати цей предмет. Ви повинні бути в команді {red}{0} {white}.",

@@ -9,7 +9,7 @@
   "You are alive": "{white}Sadece ölüyken alabilirsiniz.",
   "No in pistol round": "{white}Bu ürünü {green}{0} {white}tabanca turunda alamazsınız.",
   "No gift yourself": "{white}Kendine kredi hediye edemezsin.",
-  "No type found": "{white}Böyle bir type bulunamadı.",
+  "No type found": "{white}Böyle bir type bulunamadı. {red}{0}",
   "Gift timeout": "{white}Kredi hediye etmek için {green}{0} saniye {white}beklemelisin.",
   "No purchase because team": "{white}Bu ürünü satın alamazsınız. {red}{0} {white}takımında olmanız gerekiyor.",
   "No equip because team": "{white}Bu ürünü kuşanamazsınız. {red}{0} {white}takımında olmanız gerekiyor.",

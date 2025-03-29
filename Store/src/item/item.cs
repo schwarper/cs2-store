@@ -29,7 +29,7 @@ public static class Item
         Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item["type"]);
         if (type == null)
         {
-            player.PrintToChatMessage("No type found");
+            player.PrintToChatMessage("No type found", item["type"]);
             return false;
         }
 
@@ -73,7 +73,7 @@ public static class Item
 
         if (type == null)
         {
-            player.PrintToChatMessage("No type found");
+            player.PrintToChatMessage("No type found", item["type"]);
             return false;
         }
 
