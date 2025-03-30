@@ -15,7 +15,7 @@ Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 2. Install the plugin files:
 * Place the contents of the downloaded zip file in the `addons/counterstrikesharp` folder.
 3. Configure the plugin settings:
-* For the first installation: You will need to change the names of the files in the `addons/counterstrikesharp/configs/plugins/cs2-store/` folder. They should be called 'cs2-store.json' and 'cs2-store.toml'. In the json file you need to set the item setting. In the tomlyn file you need to set the plugin settings. You will also need to set the database settings in this file.
+* For the first installation: You will need to change the names of the files in the `addons/counterstrikesharp/configs/plugins/cs2-store/` folder. They should be called 'cs2-store.json' and 'config.toml'. In the json file you need to set the item setting. In the tomlyn file you need to set the plugin settings. You will also need to set the database settings in this file.
 4. Restart or install the plugin:
 * Restart your server or reload the plugin for the settings to take effect.
 * Send the command `css_plugins load cs2-store` from the server (Load)
