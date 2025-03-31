@@ -1,8 +1,10 @@
 ﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
+using CS2MenuManager.API.Class;
 using CS2MenuManager.API.Enum;
 using CS2MenuManager.API.Interface;
+using CS2MenuManager.API.Menu;
 using System.Text.Json;
 using static Store.Config_Config;
 using static Store.MenuBase;
@@ -12,14 +14,18 @@ namespace Store;
 
 public static class Menu
 {
-    public static void DisplayStore(CCSPlayerController player, bool inventory, Type menuType)
+    public static void DisplayStore(CCSPlayerController player, bool inventory)
     {
-        OpenMenu(player, Instance.Localizer.ForPlayer(player, "menu_store<title>", Credits.Get(player)), Instance.Config.Items, inventory, menuType, null);
+        OpenMenu(player, Instance.Localizer.ForPlayer(player, "menu_store<title>", Credits.Get(player)), Instance.Config.Items, inventory, null);
     }
 
-    public static void OpenMenu(CCSPlayerController player, string title, JsonElement elementData, bool inventory, Type menuType, IMenu? prevMenu)
+    public static void OpenMenu(CCSPlayerController player, string title, JsonElement elementData, bool inventory, IMenu? prevMenu)
     {
-        IMenu menu = CreateMenuByType(menuType, title, prevMenu == null);
+        BaseMenu menu = CreateMenuByType(title);
+
+        if (menu is ScreenMenu screenMenu)
+            screenMenu.ShowResolutionsOption = prevMenu == null;
+
         menu.PrevMenu = prevMenu;
 
         List<JsonProperty> items = GetElementJsonProperty(elementData);
@@ -30,7 +36,7 @@ public static class Menu
 
             if (item.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
             {
-                menu.AddItems(player, uniqueIdElement, inventory, menuType, menu);
+                menu.AddItems(player, uniqueIdElement, inventory, menu);
                 continue;
             }
 
@@ -38,13 +44,13 @@ public static class Menu
                 continue;
 
             string categoryName = GetCategoryName(player, item);
-            menu.AddItem(categoryName, (p, o) => OpenMenu(p, categoryName, item.Value, inventory, menuType, menu));
+            menu.AddItem(categoryName, (p, o) => OpenMenu(p, categoryName, item.Value, inventory, menu));
         }
 
         menu.Display(player, 0);
     }
 
-    public static void AddItems(this IMenu menu, CCSPlayerController player, JsonElement uniqueIdElement, bool inventory, Type menuType, IMenu prevMenu)
+    public static void AddItems(this IMenu menu, CCSPlayerController player, JsonElement uniqueIdElement, bool inventory, IMenu prevMenu)
     {
         if (!Instance.Items.TryGetValue(uniqueIdElement.ToString(), out Dictionary<string, string>? item))
             return;
@@ -60,28 +66,28 @@ public static class Menu
             menu.AddMenuOption(player, (p, o) =>
             {
                 p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
-                DisplayItemOption(p, item, menuType, inventory, prevMenu);
+                DisplayItemOption(p, item, inventory, prevMenu);
             }, Item.GetItemName(player, item));
         }
         else if (!inventory && !item.IsHidden())
         {
-            menu.AddMenuOption(player, (p, o) => SelectPurchase(p, item, int.Parse(item["price"]) > 0, menuType, inventory, prevMenu),
+            menu.AddMenuOption(player, (p, o) => SelectPurchase(p, item, int.Parse(item["price"]) > 0, inventory, prevMenu),
                 int.Parse(item["price"]) <= 0 ? "menu_store<purchase1>" : "menu_store<purchase>",
                 Item.GetItemName(player, item), item["price"]);
         }
     }
 
-    private static void SelectPurchase(CCSPlayerController player, Dictionary<string, string> item, bool confirm, Type menuType, bool inventory, IMenu prevMenu)
+    private static void SelectPurchase(CCSPlayerController player, Dictionary<string, string> item, bool confirm, bool inventory, IMenu prevMenu)
     {
         player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
 
         if (confirm && Config.Menu.EnableConfirmMenu)
         {
-            DisplayConfirmationMenu(player, item, menuType, inventory, prevMenu);
+            DisplayConfirmationMenu(player, item, inventory, prevMenu);
         }
         else if (Item.Purchase(player, item))
         {
-            DisplayItemOption(player, item, menuType, inventory, prevMenu);
+            DisplayItemOption(player, item, inventory, prevMenu);
         }
         else
         {
@@ -89,9 +95,9 @@ public static class Menu
         }
     }
 
-    public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item, Type menuType, bool inventory, IMenu prevMenu)
+    public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item, bool inventory, IMenu prevMenu)
     {
-        IMenu menu = CreateMenuByType(menuType, Item.GetItemName(player, item));
+        BaseMenu menu = CreateMenuByType(Item.GetItemName(player, item));
         menu.PrevMenu = prevMenu;
 
         menu.AddInspectOption(player, item);
@@ -105,7 +111,7 @@ public static class Menu
                     p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                     p.PrintToChatMessage("Purchase Unequip", Item.GetItemName(p, item));
                 }
-                DisplayItemOption(p, item, menuType, inventory, prevMenu);
+                DisplayItemOption(p, item, inventory, prevMenu);
             }, "menu_store<unequip>");
         }
         else
@@ -117,7 +123,7 @@ public static class Menu
                     p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                     p.PrintToChatMessage("Purchase Equip", Item.GetItemName(p, item));
                 }
-                DisplayItemOption(p, item, menuType, inventory, prevMenu);
+                DisplayItemOption(p, item, inventory, prevMenu);
             }, "menu_store<equip>");
         }
 
@@ -134,7 +140,7 @@ public static class Menu
                         p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
                         Item.Sell(p, item);
                         p.PrintToChatMessage("Item Sell", Item.GetItemName(p, item));
-                        DisplayStore(player, inventory, menuType);
+                        DisplayStore(player, inventory);
                     }, "menu_store<sell>", sellingPrice);
                 }
             }
@@ -146,9 +152,9 @@ public static class Menu
         menu.Display(player, 0);
     }
 
-    public static void DisplayConfirmationMenu(CCSPlayerController player, Dictionary<string, string> item, Type menuType, bool inventory, IMenu prevMenu)
+    public static void DisplayConfirmationMenu(CCSPlayerController player, Dictionary<string, string> item, bool inventory, IMenu prevMenu)
     {
-        IMenu menu = CreateMenuByType(menuType, Instance.Localizer.ForPlayer(player, "menu_store<confirm_title>"));
+        BaseMenu menu = CreateMenuByType(Instance.Localizer.ForPlayer(player, "menu_store<confirm_title>"));
         menu.PrevMenu = prevMenu;
 
         menu.AddMenuOption(player, DisableOption.DisableHideNumber, Item.GetItemName(player, item), item["price"]);
@@ -159,20 +165,20 @@ public static class Menu
             if (Item.Purchase(p, item))
             {
                 p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
-                DisplayItemOption(p, item, menuType, inventory, prevMenu);
+                DisplayItemOption(p, item, inventory, prevMenu);
             }
             else
             {
                 p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
             }
 
-            DisplayStore(player, inventory, menuType);
+            DisplayStore(player, inventory);
         }, "menu_store<yes>");
 
         menu.AddMenuOption(player, (p, o) =>
         {
             p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
-            DisplayStore(p, inventory, menuType);
+            DisplayStore(p, inventory);
         }, "menu_store<no>");
         menu.Display(player, 0);
     }

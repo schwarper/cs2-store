@@ -59,15 +59,15 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
 
         if (hotReload)
         {
-            HashSet<string> screenMenuNames = ["worldtext", "screen", "screenmenu"];
-
-            Utilities.GetPlayers().ForEach(player =>
+            List<CCSPlayerController> players = Utilities.GetPlayers();
+            foreach (CCSPlayerController player in players)
             {
-                Database.LoadPlayer(player);
+                if (player.IsBot)
+                    continue;
 
-                if (screenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
-                    MenuManager.CloseActiveMenu(player);
-            });
+                Database.LoadPlayer(player);
+                MenuManager.CloseActiveMenu(player);
+            }
         }
     }
 
@@ -76,9 +76,14 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
         Event.Unload();
         Item_Tags.OnPluginEnd();
 
-        HashSet<string> screenMenuNames = ["worldtext", "screen", "screenmenu"];
-        if (screenMenuNames.Contains(Config_Config.Config.Menu.MenuType))
-            Utilities.GetPlayers().ForEach((player) => MenuManager.CloseActiveMenu(player));
+        List<CCSPlayerController> players = Utilities.GetPlayers();
+        foreach (CCSPlayerController player in players)
+        {
+            if (player.IsBot)
+                continue;
+
+            MenuManager.CloseActiveMenu(player);
+        }
     }
 
     public override void OnAllPluginsLoaded(bool hotReload)

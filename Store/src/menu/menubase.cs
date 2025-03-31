@@ -24,16 +24,7 @@ public static class MenuBase
         if (player == null)
             return;
 
-        if (!MenuTypes.TryGetValue(Config.Menu.MenuType, out Type? menuType) || menuType == null)
-        {
-            throw new InvalidOperationException(
-                "Invalid menu type configured. Please use one of the following valid menu types:\n" +
-                string.Join(" ,", MenuTypes.Keys) + "\n" +
-                $"Configured menu type: '{Config.Menu.MenuType}'"
-            );
-        }
-
-        Menu.DisplayStore(player, inventory, menuType);
+        Menu.DisplayStore(player, inventory);
     }
 
     public static int GetSellingPrice(Dictionary<string, string> item, Store_Item playerItem)
@@ -82,19 +73,6 @@ public static class MenuBase
         }
     }
 
-    public static IMenu CreateMenuByType(Type menuType, string title, bool displayResolutionMenu = false)
-    {
-        if (menuType == typeof(ChatMenu))
-            return new ChatMenu(title, Instance);
-        if (menuType == typeof(ConsoleMenu))
-            return new ConsoleMenu(title, Instance);
-        return menuType == typeof(CenterHtmlMenu)
-            ? new CenterHtmlMenu(title, Instance)
-            : menuType == typeof(WasdMenu)
-            ? new WasdMenu(title, Instance)
-            : menuType == typeof(ScreenMenu) ? new ScreenMenu(title, Instance) { ShowResolutionsOption = displayResolutionMenu } : (IMenu)null!;
-    }
-
     public static void AddMenuOption(this IMenu menu, CCSPlayerController player, DisableOption disableOption, string display, params object[] args)
     {
         menu.AddItem(Instance.Localizer.ForPlayer(player, display, args), disableOption);
@@ -103,5 +81,17 @@ public static class MenuBase
     public static void AddMenuOption(this IMenu menu, CCSPlayerController player, Action<CCSPlayerController, ItemOption> callback, string display, params object[] args)
     {
         menu.AddItem(Instance.Localizer.ForPlayer(player, display, args), callback);
+    }
+
+    public static BaseMenu CreateMenuByType(string title)
+    {
+        return Config.Menu.MenuType switch
+        {
+            "CenterHtmlMenu" => MenuManager.CreateMenu<CenterHtmlMenu>(title, Instance),
+            "ConsoleMenu" => MenuManager.CreateMenu<ConsoleMenu>(title, Instance),
+            "ChatMenu" => MenuManager.CreateMenu<ChatMenu>(title, Instance),
+            "WasdMenu" => MenuManager.CreateMenu<WasdMenu>(title, Instance),
+            _ => MenuManager.CreateMenu<ScreenMenu>(title, Instance)
+        };
     }
 }

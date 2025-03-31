@@ -170,7 +170,7 @@ public static class Database
                     DateTime.Now
                 });
 
-                Store_Player playerData = await multiQuery.ReadFirstOrDefaultAsync<Store_Player>();
+                Store_Player? playerData = await multiQuery.ReadFirstOrDefaultAsync<Store_Player>();
 
                 IEnumerable<Store_Item> items = await multiQuery.ReadAsync<Store_Item>();
 
