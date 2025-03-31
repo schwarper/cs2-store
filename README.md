@@ -19,7 +19,7 @@ Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 4. Restart or install the plugin:
 * Restart your server or reload the plugin for the settings to take effect.
 * Send the command `css_plugins load cs2-store` from the server (Load)
-* Send the command `css_plugins reload cs2-store` from the server (Reload)
+* Send the command `css_plugins reload Store` from the server (Reload)
 
 # Approved modules
 [Crash by NaathySz](https://github.com/NaathySz/Store-Crash)
