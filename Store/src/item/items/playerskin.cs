@@ -189,8 +189,9 @@ public static class Item_PlayerSkin
             return;
 
         float totalTime = 4.0f;
-        float rotationStep = 100.0f;
-        float interval = 1.0f;
+        float totalRotation = 360.0f;
+        float interval = 0.04f;
+        float rotationStep = (interval / totalTime) * totalRotation;
 
         QAngle currentAngles = entity.AbsRotation!;
         entity.Teleport(null, new QAngle(currentAngles.X, currentAngles.Y + rotationStep, currentAngles.Z), null);
