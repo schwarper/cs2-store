@@ -77,12 +77,16 @@ Install Video:
 # Menu Style:
 **CenterHtmlMenu**
 ![image](https://files.catbox.moe/gz8x5e.png)
+
 **ChatMenu**
 ![image](https://files.catbox.moe/85ix04.png)
+
 **ConsoleMenu**
 ![image](https://files.catbox.moe/m47qri.png)
+
 **ScreenMenu**
 ![image](https://files.catbox.moe/b5ulzj.png)
+
 **WasdMenu**
 ![image](https://files.catbox.moe/kogxzp.png)
 
