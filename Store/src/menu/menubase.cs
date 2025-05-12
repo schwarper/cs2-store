@@ -85,13 +85,6 @@ public static class MenuBase
 
     public static BaseMenu CreateMenuByType(string title)
     {
-        return Config.Menu.MenuType switch
-        {
-            "CenterHtmlMenu" => MenuManager.CreateMenu<CenterHtmlMenu>(title, Instance),
-            "ConsoleMenu" => MenuManager.CreateMenu<ConsoleMenu>(title, Instance),
-            "ChatMenu" => MenuManager.CreateMenu<ChatMenu>(title, Instance),
-            "WasdMenu" => MenuManager.CreateMenu<WasdMenu>(title, Instance),
-            _ => MenuManager.CreateMenu<ScreenMenu>(title, Instance)
-        };
+        return MenuManager.MenuByType(Config.Menu.MenuType, title, Instance);
     }
 }
