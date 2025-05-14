@@ -10,18 +10,40 @@ Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 
 # Installation
 
+## Prerequisites
+
+This plugin requires the following dependencies to function properly:
+
+1. [CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp)
+2. [CS2MenuManager](https://github.com/schwarper/CS2MenuManager)
+
+Please ensure you have installed these dependencies before proceeding with the installation.
+
+## Installation Steps
+
 1. Download the plugin:
+
 * Download the plugin from https://github.com/schwarper/cs2-store/releases.
+
 2. Install the plugin files:
+
 * Place the contents of the downloaded zip file in the `addons/counterstrikesharp` folder.
+
 3. Configure the plugin settings:
-* For the first installation: You will need to change the names of the files in the `addons/counterstrikesharp/configs/plugins/cs2-store/` folder. They should be called 'cs2-store.json' and 'config.toml'. In the json file you need to set the item setting. In the tomlyn file you need to set the plugin settings. You will also need to set the database settings in this file.
+
+* For the first installation: You will need to change the names of the files in the `addons/counterstrikesharp/configs/plugins/cs2-store/` folder. They should be called 'cs2-store.json' and 'config.toml'. In the json file you need to set the item setting. In the toml file you need to set the plugin settings. You will also need to set the database settings in this file.
+
 4. Restart or install the plugin:
+
 * Restart your server or reload the plugin for the settings to take effect.
 * Send the command `css_plugins load cs2-store` from the server (Load)
 * Send the command `css_plugins reload Store` from the server (Reload)
 
+Install Video:
+[https://files.catbox.moe/uzadjw.mp4](https://files.catbox.moe/uzadjw.mp4 "https://files.catbox.moe/uzadjw.mp4")
+
 # Approved modules
+
 [Crash by NaathySz](https://github.com/NaathySz/Store-Crash)
 
 [Quiz by NaathySz](https://github.com/NaathySz/Store-Quiz)
@@ -51,6 +73,27 @@ Discord link : [Discord server](https://discord.gg/4zQfUzjk36)
 [Math by NaathySz](https://github.com/NaathySz/Store-MathQuiz)
 
 [Cases by NaathySz](https://github.com/NaathySz/Store-Cases)
+
+# Menu Style:
+**CenterHtmlMenu**
+
+![image](https://files.catbox.moe/gz8x5e.png)
+
+**ChatMenu**
+
+![image](https://files.catbox.moe/85ix04.png)
+
+**ConsoleMenu**
+
+![image](https://files.catbox.moe/m47qri.png)
+
+**ScreenMenu**
+
+![image](https://files.catbox.moe/b5ulzj.png)
+
+**WasdMenu**
+
+![image](https://files.catbox.moe/kogxzp.png)
 
 # Images
 
