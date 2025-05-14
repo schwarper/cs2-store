@@ -51,3 +51,4 @@ ApplyPlayerskinDelay = 0.6
 SellUsePurchaseCredit = false # If true, the selling ratio is calculated based on the price at which you bought the item. If false, it is calculated based on the current store price.
 DefaultModelDisableLeg = false
 Model0Model1Flag = "@css/root"
+EnableCS2Fixes = false # Set to true to enable CS2Fixes compatibility, false to disable

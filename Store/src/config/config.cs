@@ -147,7 +147,8 @@ public static class Config_Config
             ApplyPlayerskinDelay = float.Parse(settingsTable["ApplyPlayerskinDelay"].ToString()!),
             SellUsePurchaseCredit = bool.Parse(settingsTable["SellUsePurchaseCredit"].ToString()!),
             DefaultModelDisableLeg = bool.Parse(settingsTable["DefaultModelDisableLeg"].ToString()!),
-            Model0Model1Flag = settingsTable["Model0Model1Flag"].ToString()!
+            Model0Model1Flag = settingsTable["Model0Model1Flag"].ToString()!,
+            EnableCS2Fixes = bool.Parse(settingsTable["EnableCS2Fixes"].ToString()!)
         };
     }
 
@@ -227,5 +228,6 @@ public static class Config_Config
         public bool SellUsePurchaseCredit { get; set; } = false;
         public bool DefaultModelDisableLeg { get; set; } = false;
         public string Model0Model1Flag { get; set; } = "@css/root";
+        public bool EnableCS2Fixes { get; set; } = false;
     }
 }
