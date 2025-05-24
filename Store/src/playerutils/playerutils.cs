@@ -27,6 +27,11 @@ public static class PlayerUtils
                 return;
             }
 
+            if (Config.Settings.EnableCS2Fixes && player.TeamNum == (int)CsTeam.Terrorist)
+            {
+                return;
+            }
+
             player.PlayerPawn.Value?.ChangeModel(model, disableLeg, skin);
         }, TimerFlags.STOP_ON_MAPCHANGE);
     }
@@ -34,6 +39,11 @@ public static class PlayerUtils
     public static void ChangeModel(this CCSPlayerPawn pawn, string model, bool disableLeg, string? skin)
     {
         if (string.IsNullOrEmpty(model)) return;
+
+        if (Config.Settings.EnableCS2Fixes && pawn.TeamNum == (int)CsTeam.Terrorist)
+        {
+            return;
+        }
 
         Server.NextFrame(() =>
         {
