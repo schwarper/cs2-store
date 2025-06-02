@@ -10,6 +10,12 @@ namespace Store;
 public static class Item_CustomWeapon
 {
     private static bool _customWeaponExists = false;
+    private enum EntityType
+    {
+        None,
+        Weapon,
+        Projectile
+    }
 
     public static void OnPluginStart()
     {
@@ -56,33 +62,118 @@ public static class Item_CustomWeapon
 
     public static void OnEntityCreated(CEntityInstance entity)
     {
-        if (!_customWeaponExists || !entity.DesignerName.StartsWith("weapon_")) return;
+        if (!_customWeaponExists) return;
 
-        Server.NextWorldUpdate(() =>
+        if (!IsRelevantEntity(entity, out var entityType)) return;
+
+        Server.NextWorldUpdate(() => ProcessEntity(entity, entityType));
+    }
+
+    private static bool IsRelevantEntity(CEntityInstance entity, out EntityType entityType)
+    {
+        entityType = EntityType.None;
+
+        if (entity.DesignerName.StartsWith("weapon_"))
         {
-            CBasePlayerWeapon weapon = new(entity.Handle);
+            entityType = EntityType.Weapon;
+            return true;
+        }
 
-            if (!weapon.IsValid || weapon.OriginalOwnerXuidLow <= 0) return;
+        if (entity.DesignerName.EndsWith("_projectile"))
+        {
+            entityType = EntityType.Projectile;
+            return true;
+        }
 
-            CCSPlayerController? player = FindTarget.FindTargetFromWeapon(weapon);
+        return false;
+    }
 
-            if (player == null) return;
+    private static void ProcessEntity(CEntityInstance entity, EntityType entityType)
+    {
+        var player = GetPlayerFromEntity(entity, entityType);
+        if (player == null) return;
 
-            CBasePlayerWeapon? activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
-            List<StoreApi.Store.Store_Equipment> playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
+        var playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
+        if (playerEquipments.Count == 0) return;
 
-            foreach (StoreApi.Store.Store_Equipment? playerEquipment in playerEquipments)
-            {
-                Dictionary<string, string>? itemData = Item.GetItem(playerEquipment.UniqueId);
-                if (itemData == null) continue;
+        var weaponDesignerName = GetWeaponDesignerName(entity, entityType);
 
-                string weaponDesignerName = Weapon.GetDesignerName(weapon);
-                if (!weaponDesignerName.Contains(itemData["weapon"])) continue;
+        foreach (var equipment in playerEquipments)
+        {
+            TryApplyEquipmentModel(entity, equipment, weaponDesignerName, entityType, player);
+        }
+    }
 
-                itemData.TryGetValue("worldmodel", out string? worldmodel);
-                Weapon.UpdateModel(player, weapon, itemData["viewmodel"], worldmodel, weapon == activeWeapon);
-            }
-        });
+    private static CCSPlayerController? GetPlayerFromEntity(CEntityInstance entity, EntityType entityType)
+    {
+        switch (entityType)
+        {
+            case EntityType.Weapon:
+                var weapon = new CBasePlayerWeapon(entity.Handle);
+                if (weapon?.IsValid == true && weapon.OriginalOwnerXuidLow > 0)
+                {
+                    return FindTarget.FindTargetFromWeapon(weapon);
+                }
+                break;
+
+            case EntityType.Projectile:
+                var projectile = entity.As<CBaseCSGrenadeProjectile>();
+                return projectile?.OriginalThrower?.Value?.OriginalController.Value;
+        }
+
+        return null;
+    }
+
+    private static string GetWeaponDesignerName(CEntityInstance entity, EntityType entityType)
+    {
+        return entityType switch
+        {
+            EntityType.Weapon => Weapon.GetDesignerName(entity.As<CBasePlayerWeapon>()),
+            EntityType.Projectile => "weapon_" + entity.DesignerName.Replace("_projectile", ""),
+            _ => string.Empty
+        };
+    }
+
+    private static void TryApplyEquipmentModel(CEntityInstance entity, StoreApi.Store.Store_Equipment equipment,
+        string weaponDesignerName, EntityType entityType, CCSPlayerController player)
+    {
+        var itemData = Item.GetItem(equipment.UniqueId);
+        if (itemData == null || !weaponDesignerName.Contains(itemData["weapon"])) return;
+
+        itemData.TryGetValue("worldmodel", out string? worldModel);
+        worldModel = string.IsNullOrEmpty(worldModel) ? itemData["viewmodel"] : worldModel;
+
+        try
+        {
+            ApplyModelToEntity(entity, entityType, player, itemData["viewmodel"], worldModel);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to set model for {entity.DesignerName}: {ex.Message}");
+        }
+    }
+
+    private static void ApplyModelToEntity(CEntityInstance entity, EntityType entityType,
+        CCSPlayerController player, string viewModel, string worldModel)
+    {
+        switch (entityType)
+        {
+            case EntityType.Weapon:
+                var weapon = entity.As<CBasePlayerWeapon>();
+                if (weapon?.IsValid != true || weapon.OriginalOwnerXuidLow <= 0) return;
+
+                var activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+                Weapon.UpdateModel(player, weapon, viewModel, worldModel, weapon == activeWeapon);
+                break;
+
+            case EntityType.Projectile:
+                var projectile = entity.As<CBaseCSGrenadeProjectile>();
+                if (projectile?.IsValid == true)
+                {
+                    projectile.SetModel(worldModel);
+                }
+                break;
+        }
     }
 
     public static HookResult OnItemEquip(EventItemEquip @event, GameEventInfo info)
