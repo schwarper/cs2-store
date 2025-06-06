@@ -167,9 +167,8 @@ public static class Menu
             else
             {
                 p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
+                DisplayStore(player, inventory);
             }
-
-            DisplayStore(player, inventory);
         }, "menu_store<yes>");
 
         menu.AddMenuOption(player, (p, o) =>
