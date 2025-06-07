@@ -116,7 +116,6 @@ public static class Event
         {
             Item_Trail.OnTick(player);
             Item_ColoredSkin.OnTick(player);
-            Item_GrenadeTrail.OnTick();
         }
     }
 

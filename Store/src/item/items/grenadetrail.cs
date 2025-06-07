@@ -41,7 +41,7 @@ public static class Item_GrenadeTrail
 
     public static void OnEntityCreated(CEntityInstance entity)
     {
-        if (!_grenadeTrailExists || entity.DesignerName != "hegrenade_projectile") return;
+        if (!_grenadeTrailExists || !entity.DesignerName.EndsWith("_projectile")) return;
 
         CBaseCSGrenadeProjectile grenade = new(entity.Handle);
         if (grenade.Handle == IntPtr.Zero) return;
@@ -63,34 +63,13 @@ public static class Item_GrenadeTrail
             string acceptInputValue = itemData.TryGetValue("acceptInputValue", out string? value) && !string.IsNullOrEmpty(value) ? value : "Start";
 
             particle.EffectName = itemData["model"];
+            particle.StartActive = true;
+            particle.Teleport(grenade.AbsOrigin);
             particle.DispatchSpawn();
-            particle.Teleport(grenade.AbsOrigin!, new QAngle(), new Vector());
+            particle.AcceptInput("FollowEntity", grenade, particle, "!activator");
             particle.AcceptInput(acceptInputValue);
 
             GlobalGrenadeTrail[grenade] = particle;
         });
-    }
-
-    public static void OnTick()
-    {
-        if (!_grenadeTrailExists) return;
-
-        foreach (KeyValuePair<CBaseCSGrenadeProjectile, CParticleSystem> kv in GlobalGrenadeTrail.ToList())
-        {
-            CBaseCSGrenadeProjectile grenade = kv.Key;
-            CParticleSystem particle = kv.Value;
-
-            if (!grenade.IsValid || Vec.CalculateDistance(grenade.AbsOrigin!, grenade.ExplodeEffectOrigin) < 5)
-            {
-                if (particle.IsValid)
-                {
-                    particle.Remove();
-                }
-                GlobalGrenadeTrail.Remove(grenade);
-                continue;
-            }
-
-            particle.Teleport(grenade.AbsOrigin!, grenade.AbsRotation!, grenade.AbsVelocity);
-        }
     }
 }
