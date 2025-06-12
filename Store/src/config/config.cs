@@ -80,7 +80,7 @@ public sealed class Config_DatabaseConnection
     public string Host { get; set; } = string.Empty;
     public uint Port { get; set; } = 3306;
     public string User { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
+    public string Pass { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string StorePlayersName { get; set; } = string.Empty;
     public string StoreItemsName { get; set; } = string.Empty;
