@@ -1,13 +1,13 @@
-[Tag]
-Tag = "{red}[Store] "
-
 [DatabaseConnection]
 Host = ""
 Port = 3306
 User = ""
-Password = ""
+Pass = ""
 Name = ""
-DatabaseEquipTableName = "store_equipments"
+StorePlayersName = "store_players"
+StoreItemsName = "store_items"
+StoreEquipments = "store_equipments"
+StoreLogs = "store_logs"
 
 [Commands]
 Credits = [ "credits", "tl" ]
@@ -22,33 +22,41 @@ HideTrails = [ "hidetrails" ]
 PlayerSkinsOff = [ "model0", "modeloff" ]
 PlayerSkinsOn = [ "model1", "modelon" ]
 
-# Should you not wish to utilise the default model, you are free to leave the list blank.
 [DefaultModels]
 Terrorist = [ "characters/models/tm_leet/tm_leet_variantj.vmdl" ]
 CounterTerrorist = [ "characters/models/ctm_fbi/ctm_fbi_variantb.vmdl" ]
+DefaultModelDisableLeg = false
 
-[Credits]
+[Credits."@css/vip"]
+AmountActive = 10
+AmountInActive = 1
+AmountKill = 1
+
+[Credits."default"]
 Start = 0
+IgnoreWarmup = true
 IntervalActiveInActive = 60
 AmountActive = 10
 AmountInActive = 1
 AmountKill = 1
-IgnoreWarmup = true
 
 [Menu]
-EnableSelling = true
 EnableConfirmMenu = true
-MenuType = "ScreenMenu" # Supported MenuTypes => ConsoleMenu, ChatMenu, CenterHtmlMenu, WasdMenu, ScreenMenu
-VipFlag = "@css/root" # Individuals in possession of the requisite authorisation shall be entitled to utilise equipable items free of charge. Making this field empty will result in the cancellation of Vip.
+MenuType = "ScreenMenu"
+VipFlag = "@css/root"
 MenuPressSoundYes = ""
 MenuPressSoundNo = ""
+CloseMenuAfterSelect = false
 
 [Settings]
+Tag = "{red}[Store]"
 MaxHealth = 0
 MaxArmor = 0
-SellRatio = 0.6 # This setting determines the ratio of money you will receive when you sell the item.
+SellRatio = 0.6
 ApplyPlayerskinDelay = 0.6
-SellUsePurchaseCredit = false # If true, the selling ratio is calculated based on the price at which you bought the item. If false, it is calculated based on the current store price.
-DefaultModelDisableLeg = false
+SellUsePurchaseCredit = false
+EnableCs2Fixes = false
+
+[Permissions]
 Model0Model1Flag = "@css/root"
-EnableCS2Fixes = false # Set to true to enable CS2Fixes compatibility, false to disable
+GiveCredits = "@css/root"

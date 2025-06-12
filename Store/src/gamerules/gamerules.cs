@@ -18,7 +18,7 @@ public static class GameRules
             _gameRulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
         }
 
-        return Config.Credits.IgnoreWarmup && (_gameRulesProxy?.GameRules?.WarmupPeriod ?? false);
+        return Config.Credits["default"].IgnoreWarmup && (_gameRulesProxy?.GameRules?.WarmupPeriod ?? false);
     }
 
     public static bool IsPistolRound()

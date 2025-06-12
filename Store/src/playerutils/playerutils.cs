@@ -13,7 +13,7 @@ public static class PlayerUtils
 {
     public static void PrintToChatMessage(this CCSPlayerController player, string message, params object[] args)
     {
-        player.PrintToChat($"{Config.Tag}{Instance.Localizer.ForPlayer(player, message, args)}");
+        player.PrintToChat($"{Config.Settings.Tag}{Instance.Localizer.ForPlayer(player, message, args)}");
     }
 
     public static void ChangeModelDelay(this CCSPlayerController player, string model, bool disableLeg, int slotNumber, string? skin)
@@ -27,7 +27,7 @@ public static class PlayerUtils
                 return;
             }
 
-            if (Config.Settings.EnableCS2Fixes && player.TeamNum == (int)CsTeam.Terrorist)
+            if (Config.Settings.EnableCs2Fixes && player.TeamNum == (int)CsTeam.Terrorist)
             {
                 return;
             }
@@ -40,7 +40,7 @@ public static class PlayerUtils
     {
         if (string.IsNullOrEmpty(model)) return;
 
-        if (Config.Settings.EnableCS2Fixes && pawn.TeamNum == (int)CsTeam.Terrorist)
+        if (Config.Settings.EnableCs2Fixes && pawn.TeamNum == (int)CsTeam.Terrorist)
         {
             return;
         }

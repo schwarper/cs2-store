@@ -103,7 +103,7 @@ public static class Item_PlayerSkin
 
     private static void Command_Model0(CCSPlayerController? player, CommandInfo info)
     {
-        if (string.IsNullOrEmpty(Config.Settings.Model0Model1Flag) || !AdminManager.PlayerHasPermissions(player, Config.Settings.Model0Model1Flag))
+        if (string.IsNullOrEmpty(Config.Permissions.Model0Model1Flag) || !AdminManager.PlayerHasPermissions(player, Config.Permissions.Model0Model1Flag))
             return;
 
         List<CCSPlayerController> players = Utilities.GetPlayers();
@@ -114,13 +114,13 @@ public static class Item_PlayerSkin
                 target.PlayerPawn.Value?.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg, modelDatas.Value.skin);
         }
 
-        Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_model0", player?.PlayerName ?? Instance.Localizer["Console"]]);
+        Server.PrintToChatAll(Config.Settings.Tag + Instance.Localizer["css_model0", player?.PlayerName ?? Instance.Localizer["Console"]]);
         ForceModelDefault = true;
     }
 
     private static void Command_Model1(CCSPlayerController? player, CommandInfo info)
     {
-        if (string.IsNullOrEmpty(Config.Settings.Model0Model1Flag) || !AdminManager.PlayerHasPermissions(player, Config.Settings.Model0Model1Flag))
+        if (string.IsNullOrEmpty(Config.Permissions.Model0Model1Flag) || !AdminManager.PlayerHasPermissions(player, Config.Permissions.Model0Model1Flag))
             return;
 
         List<CCSPlayerController> players = Utilities.GetPlayers();
@@ -131,7 +131,7 @@ public static class Item_PlayerSkin
                 target.PlayerPawn.Value?.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg, modelDatas.Value.skin);
         }
 
-        Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_model1", player?.PlayerName ?? Instance.Localizer["Console"]]);
+        Server.PrintToChatAll(Config.Settings.Tag + Instance.Localizer["css_model1", player?.PlayerName ?? Instance.Localizer["Console"]]);
         ForceModelDefault = false;
     }
 
@@ -143,9 +143,9 @@ public static class Item_PlayerSkin
 
     private static (string modelname, bool disableleg, string? skin)? GetDefaultModel(CCSPlayerController player)
     {
-        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels.CounterTerrorist : Config.DefaultModels.Terrorist;
-        return modelsArray.Length > 0
-            ? (modelsArray[Instance.Random.Next(0, modelsArray.Length)], Config.Settings.DefaultModelDisableLeg, null)
+        var modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels.CounterTerrorist : Config.DefaultModels.Terrorist;
+        return modelsArray.Count > 0
+            ? (modelsArray[Instance.Random.Next(0, modelsArray.Count)], Config.DefaultModels.DefaultModelDisableLeg, null)
             : null;
     }
 

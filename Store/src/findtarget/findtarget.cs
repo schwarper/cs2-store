@@ -59,12 +59,12 @@ public static class FindTarget
                     return new TargetFind() { StorePlayer = playerdata, TargetName = finalTargetName };
                 }
             }
-            command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["No matching client"]}");
+            command.ReplyToCommand($"{Config.Settings.Tag}{Instance.Localizer["No matching client"]}");
             return new TargetFind();
         }
         else if (singleTarget && targetResult.Players.Count > 1)
         {
-            command.ReplyToCommand($"{Config.Tag}{Instance.Localizer["More than one client matched"]}");
+            command.ReplyToCommand($"{Config.Settings.Tag}{Instance.Localizer["More than one client matched"]}");
             return new TargetFind();
         }
 

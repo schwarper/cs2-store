@@ -281,4 +281,21 @@ public static class Item
             Alive = Alive
         });
     }
+    
+    public static void RemoveExpiredItems()
+    {
+        Database.ExecuteAsync($"DELETE FROM {Config.DatabaseConnection.StoreItemsName} WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);
+
+        List<Store_Item> itemsToRemove = [.. Instance.GlobalStorePlayerItems.Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)];
+
+        string storeEquipmentTableName = Config.DatabaseConnection.StoreEquipments;
+
+        foreach (Store_Item? item in itemsToRemove)
+        {
+            Database.ExecuteAsync($"DELETE FROM {storeEquipmentTableName} WHERE SteamID = @SteamID AND UniqueId = @UniqueId", new { item.SteamID, item.UniqueId });
+
+            Instance.GlobalStorePlayerItems.Remove(item);
+            Instance.GlobalStorePlayerEquipments.RemoveAll(i => i.UniqueId == item.UniqueId);
+        }
+    }
 }
