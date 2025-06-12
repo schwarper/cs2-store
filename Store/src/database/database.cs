@@ -37,7 +37,7 @@ public static class Database
             Server = config.Host,
             Database = config.Name,
             UserID = config.User,
-            Password = config.Password,
+            Password = config.Pass,
             Port = config.Port,
             Pooling = true,
             MinimumPoolSize = 0,
