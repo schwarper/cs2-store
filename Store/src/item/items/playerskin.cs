@@ -30,7 +30,6 @@ public static class Item_PlayerSkin
                 Instance.AddCommand(command, "Turn on playerskins models", Command_Model1);
 
             Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
-            Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
             Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart, HookMode.Pre);
         }
     }
@@ -80,20 +79,7 @@ public static class Item_PlayerSkin
 
         return HookResult.Continue;
     }
-
-    public static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
-    {
-        CCSPlayerController? player = @event.Userid;
-        if (player == null || @event.Disconnect || !player.PawnIsAlive || (@event.Team != 2 && @event.Team != 3))
-            return HookResult.Continue;
-
-        (string modelname, bool disableleg, string? skin)? modelDatas = GetModel(player, @event.Team);
-        if (modelDatas.HasValue)
-            player.ChangeModelDelay(modelDatas.Value.modelname, modelDatas.Value.disableleg, @event.Team, modelDatas.Value.skin);
-
-        return HookResult.Continue;
-    }
-
+    
     public static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
         Instance.InspectList.Clear();
