@@ -2,6 +2,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
+using Store.Extension;
 using System.Drawing;
 using System.Globalization;
 using static Store.Config_Config;
@@ -75,10 +76,10 @@ public static class Item_Trail
             return;
 
         Vector absorigin = playerPawn.AbsOrigin;
-        if (Vec.CalculateDistance(GlobalTrailLastOrigin[player.Slot], absorigin) <= 5.0f)
+        if (VectorExtensions.CalculateDistance(GlobalTrailLastOrigin[player.Slot], absorigin) <= 5.0f)
             return;
 
-        Vec.Copy(absorigin, GlobalTrailLastOrigin[player.Slot]);
+        VectorExtensions.Copy(absorigin, GlobalTrailLastOrigin[player.Slot]);
 
         float lifetime = itemdata.TryGetValue("lifetime", out string? ltvalue) && float.TryParse(ltvalue, CultureInfo.InvariantCulture, out float lt) ? lt : 1.3f;
 
@@ -131,8 +132,8 @@ public static class Item_Trail
         if (beam == null)
             return;
 
-        if (Vec.IsZero(GlobalTrailEndOrigin[player.Slot]))
-            Vec.Copy(absOrigin, GlobalTrailEndOrigin[player.Slot]);
+        if (VectorExtensions.IsZero(GlobalTrailEndOrigin[player.Slot]))
+            VectorExtensions.Copy(absOrigin, GlobalTrailEndOrigin[player.Slot]);
 
         color ??= GetRandomColor();
         if (color == null)
@@ -143,8 +144,8 @@ public static class Item_Trail
         beam.Render = (Color)color;
 
         beam.Teleport(absOrigin, new QAngle(), new Vector());
-        Vec.Copy(GlobalTrailEndOrigin[player.Slot], beam.EndPos);
-        Vec.Copy(absOrigin, GlobalTrailEndOrigin[player.Slot]);
+        VectorExtensions.Copy(GlobalTrailEndOrigin[player.Slot], beam.EndPos);
+        VectorExtensions.Copy(absOrigin, GlobalTrailEndOrigin[player.Slot]);
 
         Utilities.SetStateChanged(beam, "CBeam", "m_vecEndPos");
 

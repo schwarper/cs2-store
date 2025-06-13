@@ -4,7 +4,6 @@ using CounterStrikeSharp.API.Modules.Admin;
 using CS2MenuManager.API.Class;
 using CS2MenuManager.API.Enum;
 using CS2MenuManager.API.Interface;
-using CS2MenuManager.API.Menu;
 using System.Text.Json;
 using static Store.Config_Config;
 using static Store.Store;
@@ -14,11 +13,6 @@ namespace Store;
 
 public static class MenuBase
 {
-    public static List<JsonProperty> GetElementJsonProperty(JsonElement element)
-    {
-        return [.. element.EnumerateObject().Where(prop => prop.Name != "flag" && prop.Name != "langname")];
-    }
-
     public static void DisplayStoreMenu(CCSPlayerController? player, bool inventory)
     {
         if (player == null)

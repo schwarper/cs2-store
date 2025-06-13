@@ -7,7 +7,7 @@ public static class TomlExtensions
 {
     public static T? GetSection<T>(this TomlTable model, string sectionName) where T : new()
     {
-        if (!model.TryGetValue(sectionName, out var sectionObj) || sectionObj is not TomlTable section)
+        if (!model.TryGetValue(sectionName, out object? sectionObj) || sectionObj is not TomlTable section)
             return default;
 
         return MapTomlTableToObject<T>(section);
@@ -15,12 +15,12 @@ public static class TomlExtensions
 
     public static T MapTomlTableToObject<T>(this TomlTable table) where T : new()
     {
-        var obj = new T();
-        var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        T obj = new();
+        PropertyInfo[] props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-        foreach (var prop in props)
+        foreach (PropertyInfo prop in props)
         {
-            if (!prop.CanWrite || !table.TryGetValue(prop.Name, out var value))
+            if (!prop.CanWrite || !table.TryGetValue(prop.Name, out object? value))
                 continue;
 
             try

@@ -4,6 +4,7 @@ using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Entities;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
+using Store.Extension;
 using static CounterStrikeSharp.API.Core.Listeners;
 using static Store.Config_Config;
 using static Store.Store;
@@ -47,7 +48,7 @@ public static class Event
             defaultCredits.IntervalActiveInActive <= 0)
             return;
 
-        var orderedCredits = Config.Credits
+        List<KeyValuePair<string, Config_Credits>> orderedCredits = Config.Credits
             .Where(x => x.Key != "default" && (x.Value.AmountActive > 0 || x.Value.AmountInActive > 0))
             .ToList();
 
@@ -56,7 +57,7 @@ public static class Event
             if (GameRules.IgnoreWarmUp())
                 return;
 
-            var players = Utilities.GetPlayers()
+            List<CCSPlayerController> players = Utilities.GetPlayers()
                 .Where(p => !p.IsBot)
                 .ToList();
 
@@ -152,7 +153,7 @@ public static class Event
         Item.RemoveExpiredItems();
         return HookResult.Continue;
     }
-    
+
     public static HookResult OnPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
@@ -207,7 +208,7 @@ public static class Event
 
         int amountKill = 0;
 
-        var credits = Config.Credits
+        KeyValuePair<string, Config_Credits> credits = Config.Credits
             .Where(x => x.Key != "default" && x.Value.AmountKill > 0)
             .FirstOrDefault(x => AdminManager.PlayerHasPermissions(attacker, x.Key));
 
@@ -226,7 +227,7 @@ public static class Event
             Credits.Give(attacker, amountKill);
             attacker.PrintToChat($"{Config.Settings.Tag}{Instance.Localizer["credits_earned<kill>", amountKill]}");
         }
-        
+
         return HookResult.Continue;
     }
 

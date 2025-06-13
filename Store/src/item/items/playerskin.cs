@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
+using Store.Extension;
 using static Store.Config_Config;
 using static Store.Store;
 using static StoreApi.Store;
@@ -79,7 +80,7 @@ public static class Item_PlayerSkin
 
         return HookResult.Continue;
     }
-    
+
     public static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
         Instance.InspectList.Clear();
@@ -129,7 +130,7 @@ public static class Item_PlayerSkin
 
     private static (string modelname, bool disableleg, string? skin)? GetDefaultModel(CCSPlayerController player)
     {
-        var modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels.CounterTerrorist : Config.DefaultModels.Terrorist;
+        List<string> modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels.CounterTerrorist : Config.DefaultModels.Terrorist;
         return modelsArray.Count > 0
             ? (modelsArray[Instance.Random.Next(0, modelsArray.Count)], Config.DefaultModels.DefaultModelDisableLeg, null)
             : null;

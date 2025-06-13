@@ -4,7 +4,7 @@ using CounterStrikeSharp.API.Core.Translations;
 using CS2MenuManager.API.Class;
 using CS2MenuManager.API.Enum;
 using CS2MenuManager.API.Interface;
-using CS2MenuManager.API.Menu;
+using Store.Extension;
 using System.Text.Json;
 using static Store.Config_Config;
 using static Store.MenuBase;
@@ -25,7 +25,7 @@ public static class Menu
         menu.ScreenMenu_ShowResolutionsOption = prevMenu == null;
         menu.PrevMenu = prevMenu;
 
-        List<JsonProperty> items = GetElementJsonProperty(elementData);
+        List<JsonProperty> items = elementData.GetElementJsonProperty(["flag", "langname"]);
         foreach (JsonProperty item in items)
         {
             if (item.Value.TryGetProperty("flag", out JsonElement flagElement) && !CheckFlag(player, flagElement.ToString(), true))
@@ -89,7 +89,7 @@ public static class Menu
         else
         {
             player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
-            
+
             if (Config.Menu.CloseMenuAfterSelect)
                 DisplayStore(player, inventory);
         }

@@ -1,6 +1,7 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
+using Store.Extension;
 using System.Globalization;
 using static Store.Store;
 using static StoreApi.Store;
@@ -57,7 +58,7 @@ public static class Item_Tracer
         entity.DispatchSpawn();
         entity.AcceptInput(acceptinputvalue);
 
-        Vector position = Vec.GetEyePosition(player);
+        Vector position = VectorExtensions.GetEyePosition(player);
         entity.Teleport(position, new QAngle(), new Vector());
 
         entity.EndPos.X = @event.X;

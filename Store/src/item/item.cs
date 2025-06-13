@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Utils;
+using Store.Extension;
 using System.Text.Json;
 using static Store.Config_Config;
 using static Store.Store;
@@ -265,7 +266,7 @@ public static class Item
 
     public static bool PlayerHasAny(CCSPlayerController player, JsonElement item)
     {
-        return ExtractItems(item).Values.Any(item => PlayerHas(player, item["type"], item["uniqueid"], false));
+        return item.ExtractItems().Values.Any(item => PlayerHas(player, item["type"], item["uniqueid"], false));
     }
 
     public static void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool, bool> Unequip, bool Equipable, bool? Alive)
@@ -281,7 +282,7 @@ public static class Item
             Alive = Alive
         });
     }
-    
+
     public static void RemoveExpiredItems()
     {
         Database.ExecuteAsync($"DELETE FROM {Config.DatabaseConnection.StoreItemsName} WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);

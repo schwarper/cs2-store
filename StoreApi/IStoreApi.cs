@@ -7,7 +7,7 @@ namespace StoreApi;
 
 public interface IStoreApi
 {
-    public static readonly PluginCapability<IStoreApi?> Capability = new("store:api");
+    public static readonly PluginCapability<IStoreApi?> Capability = new("cs2-store:api");
 
     public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerPurchaseItem;
     public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerEquipItem;

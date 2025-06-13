@@ -2,6 +2,7 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
 using CS2MenuManager.API.Class;
+using Store.Extension;
 using StoreApi;
 using System.Text.Json;
 using static StoreApi.Store;
@@ -95,41 +96,10 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     {
         Config_Config.Load();
 
-        if (config.Items.ValueKind != JsonValueKind.Object)
+        if (!config.Items.ValueKind.IsValueKindObject())
             throw new JsonException();
 
-        Items = ExtractItems(config.Items);
+        Items = config.Items.ExtractItems();
         Config = config;
-    }
-
-    public static Dictionary<string, Dictionary<string, string>> ExtractItems(JsonElement category)
-    {
-        Dictionary<string, Dictionary<string, string>> itemsDictionary = [];
-
-        foreach (JsonProperty subItem in category.EnumerateObject())
-        {
-            if (subItem.Value.ValueKind == JsonValueKind.Object)
-            {
-                if (subItem.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
-                {
-                    string uniqueId = uniqueIdElement.GetString() ?? $"unknown_{subItem.Name}";
-                    Dictionary<string, string> itemData = subItem.Value.EnumerateObject()
-                        .ToDictionary(prop => prop.Name, prop => prop.Value.ToString());
-
-                    itemData["name"] = subItem.Name;
-                    itemsDictionary[uniqueId] = itemData;
-                }
-                else
-                {
-                    Dictionary<string, Dictionary<string, string>> nestedItems = ExtractItems(subItem.Value);
-                    foreach (KeyValuePair<string, Dictionary<string, string>> nestedItem in nestedItems)
-                    {
-                        itemsDictionary[nestedItem.Key] = nestedItem.Value;
-                    }
-                }
-            }
-        }
-
-        return itemsDictionary;
     }
 }

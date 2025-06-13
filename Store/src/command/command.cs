@@ -2,9 +2,10 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
+using Store.Extension;
+using static Store.Config_Config;
 using static Store.FindTarget;
 using static Store.Store;
-using static Store.Config_Config;
 
 namespace Store;
 
@@ -61,7 +62,7 @@ public static class Command
     {
         if (string.IsNullOrEmpty(Config.Permissions.GiveCredits) || !AdminManager.PlayerHasPermissions(player, Config.Permissions.GiveCredits))
             return;
-        
+
         if (!int.TryParse(command.GetArg(2), out int credits))
         {
             command.ReplyToCommand($"{Config.Settings.Tag}{Instance.Localizer["Must be an integer"]}");

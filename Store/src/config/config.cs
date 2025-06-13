@@ -1,8 +1,8 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using Store.Extension;
 using System.Reflection;
 using System.Text.Json;
-using Store.Extension;
 using Tomlyn;
 using Tomlyn.Model;
 
@@ -33,7 +33,7 @@ public static class Config_Config
     }
 
     public static Cfg Config { get; } = new();
-    
+
     public static void Load()
     {
         if (!File.Exists(ConfigPath))
@@ -47,7 +47,7 @@ public static class Config_Config
     {
         string configText = File.ReadAllText(configPath);
         TomlTable model = Toml.ToModel(configText);
-        
+
         Config.DatabaseConnection = model.GetSection<Config_DatabaseConnection>("Database") ?? new();
         Config.Commands = model.GetSection<Config_Commands>("Commands") ?? new();
         Config.DefaultModels = model.GetSection<Config_DefaultModels>("DefaultModels") ?? new();
@@ -69,7 +69,7 @@ public sealed class Cfg
     public Config_DatabaseConnection DatabaseConnection { get; set; } = new();
     public Config_Commands Commands { get; set; } = new();
     public Config_DefaultModels DefaultModels { get; set; } = new();
-    public Dictionary<string, Config_Credits> Credits { get; set; } = new();
+    public Dictionary<string, Config_Credits> Credits { get; set; } = [];
     public Config_Menu Menu { get; set; } = new();
     public Config_Settings Settings { get; set; } = new();
     public Config_Permissions Permissions { get; set; } = new();

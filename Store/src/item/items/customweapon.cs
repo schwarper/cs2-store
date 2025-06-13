@@ -2,6 +2,7 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
+using Store.Extension;
 using System.Runtime.InteropServices;
 using static Store.Store;
 
@@ -64,7 +65,7 @@ public static class Item_CustomWeapon
     {
         if (!_customWeaponExists) return;
 
-        if (!IsRelevantEntity(entity, out var entityType)) return;
+        if (!IsRelevantEntity(entity, out EntityType entityType)) return;
 
         Server.NextWorldUpdate(() => ProcessEntity(entity, entityType));
     }
@@ -90,15 +91,15 @@ public static class Item_CustomWeapon
 
     private static void ProcessEntity(CEntityInstance entity, EntityType entityType)
     {
-        var player = GetPlayerFromEntity(entity, entityType);
+        CCSPlayerController? player = GetPlayerFromEntity(entity, entityType);
         if (player == null) return;
 
-        var playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
+        List<StoreApi.Store.Store_Equipment> playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
         if (playerEquipments.Count == 0) return;
 
-        var weaponDesignerName = GetWeaponDesignerName(entity, entityType);
+        string weaponDesignerName = GetWeaponDesignerName(entity, entityType);
 
-        foreach (var equipment in playerEquipments)
+        foreach (StoreApi.Store.Store_Equipment equipment in playerEquipments)
         {
             TryApplyEquipmentModel(entity, equipment, weaponDesignerName, entityType, player);
         }
@@ -109,7 +110,7 @@ public static class Item_CustomWeapon
         switch (entityType)
         {
             case EntityType.Weapon:
-                var weapon = new CBasePlayerWeapon(entity.Handle);
+                CBasePlayerWeapon weapon = new(entity.Handle);
                 if (weapon?.IsValid == true && weapon.OriginalOwnerXuidLow > 0)
                 {
                     return FindTarget.FindTargetFromWeapon(weapon);
@@ -117,7 +118,7 @@ public static class Item_CustomWeapon
                 break;
 
             case EntityType.Projectile:
-                var projectile = entity.As<CBaseCSGrenadeProjectile>();
+                CBaseCSGrenadeProjectile projectile = entity.As<CBaseCSGrenadeProjectile>();
                 return projectile?.OriginalThrower?.Value?.OriginalController.Value;
         }
 
@@ -137,7 +138,7 @@ public static class Item_CustomWeapon
     private static void TryApplyEquipmentModel(CEntityInstance entity, StoreApi.Store.Store_Equipment equipment,
         string weaponDesignerName, EntityType entityType, CCSPlayerController player)
     {
-        var itemData = Item.GetItem(equipment.UniqueId);
+        Dictionary<string, string>? itemData = Item.GetItem(equipment.UniqueId);
         if (itemData == null || !weaponDesignerName.Contains(itemData["weapon"])) return;
 
         itemData.TryGetValue("worldmodel", out string? worldModel);
@@ -159,15 +160,15 @@ public static class Item_CustomWeapon
         switch (entityType)
         {
             case EntityType.Weapon:
-                var weapon = entity.As<CBasePlayerWeapon>();
+                CBasePlayerWeapon weapon = entity.As<CBasePlayerWeapon>();
                 if (weapon?.IsValid != true || weapon.OriginalOwnerXuidLow <= 0) return;
 
-                var activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+                CBasePlayerWeapon? activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
                 Weapon.UpdateModel(player, weapon, viewModel, worldModel, weapon == activeWeapon);
                 break;
 
             case EntityType.Projectile:
-                var projectile = entity.As<CBaseCSGrenadeProjectile>();
+                CBaseCSGrenadeProjectile projectile = entity.As<CBaseCSGrenadeProjectile>();
                 if (projectile?.IsValid == true)
                 {
                     projectile.SetModel(worldModel);
