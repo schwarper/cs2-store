@@ -89,6 +89,9 @@ public static class Menu
         else
         {
             player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
+            
+            if (Config.Menu.CloseMenuAfterSelect)
+                DisplayStore(player, inventory);
         }
     }
 

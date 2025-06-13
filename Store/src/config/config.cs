@@ -128,7 +128,7 @@ public sealed class Config_Menu
     public string VipFlag { get; set; } = string.Empty;
     public string MenuPressSoundYes { get; set; } = string.Empty;
     public string MenuPressSoundNo { get; set; } = string.Empty;
-    //public bool CloseMenuAfterSelect { get; set; }
+    public bool CloseMenuAfterSelect { get; set; }
 }
 
 public sealed class Config_Settings
