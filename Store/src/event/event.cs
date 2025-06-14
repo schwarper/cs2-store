@@ -256,26 +256,29 @@ public static class Event
 
     public static void OnCheckTransmit(CCheckTransmitInfoList infoList)
     {
-        if (Instance.InspectList.Count == 0 && Item_Trail.TrailList.Count == 0) return;
+        if (Instance.InspectList.Count == 0 && Item_Trail.TrailList.Count == 0)
+            return;
 
         foreach ((CCheckTransmitInfo info, CCSPlayerController? player) in infoList)
         {
-            if (player == null) continue;
+            if (player is not { IsValid: true, IsBot: false })
+                continue;
 
-            foreach ((CBaseModelEntity entity, CCSPlayerController owner) in Instance.InspectList)
+            ulong playerSteamId = player.SteamID;
+
+            foreach ((CBaseModelEntity? entity, CCSPlayerController? owner) in Instance.InspectList)
             {
-                if (owner.IsValid && player.SteamID != owner.SteamID)
-                {
+                if (owner.IsValid && owner.SteamID != playerSteamId)
                     info.TransmitEntities.Remove(entity);
-                }
             }
 
-            foreach ((CEntityInstance entity, CCSPlayerController owner) in Item_Trail.TrailList)
+            if (!Item_Trail.HideTrailPlayerList.Contains(player))
+                continue;
+
+            foreach ((CEntityInstance? entity, CCSPlayerController? owner) in Item_Trail.TrailList)
             {
-                if (owner.IsValid && player.SteamID != owner.SteamID && Item_Trail.HideTrailPlayerList.Contains(player))
-                {
+                if (owner.IsValid && owner.SteamID != playerSteamId)
                     info.TransmitEntities.Remove(entity);
-                }
             }
         }
     }
