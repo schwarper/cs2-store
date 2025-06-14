@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using Store.Extension;
 using System.Reflection;
 using System.Text.Json;
+using CounterStrikeSharp.API.Core.Translations;
 using Tomlyn;
 using Tomlyn.Model;
 
@@ -10,7 +11,7 @@ namespace Store;
 
 public class Item_Config : BasePluginConfig
 {
-    public JsonElement Items { get; } = new();
+    public JsonElement Items { get; set; } = new();
 }
 
 public static class Config_Config
@@ -48,7 +49,7 @@ public static class Config_Config
         string configText = File.ReadAllText(configPath);
         TomlTable model = Toml.ToModel(configText);
 
-        Config.DatabaseConnection = model.GetSection<Config_DatabaseConnection>("Database") ?? new();
+        Config.DatabaseConnection = model.GetSection<Config_DatabaseConnection>("DatabaseConnection") ?? new();
         Config.Commands = model.GetSection<Config_Commands>("Commands") ?? new();
         Config.DefaultModels = model.GetSection<Config_DefaultModels>("DefaultModels") ?? new();
         Config.Menu = model.GetSection<Config_Menu>("Menu") ?? new();
@@ -61,6 +62,8 @@ public static class Config_Config
                 StringComparer.OrdinalIgnoreCase
             )
             : [];
+
+        Config.Settings.Tag = Config.Settings.Tag.ReplaceColorTags();
     }
 }
 
@@ -99,8 +102,8 @@ public sealed class Config_Commands
     public List<string> ResetDatabase { get; set; } = [];
     public List<string> RefreshPlayersCredits { get; set; } = [];
     public List<string> HideTrails { get; set; } = [];
-    public List<string> ModelOff { get; set; } = [];
-    public List<string> ModelOn { get; set; } = [];
+    public List<string> PlayerSkinsOff { get; set; } = [];
+    public List<string> PlayerSkinsOn { get; set; } = [];
 }
 
 public sealed class Config_DefaultModels

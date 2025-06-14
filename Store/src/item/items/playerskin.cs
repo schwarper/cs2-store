@@ -24,10 +24,10 @@ public static class Item_PlayerSkin
 
         if (Item.IsAnyItemExistInType("playerskin"))
         {
-            foreach (string command in Config.Commands.ModelOff)
+            foreach (string command in Config.Commands.PlayerSkinsOff)
                 Instance.AddCommand(command, "Turn off playerskins models", Command_Model0);
 
-            foreach (string command in Config.Commands.ModelOn)
+            foreach (string command in Config.Commands.PlayerSkinsOn)
                 Instance.AddCommand(command, "Turn on playerskins models", Command_Model1);
 
             Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);

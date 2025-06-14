@@ -11,7 +11,7 @@ public static class JsonExtensions
 
     public static List<JsonProperty> GetElementJsonProperty(this JsonElement element, List<string> ignorePropNameList)
     {
-        return [.. element.EnumerateObject().Where(prop => ignorePropNameList.Contains(prop.Name))];
+        return [.. element.EnumerateObject().Where(prop => !ignorePropNameList.Contains(prop.Name))];
     }
 
     public static Dictionary<string, Dictionary<string, string>> ExtractItems(this JsonElement category)
