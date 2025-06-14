@@ -103,9 +103,9 @@ public static class Database
                     )
                     AND EXISTS (
                         SELECT 1 
-                        FROM {Config.DatabaseConnection.StorePlayersName}
-                        WHERE {Config.DatabaseConnection.StorePlayersName}.SteamID = {store_equipments}.SteamID
-                        AND {Config.DatabaseConnection.StorePlayersName}.Vip = FALSE
+                        FROM {store_players}
+                        WHERE {store_players}.SteamID = {store_equipments}.SteamID
+                        AND {store_players}.Vip = FALSE
                     )
                 ;", transaction: transaction);
 
