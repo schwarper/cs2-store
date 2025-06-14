@@ -188,16 +188,17 @@ public static class Menu
 
     public static void AddInspectOption(this IMenu menu, CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (item["type"] is "playerskin" or "customweapon")
+        if (item["type"] is not ("playerskin" or "customweapon"))
+            return;
+
+        menu.AddMenuOption(player, (p, o) =>
         {
-            float waitTime = 0.0f;
-            menu.AddMenuOption(player, (p, o) =>
-            {
-                if (Server.CurrentTime < waitTime) return;
-                waitTime = Server.CurrentTime + 5.0f;
-                InspectAction(p, item, item["type"]);
-                menu.Display(player, 0);
-            }, "menu_store<inspect>");
-        }
+            o.PostSelectAction = PostSelectAction.Nothing;
+            
+            if (Instance.InspectList.ContainsValue(p))
+                return;
+
+            InspectAction(p, item, item["type"]);
+        }, "menu_store<inspect>");
     }
 }
