@@ -25,10 +25,13 @@ public static class Menu
         menu.ScreenMenu_ShowResolutionsOption = prevMenu == null;
         menu.PrevMenu = prevMenu;
 
-        List<JsonProperty> items = elementData.GetElementJsonProperty(["flag", "langname"]);
+        List<JsonProperty> items = elementData.GetElementJsonProperty(["flag", "team"]);
         foreach (JsonProperty item in items)
         {
             if (item.Value.TryGetProperty("flag", out JsonElement flagElement) && !CheckFlag(player, flagElement.ToString(), true))
+                continue;
+
+            if (item.Value.TryGetProperty("team", out JsonElement teamElement) && player.Team.ToString() != teamElement.ToString())
                 continue;
 
             if (item.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
@@ -69,6 +72,7 @@ public static class Menu
         else if (!inventory && !item.IsHidden())
         {
             menu.AddMenuOption(player, (p, o) => SelectPurchase(p, item, int.Parse(item["price"]) > 0, inventory, prevMenu),
+                Item.CanBuy(player, item) ? DisableOption.None : DisableOption.DisableHideNumber,
                 int.Parse(item["price"]) <= 0 ? "menu_store<purchase1>" : "menu_store<purchase>",
                 Item.GetItemName(player, item), item["price"]);
         }

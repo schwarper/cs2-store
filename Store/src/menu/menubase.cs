@@ -48,9 +48,10 @@ public static class MenuBase
 
     public static string GetCategoryName(CCSPlayerController player, JsonProperty category)
     {
-        string name = category.Name;
-
-        return name.StartsWith('*') && name.EndsWith('*') ? Instance.Localizer.ForPlayer(player, name) : name;
+        return Instance.Localizer.ForPlayer(player, category.Name);
+        //Test
+        //string name = category.Name;
+        //return name.StartsWith('*') && name.EndsWith('*') ? Instance.Localizer.ForPlayer(player, name) : name;
     }
 
     public static void InspectAction(CCSPlayerController player, Dictionary<string, string> item, string type)
@@ -75,6 +76,11 @@ public static class MenuBase
     public static void AddMenuOption(this IMenu menu, CCSPlayerController player, Action<CCSPlayerController, ItemOption> callback, string display, params object[] args)
     {
         menu.AddItem(Instance.Localizer.ForPlayer(player, display, args), callback);
+    }
+
+    public static void AddMenuOption(this IMenu menu, CCSPlayerController player, Action<CCSPlayerController, ItemOption> callback, DisableOption disableOption, string display, params object[] args)
+    {
+        menu.AddItem(Instance.Localizer.ForPlayer(player, display, args), callback, disableOption);
     }
 
     public static BaseMenu CreateMenuByType(string title)

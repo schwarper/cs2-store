@@ -62,6 +62,31 @@ public static class Item
         return true;
     }
 
+    public static bool CanBuy(CCSPlayerController player, Dictionary<string, string> item)
+    {
+        if (Credits.Get(player) < int.Parse(item["price"]))
+            return false;
+
+        Store_Item_Types? type = Instance.GlobalStoreItemTypes.FirstOrDefault(i => i.Type == item["type"]);
+
+        if (type == null)
+            return false;
+
+        if (type.Alive == true && !player.PawnIsAlive)
+            return false;
+
+        else if (type.Alive == false && player.PawnIsAlive)
+            return false;
+
+        if (!type.Equipable)
+        {
+            if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && player.TeamNum != team)
+                return false;
+        }
+
+        return true;
+    }
+
     public static bool Purchase(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (Credits.Get(player) < int.Parse(item["price"]))
