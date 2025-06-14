@@ -2,17 +2,20 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using static Store.Store;
+using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_Equipment
+[StoreItemType("equipment")]
+public class Item_Equipment : IItemModule
 {
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
+
     private static readonly Dictionary<CCSPlayerController, Dictionary<int, CDynamicProp>> PlayerEquipmentEntities = [];
 
-    public static void OnPluginStart()
+    public void OnPluginStart()
     {
-        Item.RegisterType("equipment", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-
         if (Item.IsAnyItemExistInType("equipment"))
         {
             Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
@@ -21,12 +24,12 @@ public static class Item_Equipment
         }
     }
 
-    public static void OnMapStart()
+    public void OnMapStart()
     {
         PlayerEquipmentEntities.Clear();
     }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    public void OnServerPrecacheResources(ResourceManifest manifest)
     {
         List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("equipment");
 
@@ -34,23 +37,21 @@ public static class Item_Equipment
             manifest.AddResource(item.Value["model"]);
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!item.TryGetValue("slot", out string? slotStr) || !int.TryParse(slotStr, out int slot) || slot < 0)
             return false;
 
         EquipModel(player, item["model"], slot);
-
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         if (!item.TryGetValue("slot", out string? slotStr) || !int.TryParse(slotStr, out int slot))
             return false;
 
         UnEquipModel(player, slot);
-
         return true;
     }
 
@@ -105,7 +106,7 @@ public static class Item_Equipment
         return entity;
     }
 
-    public static HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
+    public HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
         if (player == null) return HookResult.Continue;
@@ -137,13 +138,13 @@ public static class Item_Equipment
         return HookResult.Continue;
     }
 
-    public static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
+    public HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
     {
         CleanUpModels(@event.Userid);
         return HookResult.Continue;
     }
 
-    public static HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
+    public HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
     {
         CleanUpModels(@event.Userid);
         return HookResult.Continue;

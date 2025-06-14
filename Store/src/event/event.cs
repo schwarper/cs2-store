@@ -95,7 +95,10 @@ public static class Event
 
     public static void OnMapStart(string mapname)
     {
-        Instance.GlobalStoreItemTypes.ForEach(type => type.MapStart());
+        foreach (var module in ItemModuleManager.Modules)
+        {
+            module.Value.OnMapStart();
+        }
     }
 
     public static void OnServerPrecacheResources(ResourceManifest manifest)
@@ -105,7 +108,10 @@ public static class Event
             manifest.AddResource(model);
         }
 
-        Instance.GlobalStoreItemTypes.ForEach(type => type.ServerPrecacheResources(manifest));
+        foreach (var module in ItemModuleManager.Modules)
+        {
+            module.Value.OnServerPrecacheResources(manifest);
+        }
     }
 
     public static void OnTick()

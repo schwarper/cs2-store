@@ -6,20 +6,26 @@ using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_GrenadeTrail
+[StoreItemType("grenadetrail")]
+public class Item_GrenadeTrail : IItemModule
 {
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
+
     public static Dictionary<CBaseCSGrenadeProjectile, CParticleSystem> GlobalGrenadeTrail { get; set; } = [];
     private static bool _grenadeTrailExists = false;
 
-    public static void OnPluginStart()
+    public void OnPluginStart()
     {
-        Item.RegisterType("grenadetrail", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
         _grenadeTrailExists = Item.IsAnyItemExistInType("grenadetrail");
     }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() 
+    {
+        GlobalGrenadeTrail.Clear();
+    }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    public void OnServerPrecacheResources(ResourceManifest manifest)
     {
         List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("grenadetrail");
 
@@ -29,12 +35,12 @@ public static class Item_GrenadeTrail
         }
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

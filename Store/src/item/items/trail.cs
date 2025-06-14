@@ -11,18 +11,20 @@ using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_Trail
+[StoreItemType("trail")]
+public class Item_Trail : IItemModule
 {
     private static readonly Vector[] GlobalTrailLastOrigin = new Vector[64];
     private static readonly Vector[] GlobalTrailEndOrigin = new Vector[64];
     public static HashSet<CCSPlayerController> HideTrailPlayerList { get; set; } = [];
     public static readonly Dictionary<CEntityInstance, CCSPlayerController> TrailList = [];
     private static bool trailExists = false;
+    
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
 
-    public static void OnPluginStart()
+    public void OnPluginStart()
     {
-        Item.RegisterType("trail", OnMapStart, ServerPrecacheResources, OnEquip, OnUnequip, true, null);
-
         if (Item.IsAnyItemExistInType("trail"))
         {
             trailExists = true;
@@ -38,9 +40,9 @@ public static class Item_Trail
         }
     }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void ServerPrecacheResources(ResourceManifest manifest)
+    public void OnServerPrecacheResources(ResourceManifest manifest)
     {
         Item.GetItemsByType("trail")
             .Where(item => item.Value.TryGetValue("model", out string? model) && !string.IsNullOrEmpty(model))
@@ -48,12 +50,12 @@ public static class Item_Trail
             .ForEach(item => manifest.AddResource(item.Value["model"]));
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

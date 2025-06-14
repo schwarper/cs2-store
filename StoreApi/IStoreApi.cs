@@ -1,6 +1,5 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
-using CounterStrikeSharp.API.Modules.Utils;
 using static StoreApi.Store;
 
 namespace StoreApi;
@@ -33,5 +32,4 @@ public interface IStoreApi
     List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type);
     List<Store_Item> GetPlayerItems(CCSPlayerController player, string? type);
     List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type);
-    void RegisterType(string type, Action mapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> equip, Func<CCSPlayerController, Dictionary<string, string>, bool, bool> unequip, bool equipable, bool? alive = false);
 }

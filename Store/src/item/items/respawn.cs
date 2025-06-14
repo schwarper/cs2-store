@@ -1,20 +1,22 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
+using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_Respawn
+[StoreItemType("respawn")]
+public class Item_Respawn : IItemModule
 {
-    public static void OnPluginStart()
-    {
-        Item.RegisterType("respawn", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, false);
-    }
+    public bool Equipable => false;
+    public bool? RequiresAlive => false;
+    
+    public void OnPluginStart() { }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest) { }
+    public void OnServerPrecacheResources(ResourceManifest manifest) { }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (player.Team is not (CsTeam.Terrorist or CsTeam.CounterTerrorist))
             return false;
@@ -23,7 +25,7 @@ public static class Item_Respawn
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

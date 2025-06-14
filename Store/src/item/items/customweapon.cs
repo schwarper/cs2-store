@@ -5,11 +5,16 @@ using CounterStrikeSharp.API.Modules.Utils;
 using Store.Extension;
 using System.Runtime.InteropServices;
 using static Store.Store;
+using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_CustomWeapon
+[StoreItemType("customweapon")]
+public class Item_CustomWeapon : IItemModule
 {
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
+
     private static bool _customWeaponExists = false;
     private enum EntityType
     {
@@ -18,10 +23,8 @@ public static class Item_CustomWeapon
         Projectile
     }
 
-    public static void OnPluginStart()
+    public void OnPluginStart()
     {
-        Item.RegisterType("customweapon", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-
         if (Item.IsAnyItemExistInType("customweapon"))
         {
             if (CoreConfig.FollowCS2ServerGuidelines)
@@ -34,9 +37,9 @@ public static class Item_CustomWeapon
         }
     }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    public void OnServerPrecacheResources(ResourceManifest manifest)
     {
         List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("customweapon");
 
@@ -51,12 +54,12 @@ public static class Item_CustomWeapon
         }
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return Weapon.HandleEquip(player, item, true);
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return !update || Weapon.HandleEquip(player, item, false);
     }
@@ -177,7 +180,7 @@ public static class Item_CustomWeapon
         }
     }
 
-    public static HookResult OnItemEquip(EventItemEquip @event, GameEventInfo info)
+    public HookResult OnItemEquip(EventItemEquip @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
         if (player == null) return HookResult.Continue;
@@ -192,7 +195,7 @@ public static class Item_CustomWeapon
         return HookResult.Continue;
     }
 
-    public static class Weapon
+    public class Weapon
     {
         public enum GlobalNameData
         {

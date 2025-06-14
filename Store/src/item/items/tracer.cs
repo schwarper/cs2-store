@@ -8,29 +8,31 @@ using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_Tracer
+[StoreItemType("tracer")]
+public class Item_Tracer : IItemModule
 {
-    public static void OnPluginStart()
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
+    
+    public void OnPluginStart()
     {
-        Item.RegisterType("tracer", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-
         if (Item.IsAnyItemExistInType("tracer"))
             Instance.RegisterEventHandler<EventBulletImpact>(OnBulletImpact);
     }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    public void OnServerPrecacheResources(ResourceManifest manifest)
     {
         Item.GetItemsByType("tracer").ForEach(item => manifest.AddResource(item.Value["model"]));
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

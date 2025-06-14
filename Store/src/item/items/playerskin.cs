@@ -10,18 +10,20 @@ using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_PlayerSkin
+[StoreItemType("playerskin")]
+public class Item_PlayerSkin : IItemModule
 {
     public static bool ForceModelDefault { get; set; } = false;
     private static bool DisableLeg(Dictionary<string, string> item)
     {
         return item.ContainsKey("disable_leg") && item["disable_leg"] is "true" or "1";
     }
+    
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
 
-    public static void OnPluginStart()
+    public void OnPluginStart()
     {
-        Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-
         if (Item.IsAnyItemExistInType("playerskin"))
         {
             foreach (string command in Config.Commands.PlayerSkinsOff)
@@ -35,9 +37,9 @@ public static class Item_PlayerSkin
         }
     }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    public void OnServerPrecacheResources(ResourceManifest manifest)
     {
         foreach (KeyValuePair<string, Dictionary<string, string>> item in Item.GetItemsByType("playerskin"))
         {
@@ -47,7 +49,7 @@ public static class Item_PlayerSkin
         }
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot) || ForceModelDefault)
             return false;
@@ -56,7 +58,7 @@ public static class Item_PlayerSkin
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         if (!update || !item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot) || ForceModelDefault)
             return false;

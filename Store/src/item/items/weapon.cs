@@ -1,21 +1,23 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using Store.Extension;
+using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_Weapon
+[StoreItemType("weapon")]
+public class Item_Weapon : IItemModule
 {
-    public static void OnPluginStart()
-    {
-        Item.RegisterType("weapon", OnMapStart, ServerPrecacheResources, OnEquip, OnUnequip, false, true);
-    }
+    public bool Equipable => false;
+    public bool? RequiresAlive => true;
+    
+    public void OnPluginStart() { }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void ServerPrecacheResources(ResourceManifest manifest) { }
+    public void OnServerPrecacheResources(ResourceManifest manifest) { }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (item.TryGetValue("no_pistol_round", out string? nopistolround) && nopistolround == "true" && GameRules.IsPistolRound())
         {
@@ -27,7 +29,7 @@ public static class Item_Weapon
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

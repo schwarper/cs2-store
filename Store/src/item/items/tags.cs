@@ -4,23 +4,23 @@ using CounterStrikeSharp.API.Modules.Utils;
 using TagsApi;
 using static Store.Store;
 using static TagsApi.Tags;
+using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_Tags
+[StoreItemTypes(["chatcolor", "namecolor", "scoretag", "chattag"])]
+public class Item_Tags : IItemModule
 {
     private static ITagApi? _tagApi;
     private static readonly string[] TagTypes = ["chatcolor", "namecolor", "scoretag", "chattag"];
     private static bool _scoreTagExists = false;
     private static bool _othersExists = false;
+    
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
 
-    public static void OnPluginStart()
+    public void OnPluginStart()
     {
-        foreach (string tagType in TagTypes)
-        {
-            Item.RegisterType(tagType, OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-        }
-
         _scoreTagExists = Item.IsAnyItemExistInType("scoretag");
         _othersExists = Item.IsAnyItemExistInTypes(["chatcolor", "namecolor", "chattag"]);
     }
@@ -66,10 +66,10 @@ public static class Item_Tags
         }
     }
 
-    private static void OnMapStart() { }
-    private static void OnServerPrecacheResources(ResourceManifest manifest) { }
+    public void OnMapStart() { }
+    public void OnServerPrecacheResources(ResourceManifest manifest) { }
 
-    private static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (_tagApi != null && item["type"] == "scoretag")
         {
@@ -80,7 +80,7 @@ public static class Item_Tags
         return true;
     }
 
-    private static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         if (_tagApi != null && item["type"] == "scoretag")
         {

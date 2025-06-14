@@ -7,26 +7,29 @@ using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_ColoredSkin
+[StoreItemType("coloredskin")]
+public class Item_ColoredSkin : IItemModule
 {
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
+
     private static bool _coloredSkinExists = false;
 
-    public static void OnPluginStart()
+    public void OnPluginStart()
     {
-        Item.RegisterType("coloredskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
         _coloredSkinExists = Item.IsAnyItemExistInType("coloredskin");
     }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest) { }
+    public void OnServerPrecacheResources(ResourceManifest manifest) { }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         player.PlayerPawn.Value?.ColorSkin(Color.White);
         return true;

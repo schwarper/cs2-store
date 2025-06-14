@@ -1,5 +1,4 @@
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Utils;
 using StoreApi;
 using static StoreApi.Store;
 
@@ -125,10 +124,5 @@ public class StoreAPI : IStoreApi
     public List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type)
     {
         return Item.GetPlayerEquipments(player, type);
-    }
-
-    public void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool, bool> Unequip, bool Equipable, bool? Alive)
-    {
-        Item.RegisterType(Type, MapStart, ServerPrecacheResources, Equip, Unequip, Equipable, Alive);
     }
 }

@@ -1,4 +1,5 @@
-﻿using CounterStrikeSharp.API;
+﻿using System.Reflection;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
 using CS2MenuManager.API.Class;
@@ -19,7 +20,6 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public List<Store_Player> GlobalStorePlayers { get; set; } = [];
     public List<Store_Item> GlobalStorePlayerItems { get; set; } = [];
     public List<Store_Equipment> GlobalStorePlayerEquipments { get; set; } = [];
-    public List<Store_Item_Types> GlobalStoreItemTypes { get; set; } = [];
     public Dictionary<CCSPlayerController, PlayerTimer> GlobalDictionaryPlayer { get; set; } = [];
     public int GlobalTickrate { get; set; } = 0;
     public static Store Instance { get; set; } = new();
@@ -36,27 +36,6 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
 
         Event.Load();
         Command.Load();
-
-        Item_Armor.OnPluginStart();
-        Item_Bunnyhop.OnPluginStart();
-        Item_ColoredSkin.OnPluginStart();
-        Item_CustomWeapon.OnPluginStart();
-        Item_Equipment.OnPluginStart();
-        Item_Godmode.OnPluginStart();
-        Item_Gravity.OnPluginStart();
-        Item_GrenadeTrail.OnPluginStart();
-        Item_Health.OnPluginStart();
-        Item_Link.OnPluginStart();
-        Item_Open.OnPluginStart();
-        Item_PlayerSkin.OnPluginStart();
-        Item_Respawn.OnPluginStart();
-        Item_Smoke.OnPluginStart();
-        Item_Sound.OnPluginStart();
-        Item_Speed.OnPluginStart();
-        Item_Tags.OnPluginStart();
-        Item_Tracer.OnPluginStart();
-        Item_Trail.OnPluginStart();
-        Item_Weapon.OnPluginStart();
 
         if (hotReload)
         {
@@ -89,7 +68,12 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
 
     public override void OnAllPluginsLoaded(bool hotReload)
     {
-        Item_Tags.OnPluginsAllLoaded();
+        ItemModuleManager.RegisterModules(Assembly.GetExecutingAssembly());
+
+        foreach (var module in ItemModuleManager.Modules)
+        {
+            module.Value.OnPluginStart();
+        }
     }
 
     public void OnConfigParsed(Item_Config config)
