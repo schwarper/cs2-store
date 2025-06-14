@@ -23,6 +23,8 @@ public class Item_Tags : IItemModule
     {
         _scoreTagExists = Item.IsAnyItemExistInType("scoretag");
         _othersExists = Item.IsAnyItemExistInTypes(["chatcolor", "namecolor", "chattag"]);
+
+        OnPluginsAllLoaded();
     }
 
     public static void OnPluginEnd()
