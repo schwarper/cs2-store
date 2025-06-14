@@ -88,7 +88,6 @@ public sealed class Config_DatabaseConnection
     public string StorePlayersName { get; set; } = string.Empty;
     public string StoreItemsName { get; set; } = string.Empty;
     public string StoreEquipments { get; set; } = string.Empty;
-    //public string StoreLogs { get; set; } = string.Empty;
 }
 
 public sealed class Config_Commands

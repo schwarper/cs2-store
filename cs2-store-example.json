@@ -1,8 +1,9 @@
 {
   "Items": {
-    "*FreePlayerSkin*": {
-      "*CT*": {
-        "*Fernandez Frogman [CT]*": {
+    "FreePlayerSkin": {
+      "CT": {
+        "team": "CounterTerrorist",
+        "Fernandez Frogman [CT]": {
           "uniqueid": "frogman",
           "model": "characters/models/ctm_diver/ctm_diver_variantb.vmdl",
           "armModel": "",
@@ -15,6 +16,7 @@
         }
       },
       "T": {
+        "team": "Terrorist",
         "Number K": {
           "uniqueid": "numberk",
           "model": "characters/models/tm_professional/tm_professional_vari.vmdl",
