@@ -65,7 +65,7 @@
   "css_model0": "{blue}{0}{white}, oyuncu modellerinin varsayılan zorunluluğunu açtı.",
   "css_model1": "{blue}{0}{white}, oyuncu modellerinin varsayılan zorunluluğunu kapattı.",
 
-  "*FreePlayerSkin*": "Ücretsiz Oyuncu Modeli",
-  "*CT*": "CT Modelleri",
-  "*Fernandez Frogman [CT]*": "Fernandez Frogman [CT]"
+  "FreePlayerSkin": "Ücretsiz Oyuncu Modeli",
+  "CT": "CT Modelleri",
+  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]"
 }

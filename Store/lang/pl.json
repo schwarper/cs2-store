@@ -65,7 +65,7 @@
   "css_model0": "{blue}{0}{white} włączył wymuszanie domyślnych modeli graczy.",
   "css_model1": "{blue}{0}{white} wyłączył wymuszanie domyślnych modeli graczy.",
 
-  "*FreePlayerSkin*": "Darmowa skórka gracza",
-  "*CT*": "Skórki CT",
-  "*Fernandez Frogman [CT]*": "Fernandez Frogman [CT]"
+  "FreePlayerSkin": "Darmowa skórka gracza",
+  "CT": "Skórki CT",
+  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]"
 }

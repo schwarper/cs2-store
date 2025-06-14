@@ -65,7 +65,7 @@
 	"css_model0": "{blue}{0}{white} увімкнено форсування моделей гравців за замовчуванням.",
 	"css_model1": "{blue}{0}{white} вимкнено вирівнювання моделей гравців за замовчуванням.",
 
-	"*FreePlayerSkin*": "Безкоштовний скін гравця",
-	"*CT*": "Скіни CT",
-	"*Fernandez Frogman [CT]*": "Фернандес Frogman [CT]"
+	"FreePlayerSkin": "Безкоштовний скін гравця",
+	"CT": "Скіни CT",
+	"Fernandez Frogman [CT]": "Фернандес Frogman [CT]"
 }
