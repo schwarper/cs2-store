@@ -65,7 +65,7 @@
   "css_model0": "{blue}{0}{white} a activat forțarea implicită a modelelor jucătorilor.",
   "css_model1": "{blue}{0}{white} a dezactivat forțarea implicită a modelelor jucătorilor.",
 
-  "*FreePlayerSkin*": "Skin gratuit pentru jucător",
-  "*CT*": "Skin-uri CT",
-  "*Fernandez Frogman [CT]*": "Fernandez Frogman [CT]"
+  "FreePlayerSkin": "Skin gratuit pentru jucător",
+  "CT": "Skin-uri CT",
+  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]"
 }

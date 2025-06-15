@@ -1,32 +1,39 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
+using Store.Extension;
 using static Store.Config_Config;
+using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_Health
+[StoreItemType("health")]
+public class Item_Health : IItemModule
 {
-    public static void OnPluginStart()
+    public bool Equipable => false;
+    public bool? RequiresAlive => true;
+
+    public void OnPluginStart() { }
+
+    public void OnMapStart() { }
+
+    public void OnServerPrecacheResources(ResourceManifest manifest) { }
+
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        Item.RegisterType("health", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, true);
-    }
+        if (!int.TryParse(item["healthValue"], out int healthValue))
+            return false;
 
-    public static void OnMapStart() { }
-
-    public static void OnServerPrecacheResources(ResourceManifest manifest) { }
-
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
-    {
-        if (!int.TryParse(item["healthValue"], out int healthValue)) return false;
-
-        if (player.PlayerPawn?.Value is not { } playerPawn) return false;
+        if (player.PlayerPawn?.Value is not { } playerPawn)
+            return false;
 
         int currentHealth = playerPawn.GetHealth();
         int maxHealth = Config.Settings.MaxHealth;
         int pawnMaxHealth = playerPawn.MaxHealth;
 
-        if (maxHealth > 0 && currentHealth >= maxHealth) return false;
-        else if (maxHealth == -1 && currentHealth >= pawnMaxHealth) return false;
+        if (maxHealth > 0 && currentHealth >= maxHealth)
+            return false;
+        else if (maxHealth == -1 && currentHealth >= pawnMaxHealth)
+            return false;
 
         int newHealth = currentHealth + healthValue;
 
@@ -43,7 +50,7 @@ public static class Item_Health
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

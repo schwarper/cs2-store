@@ -3,13 +3,15 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
+using Store.Extension;
 using static Store.Config_Config;
 using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_PlayerSkin
+[StoreItemType("playerskin")]
+public class Item_PlayerSkin : IItemModule
 {
     public static bool ForceModelDefault { get; set; } = false;
     private static bool DisableLeg(Dictionary<string, string> item)
@@ -17,27 +19,27 @@ public static class Item_PlayerSkin
         return item.ContainsKey("disable_leg") && item["disable_leg"] is "true" or "1";
     }
 
-    public static void OnPluginStart()
-    {
-        Item.RegisterType("playerskin", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
 
+    public void OnPluginStart()
+    {
         if (Item.IsAnyItemExistInType("playerskin"))
         {
-            foreach (string command in Config.Commands.ModelOff)
+            foreach (string command in Config.Commands.PlayerSkinsOff)
                 Instance.AddCommand(command, "Turn off playerskins models", Command_Model0);
 
-            foreach (string command in Config.Commands.ModelOn)
+            foreach (string command in Config.Commands.PlayerSkinsOn)
                 Instance.AddCommand(command, "Turn on playerskins models", Command_Model1);
 
             Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
-            Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
             Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart, HookMode.Pre);
         }
     }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    public void OnServerPrecacheResources(ResourceManifest manifest)
     {
         foreach (KeyValuePair<string, Dictionary<string, string>> item in Item.GetItemsByType("playerskin"))
         {
@@ -47,7 +49,7 @@ public static class Item_PlayerSkin
         }
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (!item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot) || ForceModelDefault)
             return false;
@@ -56,7 +58,7 @@ public static class Item_PlayerSkin
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         if (!update || !item.TryGetValue("slot", out string? slot) || string.IsNullOrEmpty(slot) || ForceModelDefault)
             return false;
@@ -81,19 +83,6 @@ public static class Item_PlayerSkin
         return HookResult.Continue;
     }
 
-    public static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
-    {
-        CCSPlayerController? player = @event.Userid;
-        if (player == null || @event.Disconnect || !player.PawnIsAlive || (@event.Team != 2 && @event.Team != 3))
-            return HookResult.Continue;
-
-        (string modelname, bool disableleg, string? skin)? modelDatas = GetModel(player, @event.Team);
-        if (modelDatas.HasValue)
-            player.ChangeModelDelay(modelDatas.Value.modelname, modelDatas.Value.disableleg, @event.Team, modelDatas.Value.skin);
-
-        return HookResult.Continue;
-    }
-
     public static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
         Instance.InspectList.Clear();
@@ -103,7 +92,7 @@ public static class Item_PlayerSkin
 
     private static void Command_Model0(CCSPlayerController? player, CommandInfo info)
     {
-        if (string.IsNullOrEmpty(Config.Settings.Model0Model1Flag) || !AdminManager.PlayerHasPermissions(player, Config.Settings.Model0Model1Flag))
+        if (string.IsNullOrEmpty(Config.Permissions.Model0Model1Flag) || !AdminManager.PlayerHasPermissions(player, Config.Permissions.Model0Model1Flag))
             return;
 
         List<CCSPlayerController> players = Utilities.GetPlayers();
@@ -114,13 +103,13 @@ public static class Item_PlayerSkin
                 target.PlayerPawn.Value?.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg, modelDatas.Value.skin);
         }
 
-        Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_model0", player?.PlayerName ?? Instance.Localizer["Console"]]);
+        Server.PrintToChatAll(Config.Settings.Tag + Instance.Localizer["css_model0", player?.PlayerName ?? Instance.Localizer["Console"]]);
         ForceModelDefault = true;
     }
 
     private static void Command_Model1(CCSPlayerController? player, CommandInfo info)
     {
-        if (string.IsNullOrEmpty(Config.Settings.Model0Model1Flag) || !AdminManager.PlayerHasPermissions(player, Config.Settings.Model0Model1Flag))
+        if (string.IsNullOrEmpty(Config.Permissions.Model0Model1Flag) || !AdminManager.PlayerHasPermissions(player, Config.Permissions.Model0Model1Flag))
             return;
 
         List<CCSPlayerController> players = Utilities.GetPlayers();
@@ -131,7 +120,7 @@ public static class Item_PlayerSkin
                 target.PlayerPawn.Value?.ChangeModel(modelDatas.Value.modelname, modelDatas.Value.disableleg, modelDatas.Value.skin);
         }
 
-        Server.PrintToChatAll(Config.Tag + Instance.Localizer["css_model1", player?.PlayerName ?? Instance.Localizer["Console"]]);
+        Server.PrintToChatAll(Config.Settings.Tag + Instance.Localizer["css_model1", player?.PlayerName ?? Instance.Localizer["Console"]]);
         ForceModelDefault = false;
     }
 
@@ -143,9 +132,9 @@ public static class Item_PlayerSkin
 
     private static (string modelname, bool disableleg, string? skin)? GetDefaultModel(CCSPlayerController player)
     {
-        string[] modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels.CounterTerrorist : Config.DefaultModels.Terrorist;
-        return modelsArray.Length > 0
-            ? (modelsArray[Instance.Random.Next(0, modelsArray.Length)], Config.Settings.DefaultModelDisableLeg, null)
+        List<string> modelsArray = player.Team == CsTeam.CounterTerrorist ? Config.DefaultModels.CounterTerrorist : Config.DefaultModels.Terrorist;
+        return modelsArray.Count > 0
+            ? (modelsArray[Instance.Random.Next(0, modelsArray.Count)], Config.DefaultModels.DefaultModelDisableLeg, null)
             : null;
     }
 

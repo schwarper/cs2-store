@@ -4,7 +4,6 @@ using CounterStrikeSharp.API.Modules.Admin;
 using CS2MenuManager.API.Class;
 using CS2MenuManager.API.Enum;
 using CS2MenuManager.API.Interface;
-using CS2MenuManager.API.Menu;
 using System.Text.Json;
 using static Store.Config_Config;
 using static Store.Store;
@@ -14,11 +13,6 @@ namespace Store;
 
 public static class MenuBase
 {
-    public static List<JsonProperty> GetElementJsonProperty(JsonElement element)
-    {
-        return [.. element.EnumerateObject().Where(prop => prop.Name != "flag" && prop.Name != "langname")];
-    }
-
     public static void DisplayStoreMenu(CCSPlayerController? player, bool inventory)
     {
         if (player == null)
@@ -54,9 +48,7 @@ public static class MenuBase
 
     public static string GetCategoryName(CCSPlayerController player, JsonProperty category)
     {
-        string name = category.Name;
-
-        return name.StartsWith('*') && name.EndsWith('*') ? Instance.Localizer.ForPlayer(player, name) : name;
+        return Instance.Localizer.ForPlayer(player, category.Name);
     }
 
     public static void InspectAction(CCSPlayerController player, Dictionary<string, string> item, string type)
@@ -81,6 +73,11 @@ public static class MenuBase
     public static void AddMenuOption(this IMenu menu, CCSPlayerController player, Action<CCSPlayerController, ItemOption> callback, string display, params object[] args)
     {
         menu.AddItem(Instance.Localizer.ForPlayer(player, display, args), callback);
+    }
+
+    public static void AddMenuOption(this IMenu menu, CCSPlayerController player, Action<CCSPlayerController, ItemOption> callback, DisableOption disableOption, string display, params object[] args)
+    {
+        menu.AddItem(Instance.Localizer.ForPlayer(player, display, args), callback, disableOption);
     }
 
     public static BaseMenu CreateMenuByType(string title)

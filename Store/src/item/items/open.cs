@@ -1,10 +1,12 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
+using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_Open
+[StoreItemType("open")]
+public class Item_Open : IItemModule
 {
     private static readonly string[] DoorNames =
     [
@@ -14,16 +16,16 @@ public static class Item_Open
         "prop_door_rotating"
     ];
 
-    public static void OnPluginStart()
-    {
-        Item.RegisterType("open", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, false, null);
-    }
+    public bool Equipable => false;
+    public bool? RequiresAlive => null;
 
-    public static void OnMapStart() { }
+    public void OnPluginStart() { }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest) { }
+    public void OnMapStart() { }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public void OnServerPrecacheResources(ResourceManifest manifest) { }
+
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         foreach (string doorName in DoorNames)
         {
@@ -37,7 +39,7 @@ public static class Item_Open
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

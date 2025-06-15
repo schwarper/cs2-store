@@ -2,6 +2,7 @@ using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Utils;
+using Store.Extension;
 using System.Drawing;
 using System.Globalization;
 using static Store.Config_Config;
@@ -10,7 +11,8 @@ using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_Trail
+[StoreItemType("trail")]
+public class Item_Trail : IItemModule
 {
     private static readonly Vector[] GlobalTrailLastOrigin = new Vector[64];
     private static readonly Vector[] GlobalTrailEndOrigin = new Vector[64];
@@ -18,10 +20,11 @@ public static class Item_Trail
     public static readonly Dictionary<CEntityInstance, CCSPlayerController> TrailList = [];
     private static bool trailExists = false;
 
-    public static void OnPluginStart()
-    {
-        Item.RegisterType("trail", OnMapStart, ServerPrecacheResources, OnEquip, OnUnequip, true, null);
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
 
+    public void OnPluginStart()
+    {
         if (Item.IsAnyItemExistInType("trail"))
         {
             trailExists = true;
@@ -37,9 +40,9 @@ public static class Item_Trail
         }
     }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void ServerPrecacheResources(ResourceManifest manifest)
+    public void OnServerPrecacheResources(ResourceManifest manifest)
     {
         Item.GetItemsByType("trail")
             .Where(item => item.Value.TryGetValue("model", out string? model) && !string.IsNullOrEmpty(model))
@@ -47,12 +50,12 @@ public static class Item_Trail
             .ForEach(item => manifest.AddResource(item.Value["model"]));
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }
@@ -75,10 +78,10 @@ public static class Item_Trail
             return;
 
         Vector absorigin = playerPawn.AbsOrigin;
-        if (Vec.CalculateDistance(GlobalTrailLastOrigin[player.Slot], absorigin) <= 5.0f)
+        if (VectorExtensions.CalculateDistance(GlobalTrailLastOrigin[player.Slot], absorigin) <= 5.0f)
             return;
 
-        Vec.Copy(absorigin, GlobalTrailLastOrigin[player.Slot]);
+        VectorExtensions.Copy(absorigin, GlobalTrailLastOrigin[player.Slot]);
 
         float lifetime = itemdata.TryGetValue("lifetime", out string? ltvalue) && float.TryParse(ltvalue, CultureInfo.InvariantCulture, out float lt) ? lt : 1.3f;
 
@@ -131,8 +134,8 @@ public static class Item_Trail
         if (beam == null)
             return;
 
-        if (Vec.IsZero(GlobalTrailEndOrigin[player.Slot]))
-            Vec.Copy(absOrigin, GlobalTrailEndOrigin[player.Slot]);
+        if (VectorExtensions.IsZero(GlobalTrailEndOrigin[player.Slot]))
+            VectorExtensions.Copy(absOrigin, GlobalTrailEndOrigin[player.Slot]);
 
         color ??= GetRandomColor();
         if (color == null)
@@ -143,8 +146,8 @@ public static class Item_Trail
         beam.Render = (Color)color;
 
         beam.Teleport(absOrigin, new QAngle(), new Vector());
-        Vec.Copy(GlobalTrailEndOrigin[player.Slot], beam.EndPos);
-        Vec.Copy(absOrigin, GlobalTrailEndOrigin[player.Slot]);
+        VectorExtensions.Copy(GlobalTrailEndOrigin[player.Slot], beam.EndPos);
+        VectorExtensions.Copy(absOrigin, GlobalTrailEndOrigin[player.Slot]);
 
         Utilities.SetStateChanged(beam, "CBeam", "m_vecEndPos");
 

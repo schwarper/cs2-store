@@ -1,6 +1,6 @@
 using CounterStrikeSharp.API.Core;
-using CounterStrikeSharp.API.Modules.Utils;
 using StoreApi;
+using System.Reflection;
 using static StoreApi.Store;
 
 namespace Store;
@@ -127,8 +127,8 @@ public class StoreAPI : IStoreApi
         return Item.GetPlayerEquipments(player, type);
     }
 
-    public void RegisterType(string Type, Action MapStart, Action<ResourceManifest> ServerPrecacheResources, Func<CCSPlayerController, Dictionary<string, string>, bool> Equip, Func<CCSPlayerController, Dictionary<string, string>, bool, bool> Unequip, bool Equipable, bool? Alive)
+    public void RegisterModules(Assembly assembly)
     {
-        Item.RegisterType(Type, MapStart, ServerPrecacheResources, Equip, Unequip, Equipable, Alive);
+        ItemModuleManager.RegisterModules(assembly);
     }
 }

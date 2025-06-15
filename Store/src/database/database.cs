@@ -37,7 +37,7 @@ public static class Database
             Server = config.Host,
             Database = config.Name,
             UserID = config.User,
-            Password = config.Password,
+            Password = config.Pass,
             Port = config.Port,
             Pooling = true,
             MinimumPoolSize = 0,
@@ -53,10 +53,12 @@ public static class Database
 
         try
         {
-            string equipTableName = config.DatabaseEquipTableName;
+            string store_players = config.StorePlayersName;
+            string store_items = config.StoreItemsName;
+            string store_equipments = config.StoreEquipments;
 
-            await connection.ExecuteAsync(@"
-                CREATE TABLE IF NOT EXISTS store_players (
+            await connection.ExecuteAsync($@"
+                CREATE TABLE IF NOT EXISTS {store_players} (
                     id INT NOT NULL AUTO_INCREMENT,
                     SteamID BIGINT UNSIGNED NOT NULL,
                     PlayerName VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
@@ -69,8 +71,8 @@ public static class Database
                     UNIQUE KEY SteamID (SteamID)
                 );", transaction: transaction);
 
-            await connection.ExecuteAsync(@"
-                CREATE TABLE IF NOT EXISTS store_items (
+            await connection.ExecuteAsync($@"
+                CREATE TABLE IF NOT EXISTS {store_items} (
                     id INT NOT NULL AUTO_INCREMENT,
                     SteamID BIGINT UNSIGNED NOT NULL,
                     Price INT UNSIGNED NOT NULL,
@@ -82,7 +84,7 @@ public static class Database
                 );", transaction: transaction);
 
             await connection.ExecuteAsync($@"
-                CREATE TABLE IF NOT EXISTS {equipTableName} (
+                CREATE TABLE IF NOT EXISTS {store_equipments} (
                     id INT NOT NULL AUTO_INCREMENT,
                     SteamID BIGINT UNSIGNED NOT NULL,
                     Type varchar(16) NOT NULL,
@@ -92,18 +94,18 @@ public static class Database
                 );", transaction: transaction);
 
             await connection.ExecuteAsync($@"
-                DELETE FROM {equipTableName}
+                DELETE FROM {store_equipments}
                     WHERE NOT EXISTS (
-                        SELECT 1 FROM store_items
-                        WHERE store_items.Type = {equipTableName}.Type
-                        AND store_items.UniqueId = {equipTableName}.UniqueId
-                        AND store_items.SteamID = {equipTableName}.SteamID
+                        SELECT 1 FROM {store_items}
+                        WHERE {store_items}.Type = {store_equipments}.Type
+                        AND {store_items}.UniqueId = {store_equipments}.UniqueId
+                        AND {store_items}.SteamID = {store_equipments}.SteamID
                     )
                     AND EXISTS (
                         SELECT 1 
-                        FROM store_players
-                        WHERE store_players.SteamID = {equipTableName}.SteamID
-                        AND store_players.Vip = FALSE
+                        FROM {store_players}
+                        WHERE {store_players}.SteamID = {store_equipments}.SteamID
+                        AND {store_players}.Vip = FALSE
                     )
                 ;", transaction: transaction);
 
@@ -118,9 +120,9 @@ public static class Database
 
     public static void UpdateVip(CCSPlayerController player)
     {
-        ExecuteAsync(@"
+        ExecuteAsync($@"
             UPDATE
-                store_players
+                {Config.DatabaseConnection.StorePlayersName}
             SET
                 Vip = @Vip
             WHERE
@@ -159,10 +161,10 @@ public static class Database
             {
                 using MySqlConnection connection = await ConnectAsync();
 
-                SqlMapper.GridReader multiQuery = await connection.QueryMultipleAsync(@"
-                SELECT * FROM store_players WHERE SteamID = @SteamID;
-                SELECT * FROM store_items WHERE SteamID = @SteamID AND(DateOfExpiration > @Now OR DateOfExpiration = '0001-01-01 00:00:00');
-                SELECT * FROM " + Config.DatabaseConnection.DatabaseEquipTableName + @" WHERE SteamID = @SteamID"
+                SqlMapper.GridReader multiQuery = await connection.QueryMultipleAsync($@"
+                SELECT * FROM {Config.DatabaseConnection.StorePlayersName} WHERE SteamID = @SteamID;
+                SELECT * FROM {Config.DatabaseConnection.StoreItemsName} WHERE SteamID = @SteamID AND(DateOfExpiration > @Now OR DateOfExpiration = '0001-01-01 00:00:00');
+                SELECT * FROM " + Config.DatabaseConnection.StoreEquipments + @" WHERE SteamID = @SteamID"
                 ,
                 new
                 {
@@ -184,8 +186,8 @@ public static class Database
                         {
                             SteamID = SteamID,
                             PlayerName = PlayerName,
-                            Credits = Config.Credits.Start,
-                            OriginalCredits = Config.Credits.Start,
+                            Credits = Config.Credits["default"].Start,
+                            OriginalCredits = Config.Credits["default"].Start,
                             DateOfJoin = DateTime.Now,
                             DateOfLastJoin = DateTime.Now,
                             bPlayerIsLoaded = true,
@@ -268,8 +270,8 @@ public static class Database
 
     public static void InsertNewPlayer(ulong SteamId, string PlayerName)
     {
-        ExecuteAsync(@"
-                INSERT INTO store_players (
+        ExecuteAsync($@"
+                INSERT INTO {Config.DatabaseConnection.StorePlayersName} (
                     SteamID, PlayerName, Credits, DateOfJoin, DateOfLastJoin, Vip
                 ) VALUES (
                     @SteamID, @PlayerName, @Credits, @DateOfJoin, @DateOfLastJoin, FALSE
@@ -279,7 +281,7 @@ public static class Database
             {
                 SteamId,
                 PlayerName,
-                Credits = Config.Credits.Start,
+                Credits = Config.Credits["default"].Start,
                 DateOfJoin = DateTime.Now,
                 DateOfLastJoin = DateTime.Now
             });
@@ -297,9 +299,9 @@ public static class Database
 
         int SetCredits = PlayerCredits - PlayerOriginalCredits;
 
-        ExecuteAsync(@"
+        ExecuteAsync($@"
                 UPDATE
-                    store_players
+                    {Config.DatabaseConnection.StorePlayersName}
                 SET
                     PlayerName = @PlayerName,
                     Credits = GREATEST(Credits + @SetCredits, 0), 
@@ -323,8 +325,8 @@ public static class Database
 
     public static void SavePlayerItem(CCSPlayerController player, Store_Item item)
     {
-        ExecuteAsync(@"
-                INSERT INTO store_items (
+        ExecuteAsync($@"
+                INSERT INTO {Config.DatabaseConnection.StoreItemsName} (
                     SteamID, Price, Type, UniqueId, DateOfPurchase, DateOfExpiration
                 ) VALUES (
                     @SteamID, @Price, @Type, @UniqueId, @DateOfPurchase, @DateOfExpiration
@@ -343,10 +345,10 @@ public static class Database
     }
     public static void RemovePlayerItem(CCSPlayerController player, Store_Item item)
     {
-        ExecuteAsync(@"
+        ExecuteAsync($@"
                 DELETE
                 FROM
-                    store_items
+                    {Config.DatabaseConnection.StoreItemsName}
                 WHERE
                     SteamID = @SteamID AND UniqueId = @UniqueId;
             "
@@ -360,7 +362,7 @@ public static class Database
     public static void SavePlayerEquipment(CCSPlayerController player, Store_Equipment item)
     {
         ExecuteAsync(@"
-                INSERT INTO " + Config.DatabaseConnection.DatabaseEquipTableName + @" (
+                INSERT INTO " + Config.DatabaseConnection.StoreEquipments + @" (
                     SteamID, Type, UniqueId, Slot
                 ) VALUES (
                     @SteamID, @Type, @UniqueId, @Slot
@@ -378,7 +380,7 @@ public static class Database
     public static void RemovePlayerEquipment(CCSPlayerController player, string UniqueId)
     {
         ExecuteAsync(@"
-                    DELETE FROM " + Config.DatabaseConnection.DatabaseEquipTableName + @" WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
+                    DELETE FROM " + Config.DatabaseConnection.StoreEquipments + @" WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
                 "
             ,
             new
@@ -390,9 +392,9 @@ public static class Database
 
     public static void ResetPlayer(CCSPlayerController player)
     {
-        ExecuteAsync(@"
-                DELETE FROM store_items WHERE SteamID = @SteamID; 
-                DELETE FROM " + Config.DatabaseConnection.DatabaseEquipTableName + @" WHERE SteamID = @SteamID
+        ExecuteAsync($@"
+                DELETE FROM {Config.DatabaseConnection.StoreItemsName} WHERE SteamID = @SteamID; 
+                DELETE FROM " + Config.DatabaseConnection.StoreEquipments + @" WHERE SteamID = @SteamID
             "
             ,
             new
@@ -407,9 +409,9 @@ public static class Database
         {
             using MySqlConnection connection = await ConnectAsync();
 
-            connection.Query(@"DROP TABLE store_players");
-            connection.Query(@"DROP TABLE store_items");
-            connection.Query($@"DROP TABLE {Config.DatabaseConnection.DatabaseEquipTableName}");
+            connection.Query($@"DROP TABLE {Config.DatabaseConnection.StorePlayersName}");
+            connection.Query($@"DROP TABLE {Config.DatabaseConnection.StoreItemsName}");
+            connection.Query($@"DROP TABLE {Config.DatabaseConnection.StoreEquipments}");
         });
     }
 }

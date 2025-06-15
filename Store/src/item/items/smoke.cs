@@ -7,26 +7,29 @@ using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_Smoke
+[StoreItemType("smoke")]
+public class Item_Smoke : IItemModule
 {
     private static bool smokeExists = false;
 
-    public static void OnPluginStart()
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
+
+    public void OnPluginStart()
     {
-        Item.RegisterType("smoke", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
         smokeExists = Item.IsAnyItemExistInType("smoke");
     }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest) { }
+    public void OnServerPrecacheResources(ResourceManifest manifest) { }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return true;
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return true;
     }

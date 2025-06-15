@@ -2,13 +2,19 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
+using Store.Extension;
 using System.Runtime.InteropServices;
 using static Store.Store;
+using static StoreApi.Store;
 
 namespace Store;
 
-public static class Item_CustomWeapon
+[StoreItemType("customweapon")]
+public class Item_CustomWeapon : IItemModule
 {
+    public bool Equipable => true;
+    public bool? RequiresAlive => null;
+
     private static bool _customWeaponExists = false;
     private enum EntityType
     {
@@ -17,10 +23,8 @@ public static class Item_CustomWeapon
         Projectile
     }
 
-    public static void OnPluginStart()
+    public void OnPluginStart()
     {
-        Item.RegisterType("customweapon", OnMapStart, OnServerPrecacheResources, OnEquip, OnUnequip, true, null);
-
         if (Item.IsAnyItemExistInType("customweapon"))
         {
             if (CoreConfig.FollowCS2ServerGuidelines)
@@ -33,9 +37,9 @@ public static class Item_CustomWeapon
         }
     }
 
-    public static void OnMapStart() { }
+    public void OnMapStart() { }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    public void OnServerPrecacheResources(ResourceManifest manifest)
     {
         List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("customweapon");
 
@@ -50,12 +54,12 @@ public static class Item_CustomWeapon
         }
     }
 
-    public static bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
+    public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         return Weapon.HandleEquip(player, item, true);
     }
 
-    public static bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
+    public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
         return !update || Weapon.HandleEquip(player, item, false);
     }
@@ -64,7 +68,7 @@ public static class Item_CustomWeapon
     {
         if (!_customWeaponExists) return;
 
-        if (!IsRelevantEntity(entity, out var entityType)) return;
+        if (!IsRelevantEntity(entity, out EntityType entityType)) return;
 
         Server.NextWorldUpdate(() => ProcessEntity(entity, entityType));
     }
@@ -90,15 +94,15 @@ public static class Item_CustomWeapon
 
     private static void ProcessEntity(CEntityInstance entity, EntityType entityType)
     {
-        var player = GetPlayerFromEntity(entity, entityType);
+        CCSPlayerController? player = GetPlayerFromEntity(entity, entityType);
         if (player == null) return;
 
-        var playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
+        List<StoreApi.Store.Store_Equipment> playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
         if (playerEquipments.Count == 0) return;
 
-        var weaponDesignerName = GetWeaponDesignerName(entity, entityType);
+        string weaponDesignerName = GetWeaponDesignerName(entity, entityType);
 
-        foreach (var equipment in playerEquipments)
+        foreach (StoreApi.Store.Store_Equipment equipment in playerEquipments)
         {
             TryApplyEquipmentModel(entity, equipment, weaponDesignerName, entityType, player);
         }
@@ -109,7 +113,7 @@ public static class Item_CustomWeapon
         switch (entityType)
         {
             case EntityType.Weapon:
-                var weapon = new CBasePlayerWeapon(entity.Handle);
+                CBasePlayerWeapon weapon = new(entity.Handle);
                 if (weapon?.IsValid == true && weapon.OriginalOwnerXuidLow > 0)
                 {
                     return FindTarget.FindTargetFromWeapon(weapon);
@@ -117,7 +121,7 @@ public static class Item_CustomWeapon
                 break;
 
             case EntityType.Projectile:
-                var projectile = entity.As<CBaseCSGrenadeProjectile>();
+                CBaseCSGrenadeProjectile projectile = entity.As<CBaseCSGrenadeProjectile>();
                 return projectile?.OriginalThrower?.Value?.OriginalController.Value;
         }
 
@@ -137,7 +141,7 @@ public static class Item_CustomWeapon
     private static void TryApplyEquipmentModel(CEntityInstance entity, StoreApi.Store.Store_Equipment equipment,
         string weaponDesignerName, EntityType entityType, CCSPlayerController player)
     {
-        var itemData = Item.GetItem(equipment.UniqueId);
+        Dictionary<string, string>? itemData = Item.GetItem(equipment.UniqueId);
         if (itemData == null || !weaponDesignerName.Contains(itemData["weapon"])) return;
 
         itemData.TryGetValue("worldmodel", out string? worldModel);
@@ -159,15 +163,15 @@ public static class Item_CustomWeapon
         switch (entityType)
         {
             case EntityType.Weapon:
-                var weapon = entity.As<CBasePlayerWeapon>();
+                CBasePlayerWeapon weapon = entity.As<CBasePlayerWeapon>();
                 if (weapon?.IsValid != true || weapon.OriginalOwnerXuidLow <= 0) return;
 
-                var activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+                CBasePlayerWeapon? activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
                 Weapon.UpdateModel(player, weapon, viewModel, worldModel, weapon == activeWeapon);
                 break;
 
             case EntityType.Projectile:
-                var projectile = entity.As<CBaseCSGrenadeProjectile>();
+                CBaseCSGrenadeProjectile projectile = entity.As<CBaseCSGrenadeProjectile>();
                 if (projectile?.IsValid == true)
                 {
                     projectile.SetModel(worldModel);
@@ -176,7 +180,7 @@ public static class Item_CustomWeapon
         }
     }
 
-    public static HookResult OnItemEquip(EventItemEquip @event, GameEventInfo info)
+    public HookResult OnItemEquip(EventItemEquip @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
         if (player == null) return HookResult.Continue;
@@ -191,7 +195,7 @@ public static class Item_CustomWeapon
         return HookResult.Continue;
     }
 
-    public static class Weapon
+    public class Weapon
     {
         public enum GlobalNameData
         {

@@ -1,15 +1,36 @@
-[Tag]
-Tag = "{red}[Store] "
+# ─────────────────────────────
+# Store Plugin Configuration
+# ─────────────────────────────
 
 [DatabaseConnection]
+# Hostname or IP address of the MySQL server
 Host = ""
+
+# MySQL server port (usually 3306)
 Port = 3306
+
+# Username for database authentication
 User = ""
-Password = ""
+
+# Password for database authentication
+Pass = ""
+
+# Name of the database to be used
 Name = ""
-DatabaseEquipTableName = "store_equipments"
+
+# Table used to store player data (credits etc.)
+StorePlayersName = "store_players"
+
+# Table used to store the store item data
+StoreItemsName = "store_items"
+
+# Table used to store which items players have equipped
+StoreEquipments = "store_equipments"
+
+# ─────────────────────────────
 
 [Commands]
+# Command aliases that can be used by players. You may add more aliases as needed.
 Credits = [ "credits", "tl" ]
 Store = [ "store", "shop", "market" ]
 Inventory = [ "inv", "inventory" ]
@@ -22,33 +43,94 @@ HideTrails = [ "hidetrails" ]
 PlayerSkinsOff = [ "model0", "modeloff" ]
 PlayerSkinsOn = [ "model1", "modelon" ]
 
-# Should you not wish to utilise the default model, you are free to leave the list blank.
+# ─────────────────────────────
+
 [DefaultModels]
+# Default player models for each team. Leave empty if not used.
 Terrorist = [ "characters/models/tm_leet/tm_leet_variantj.vmdl" ]
 CounterTerrorist = [ "characters/models/ctm_fbi/ctm_fbi_variantb.vmdl" ]
 
-[Credits]
-Start = 0
-IntervalActiveInActive = 60
-AmountActive = 10
-AmountInActive = 1
-AmountKill = 1
-IgnoreWarmup = true
+# If true, disables the legs of default models.
+DefaultModelDisableLeg = false
+
+# ─────────────────────────────
+
+# Credit earning rules for specific permission groups.
+# High-priority permission entries should be placed above lower ones.
+# Do NOT include 'Start', 'IgnoreWarmup', or 'IntervalActiveInActive' in any group other than "default".
+
+[Credits."@css/root"]
+AmountActive = 30      # Credits earned when active
+AmountInActive = 3     # Credits earned when inactive
+AmountKill = 3         # Credits earned per kill
+
+[Credits."@css/vip"]
+AmountActive = 20      # Credits earned when active
+AmountInActive = 2     # Credits earned when inactive
+AmountKill = 2         # Credits earned per kill
+
+[Credits."default"]
+# These fields are ONLY allowed in the "default" group
+Start = 0                     # Starting credit balance for new players
+IgnoreWarmup = true           # If true, disables credit earning during warmup
+IntervalActiveInActive = 60   # The interval (in seconds) at which players earn credits.
+AmountActive = 10             # Credits earned when active
+AmountInActive = 1            # Credits earned when inactive
+AmountKill = 1                # Credits earned per kill
+
+# ─────────────────────────────
 
 [Menu]
-EnableSelling = true
+# Enables the confirmation menu before finalizing a purchase
 EnableConfirmMenu = true
-MenuType = "ScreenMenu" # Supported MenuTypes => ConsoleMenu, ChatMenu, CenterHtmlMenu, WasdMenu, ScreenMenu
-VipFlag = "@css/root" # Individuals in possession of the requisite authorisation shall be entitled to utilise equipable items free of charge. Making this field empty will result in the cancellation of Vip.
+
+# Type of menu interface to use
+# Supported values: ConsoleMenu, ChatMenu, CenterHtmlMenu, WasdMenu, ScreenMenu
+MenuType = "ScreenMenu"
+
+# Users with this flag can equip items without paying
+# Leave empty to disable VIP privileges
+VipFlag = "@css/root"
+
+# Sound to play for positive
 MenuPressSoundYes = ""
+
+# Sound to play for negative
 MenuPressSoundNo = ""
 
+# If false, the menu will remain open until you close it.
+CloseMenuAfterSelect = false
+
+# ─────────────────────────────
+
 [Settings]
+# Message prefix for store plugin messages (supports color codes like {red}, {green})
+Tag = "{red}[Store]"
+
+# Maximum health allowed via store items (0 = infinity)
 MaxHealth = 0
+
+# Maximum armor allowed via store items (0 = infinity)
 MaxArmor = 0
-SellRatio = 0.6 # This setting determines the ratio of money you will receive when you sell the item.
-ApplyPlayerskinDelay = 0.6
-SellUsePurchaseCredit = false # If true, the selling ratio is calculated based on the price at which you bought the item. If false, it is calculated based on the current store price.
-DefaultModelDisableLeg = false
+
+# Ratio of credit received when selling an item (e.g., 0.6 = 60% of value)
+SellRatio = 0.6
+
+# Delay in seconds before a player skin is applied after selection
+ApplyPlayerskinDelay = 0.1
+
+# If true, selling returns credit based on the price the player paid
+# If false, selling returns credit based on the current store price
+SellUsePurchaseCredit = false
+
+# Enables compatibility adjustments for CS2 fixes
+EnableCs2Fixes = false
+
+# ─────────────────────────────
+
+[Permissions]
+# Required flag to toggle player model (model0/model1) features
 Model0Model1Flag = "@css/root"
-EnableCS2Fixes = false # Set to true to enable CS2Fixes compatibility, false to disable
+
+# Required flag to access /givecredits command
+GiveCredits = "@css/root"

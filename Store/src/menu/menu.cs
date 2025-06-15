@@ -1,10 +1,9 @@
-﻿using CounterStrikeSharp.API;
-using CounterStrikeSharp.API.Core;
+﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CS2MenuManager.API.Class;
 using CS2MenuManager.API.Enum;
 using CS2MenuManager.API.Interface;
-using CS2MenuManager.API.Menu;
+using Store.Extension;
 using System.Text.Json;
 using static Store.Config_Config;
 using static Store.MenuBase;
@@ -25,10 +24,13 @@ public static class Menu
         menu.ScreenMenu_ShowResolutionsOption = prevMenu == null;
         menu.PrevMenu = prevMenu;
 
-        List<JsonProperty> items = GetElementJsonProperty(elementData);
+        List<JsonProperty> items = elementData.GetElementJsonProperty(["flag", "team"]);
         foreach (JsonProperty item in items)
         {
             if (item.Value.TryGetProperty("flag", out JsonElement flagElement) && !CheckFlag(player, flagElement.ToString(), true))
+                continue;
+
+            if (item.Value.TryGetProperty("team", out JsonElement teamElement) && player.Team.ToString() != teamElement.ToString())
                 continue;
 
             if (item.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
@@ -69,6 +71,7 @@ public static class Menu
         else if (!inventory && !item.IsHidden())
         {
             menu.AddMenuOption(player, (p, o) => SelectPurchase(p, item, int.Parse(item["price"]) > 0, inventory, prevMenu),
+                Item.CanBuy(player, item) ? DisableOption.None : DisableOption.DisableHideNumber,
                 int.Parse(item["price"]) <= 0 ? "menu_store<purchase1>" : "menu_store<purchase>",
                 Item.GetItemName(player, item), item["price"]);
         }
@@ -89,6 +92,9 @@ public static class Menu
         else
         {
             player.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
+
+            if (Config.Menu.CloseMenuAfterSelect)
+                DisplayStore(player, inventory);
         }
     }
 
@@ -181,16 +187,17 @@ public static class Menu
 
     public static void AddInspectOption(this IMenu menu, CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (item["type"] is "playerskin" or "customweapon")
+        if (item["type"] is not ("playerskin" or "customweapon"))
+            return;
+
+        menu.AddMenuOption(player, (p, o) =>
         {
-            float waitTime = 0.0f;
-            menu.AddMenuOption(player, (p, o) =>
-            {
-                if (Server.CurrentTime < waitTime) return;
-                waitTime = Server.CurrentTime + 5.0f;
-                InspectAction(p, item, item["type"]);
-                menu.Display(player, 0);
-            }, "menu_store<inspect>");
-        }
+            o.PostSelectAction = PostSelectAction.Nothing;
+
+            if (Instance.InspectList.ContainsValue(p))
+                return;
+
+            InspectAction(p, item, item["type"]);
+        }, "menu_store<inspect>");
     }
 }

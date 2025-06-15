@@ -49,13 +49,13 @@ jobs:
 
       - name: Build
         run: |
-          dotnet build cs2-store.sln -c Release --no-restore /p:Version=2.${{ env.BUILD_NUMBER }}
+          dotnet build cs2-store.sln -c Release --no-restore /p:Version=${{ env.BUILD_NUMBER }}
 
       - name: Create Release Artifact (ZIP) from BuildOutput
         run: |
           mkdir -p release
           cd BuildOutput
-          zip -r ../cs2-store-v2.${{ env.BUILD_NUMBER }}-${{ env.GITHUB_SHA_SHORT }}.zip * --exclude '*.nupkg' '*.xml'
+          zip -r ../cs2-store-v${{ env.BUILD_NUMBER }}-${{ env.GITHUB_SHA_SHORT }}.zip * --exclude '*.nupkg' '*.xml'
 
       - name: Create GitHub Release
         id: create_release
@@ -63,12 +63,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v2.${{ env.BUILD_NUMBER }}
-          release_name: v2.${{ env.BUILD_NUMBER }}
+          tag_name: v${{ env.BUILD_NUMBER }}
+          release_name: v${{ env.BUILD_NUMBER }}
           draft: false
           prerelease: false
           body: |
-            ## Release Notes for v2.${{ env.BUILD_NUMBER }}
+            ## Release Notes for v${{ env.BUILD_NUMBER }}
 
             ### Changes:
             - ${{ github.event.pull_request.title || github.event.head_commit.message }}
@@ -76,12 +76,15 @@ jobs:
             ### Feedback:
             - If you encounter any issues, please report them [here](https://github.com/${{ github.repository }}/issues).
 
+            ### Support:
+            If you'd like to support the continued development of this project, you can do so by [buying me a coffee](https://buymeacoffee.com/schwarper). Your support is genuinely appreciated.
+            
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./cs2-store-v2.${{ env.BUILD_NUMBER }}-${{ env.GITHUB_SHA_SHORT }}.zip
-          asset_name: cs2-store-v2.${{ env.BUILD_NUMBER }}-${{ env.GITHUB_SHA_SHORT }}.zip
+          asset_path: ./cs2-store-v${{ env.BUILD_NUMBER }}-${{ env.GITHUB_SHA_SHORT }}.zip
+          asset_name: cs2-store-v${{ env.BUILD_NUMBER }}-${{ env.GITHUB_SHA_SHORT }}.zip
           asset_content_type: application/zip
