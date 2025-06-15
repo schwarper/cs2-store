@@ -38,7 +38,9 @@ To activate:
 Watch the step-by-step guide:  
 [https://files.catbox.moe/uzadjw.mp4](https://files.catbox.moe/uzadjw.mp4)
 
-### Api Example
+---
+
+## Api Example
 - Give player an item or credits
 ```csharp
 public class TestModule : BasePlugin
@@ -98,7 +100,7 @@ public class TestModule : BasePlugin, IItemModule
     }
 
     // ============================
-    // IItemModule depencides
+    // IItemModule dependencies
     // ============================
 
     // Sets if item is equipable
