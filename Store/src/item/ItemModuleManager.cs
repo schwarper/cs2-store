@@ -17,12 +17,14 @@ public static class ItemModuleManager
             if (type.GetCustomAttribute<StoreItemTypeAttribute>() is { } attr)
             {
                 Modules[attr.Name] = module;
+                Console.WriteLine($"[CS2-Store] Module '{attr.Name}' has been added.");
             }
             else if (type.GetCustomAttribute<StoreItemTypesAttribute>() is { } attrs)
             {
                 foreach (string attrName in attrs.Names)
                 {
                     Modules[attrName] = module;
+                    Console.WriteLine($"[CS2-Store] Module '{attrName}' has been added.");
                 }
             }
         }
