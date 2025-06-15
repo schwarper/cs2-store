@@ -1,5 +1,6 @@
 ﻿using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
+using System.Reflection;
 using static StoreApi.Store;
 
 namespace StoreApi;
@@ -32,4 +33,5 @@ public interface IStoreApi
     List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type);
     List<Store_Item> GetPlayerItems(CCSPlayerController player, string? type);
     List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type);
+    void RegisterModules(Assembly assembly);
 }

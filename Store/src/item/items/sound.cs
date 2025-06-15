@@ -10,7 +10,7 @@ public class Item_Sound : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => null;
-    
+
     public void OnPluginStart() { }
 
     public void OnMapStart() { }

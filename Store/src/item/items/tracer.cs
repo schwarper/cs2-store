@@ -13,7 +13,7 @@ public class Item_Tracer : IItemModule
 {
     public bool Equipable => true;
     public bool? RequiresAlive => null;
-    
+
     public void OnPluginStart()
     {
         if (Item.IsAnyItemExistInType("tracer"))

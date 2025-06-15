@@ -1,10 +1,10 @@
-﻿using System.Reflection;
-using CounterStrikeSharp.API;
+﻿using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
 using CS2MenuManager.API.Class;
 using Store.Extension;
 using StoreApi;
+using System.Reflection;
 using System.Text.Json;
 using static StoreApi.Store;
 
@@ -69,11 +69,6 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public override void OnAllPluginsLoaded(bool hotReload)
     {
         ItemModuleManager.RegisterModules(Assembly.GetExecutingAssembly());
-
-        foreach (var module in ItemModuleManager.Modules)
-        {
-            module.Value.OnPluginStart();
-        }
     }
 
     public void OnConfigParsed(Item_Config config)

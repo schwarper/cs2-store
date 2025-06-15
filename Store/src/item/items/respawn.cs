@@ -9,7 +9,7 @@ public class Item_Respawn : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => false;
-    
+
     public void OnPluginStart() { }
 
     public void OnMapStart() { }

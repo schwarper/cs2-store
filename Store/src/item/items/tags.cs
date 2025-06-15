@@ -3,8 +3,8 @@ using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Utils;
 using TagsApi;
 using static Store.Store;
-using static TagsApi.Tags;
 using static StoreApi.Store;
+using static TagsApi.Tags;
 
 namespace Store;
 
@@ -12,10 +12,10 @@ namespace Store;
 public class Item_Tags : IItemModule
 {
     private static ITagApi? _tagApi;
-    private static readonly string[] TagTypes = ["chatcolor", "namecolor", "scoretag", "chattag"];
     private static bool _scoreTagExists = false;
     private static bool _othersExists = false;
-    
+    private static bool _loaded = false;
+
     public bool Equipable => true;
     public bool? RequiresAlive => null;
 
@@ -41,6 +41,11 @@ public class Item_Tags : IItemModule
 
     public static void OnPluginsAllLoaded()
     {
+        if (_loaded)
+            return;
+
+        _loaded = true;
+
         try
         {
             _tagApi = ITagApi.Capability.Get();

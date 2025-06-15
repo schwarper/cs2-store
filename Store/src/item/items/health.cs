@@ -20,19 +20,19 @@ public class Item_Health : IItemModule
 
     public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (!int.TryParse(item["healthValue"], out int healthValue)) 
+        if (!int.TryParse(item["healthValue"], out int healthValue))
             return false;
 
-        if (player.PlayerPawn?.Value is not { } playerPawn) 
+        if (player.PlayerPawn?.Value is not { } playerPawn)
             return false;
 
         int currentHealth = playerPawn.GetHealth();
         int maxHealth = Config.Settings.MaxHealth;
         int pawnMaxHealth = playerPawn.MaxHealth;
 
-        if (maxHealth > 0 && currentHealth >= maxHealth) 
+        if (maxHealth > 0 && currentHealth >= maxHealth)
             return false;
-        else if (maxHealth == -1 && currentHealth >= pawnMaxHealth) 
+        else if (maxHealth == -1 && currentHealth >= pawnMaxHealth)
             return false;
 
         int newHealth = currentHealth + healthValue;

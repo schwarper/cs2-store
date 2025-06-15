@@ -9,7 +9,7 @@ public class Item_Link : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => null;
-    
+
     public void OnPluginStart() { }
 
     public void OnMapStart() { }

@@ -1,5 +1,6 @@
 using CounterStrikeSharp.API.Core;
 using StoreApi;
+using System.Reflection;
 using static StoreApi.Store;
 
 namespace Store;
@@ -124,5 +125,10 @@ public class StoreAPI : IStoreApi
     public List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type)
     {
         return Item.GetPlayerEquipments(player, type);
+    }
+
+    public void RegisterModules(Assembly assembly)
+    {
+        ItemModuleManager.RegisterModules(assembly);
     }
 }

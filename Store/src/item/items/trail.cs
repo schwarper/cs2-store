@@ -19,7 +19,7 @@ public class Item_Trail : IItemModule
     public static HashSet<CCSPlayerController> HideTrailPlayerList { get; set; } = [];
     public static readonly Dictionary<CEntityInstance, CCSPlayerController> TrailList = [];
     private static bool trailExists = false;
-    
+
     public bool Equipable => true;
     public bool? RequiresAlive => null;
 

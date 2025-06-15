@@ -157,7 +157,7 @@ public static class Item
     public static bool Equip(CCSPlayerController player, Dictionary<string, string> item)
     {
         string itemType = item["type"];
-        
+
         if (!ItemModuleManager.Modules.TryGetValue(itemType, out IItemModule? type))
             return false;
 
@@ -166,7 +166,7 @@ public static class Item
             player.PrintToChatMessage("No equip because team", (CsTeam)team);
             return false;
         }
-        
+
         List<Store_Equipment> currentItems = [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
             p.SteamID == player.SteamID &&
             p.Type == itemType &&
@@ -234,7 +234,7 @@ public static class Item
 
         if (!ItemModuleManager.Modules.TryGetValue(item["type"], out IItemModule? moduletype))
             return false;
-        
+
         if (moduletype.Equipable == false) return false;
 
         if (!ignoreVip && IsPlayerVip(player)) return true;

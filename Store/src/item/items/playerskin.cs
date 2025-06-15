@@ -18,7 +18,7 @@ public class Item_PlayerSkin : IItemModule
     {
         return item.ContainsKey("disable_leg") && item["disable_leg"] is "true" or "1";
     }
-    
+
     public bool Equipable => true;
     public bool? RequiresAlive => null;
 

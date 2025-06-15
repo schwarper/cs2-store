@@ -22,7 +22,7 @@ public class Item_Armor : IItemModule
     {
         if (!int.TryParse(item["armorValue"], out int armor))
             return false;
-            
+
         if (player.PlayerPawn?.Value is not { } playerPawn)
             return false;
 

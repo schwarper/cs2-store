@@ -49,7 +49,7 @@ public abstract class Store
     {
         public Timer? CreditIntervalTimer { get; set; }
     }
-    
+
     public interface IItemModule
     {
         void OnPluginStart();
@@ -60,13 +60,13 @@ public abstract class Store
         bool Equipable { get; }
         bool? RequiresAlive { get; }
     }
-    
+
     [AttributeUsage(AttributeTargets.Class)]
     public class StoreItemTypeAttribute(string name) : Attribute
     {
         public string Name { get; } = name;
     }
-    
+
     [AttributeUsage(AttributeTargets.Class)]
     public class StoreItemTypesAttribute(string[] name) : Attribute
     {

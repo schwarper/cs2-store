@@ -11,7 +11,7 @@ namespace Store;
 public class Item_Smoke : IItemModule
 {
     private static bool smokeExists = false;
-    
+
     public bool Equipable => true;
     public bool? RequiresAlive => null;
 

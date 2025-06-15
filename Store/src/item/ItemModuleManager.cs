@@ -5,7 +5,7 @@ namespace Store;
 
 public static class ItemModuleManager
 {
-    public static readonly Dictionary<string, IItemModule> Modules = new();
+    public static readonly Dictionary<string, IItemModule> Modules = [];
 
     public static void RegisterModules(Assembly assembly)
     {
@@ -16,17 +16,22 @@ public static class ItemModuleManager
 
             if (type.GetCustomAttribute<StoreItemTypeAttribute>() is { } attr)
             {
-                Modules[attr.Name] = module;
-                Console.WriteLine($"[CS2-Store] Module '{attr.Name}' has been added.");
+                LoadModule(attr.Name, module);
             }
-            else if (type.GetCustomAttribute<StoreItemTypesAttribute>() is { } attrs)
+            else if (type.GetCustomAttribute<StoreItemTypesAttribute>()?.Names is { } attrs)
             {
-                foreach (string attrName in attrs.Names)
+                foreach (string attrName in attrs)
                 {
-                    Modules[attrName] = module;
-                    Console.WriteLine($"[CS2-Store] Module '{attrName}' has been added.");
+                    LoadModule(attrName, module);
                 }
             }
         }
+    }
+
+    private static void LoadModule(string name, IItemModule module)
+    {
+        Modules[name] = module;
+        Console.WriteLine($"[CS2-Store] Module '{name}' has been added.");
+        module.OnPluginStart();
     }
 }

@@ -20,7 +20,7 @@ public class Item_GrenadeTrail : IItemModule
         _grenadeTrailExists = Item.IsAnyItemExistInType("grenadetrail");
     }
 
-    public void OnMapStart() 
+    public void OnMapStart()
     {
         GlobalGrenadeTrail.Clear();
     }

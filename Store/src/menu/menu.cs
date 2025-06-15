@@ -193,7 +193,7 @@ public static class Menu
         menu.AddMenuOption(player, (p, o) =>
         {
             o.PostSelectAction = PostSelectAction.Nothing;
-            
+
             if (Instance.InspectList.ContainsValue(p))
                 return;
 

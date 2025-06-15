@@ -15,7 +15,7 @@ public class Item_Open : IItemModule
         "func_door_rotating",
         "prop_door_rotating"
     ];
-    
+
     public bool Equipable => false;
     public bool? RequiresAlive => null;
 

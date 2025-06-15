@@ -10,7 +10,7 @@ public class Item_Weapon : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => true;
-    
+
     public void OnPluginStart() { }
 
     public void OnMapStart() { }
