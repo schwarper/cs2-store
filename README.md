@@ -8,8 +8,8 @@ Please use the official version here and contribute via pull requests if you wis
 - [Installation](https://github.com/schwarper/cs2-store?tab=readme-ov-file#-installation)
 - [Installation (Video)](https://github.com/schwarper/cs2-store?tab=readme-ov-file#-installation-video)
 - [Modules](https://github.com/schwarper/cs2-store?tab=readme-ov-file#-installation-video)
-- [Api Example](https://github.com/schwarper/cs2-store?tab=readme-ov-file#api-example)
-- [Menu style](https://github.com/schwarper/cs2-store?tab=readme-ov-file#menu-style)
+- [Api Example](https://github.com/schwarper/cs2-store?tab=readme-ov-file#%EF%B8%8F-api-example)
+- [Menu Style](https://github.com/schwarper/cs2-store?tab=readme-ov-file#-menu-style)
 ---
 
 ## 📦 Installation  
