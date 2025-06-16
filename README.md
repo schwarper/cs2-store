@@ -5,6 +5,11 @@ A store plugin designed to enhance your gameplay by providing a dynamic credit s
 Some companies modify this plugin, remove the original author name, and claim it as their own. This is unethical and against open-source principles.
 Please use the official version here and contribute via pull requests if you wish to help improve it.
 
+- [Installation](https://github.com/schwarper/cs2-store?tab=readme-ov-file#-installation)
+- [Installation (Video)](https://github.com/schwarper/cs2-store?tab=readme-ov-file#-installation-video)
+- [Modules](https://github.com/schwarper/cs2-store?tab=readme-ov-file#-installation-video)
+- [Api Example](https://github.com/schwarper/cs2-store?tab=readme-ov-file#api-example)
+- [Menu style](https://github.com/schwarper/cs2-store?tab=readme-ov-file#menu-style)
 ---
 
 ## 📦 Installation  
@@ -36,11 +41,16 @@ To activate:
 
 #### 🎥 Installation Video  
 Watch the step-by-step guide:  
-[https://files.catbox.moe/uzadjw.mp4](https://files.catbox.moe/uzadjw.mp4)
+[Installation Guide](https://files.catbox.moe/uzadjw.mp4)
+
 
 ---
 
-## Api Example
+## 🎲 Modules
+You can find the offical modules:  
+[CS2 Store Modules](https://github.com/schwarper/cs2-store-modules)
+
+## 🕸️ Api Example
 - Give player an item or credits
 ```csharp
 public class TestModule : BasePlugin
@@ -128,3 +138,23 @@ public class TestModule : BasePlugin, IItemModule
     }
 }
 ```
+## 🔖 Menu Style
+**CenterHtmlMenu**
+
+![image](https://files.catbox.moe/gz8x5e.png)
+
+**ChatMenu**
+
+![image](https://files.catbox.moe/85ix04.png)
+
+**ConsoleMenu**
+
+![image](https://files.catbox.moe/m47qri.png)
+
+**ScreenMenu**
+
+![image](https://files.catbox.moe/b5ulzj.png)
+
+**WasdMenu**
+
+![image](https://files.catbox.moe/kogxzp.png)
