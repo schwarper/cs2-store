@@ -94,9 +94,12 @@ public static class Command
     [CommandHelper(minArgs: 2, "<name, #userid> <credits>", whoCanExecute: CommandUsage.CLIENT_ONLY)]
     public static void Command_Gift(CCSPlayerController? player, CommandInfo command)
     {
-        if (player == null) return;
+        if (player == null)
+            return;
 
-        if (Instance.GlobalGiftTimeout[player] > Server.CurrentTime)
+
+        float currentTime = Server.CurrentTime;
+        if (Instance.GlobalGiftTimeout.TryGetValue(player, out float time) && time > currentTime)
         {
             command.ReplyToCommand($"{Config.Settings.Tag}{Instance.Localizer["Gift timeout", Math.Ceiling(Instance.GlobalGiftTimeout[player] - Server.CurrentTime)]}");
             return;
@@ -135,7 +138,7 @@ public static class Command
         Credits.Give(player, -value);
         Credits.Give(targetPlayer, value);
 
-        Instance.GlobalGiftTimeout[player] = Server.CurrentTime + 5.0f;
+        Instance.GlobalGiftTimeout[player] = currentTime + 5.0f;
 
         player.PrintToChatMessage("css_gift<player>", targetPlayer.PlayerName, value);
         targetPlayer.PrintToChatMessage("css_gift<target>", player.PlayerName, value);
