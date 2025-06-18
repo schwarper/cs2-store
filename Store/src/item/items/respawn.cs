@@ -5,7 +5,7 @@ using static StoreApi.Store;
 namespace Store;
 
 [StoreItemType("respawn")]
-public class Item_Respawn : IItemModule
+public class ItemRespawn : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => false;

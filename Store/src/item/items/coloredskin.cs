@@ -1,19 +1,19 @@
+using System.Drawing;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using Store.Extension;
-using System.Drawing;
 using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
 [StoreItemType("coloredskin")]
-public class Item_ColoredSkin : IItemModule
+public class ItemColoredSkin : IItemModule
 {
     public bool Equipable => true;
     public bool? RequiresAlive => null;
 
-    private static bool _coloredSkinExists = false;
+    private static bool _coloredSkinExists;
 
     public void OnPluginStart()
     {
@@ -39,10 +39,10 @@ public class Item_ColoredSkin : IItemModule
     {
         if (!_coloredSkinExists) return;
 
-        Store_Equipment? playerColoredSkin = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "coloredskin");
+        StoreEquipment? playerColoredSkin = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamId == player.SteamID && p.Type == "coloredskin");
         if (playerColoredSkin == null) return;
 
-        Dictionary<string, string>? itemData = Item.GetItem(playerColoredSkin.UniqueId);
+        var itemData = Item.GetItem(playerColoredSkin.UniqueId);
         if (itemData == null) return;
 
         Color color;
@@ -55,7 +55,7 @@ public class Item_ColoredSkin : IItemModule
         else
         {
             Array knownColors = Enum.GetValues(typeof(KnownColor));
-            KnownColor? randomColorName = (KnownColor?)knownColors.GetValue(Instance.Random.Next(knownColors.Length));
+            var randomColorName = (KnownColor?)knownColors.GetValue(Instance.Random.Next(knownColors.Length));
 
             if (!randomColorName.HasValue) return;
 

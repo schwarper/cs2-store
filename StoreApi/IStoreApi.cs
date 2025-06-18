@@ -1,6 +1,6 @@
-﻿using CounterStrikeSharp.API.Core;
+﻿using System.Reflection;
+using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
-using System.Reflection;
 using static StoreApi.Store;
 
 namespace StoreApi;
@@ -31,7 +31,7 @@ public interface IStoreApi
     bool IsPlayerVip(CCSPlayerController player);
     Dictionary<string, string>? GetItem(string uniqueId);
     List<KeyValuePair<string, Dictionary<string, string>>> GetItemsByType(string type);
-    List<Store_Item> GetPlayerItems(CCSPlayerController player, string? type);
-    List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type);
+    List<StoreItem> GetPlayerItems(CCSPlayerController player, string? type);
+    List<StoreEquipment> GetPlayerEquipments(CCSPlayerController player, string? type);
     void RegisterModules(Assembly assembly);
 }

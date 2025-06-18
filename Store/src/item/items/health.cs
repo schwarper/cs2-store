@@ -1,13 +1,13 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using Store.Extension;
-using static Store.Config_Config;
+using static Store.ConfigConfig;
 using static StoreApi.Store;
 
 namespace Store;
 
 [StoreItemType("health")]
-public class Item_Health : IItemModule
+public class ItemHealth : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => true;
@@ -23,28 +23,28 @@ public class Item_Health : IItemModule
         if (!int.TryParse(item["healthValue"], out int healthValue))
             return false;
 
-        if (player.PlayerPawn?.Value is not { } playerPawn)
+        if (player.PlayerPawn.Value is not { } playerPawn)
             return false;
 
         int currentHealth = playerPawn.GetHealth();
         int maxHealth = Config.Settings.MaxHealth;
         int pawnMaxHealth = playerPawn.MaxHealth;
 
-        if (maxHealth > 0 && currentHealth >= maxHealth)
-            return false;
-        else if (maxHealth == -1 && currentHealth >= pawnMaxHealth)
-            return false;
+        switch (maxHealth)
+        {
+            case > 0 when currentHealth >= maxHealth:
+            case -1 when currentHealth >= pawnMaxHealth:
+                return false;
+        }
 
         int newHealth = currentHealth + healthValue;
 
-        if (maxHealth > 0)
+        newHealth = maxHealth switch
         {
-            newHealth = Math.Min(newHealth, maxHealth);
-        }
-        else if (maxHealth == -1)
-        {
-            newHealth = Math.Min(newHealth, pawnMaxHealth);
-        }
+            > 0 => Math.Min(newHealth, maxHealth),
+            -1 => Math.Min(newHealth, pawnMaxHealth),
+            _ => newHealth
+        };
 
         player.SetHealth(newHealth);
         return true;

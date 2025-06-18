@@ -1,11 +1,11 @@
-﻿using CounterStrikeSharp.API.Core;
+﻿using System.Text.Json;
+using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Admin;
 using CS2MenuManager.API.Class;
 using CS2MenuManager.API.Enum;
 using CS2MenuManager.API.Interface;
-using System.Text.Json;
-using static Store.Config_Config;
+using static Store.ConfigConfig;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -21,12 +21,12 @@ public static class MenuBase
         Menu.DisplayStore(player, inventory);
     }
 
-    public static int GetSellingPrice(Dictionary<string, string> item, Store_Item playerItem)
+    public static int GetSellingPrice(Dictionary<string, string> item, StoreItem playerItem)
     {
         float sellRatio = Config.Settings.SellRatio;
         bool usePurchaseCredit = Config.Settings.SellUsePurchaseCredit;
 
-        int purchasePrice = usePurchaseCredit && playerItem != null ? playerItem.Price : int.Parse(item["price"]);
+        int purchasePrice = usePurchaseCredit ? playerItem.Price : int.Parse(item["price"]);
         return (int)(purchasePrice * sellRatio);
     }
 
@@ -57,10 +57,10 @@ public static class MenuBase
         {
             case "playerskin":
                 item.TryGetValue("skin", out string? skn);
-                Item_PlayerSkin.Inspect(player, item["model"], skn);
+                ItemPlayerSkin.Inspect(player, item["model"], skn);
                 break;
             case "customweapon":
-                Item_CustomWeapon.Inspect(player, item["viewmodel"], item["weapon"]);
+                ItemCustomWeapon.Inspect(player, item["viewmodel"], item["weapon"]);
                 break;
         }
     }

@@ -6,7 +6,7 @@ using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
 using Store.Extension;
 using static CounterStrikeSharp.API.Core.Listeners;
-using static Store.Config_Config;
+using static Store.ConfigConfig;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -44,11 +44,11 @@ public static class Event
 
     private static void StartCreditsTimer()
     {
-        if (!Config.Credits.TryGetValue("default", out Config_Credits? defaultCredits) ||
+        if (!Config.Credits.TryGetValue("default", out ConfigCredits? defaultCredits) ||
             defaultCredits.IntervalActiveInActive <= 0)
             return;
 
-        List<KeyValuePair<string, Config_Credits>> orderedCredits = Config.Credits
+        var orderedCredits = Config.Credits
             .Where(x => x.Key != "default" && (x.Value.AmountActive > 0 || x.Value.AmountInActive > 0))
             .ToList();
 
@@ -57,7 +57,7 @@ public static class Event
             if (GameRules.IgnoreWarmUp())
                 return;
 
-            List<CCSPlayerController> players = Utilities.GetPlayers()
+            var players = Utilities.GetPlayers()
                 .Where(p => !p.IsBot)
                 .ToList();
 
@@ -93,7 +93,7 @@ public static class Event
     }
 
 
-    public static void OnMapStart(string mapname)
+    private static void OnMapStart(string mapname)
     {
         foreach (var module in ItemModuleManager.Modules)
         {
@@ -101,9 +101,9 @@ public static class Event
         }
     }
 
-    public static void OnServerPrecacheResources(ResourceManifest manifest)
+    private static void OnServerPrecacheResources(ResourceManifest manifest)
     {
-        foreach (string? model in Config.DefaultModels.CounterTerrorist.Concat(Config.DefaultModels.Terrorist))
+        foreach (string model in Config.DefaultModels.CounterTerrorist.Concat(Config.DefaultModels.Terrorist))
         {
             manifest.AddResource(model);
         }
@@ -114,15 +114,13 @@ public static class Event
         }
     }
 
-    public static void OnTick()
+    private static void OnTick()
     {
-        List<CCSPlayerController> players = Utilities.GetPlayers();
+        var players = Utilities.GetPlayers();
 
-        foreach (CCSPlayerController player in players)
+        foreach (CCSPlayerController player in players.Where(player => player.PawnIsAlive))
         {
-            if (!player.PawnIsAlive) continue;
-
-            Item_Bunnyhop.OnTick(player);
+            ItemBunnyhop.OnTick(player);
         }
 
         Instance.GlobalTickrate++;
@@ -133,16 +131,16 @@ public static class Event
 
         foreach (CCSPlayerController player in players)
         {
-            Item_Trail.OnTick(player);
-            Item_ColoredSkin.OnTick(player);
+            ItemTrail.OnTick(player);
+            ItemColoredSkin.OnTick(player);
         }
     }
 
-    public static void OnEntityCreated(CEntityInstance entity)
+    private static void OnEntityCreated(CEntityInstance entity)
     {
-        Item_Smoke.OnEntityCreated(entity);
-        Item_GrenadeTrail.OnEntityCreated(entity);
-        Item_CustomWeapon.OnEntityCreated(entity);
+        ItemSmoke.OnEntityCreated(entity);
+        ItemGrenadeTrail.OnEntityCreated(entity);
+        ItemCustomWeapon.OnEntityCreated(entity);
     }
 
     private static void OnClientAuthorized(int playerSlot, SteamID steamId)
@@ -154,13 +152,13 @@ public static class Event
         Database.LoadPlayer(player);
     }
 
-    public static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
+    private static HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
         Item.RemoveExpiredItems();
         return HookResult.Continue;
     }
 
-    public static HookResult OnPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
+    private static HookResult OnPlayerConnectFull(EventPlayerConnectFull @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
 
@@ -178,13 +176,13 @@ public static class Event
         return HookResult.Continue;
     }
 
-    public static HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
+    private static HookResult OnPlayerDisconnect(EventPlayerDisconnect @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
 
         if (player == null) return HookResult.Continue;
 
-        Item_Trail.HideTrailPlayerList.Remove(player);
+        ItemTrail.HideTrailPlayerList.Remove(player);
 
         if (Instance.GlobalDictionaryPlayer.TryGetValue(player, out PlayerTimer? value))
         {
@@ -193,15 +191,15 @@ public static class Event
 
         Database.SavePlayer(player);
 
-        Instance.GlobalStorePlayers.RemoveAll(p => p.SteamID == player.SteamID);
-        Instance.GlobalStorePlayerItems.RemoveAll(i => i.SteamID == player.SteamID);
-        Instance.GlobalStorePlayerEquipments.RemoveAll(e => e.SteamID == player.SteamID);
+        Instance.GlobalStorePlayers.RemoveAll(p => p.SteamId == player.SteamID);
+        Instance.GlobalStorePlayerItems.RemoveAll(i => i.SteamId == player.SteamID);
+        Instance.GlobalStorePlayerEquipments.RemoveAll(e => e.SteamId == player.SteamID);
         Instance.GlobalGiftTimeout.Remove(player);
 
         return HookResult.Continue;
     }
 
-    public static HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
+    private static HookResult OnPlayerDeath(EventPlayerDeath @event, GameEventInfo info)
     {
         if (GameRules.IgnoreWarmUp()) return HookResult.Continue;
 
@@ -214,7 +212,7 @@ public static class Event
 
         int amountKill = 0;
 
-        KeyValuePair<string, Config_Credits> credits = Config.Credits
+        var credits = Config.Credits
             .Where(x => x.Key != "default" && x.Value.AmountKill > 0)
             .FirstOrDefault(x => AdminManager.PlayerHasPermissions(attacker, x.Key));
 
@@ -223,7 +221,7 @@ public static class Event
             amountKill = credits.Value.AmountKill;
         }
 
-        if (amountKill <= 0 && Config.Credits.TryGetValue("default", out Config_Credits? defaultCredits))
+        if (amountKill <= 0 && Config.Credits.TryGetValue("default", out ConfigCredits? defaultCredits))
         {
             amountKill = defaultCredits.AmountKill;
         }
@@ -237,21 +235,17 @@ public static class Event
         return HookResult.Continue;
     }
 
-    public static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
+    private static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
 
         if (player == null) return HookResult.Continue;
 
-        List<Store_Equipment> currentItems = Instance.GlobalStorePlayerEquipments.FindAll(p => p.SteamID == player.SteamID);
+        var currentItems = Instance.GlobalStorePlayerEquipments.FindAll(p => p.SteamId == player.SteamID);
 
-        foreach (Store_Equipment currentItem in currentItems)
+        foreach (var item in currentItems.Select(currentItem => Item.GetItem(currentItem.UniqueId)).OfType<Dictionary<string, string>>())
         {
-            Dictionary<string, string>? item = Item.GetItem(currentItem.UniqueId);
-
-            if (item == null) continue;
-
-            if (item.TryGetValue("team", out string? teamStr) && int.TryParse(teamStr, out int team) && team >= 1 && team <= 3 && @event.Team != team)
+            if (item.TryGetValue("team", out string? teamStr) && int.TryParse(teamStr, out int team) && team is >= 1 and <= 3 && @event.Team != team)
             {
                 Item.Unequip(player, item, true);
             }
@@ -260,9 +254,9 @@ public static class Event
         return HookResult.Continue;
     }
 
-    public static void OnCheckTransmit(CCheckTransmitInfoList infoList)
+    private static void OnCheckTransmit(CCheckTransmitInfoList infoList)
     {
-        if (Instance.InspectList.Count == 0 && Item_Trail.TrailList.Count == 0)
+        if (Instance.InspectList.Count == 0 && ItemTrail.TrailList.Count == 0)
             return;
 
         foreach ((CCheckTransmitInfo info, CCSPlayerController? player) in infoList)
@@ -272,16 +266,16 @@ public static class Event
 
             ulong playerSteamId = player.SteamID;
 
-            foreach ((CBaseModelEntity? entity, CCSPlayerController? owner) in Instance.InspectList)
+            foreach ((CBaseModelEntity entity, CCSPlayerController owner) in Instance.InspectList)
             {
                 if (owner.IsValid && owner.SteamID != playerSteamId)
                     info.TransmitEntities.Remove(entity);
             }
 
-            if (!Item_Trail.HideTrailPlayerList.Contains(player))
+            if (!ItemTrail.HideTrailPlayerList.Contains(player))
                 continue;
 
-            foreach ((CEntityInstance? entity, CCSPlayerController? owner) in Item_Trail.TrailList)
+            foreach ((CEntityInstance entity, CCSPlayerController owner) in ItemTrail.TrailList)
             {
                 if (owner.IsValid && owner.SteamID != playerSteamId)
                     info.TransmitEntities.Remove(entity);

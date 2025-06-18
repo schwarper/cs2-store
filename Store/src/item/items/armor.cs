@@ -1,13 +1,13 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using Store.Extension;
-using static Store.Config_Config;
+using static Store.ConfigConfig;
 using static StoreApi.Store;
 
 namespace Store;
 
 [StoreItemType("armor")]
-public class Item_Armor : IItemModule
+public class ItemArmor : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => true;
@@ -23,7 +23,7 @@ public class Item_Armor : IItemModule
         if (!int.TryParse(item["armorValue"], out int armor))
             return false;
 
-        if (player.PlayerPawn?.Value is not { } playerPawn)
+        if (player.PlayerPawn.Value is not { } playerPawn)
             return false;
 
         int maxArmor = Config.Settings.MaxArmor;

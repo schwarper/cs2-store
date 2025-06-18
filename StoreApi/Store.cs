@@ -6,20 +6,20 @@ namespace StoreApi;
 
 public abstract class Store
 {
-    public class Store_Player
+    public class StorePlayer
     {
-        public required ulong SteamID { get; set; }
+        public required ulong SteamId { get; set; }
         public required string PlayerName { get; set; }
         public int Credits { get; set; }
         public int OriginalCredits { get; set; }
         public DateTime DateOfJoin { get; set; }
         public DateTime DateOfLastJoin { get; set; }
-        public bool? bPlayerIsLoaded;
+        public bool? BPlayerIsLoaded;
     }
 
-    public class Store_Item
+    public class StoreItem
     {
-        public required ulong SteamID { get; set; }
+        public required ulong SteamId { get; set; }
         public int Price { get; set; }
         public required string Type { get; set; }
         public required string UniqueId { get; set; }
@@ -27,15 +27,15 @@ public abstract class Store
         public DateTime DateOfExpiration { get; set; }
     }
 
-    public class Store_Equipment
+    public class StoreEquipment
     {
-        public required ulong SteamID { get; set; }
+        public required ulong SteamId { get; set; }
         public required string Type { get; set; }
         public required string UniqueId { get; set; }
         public int Slot { get; set; }
     }
 
-    public class Store_Item_Types
+    public class StoreItemTypes
     {
         public required string Type;
         public required Action MapStart;

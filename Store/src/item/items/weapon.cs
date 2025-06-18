@@ -6,7 +6,7 @@ using static StoreApi.Store;
 namespace Store;
 
 [StoreItemType("weapon")]
-public class Item_Weapon : IItemModule
+public class ItemWeapon : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => true;

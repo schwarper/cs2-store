@@ -1,15 +1,15 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Cvars;
-using static Store.Config_Config;
+using static Store.ConfigConfig;
 
 namespace Store;
 
 public static class GameRules
 {
     private static CCSGameRulesProxy? _gameRulesProxy;
-    private static readonly ConVar _mpHalftime = ConVar.Find("mp_halftime")!;
-    private static readonly ConVar _mpMaxrounds = ConVar.Find("mp_maxrounds")!;
+    private static readonly ConVar MpHalftime = ConVar.Find("mp_halftime")!;
+    private static readonly ConVar MpMaxrounds = ConVar.Find("mp_maxrounds")!;
 
     public static bool IgnoreWarmUp()
     {
@@ -28,8 +28,8 @@ public static class GameRules
             _gameRulesProxy = Utilities.FindAllEntitiesByDesignerName<CCSGameRulesProxy>("cs_gamerules").FirstOrDefault();
         }
 
-        bool isHalftime = _mpHalftime.GetPrimitiveValue<bool>();
-        int maxRounds = _mpMaxrounds.GetPrimitiveValue<int>();
+        bool isHalftime = MpHalftime.GetPrimitiveValue<bool>();
+        int maxRounds = MpMaxrounds.GetPrimitiveValue<int>();
 
         return _gameRulesProxy?.GameRules?.TotalRoundsPlayed == 0 ||
                (isHalftime && maxRounds / 2 == _gameRulesProxy?.GameRules?.TotalRoundsPlayed) ||

@@ -1,10 +1,10 @@
+using System.Drawing;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Timers;
 using CounterStrikeSharp.API.Modules.Utils;
-using System.Drawing;
-using static Store.Config_Config;
+using static Store.ConfigConfig;
 using static Store.Store;
 
 namespace Store.Extension;
@@ -18,7 +18,7 @@ public static class PlayerExtensions
 
     public static void ChangeModelDelay(this CCSPlayerController player, string model, bool disableLeg, int slotNumber, string? skin)
     {
-        float applyDelay = Math.Max(Config.Settings.ApplyPlayerskinDelay, 0.1f);
+        float applyDelay = Math.Max(Config.Settings.ApplyPlayerSkinDelay, 0.1f);
 
         Instance.AddTimer(applyDelay, () =>
         {
@@ -78,7 +78,7 @@ public static class PlayerExtensions
 
     public static void SetHealth(this CCSPlayerController player, int health)
     {
-        if (player.PlayerPawn?.Value is not { } pawn) return;
+        if (player.PlayerPawn.Value is not { } pawn) return;
 
         player.Health = health;
         pawn.Health = health;

@@ -1,32 +1,32 @@
-﻿using CounterStrikeSharp.API;
+﻿using System.Reflection;
+using System.Text.Json;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Capabilities;
 using CS2MenuManager.API.Class;
 using Store.Extension;
 using StoreApi;
-using System.Reflection;
-using System.Text.Json;
 using static StoreApi.Store;
 
 namespace Store;
 
-public class Store : BasePlugin, IPluginConfig<Item_Config>
+public class Store : BasePlugin, IPluginConfig<ItemConfig>
 {
     public override string ModuleName => "Store";
-    public override string ModuleVersion => "v16";
+    public override string ModuleVersion => "v17";
     public override string ModuleAuthor => "schwarper";
 
-    public Item_Config Config { get; set; } = new();
-    public List<Store_Player> GlobalStorePlayers { get; set; } = [];
-    public List<Store_Item> GlobalStorePlayerItems { get; set; } = [];
-    public List<Store_Equipment> GlobalStorePlayerEquipments { get; set; } = [];
+    public ItemConfig Config { get; set; } = new();
+    public List<StorePlayer> GlobalStorePlayers { get; set; } = [];
+    public List<StoreItem> GlobalStorePlayerItems { get; set; } = [];
+    public List<StoreEquipment> GlobalStorePlayerEquipments { get; set; } = [];
     public Dictionary<CCSPlayerController, PlayerTimer> GlobalDictionaryPlayer { get; set; } = [];
-    public int GlobalTickrate { get; set; } = 0;
-    public static Store Instance { get; set; } = new();
+    public int GlobalTickrate { get; set; }
+    public static Store Instance { get; private set; } = new();
     public Random Random { get; set; } = new();
     public Dictionary<CCSPlayerController, float> GlobalGiftTimeout { get; set; } = [];
-    public static StoreAPI Api { get; set; } = new();
-    public Dictionary<string, Dictionary<string, string>> Items { get; set; } = [];
+    public static StoreApi Api { get; set; } = new();
+    public Dictionary<string, Dictionary<string, string>> Items { get; private set; } = [];
     public Dictionary<CBaseModelEntity, CCSPlayerController> InspectList { get; set; } = [];
 
     public override void Load(bool hotReload)
@@ -39,7 +39,7 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
 
         if (hotReload)
         {
-            List<CCSPlayerController> players = Utilities.GetPlayers();
+            var players = Utilities.GetPlayers();
             foreach (CCSPlayerController player in players)
             {
                 if (player.IsBot)
@@ -54,9 +54,9 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
     public override void Unload(bool hotReload)
     {
         Event.Unload();
-        Item_Tags.OnPluginEnd();
+        ItemTags.OnPluginEnd();
 
-        List<CCSPlayerController> players = Utilities.GetPlayers();
+        var players = Utilities.GetPlayers();
         foreach (CCSPlayerController player in players)
         {
             if (player.IsBot)
@@ -71,9 +71,9 @@ public class Store : BasePlugin, IPluginConfig<Item_Config>
         ItemModuleManager.RegisterModules(Assembly.GetExecutingAssembly());
     }
 
-    public void OnConfigParsed(Item_Config config)
+    public void OnConfigParsed(ItemConfig config)
     {
-        Config_Config.Load();
+        ConfigConfig.Load();
 
         if (!config.Items.ValueKind.IsValueKindObject())
             throw new JsonException();

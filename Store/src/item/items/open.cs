@@ -6,7 +6,7 @@ using static StoreApi.Store;
 namespace Store;
 
 [StoreItemType("open")]
-public class Item_Open : IItemModule
+public class ItemOpen : IItemModule
 {
     private static readonly string[] DoorNames =
     [
@@ -29,7 +29,7 @@ public class Item_Open : IItemModule
     {
         foreach (string doorName in DoorNames)
         {
-            IEnumerable<CBaseEntity> doors = Utilities.FindAllEntitiesByDesignerName<CBaseEntity>(doorName);
+            var doors = Utilities.FindAllEntitiesByDesignerName<CBaseEntity>(doorName);
             foreach (CBaseEntity door in doors)
             {
                 door.AcceptInput("Open");

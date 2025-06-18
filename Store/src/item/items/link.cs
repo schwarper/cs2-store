@@ -5,7 +5,7 @@ using static StoreApi.Store;
 namespace Store;
 
 [StoreItemType("link")]
-public class Item_Link : IItemModule
+public class ItemLink : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => null;

@@ -1,11 +1,11 @@
+using System.Reflection;
 using CounterStrikeSharp.API.Core;
 using StoreApi;
-using System.Reflection;
 using static StoreApi.Store;
 
 namespace Store;
 
-public class StoreAPI : IStoreApi
+public class StoreApi : IStoreApi
 {
     public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerPurchaseItem;
     public event Action<CCSPlayerController, Dictionary<string, string>>? OnPlayerEquipItem;
@@ -117,12 +117,12 @@ public class StoreAPI : IStoreApi
         return Item.GetItemsByType(type);
     }
 
-    public List<Store_Item> GetPlayerItems(CCSPlayerController player, string? type)
+    public List<StoreItem> GetPlayerItems(CCSPlayerController player, string? type)
     {
         return Item.GetPlayerItems(player, type);
     }
 
-    public List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type)
+    public List<StoreEquipment> GetPlayerEquipments(CCSPlayerController player, string? type)
     {
         return Item.GetPlayerEquipments(player, type);
     }

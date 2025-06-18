@@ -4,7 +4,7 @@ using CounterStrikeSharp.API.Modules.Admin;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
-using static Store.Config_Config;
+using static Store.ConfigConfig;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -30,7 +30,7 @@ public static class Database
         });
     }
 
-    public static async Task CreateDatabaseAsync(Config_DatabaseConnection config)
+    public static async Task CreateDatabaseAsync(ConfigDatabaseConnection config)
     {
         MySqlConnectionStringBuilder builder = new()
         {
@@ -53,12 +53,12 @@ public static class Database
 
         try
         {
-            string store_players = config.StorePlayersName;
-            string store_items = config.StoreItemsName;
-            string store_equipments = config.StoreEquipments;
+            string storePlayers = config.StorePlayersName;
+            string storeİtems = config.StoreItemsName;
+            string storeEquipments = config.StoreEquipments;
 
             await connection.ExecuteAsync($@"
-                CREATE TABLE IF NOT EXISTS {store_players} (
+                CREATE TABLE IF NOT EXISTS {storePlayers} (
                     id INT NOT NULL AUTO_INCREMENT,
                     SteamID BIGINT UNSIGNED NOT NULL,
                     PlayerName VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
@@ -72,7 +72,7 @@ public static class Database
                 );", transaction: transaction);
 
             await connection.ExecuteAsync($@"
-                CREATE TABLE IF NOT EXISTS {store_items} (
+                CREATE TABLE IF NOT EXISTS {storeİtems} (
                     id INT NOT NULL AUTO_INCREMENT,
                     SteamID BIGINT UNSIGNED NOT NULL,
                     Price INT UNSIGNED NOT NULL,
@@ -84,7 +84,7 @@ public static class Database
                 );", transaction: transaction);
 
             await connection.ExecuteAsync($@"
-                CREATE TABLE IF NOT EXISTS {store_equipments} (
+                CREATE TABLE IF NOT EXISTS {storeEquipments} (
                     id INT NOT NULL AUTO_INCREMENT,
                     SteamID BIGINT UNSIGNED NOT NULL,
                     Type varchar(16) NOT NULL,
@@ -94,18 +94,18 @@ public static class Database
                 );", transaction: transaction);
 
             await connection.ExecuteAsync($@"
-                DELETE FROM {store_equipments}
+                DELETE FROM {storeEquipments}
                     WHERE NOT EXISTS (
-                        SELECT 1 FROM {store_items}
-                        WHERE {store_items}.Type = {store_equipments}.Type
-                        AND {store_items}.UniqueId = {store_equipments}.UniqueId
-                        AND {store_items}.SteamID = {store_equipments}.SteamID
+                        SELECT 1 FROM {storeİtems}
+                        WHERE {storeİtems}.Type = {storeEquipments}.Type
+                        AND {storeİtems}.UniqueId = {storeEquipments}.UniqueId
+                        AND {storeİtems}.SteamID = {storeEquipments}.SteamID
                     )
                     AND EXISTS (
                         SELECT 1 
-                        FROM {store_players}
-                        WHERE {store_players}.SteamID = {store_equipments}.SteamID
-                        AND {store_players}.Vip = FALSE
+                        FROM {storePlayers}
+                        WHERE {storePlayers}.SteamID = {storeEquipments}.SteamID
+                        AND {storePlayers}.Vip = FALSE
                     )
                 ;", transaction: transaction);
 
@@ -145,15 +145,15 @@ public static class Database
         Credits.SetOriginal(player, -1);
         Credits.Set(player, -1);
         ulong steamid = player.SteamID;
-        string PlayerName = player.PlayerName;
+        string playerName = player.PlayerName;
 
         Task.Run(async () =>
         {
-            await LoadPlayerAsync(player, steamid, PlayerName);
+            await LoadPlayerAsync(player, steamid, playerName);
         });
     }
 
-    public static async Task LoadPlayerAsync(CCSPlayerController player, ulong SteamID, string PlayerName)
+    public static async Task LoadPlayerAsync(CCSPlayerController player, ulong steamId, string playerName)
     {
         async Task LoadDataAsync(int attempt = 1)
         {
@@ -168,37 +168,37 @@ public static class Database
                 ,
                 new
                 {
-                    SteamID,
+                    SteamID = steamId,
                     DateTime.Now
                 });
 
-                Store_Player? playerData = await multiQuery.ReadFirstOrDefaultAsync<Store_Player>();
+                StorePlayer? playerData = await multiQuery.ReadFirstOrDefaultAsync<StorePlayer>();
 
-                IEnumerable<Store_Item> items = await multiQuery.ReadAsync<Store_Item>();
+                var items = await multiQuery.ReadAsync<StoreItem>();
 
-                IEnumerable<Store_Equipment> equipments = await multiQuery.ReadAsync<Store_Equipment>();
+                var equipments = await multiQuery.ReadAsync<StoreEquipment>();
 
                 Server.NextFrame(() =>
                 {
                     if (playerData == null)
                     {
-                        Store_Player newPlayer = new()
+                        StorePlayer newPlayer = new()
                         {
-                            SteamID = SteamID,
-                            PlayerName = PlayerName,
+                            SteamId = steamId,
+                            PlayerName = playerName,
                             Credits = Config.Credits["default"].Start,
                             OriginalCredits = Config.Credits["default"].Start,
                             DateOfJoin = DateTime.Now,
                             DateOfLastJoin = DateTime.Now,
-                            bPlayerIsLoaded = true,
+                            BPlayerIsLoaded = true,
                         };
 
                         Instance.GlobalStorePlayers.Add(newPlayer);
-                        InsertNewPlayer(SteamID, PlayerName);
+                        InsertNewPlayer(steamId, playerName);
                     }
                     else
                     {
-                        Store_Player? existingPlayer = Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == playerData.SteamID);
+                        StorePlayer? existingPlayer = Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamId == playerData.SteamId);
 
                         if (existingPlayer != null)
                         {
@@ -207,7 +207,7 @@ public static class Database
                             existingPlayer.OriginalCredits = existingPlayer.Credits;
                             existingPlayer.DateOfJoin = playerData.DateOfJoin;
                             existingPlayer.DateOfLastJoin = playerData.DateOfLastJoin;
-                            existingPlayer.bPlayerIsLoaded = true;
+                            existingPlayer.BPlayerIsLoaded = true;
                         }
                         else
                         {
@@ -217,9 +217,9 @@ public static class Database
                         }
                     }
 
-                    foreach (Store_Item newItem in items)
+                    foreach (StoreItem newItem in items)
                     {
-                        Store_Item? existingItem = Instance.GlobalStorePlayerItems.FirstOrDefault(i => i.SteamID == newItem.SteamID && i.UniqueId == newItem.UniqueId && i.Type == newItem.Type);
+                        StoreItem? existingItem = Instance.GlobalStorePlayerItems.FirstOrDefault(i => i.SteamId == newItem.SteamId && i.UniqueId == newItem.UniqueId && i.Type == newItem.Type);
 
                         if (existingItem != null)
                         {
@@ -232,9 +232,9 @@ public static class Database
                         }
                     }
 
-                    foreach (Store_Equipment newEquipment in equipments)
+                    foreach (StoreEquipment newEquipment in equipments)
                     {
-                        Store_Equipment? existingEquipment = Instance.GlobalStorePlayerEquipments.FirstOrDefault(e => e.SteamID == newEquipment.SteamID && e.UniqueId == newEquipment.UniqueId);
+                        StoreEquipment? existingEquipment = Instance.GlobalStorePlayerEquipments.FirstOrDefault(e => e.SteamId == newEquipment.SteamId && e.UniqueId == newEquipment.UniqueId);
                         if (existingEquipment != null)
                         {
                             existingEquipment.Type = newEquipment.Type;
@@ -249,11 +249,11 @@ public static class Database
             }
             catch (Exception ex)
             {
-                Instance.Logger.LogError("Error load player {SteamID} attempt {attempt}: ex:{ErrorMessage}", SteamID, attempt, ex.Message);
+                Instance.Logger.LogError("Error load player {SteamID} attempt {attempt}: ex:{ErrorMessage}", steamId, attempt, ex.Message);
 
                 if (attempt < 3)
                 {
-                    Instance.Logger.LogInformation("Retrying to load player {SteamID} (attempt: {attempt})", SteamID, attempt + 1);
+                    Instance.Logger.LogInformation("Retrying to load player {SteamID} (attempt: {attempt})", steamId, attempt + 1);
                     await Task.Delay(5000);
                     await LoadDataAsync(attempt + 1);
                 }
@@ -268,7 +268,7 @@ public static class Database
         await LoadDataAsync();
     }
 
-    public static void InsertNewPlayer(ulong SteamId, string PlayerName)
+    public static void InsertNewPlayer(ulong steamId, string playerName)
     {
         ExecuteAsync($@"
                 INSERT INTO {Config.DatabaseConnection.StorePlayersName} (
@@ -279,8 +279,8 @@ public static class Database
             ,
             new
             {
-                SteamId,
-                PlayerName,
+                SteamId = steamId,
+                PlayerName = playerName,
                 Credits = Config.Credits["default"].Start,
                 DateOfJoin = DateTime.Now,
                 DateOfLastJoin = DateTime.Now
@@ -289,15 +289,15 @@ public static class Database
 
     public static void SavePlayer(CCSPlayerController player)
     {
-        int PlayerCredits = Credits.Get(player);
-        int PlayerOriginalCredits = Credits.GetOriginal(player);
+        int playerCredits = Credits.Get(player);
+        int playerOriginalCredits = Credits.GetOriginal(player);
 
-        if (PlayerOriginalCredits == -1 || PlayerCredits == -1)
+        if (playerOriginalCredits == -1 || playerCredits == -1)
         {
             return;
         }
 
-        int SetCredits = PlayerCredits - PlayerOriginalCredits;
+        int setCredits = playerCredits - playerOriginalCredits;
 
         ExecuteAsync($@"
                 UPDATE
@@ -313,17 +313,17 @@ public static class Database
             new
             {
                 player.PlayerName,
-                SetCredits,
+                SetCredits = setCredits,
                 DateOfJoin = DateTime.Now,
                 DateOfLastJoin = DateTime.Now,
                 SteamId = player.SteamID,
             });
 
-        Credits.SetOriginal(player, PlayerCredits);
+        Credits.SetOriginal(player, playerCredits);
 
     }
 
-    public static void SavePlayerItem(CCSPlayerController player, Store_Item item)
+    public static void SavePlayerItem(CCSPlayerController player, StoreItem item)
     {
         ExecuteAsync($@"
                 INSERT INTO {Config.DatabaseConnection.StoreItemsName} (
@@ -343,7 +343,7 @@ public static class Database
                 item.DateOfExpiration
             });
     }
-    public static void RemovePlayerItem(CCSPlayerController player, Store_Item item)
+    public static void RemovePlayerItem(CCSPlayerController player, StoreItem item)
     {
         ExecuteAsync($@"
                 DELETE
@@ -359,7 +359,7 @@ public static class Database
                     item.UniqueId
                 });
     }
-    public static void SavePlayerEquipment(CCSPlayerController player, Store_Equipment item)
+    public static void SavePlayerEquipment(CCSPlayerController player, StoreEquipment item)
     {
         ExecuteAsync(@"
                 INSERT INTO " + Config.DatabaseConnection.StoreEquipments + @" (
@@ -377,7 +377,7 @@ public static class Database
                     item.Slot
                 });
     }
-    public static void RemovePlayerEquipment(CCSPlayerController player, string UniqueId)
+    public static void RemovePlayerEquipment(CCSPlayerController player, string uniqueId)
     {
         ExecuteAsync(@"
                     DELETE FROM " + Config.DatabaseConnection.StoreEquipments + @" WHERE SteamID = @SteamID AND UniqueId = @UniqueId;
@@ -385,8 +385,7 @@ public static class Database
             ,
             new
             {
-                player.SteamID,
-                UniqueId
+                player.SteamID, UniqueId = uniqueId
             });
     }
 

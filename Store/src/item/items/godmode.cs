@@ -1,14 +1,14 @@
+using System.Globalization;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
 using Store.Extension;
-using System.Globalization;
 using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
 [StoreItemType("godmode")]
-public class Item_Godmode : IItemModule
+public class ItemGodmode : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => true;
@@ -26,7 +26,7 @@ public class Item_Godmode : IItemModule
             return false;
         }
 
-        if (player.PlayerPawn?.Value is not { } playerPawn) return false;
+        if (player.PlayerPawn.Value is not { } playerPawn) return false;
 
         if (godmodeTimerValue > 0.0f)
         {

@@ -6,9 +6,9 @@ namespace Store;
 
 public static class Credits
 {
-    public static Store_Player? GetStorePlayer(CCSPlayerController player)
+    private static StorePlayer? GetStorePlayer(CCSPlayerController player)
     {
-        return Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamID == player.SteamID);
+        return Instance.GlobalStorePlayers.FirstOrDefault(p => p.SteamId == player.SteamID);
     }
 
     public static int Get(CCSPlayerController player)
@@ -23,7 +23,7 @@ public static class Credits
 
     public static int SetOriginal(CCSPlayerController player, int credits)
     {
-        Store_Player? storePlayer = GetStorePlayer(player);
+        StorePlayer? storePlayer = GetStorePlayer(player);
         if (storePlayer == null) return -1;
 
         storePlayer.OriginalCredits = credits;
@@ -32,7 +32,7 @@ public static class Credits
 
     public static int Set(CCSPlayerController player, int credits)
     {
-        Store_Player? storePlayer = GetStorePlayer(player);
+        StorePlayer? storePlayer = GetStorePlayer(player);
         if (storePlayer == null) return -1;
 
         storePlayer.Credits = credits;
@@ -41,7 +41,7 @@ public static class Credits
 
     public static int Give(CCSPlayerController player, int credits)
     {
-        Store_Player? storePlayer = GetStorePlayer(player);
+        StorePlayer? storePlayer = GetStorePlayer(player);
         if (storePlayer == null) return -1;
 
         storePlayer.Credits = Math.Max(storePlayer.Credits + credits, 0);

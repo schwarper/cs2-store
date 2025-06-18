@@ -1,21 +1,21 @@
-﻿using CounterStrikeSharp.API;
+﻿using System.Runtime.InteropServices;
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
 using Store.Extension;
-using System.Runtime.InteropServices;
 using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
 [StoreItemType("customweapon")]
-public class Item_CustomWeapon : IItemModule
+public abstract class ItemCustomWeapon : IItemModule
 {
     public bool Equipable => true;
     public bool? RequiresAlive => null;
 
-    private static bool _customWeaponExists = false;
+    private static bool _customWeaponExists;
     private enum EntityType
     {
         None,
@@ -25,25 +25,25 @@ public class Item_CustomWeapon : IItemModule
 
     public void OnPluginStart()
     {
-        if (Item.IsAnyItemExistInType("customweapon"))
+        if (!Item.IsAnyItemExistInType("customweapon"))
+            return;
+        
+        if (CoreConfig.FollowCS2ServerGuidelines)
         {
-            if (CoreConfig.FollowCS2ServerGuidelines)
-            {
-                throw new Exception("Cannot set or get 'CEconEntity::m_OriginalOwnerXuidLow' with \"FollowCS2ServerGuidelines\" option enabled.");
-            }
-
-            Instance.RegisterEventHandler<EventItemEquip>(OnItemEquip);
-            _customWeaponExists = true;
+            throw new Exception("Cannot set or get 'CEconEntity::m_OriginalOwnerXuidLow' with \"FollowCS2ServerGuidelines\" option enabled.");
         }
+
+        Instance.RegisterEventHandler<EventItemEquip>(OnItemEquip);
+        _customWeaponExists = true;
     }
 
     public void OnMapStart() { }
 
     public void OnServerPrecacheResources(ResourceManifest manifest)
     {
-        List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("customweapon");
+        var items = Item.GetItemsByType("customweapon");
 
-        foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
+        foreach (var item in items)
         {
             manifest.AddResource(item.Value["viewmodel"]);
 
@@ -83,13 +83,12 @@ public class Item_CustomWeapon : IItemModule
             return true;
         }
 
-        if (entity.DesignerName.EndsWith("_projectile"))
-        {
-            entityType = EntityType.Projectile;
-            return true;
-        }
+        if (!entity.DesignerName.EndsWith("_projectile"))
+            return false;
+        
+        entityType = EntityType.Projectile;
+        return true;
 
-        return false;
     }
 
     private static void ProcessEntity(CEntityInstance entity, EntityType entityType)
@@ -97,12 +96,12 @@ public class Item_CustomWeapon : IItemModule
         CCSPlayerController? player = GetPlayerFromEntity(entity, entityType);
         if (player == null) return;
 
-        List<StoreApi.Store.Store_Equipment> playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
+        var playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
         if (playerEquipments.Count == 0) return;
 
         string weaponDesignerName = GetWeaponDesignerName(entity, entityType);
 
-        foreach (StoreApi.Store.Store_Equipment equipment in playerEquipments)
+        foreach (StoreEquipment equipment in playerEquipments)
         {
             TryApplyEquipmentModel(entity, equipment, weaponDesignerName, entityType, player);
         }
@@ -114,7 +113,7 @@ public class Item_CustomWeapon : IItemModule
         {
             case EntityType.Weapon:
                 CBasePlayerWeapon weapon = new(entity.Handle);
-                if (weapon?.IsValid == true && weapon.OriginalOwnerXuidLow > 0)
+                if (weapon is { IsValid: true, OriginalOwnerXuidLow: > 0 })
                 {
                     return FindTarget.FindTargetFromWeapon(weapon);
                 }
@@ -122,7 +121,11 @@ public class Item_CustomWeapon : IItemModule
 
             case EntityType.Projectile:
                 CBaseCSGrenadeProjectile projectile = entity.As<CBaseCSGrenadeProjectile>();
-                return projectile?.OriginalThrower?.Value?.OriginalController.Value;
+                return projectile.OriginalThrower.Value?.OriginalController.Value;
+            case EntityType.None:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(entityType), entityType, null);
         }
 
         return null;
@@ -138,10 +141,10 @@ public class Item_CustomWeapon : IItemModule
         };
     }
 
-    private static void TryApplyEquipmentModel(CEntityInstance entity, StoreApi.Store.Store_Equipment equipment,
+    private static void TryApplyEquipmentModel(CEntityInstance entity, StoreEquipment equipment,
         string weaponDesignerName, EntityType entityType, CCSPlayerController player)
     {
-        Dictionary<string, string>? itemData = Item.GetItem(equipment.UniqueId);
+        var itemData = Item.GetItem(equipment.UniqueId);
         if (itemData == null || !weaponDesignerName.Contains(itemData["weapon"])) return;
 
         itemData.TryGetValue("worldmodel", out string? worldModel);
@@ -164,7 +167,7 @@ public class Item_CustomWeapon : IItemModule
         {
             case EntityType.Weapon:
                 CBasePlayerWeapon weapon = entity.As<CBasePlayerWeapon>();
-                if (weapon?.IsValid != true || weapon.OriginalOwnerXuidLow <= 0) return;
+                if (weapon.IsValid != true || weapon.OriginalOwnerXuidLow <= 0) return;
 
                 CBasePlayerWeapon? activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
                 Weapon.UpdateModel(player, weapon, viewModel, worldModel, weapon == activeWeapon);
@@ -172,30 +175,33 @@ public class Item_CustomWeapon : IItemModule
 
             case EntityType.Projectile:
                 CBaseCSGrenadeProjectile projectile = entity.As<CBaseCSGrenadeProjectile>();
-                if (projectile?.IsValid == true)
+                if (projectile.IsValid)
                 {
                     projectile.SetModel(worldModel);
                 }
                 break;
+            case EntityType.None:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(entityType), entityType, null);
         }
     }
 
-    public HookResult OnItemEquip(EventItemEquip @event, GameEventInfo info)
+    private static HookResult OnItemEquip(EventItemEquip @event, GameEventInfo info)
     {
         CCSPlayerController? player = @event.Userid;
         if (player == null) return HookResult.Continue;
 
         string? globalName = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value?.Globalname;
-        if (!string.IsNullOrEmpty(globalName))
-        {
-            string model = Weapon.GetFromGlobalName(globalName, Weapon.GlobalNameData.ViewModel);
-            Weapon.SetViewModel(player, model);
-        }
+        if (string.IsNullOrEmpty(globalName)) return HookResult.Continue;
+        
+        string model = Weapon.GetFromGlobalName(globalName, Weapon.GlobalNameData.ViewModel);
+        Weapon.SetViewModel(player, model);
 
         return HookResult.Continue;
     }
 
-    public class Weapon
+    public abstract class Weapon
     {
         public enum GlobalNameData
         {
@@ -232,12 +238,12 @@ public class Item_CustomWeapon : IItemModule
             };
         }
 
-        public static unsafe string GetViewModel(CCSPlayerController player)
+        public static string GetViewModel(CCSPlayerController player)
         {
             return ViewModel(player)?.VMName ?? string.Empty;
         }
 
-        public static unsafe void SetViewModel(CCSPlayerController player, string model)
+        public static void SetViewModel(CCSPlayerController player, string model)
         {
             ViewModel(player)?.SetModel(model);
         }
@@ -253,7 +259,7 @@ public class Item_CustomWeapon : IItemModule
             }
         }
 
-        public static void ResetWeapon(CCSPlayerController player, CBasePlayerWeapon weapon, bool update)
+        private static void ResetWeapon(CCSPlayerController player, CBasePlayerWeapon weapon, bool update)
         {
             string globalName = weapon.Globalname;
             if (string.IsNullOrEmpty(globalName)) return;
@@ -270,23 +276,23 @@ public class Item_CustomWeapon : IItemModule
 
         public static bool HandleEquip(CCSPlayerController player, Dictionary<string, string> item, bool isEquip)
         {
-            if (player.PawnIsAlive)
-            {
-                CBasePlayerWeapon? weapon = Get(player, item["weapon"]);
-                if (weapon != null)
-                {
-                    bool equip = weapon == player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+            if (!player.PawnIsAlive)
+                return true;
+            
+            CBasePlayerWeapon? weapon = Get(player, item["weapon"]);
+            if (weapon == null)
+                return true;
+            
+            bool equip = weapon == player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
 
-                    if (isEquip)
-                    {
-                        item.TryGetValue("worldmodel", out string? worldModel);
-                        UpdateModel(player, weapon, item["viewmodel"], worldModel, equip);
-                    }
-                    else
-                    {
-                        ResetWeapon(player, weapon, equip);
-                    }
-                }
+            if (isEquip)
+            {
+                item.TryGetValue("worldmodel", out string? worldModel);
+                UpdateModel(player, weapon, item["viewmodel"], worldModel, equip);
+            }
+            else
+            {
+                ResetWeapon(player, weapon, equip);
             }
 
             return true;
@@ -294,23 +300,23 @@ public class Item_CustomWeapon : IItemModule
 
         private static CBasePlayerWeapon? Get(CCSPlayerController player, string weaponName)
         {
-            CPlayer_WeaponServices? weaponServices = player.PlayerPawn?.Value?.WeaponServices;
+            CPlayer_WeaponServices? weaponServices = player.PlayerPawn.Value?.WeaponServices;
             if (weaponServices == null) return null;
 
-            CBasePlayerWeapon? activeWeapon = weaponServices.ActiveWeapon?.Value;
+            CBasePlayerWeapon? activeWeapon = weaponServices.ActiveWeapon.Value;
             return activeWeapon != null && GetDesignerName(activeWeapon) == weaponName
                 ? activeWeapon
                 : (weaponServices.MyWeapons.SingleOrDefault(p => p.Value != null && GetDesignerName(p.Value) == weaponName)?.Value);
         }
 
-        private static unsafe CBaseViewModel? ViewModel(CCSPlayerController player)
+        private static CBaseViewModel? ViewModel(CCSPlayerController player)
         {
             nint? handle = player.PlayerPawn.Value?.ViewModelServices?.Handle;
-            if (handle == null || !handle.HasValue) return null;
+            if (!handle.HasValue) return null;
 
             CCSPlayer_ViewModelServices viewModelServices = new(handle.Value);
             nint ptr = viewModelServices.Handle + Schema.GetSchemaOffset("CCSPlayer_ViewModelServices", "m_hViewModel");
-            Span<nint> viewModels = MemoryMarshal.CreateSpan(ref ptr, 3);
+            var viewModels = MemoryMarshal.CreateSpan(ref ptr, 3);
 
             return new CHandle<CBaseViewModel>(viewModels[0]).Value;
         }
@@ -318,7 +324,7 @@ public class Item_CustomWeapon : IItemModule
 
     public static void Inspect(CCSPlayerController player, string model, string weapon)
     {
-        if (player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value is not CBasePlayerWeapon activeWeapon) return;
+        if (player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value is not { } activeWeapon) return;
 
         if (Weapon.GetDesignerName(activeWeapon) != weapon)
         {

@@ -3,7 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Commands;
 using CounterStrikeSharp.API.Modules.Commands.Targeting;
 using CounterStrikeSharp.API.Modules.Entities;
-using static Store.Config_Config;
+using static Store.ConfigConfig;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -14,16 +14,16 @@ public static class FindTarget
     public class TargetFind
     {
         public List<CCSPlayerController> Players = [];
-        public Store_Player? StorePlayer;
+        public StorePlayer? StorePlayer;
         public string? TargetName;
     }
 
-    public static TargetFind Find(CommandInfo command, bool singleTarget, bool allowSteamID)
+    public static TargetFind Find(CommandInfo command, bool singleTarget, bool allowSteamId)
     {
         TargetResult targetResult = command.GetArgTargetResult(1);
         if (targetResult.Players.Count == 0)
         {
-            if (allowSteamID)
+            if (allowSteamId)
             {
                 string arg = command.GetArg(1).Trim();
 
@@ -37,14 +37,14 @@ public static class FindTarget
 
                 if (steamId != null)
                 {
-                    Store_Player? playerdata = Instance.GlobalStorePlayers
-                        .SingleOrDefault(player => player.SteamID == steamId.SteamId64);
+                    StorePlayer? playerdata = Instance.GlobalStorePlayers
+                        .SingleOrDefault(player => player.SteamId == steamId.SteamId64);
 
                     if (playerdata == null)
                     {
-                        playerdata = new Store_Player
+                        playerdata = new StorePlayer
                         {
-                            SteamID = steamId.SteamId64,
+                            SteamId = steamId.SteamId64,
                             Credits = 0,
                             PlayerName = steamId.SteamId64.ToString()
                         };
@@ -56,13 +56,14 @@ public static class FindTarget
                             ? playerdata.PlayerName
                             : steamId.SteamId64.ToString();
 
-                    return new TargetFind() { StorePlayer = playerdata, TargetName = finalTargetName };
+                    return new TargetFind { StorePlayer = playerdata, TargetName = finalTargetName };
                 }
             }
             command.ReplyToCommand($"{Config.Settings.Tag}{Instance.Localizer["No matching client"]}");
             return new TargetFind();
         }
-        else if (singleTarget && targetResult.Players.Count > 1)
+
+        if (singleTarget && targetResult.Players.Count > 1)
         {
             command.ReplyToCommand($"{Config.Settings.Tag}{Instance.Localizer["More than one client matched"]}");
             return new TargetFind();
@@ -72,7 +73,7 @@ public static class FindTarget
             ? targetResult.Players[0].PlayerName
             : GetTargetGroupName(command.GetArg(1), targetResult);
 
-        return new TargetFind() { Players = targetResult.Players, TargetName = targetName };
+        return new TargetFind { Players = targetResult.Players, TargetName = targetName };
     }
 
     public static CCSPlayerController? FindTargetFromWeapon(CBasePlayerWeapon weapon)

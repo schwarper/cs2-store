@@ -1,11 +1,11 @@
+using System.Text.Json;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Utils;
 using Store.Extension;
-using System.Text.Json;
-using static Store.Config_Config;
+using static Store.ConfigConfig;
 using static Store.Store;
 using static StoreApi.Store;
 
@@ -21,8 +21,7 @@ public static class Item
     public static string GetItemName(CCSPlayerController player, Dictionary<string, string> item)
     {
         string name = item["name"];
-
-        return name.StartsWith('*') && name.EndsWith('*') ? Instance.Localizer.ForPlayer(player, name) : name;
+        return Instance.Localizer.ForPlayer(player, name);
     }
 
     public static bool Give(CCSPlayerController player, Dictionary<string, string> item)
@@ -40,9 +39,9 @@ public static class Item
             item.TryGetValue("expiration", out string? expirationtime);
             int expiration = Convert.ToInt32(expirationtime);
 
-            Store_Item playerItem = new()
+            StoreItem playerItem = new()
             {
-                SteamID = player.SteamID,
+                SteamId = player.SteamID,
                 Price = int.Parse(item["price"]),
                 Type = item["type"],
                 UniqueId = item["uniqueid"],
@@ -69,19 +68,17 @@ public static class Item
         if (!ItemModuleManager.Modules.TryGetValue(item["type"], out IItemModule? type))
             return false;
 
-        if (type.RequiresAlive == true && !player.PawnIsAlive)
-            return false;
-
-        else if (type.RequiresAlive == false && player.PawnIsAlive)
-            return false;
-
-        if (!type.Equipable)
+        switch (type.RequiresAlive)
         {
-            if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && player.TeamNum != team)
+            case true when !player.PawnIsAlive:
+            case false when player.PawnIsAlive:
                 return false;
         }
 
-        return true;
+        if (type.Equipable)
+            return true;
+        
+        return !item.TryGetValue("team", out string? steam) || !int.TryParse(steam, out int team) || team is < 1 or > 3 || player.TeamNum == team;
     }
 
     public static bool Purchase(CCSPlayerController player, Dictionary<string, string> item)
@@ -98,20 +95,19 @@ public static class Item
             return false;
         }
 
-        if (type.RequiresAlive == true && !player.PawnIsAlive)
+        switch (type.RequiresAlive)
         {
-            player.PrintToChatMessage("You are not alive");
-            return false;
-        }
-        else if (type.RequiresAlive == false && player.PawnIsAlive)
-        {
-            player.PrintToChatMessage("You are alive");
-            return false;
+            case true when !player.PawnIsAlive:
+                player.PrintToChatMessage("You are not alive");
+                return false;
+            case false when player.PawnIsAlive:
+                player.PrintToChatMessage("You are alive");
+                return false;
         }
 
         if (!type.Equipable)
         {
-            if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && player.TeamNum != team)
+            if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team is >= 1 and <= 3 && player.TeamNum != team)
             {
                 player.PrintToChatMessage("No purchase because team", (CsTeam)team);
                 return false;
@@ -135,9 +131,9 @@ public static class Item
             item.TryGetValue("expiration", out string? expirationtime);
             int expiration = Convert.ToInt32(expirationtime);
 
-            Store_Item playerItem = new()
+            StoreItem playerItem = new()
             {
-                SteamID = player.SteamID,
+                SteamId = player.SteamID,
                 Price = price,
                 Type = item["type"],
                 UniqueId = item["uniqueid"],
@@ -161,31 +157,30 @@ public static class Item
         if (!ItemModuleManager.Modules.TryGetValue(itemType, out IItemModule? type))
             return false;
 
-        if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team >= 1 && team <= 3 && player.TeamNum != team)
+        if (item.TryGetValue("team", out string? steam) && int.TryParse(steam, out int team) && team is >= 1 and <= 3 && player.TeamNum != team)
         {
             player.PrintToChatMessage("No equip because team", (CsTeam)team);
             return false;
         }
 
-        List<Store_Equipment> currentItems = [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
-            p.SteamID == player.SteamID &&
+        List<StoreEquipment> currentItems = [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
+            p.SteamId == player.SteamID &&
             p.Type == itemType &&
             (p.Slot == int.Parse(item["slot"]) ||
              itemType == "playerskin" && (item["slot"] == "1" || p.Slot == 1)))];
 
-        foreach (Store_Equipment currentItem in currentItems)
+        foreach (var citem in currentItems.Select(currentItem => GetItem(currentItem.UniqueId)).OfType<Dictionary<string, string>>())
         {
-            Dictionary<string, string>? citem = GetItem(currentItem.UniqueId);
-            if (citem != null) Unequip(player, citem, false);
+            Unequip(player, citem, false);
         }
 
         if (!type.OnEquip(player, item)) return false;
 
         int slot = item.TryGetValue("slot", out string? sslot) && int.TryParse(sslot, out int islot) ? islot : 0;
 
-        Store_Equipment playerItem = new()
+        StoreEquipment playerItem = new()
         {
-            SteamID = player.SteamID,
+            SteamId = player.SteamID,
             Type = itemType,
             UniqueId = item["uniqueid"],
             Slot = slot
@@ -203,7 +198,7 @@ public static class Item
         if (!ItemModuleManager.Modules.TryGetValue(item["type"], out IItemModule? type))
             return false;
 
-        Store_Equipment? equippedItem = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.UniqueId == item["uniqueid"]);
+        StoreEquipment? equippedItem = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamId == player.SteamID && p.UniqueId == item["uniqueid"]);
         if (equippedItem == null) return false;
 
         Instance.GlobalStorePlayerEquipments.Remove(equippedItem);
@@ -215,7 +210,7 @@ public static class Item
 
     public static bool Sell(CCSPlayerController player, Dictionary<string, string> item)
     {
-        Store_Item? playerItem = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamID == player.SteamID && p.UniqueId == item["uniqueid"]);
+        StoreItem? playerItem = Instance.GlobalStorePlayerItems.FirstOrDefault(p => p.SteamId == player.SteamID && p.UniqueId == item["uniqueid"]);
         if (playerItem == null) return false;
 
         Credits.Give(player, (int)(playerItem.Price * Config.Settings.SellRatio));
@@ -229,7 +224,7 @@ public static class Item
 
     public static bool PlayerHas(CCSPlayerController player, string type, string uniqueId, bool ignoreVip)
     {
-        Dictionary<string, string>? item = GetItem(uniqueId);
+        var item = GetItem(uniqueId);
         if (item == null) return false;
 
         if (!ItemModuleManager.Modules.TryGetValue(item["type"], out IItemModule? moduletype))
@@ -240,12 +235,12 @@ public static class Item
         if (!ignoreVip && IsPlayerVip(player)) return true;
 
         item.TryGetValue("flag", out string? flag);
-        return MenuBase.CheckFlag(player, flag, false) || Instance.GlobalStorePlayerItems.Any(p => p.SteamID == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
+        return MenuBase.CheckFlag(player, flag, false) || Instance.GlobalStorePlayerItems.Any(p => p.SteamId == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
     }
 
     public static bool PlayerUsing(CCSPlayerController player, string type, string uniqueId)
     {
-        return Instance.GlobalStorePlayerEquipments.Any(p => p.SteamID == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
+        return Instance.GlobalStorePlayerEquipments.Any(p => p.SteamId == player.SteamID && p.Type == type && p.UniqueId == uniqueId);
     }
 
     public static bool IsInJson(string uniqueId)
@@ -255,7 +250,7 @@ public static class Item
 
     public static Dictionary<string, string>? GetItem(string uniqueId)
     {
-        return Instance.Items.TryGetValue(uniqueId, out Dictionary<string, string>? item) ? item : null;
+        return Instance.Items.TryGetValue(uniqueId, out var item) ? item : null;
     }
 
     public static bool IsAnyItemExistInType(string type)
@@ -273,14 +268,14 @@ public static class Item
         return [.. Instance.Items.Where(kvp => kvp.Value["type"] == type)];
     }
 
-    public static List<Store_Item> GetPlayerItems(CCSPlayerController player, string? type)
+    public static List<StoreItem> GetPlayerItems(CCSPlayerController player, string? type)
     {
-        return [.. Instance.GlobalStorePlayerItems.Where(item => item.SteamID == player.SteamID && (type == null || type == item.Type))];
+        return [.. Instance.GlobalStorePlayerItems.Where(item => item.SteamId == player.SteamID && (type == null || type == item.Type))];
     }
 
-    public static List<Store_Equipment> GetPlayerEquipments(CCSPlayerController player, string? type)
+    public static List<StoreEquipment> GetPlayerEquipments(CCSPlayerController player, string? type)
     {
-        return [.. Instance.GlobalStorePlayerEquipments.Where(item => item.SteamID == player.SteamID && (type == null || type == item.Type))];
+        return [.. Instance.GlobalStorePlayerEquipments.Where(item => item.SteamId == player.SteamID && (type == null || type == item.Type))];
     }
 
     public static bool IsPlayerVip(CCSPlayerController player)
@@ -290,20 +285,20 @@ public static class Item
 
     public static bool PlayerHasAny(CCSPlayerController player, JsonElement item)
     {
-        return item.ExtractItems().Values.Any(item => PlayerHas(player, item["type"], item["uniqueid"], false));
+        return item.ExtractItems().Values.Any(dictionary => PlayerHas(player, dictionary["type"], dictionary["uniqueid"], false));
     }
 
     public static void RemoveExpiredItems()
     {
         Database.ExecuteAsync($"DELETE FROM {Config.DatabaseConnection.StoreItemsName} WHERE DateOfExpiration < NOW() AND DateOfExpiration > '0001-01-01 00:00:00';", null);
 
-        List<Store_Item> itemsToRemove = [.. Instance.GlobalStorePlayerItems.Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)];
+        List<StoreItem> itemsToRemove = [.. Instance.GlobalStorePlayerItems.Where(item => item.DateOfExpiration < DateTime.Now && item.DateOfExpiration > DateTime.MinValue)];
 
         string storeEquipmentTableName = Config.DatabaseConnection.StoreEquipments;
 
-        foreach (Store_Item? item in itemsToRemove)
+        foreach (StoreItem item in itemsToRemove)
         {
-            Database.ExecuteAsync($"DELETE FROM {storeEquipmentTableName} WHERE SteamID = @SteamID AND UniqueId = @UniqueId", new { item.SteamID, item.UniqueId });
+            Database.ExecuteAsync($"DELETE FROM {storeEquipmentTableName} WHERE SteamID = @SteamID AND UniqueId = @UniqueId", new { SteamID = item.SteamId, item.UniqueId });
 
             Instance.GlobalStorePlayerItems.Remove(item);
             Instance.GlobalStorePlayerEquipments.RemoveAll(i => i.UniqueId == item.UniqueId);

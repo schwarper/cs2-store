@@ -6,7 +6,7 @@ using static StoreApi.Store;
 namespace Store;
 
 [StoreItemType("sound")]
-public class Item_Sound : IItemModule
+public class ItemSound : IItemModule
 {
     public bool Equipable => false;
     public bool? RequiresAlive => null;
@@ -23,7 +23,7 @@ public class Item_Sound : IItemModule
     public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
         Utilities.GetPlayers()
-            .Where(target => target != null && target.IsValid)
+            .Where(target => target.IsValid)
             .ToList()
             .ForEach(target => target.ExecuteClientCommand($"play {item["sound"]}"));
 

@@ -25,7 +25,7 @@ public static class JsonExtensions
                 if (subItem.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
                 {
                     string uniqueId = uniqueIdElement.GetString() ?? $"unknown_{subItem.Name}";
-                    Dictionary<string, string> itemData = subItem.Value.EnumerateObject()
+                    var itemData = subItem.Value.EnumerateObject()
                         .ToDictionary(prop => prop.Name, prop => prop.Value.ToString());
 
                     itemData["name"] = subItem.Name;
@@ -33,8 +33,8 @@ public static class JsonExtensions
                 }
                 else
                 {
-                    Dictionary<string, Dictionary<string, string>> nestedItems = ExtractItems(subItem.Value);
-                    foreach (KeyValuePair<string, Dictionary<string, string>> nestedItem in nestedItems)
+                    var nestedItems = ExtractItems(subItem.Value);
+                    foreach (var nestedItem in nestedItems)
                     {
                         itemsDictionary[nestedItem.Key] = nestedItem.Value;
                     }

@@ -9,12 +9,12 @@ using static TagsApi.Tags;
 namespace Store;
 
 [StoreItemTypes(["chatcolor", "namecolor", "scoretag", "chattag"])]
-public class Item_Tags : IItemModule
+public class ItemTags : IItemModule
 {
     private static ITagApi? _tagApi;
-    private static bool _scoreTagExists = false;
-    private static bool _othersExists = false;
-    private static bool _loaded = false;
+    private static bool _scoreTagExists;
+    private static bool _othersExists;
+    private static bool _loaded;
 
     public bool Equipable => true;
     public bool? RequiresAlive => null;
@@ -39,7 +39,7 @@ public class Item_Tags : IItemModule
             _tagApi.OnTagsUpdatedPre -= OnTagsUpdatedPre;
     }
 
-    public static void OnPluginsAllLoaded()
+    private static void OnPluginsAllLoaded()
     {
         if (_loaded)
             return;
@@ -50,16 +50,15 @@ public class Item_Tags : IItemModule
         {
             _tagApi = ITagApi.Capability.Get();
 
-            if (_tagApi != null)
-            {
-                if (_othersExists)
-                    _tagApi.OnMessageProcessPre += OnMessageProcess;
+            if (_tagApi == null) return;
+            
+            if (_othersExists)
+                _tagApi.OnMessageProcessPre += OnMessageProcess;
 
-                if (_scoreTagExists)
-                    _tagApi.OnTagsUpdatedPre += OnTagsUpdatedPre;
+            if (_scoreTagExists)
+                _tagApi.OnTagsUpdatedPre += OnTagsUpdatedPre;
 
-                Console.WriteLine("[Store] TagsApi features successfully loaded");
-            }
+            Console.WriteLine("[Store] TagsApi features successfully loaded");
         }
         catch (KeyNotFoundException)
         {
@@ -78,37 +77,31 @@ public class Item_Tags : IItemModule
 
     public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
     {
-        if (_tagApi != null && item["type"] == "scoretag")
-        {
-            string tag = item["value"];
-            TagPrePost prePost = item.TryGetValue("pre", out string? p) && p == "true" ? TagPrePost.Pre : TagPrePost.Post;
-            _tagApi.AddAttribute(player, TagType.ScoreTag, prePost, tag);
-        }
+        if (_tagApi == null || item["type"] != "scoretag") return true;
+        
+        string tag = item["value"];
+        TagPrePost prePost = item.TryGetValue("pre", out string? p) && p == "true" ? TagPrePost.Pre : TagPrePost.Post;
+        _tagApi.AddAttribute(player, TagType.ScoreTag, prePost, tag);
         return true;
     }
 
     public bool OnUnequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
     {
-        if (_tagApi != null && item["type"] == "scoretag")
-        {
-            string? scoreTag = _tagApi.GetAttribute(player, TagType.ScoreTag);
-            string valueToRemove = item["value"];
+        if (_tagApi == null || item["type"] != "scoretag") return true;
+        
+        string? scoreTag = _tagApi.GetAttribute(player, TagType.ScoreTag);
+        string valueToRemove = item["value"];
 
-            if (scoreTag != null && scoreTag.Contains(valueToRemove))
-            {
-                scoreTag = scoreTag.Replace(valueToRemove, string.Empty);
-                _tagApi.SetAttribute(player, TagType.ScoreTag, scoreTag);
-            }
-        }
+        if (scoreTag == null || !scoreTag.Contains(valueToRemove)) return true;
+        
+        scoreTag = scoreTag.Replace(valueToRemove, string.Empty);
+        _tagApi.SetAttribute(player, TagType.ScoreTag, scoreTag);
         return true;
     }
 
     private static HookResult OnMessageProcess(MessageProcess mp)
     {
-        if (_tagApi == null) return HookResult.Continue;
-
-        if (!Instance.GlobalStorePlayerEquipments.Any(kvp => kvp.Type is "chattag" or "chatcolor" or "namecolor"))
-            return HookResult.Continue;
+        if (_tagApi == null || !Instance.GlobalStorePlayerEquipments.Any(kvp => kvp.Type is "chattag" or "chatcolor" or "namecolor")) return HookResult.Continue;
 
         ProcessChatTags(mp);
         ProcessChatColor(mp);
@@ -121,12 +114,12 @@ public class Item_Tags : IItemModule
     {
         Item.GetPlayerEquipments(mp.Player, "chattag").ForEach(tag =>
         {
-            Dictionary<string, string>? item = Item.GetItem(tag.UniqueId);
+            var item = Item.GetItem(tag.UniqueId);
             if (item == null) return;
 
             TagPrePost pre = item.TryGetValue("pre", out string? p) && p == "true" ? TagPrePost.Pre : TagPrePost.Post;
             string color = item.TryGetValue("color", out string? c) ? c : "{white}";
-            string newTag = color.ReplaceColorTags() + item["value"]!;
+            string newTag = color.ReplaceColorTags() + item["value"];
 
             if (pre == TagPrePost.Pre)
                 mp.Tag.ChatTag = newTag + mp.Tag.ChatTag;
@@ -137,10 +130,10 @@ public class Item_Tags : IItemModule
 
     private static void ProcessChatColor(MessageProcess mp)
     {
-        StoreApi.Store.Store_Equipment? chatColor = Item.GetPlayerEquipments(mp.Player, "chatcolor").FirstOrDefault();
+        StoreEquipment? chatColor = Item.GetPlayerEquipments(mp.Player, "chatcolor").FirstOrDefault();
         if (chatColor == null) return;
 
-        Dictionary<string, string>? item = Item.GetItem(chatColor.UniqueId);
+        var item = Item.GetItem(chatColor.UniqueId);
         if (item == null) return;
 
         mp.Tag.ChatColor = item["value"];
@@ -148,10 +141,10 @@ public class Item_Tags : IItemModule
 
     private static void ProcessNameColor(MessageProcess mp)
     {
-        StoreApi.Store.Store_Equipment? nameColor = Item.GetPlayerEquipments(mp.Player, "namecolor").FirstOrDefault();
+        StoreEquipment? nameColor = Item.GetPlayerEquipments(mp.Player, "namecolor").FirstOrDefault();
         if (nameColor == null) return;
 
-        Dictionary<string, string>? item = Item.GetItem(nameColor.UniqueId);
+        var item = Item.GetItem(nameColor.UniqueId);
         if (item == null) return;
 
         mp.Tag.NameColor = item["value"];
@@ -161,17 +154,17 @@ public class Item_Tags : IItemModule
     {
         if (_tagApi == null) return;
 
-        StoreApi.Store.Store_Equipment? scoreTag = Item.GetPlayerEquipments(player, "scoretag").FirstOrDefault();
+        StoreEquipment? scoreTag = Item.GetPlayerEquipments(player, "scoretag").FirstOrDefault();
         if (scoreTag == null) return;
 
-        Dictionary<string, string>? item = Item.GetItem(scoreTag.UniqueId);
+        var item = Item.GetItem(scoreTag.UniqueId);
         if (item == null) return;
 
         if (_tagApi.GetAttribute(player, TagType.ScoreTag)?.Contains(item["value"]) == true)
             return;
 
         TagPrePost prePost = item.TryGetValue("pre", out string? p) && p == "true" ? TagPrePost.Pre : TagPrePost.Post;
-        string newTag = item["value"]!;
+        string newTag = item["value"];
         _tagApi.AddAttribute(player, TagType.ScoreTag, prePost, newTag);
     }
 }

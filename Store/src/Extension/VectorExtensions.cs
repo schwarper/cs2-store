@@ -7,7 +7,7 @@ public static class VectorExtensions
 {
     public static Vector GetEyePosition(CCSPlayerController player)
     {
-        if (player.PlayerPawn?.Value is not { } pawn || pawn.CameraServices == null)
+        if (player.PlayerPawn.Value is not { } pawn || pawn.CameraServices == null)
         {
             throw new ArgumentException("Player pawn or camera services are not valid.");
         }

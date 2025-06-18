@@ -1,24 +1,24 @@
+using System.Reflection;
+using System.Text.Json;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
 using Store.Extension;
-using System.Reflection;
-using System.Text.Json;
 using Tomlyn;
 using Tomlyn.Model;
 
 namespace Store;
 
-public class Item_Config : BasePluginConfig
+public class ItemConfig : BasePluginConfig
 {
     public JsonElement Items { get; set; } = new();
 }
 
-public static class Config_Config
+public static class ConfigConfig
 {
     private static readonly string ConfigPath;
 
-    static Config_Config()
+    static ConfigConfig()
     {
         string assemblyName = Assembly.GetExecutingAssembly().GetName().Name ?? string.Empty;
 
@@ -49,16 +49,16 @@ public static class Config_Config
         string configText = File.ReadAllText(configPath);
         TomlTable model = Toml.ToModel(configText);
 
-        Config.DatabaseConnection = model.GetSection<Config_DatabaseConnection>("DatabaseConnection") ?? new();
-        Config.Commands = model.GetSection<Config_Commands>("Commands") ?? new();
-        Config.DefaultModels = model.GetSection<Config_DefaultModels>("DefaultModels") ?? new();
-        Config.Menu = model.GetSection<Config_Menu>("Menu") ?? new();
-        Config.Settings = model.GetSection<Config_Settings>("Settings") ?? new();
-        Config.Permissions = model.GetSection<Config_Permissions>("Permissions") ?? new();
+        Config.DatabaseConnection = model.GetSection<ConfigDatabaseConnection>("DatabaseConnection") ?? new();
+        Config.Commands = model.GetSection<ConfigCommands>("Commands") ?? new();
+        Config.DefaultModels = model.GetSection<ConfigDefaultModels>("DefaultModels") ?? new();
+        Config.Menu = model.GetSection<ConfigMenu>("Menu") ?? new();
+        Config.Settings = model.GetSection<ConfigSettings>("Settings") ?? new();
+        Config.Permissions = model.GetSection<ConfigPermissions>("Permissions") ?? new();
         Config.Credits = model.TryGetValue("Credits", out object creditsObj) && creditsObj is TomlTable creditsTable
             ? creditsTable.ToDictionary(
                 kv => kv.Key,
-                kv => kv.Value is TomlTable creditTable ? creditTable.MapTomlTableToObject<Config_Credits>() : new(),
+                kv => kv.Value is TomlTable creditTable ? creditTable.MapTomlTableToObject<ConfigCredits>() : new(),
                 StringComparer.OrdinalIgnoreCase
             )
             : [];
@@ -69,16 +69,16 @@ public static class Config_Config
 
 public sealed class Cfg
 {
-    public Config_DatabaseConnection DatabaseConnection { get; set; } = new();
-    public Config_Commands Commands { get; set; } = new();
-    public Config_DefaultModels DefaultModels { get; set; } = new();
-    public Dictionary<string, Config_Credits> Credits { get; set; } = [];
-    public Config_Menu Menu { get; set; } = new();
-    public Config_Settings Settings { get; set; } = new();
-    public Config_Permissions Permissions { get; set; } = new();
+    public ConfigDatabaseConnection DatabaseConnection { get; set; } = new();
+    public ConfigCommands Commands { get; set; } = new();
+    public ConfigDefaultModels DefaultModels { get; set; } = new();
+    public Dictionary<string, ConfigCredits> Credits { get; set; } = [];
+    public ConfigMenu Menu { get; set; } = new();
+    public ConfigSettings Settings { get; set; } = new();
+    public ConfigPermissions Permissions { get; set; } = new();
 }
 
-public sealed class Config_DatabaseConnection
+public sealed class ConfigDatabaseConnection
 {
     public string Host { get; set; } = string.Empty;
     public uint Port { get; set; } = 3306;
@@ -90,7 +90,7 @@ public sealed class Config_DatabaseConnection
     public string StoreEquipments { get; set; } = string.Empty;
 }
 
-public sealed class Config_Commands
+public sealed class ConfigCommands
 {
     public List<string> Credits { get; set; } = [];
     public List<string> Store { get; set; } = [];
@@ -105,14 +105,14 @@ public sealed class Config_Commands
     public List<string> PlayerSkinsOn { get; set; } = [];
 }
 
-public sealed class Config_DefaultModels
+public sealed class ConfigDefaultModels
 {
     public List<string> Terrorist { get; set; } = [];
     public List<string> CounterTerrorist { get; set; } = [];
     public bool DefaultModelDisableLeg { get; set; }
 }
 
-public sealed class Config_Credits
+public sealed class ConfigCredits
 {
     public int Start { get; set; }
     public bool IgnoreWarmup { get; set; }
@@ -122,9 +122,8 @@ public sealed class Config_Credits
     public int AmountKill { get; set; }
 }
 
-public sealed class Config_Menu
+public sealed class ConfigMenu
 {
-    public bool EnableSelling { get; set; } = true;
     public bool EnableConfirmMenu { get; set; }
     public string MenuType { get; set; } = string.Empty;
     public string VipFlag { get; set; } = string.Empty;
@@ -133,18 +132,18 @@ public sealed class Config_Menu
     public bool CloseMenuAfterSelect { get; set; }
 }
 
-public sealed class Config_Settings
+public sealed class ConfigSettings
 {
     public string Tag { get; set; } = string.Empty;
     public int MaxHealth { get; set; }
     public int MaxArmor { get; set; }
     public float SellRatio { get; set; }
-    public float ApplyPlayerskinDelay { get; set; }
+    public float ApplyPlayerSkinDelay { get; set; }
     public bool SellUsePurchaseCredit { get; set; }
     public bool EnableCs2Fixes { get; set; }
 }
 
-public sealed class Config_Permissions
+public sealed class ConfigPermissions
 {
     public string Model0Model1Flag { get; set; } = string.Empty;
     public string GiveCredits { get; set; } = string.Empty;

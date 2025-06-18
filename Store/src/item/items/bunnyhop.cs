@@ -7,12 +7,12 @@ using static StoreApi.Store;
 namespace Store;
 
 [StoreItemType("bunnyhop")]
-public class Item_Bunnyhop : IItemModule
+public class ItemBunnyhop : IItemModule
 {
     public bool Equipable => true;
     public bool? RequiresAlive => null;
 
-    private static bool _bunnyhopExists = false;
+    private static bool _bunnyhopExists;
 
     public void OnPluginStart()
     {
@@ -37,10 +37,10 @@ public class Item_Bunnyhop : IItemModule
     {
         if (!_bunnyhopExists) return;
 
-        Store_Equipment? playerBunnyhop = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "bunnyhop");
+        StoreEquipment? playerBunnyhop = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamId == player.SteamID && p.Type == "bunnyhop");
         if (playerBunnyhop == null) return;
 
-        if (player.PlayerPawn?.Value is not { } playerPawn) return;
+        if (player.PlayerPawn.Value is not { } playerPawn) return;
 
         playerPawn.BunnyHop(player);
     }

@@ -1,23 +1,23 @@
+using System.Globalization;
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Utils;
-using System.Globalization;
 using static Store.Store;
 using static StoreApi.Store;
 
 namespace Store;
 
 [StoreItemType("smoke")]
-public class Item_Smoke : IItemModule
+public class ItemSmoke : IItemModule
 {
-    private static bool smokeExists = false;
+    private static bool _smokeExists;
 
     public bool Equipable => true;
     public bool? RequiresAlive => null;
 
     public void OnPluginStart()
     {
-        smokeExists = Item.IsAnyItemExistInType("smoke");
+        _smokeExists = Item.IsAnyItemExistInType("smoke");
     }
 
     public void OnMapStart() { }
@@ -36,7 +36,7 @@ public class Item_Smoke : IItemModule
 
     public static void OnEntityCreated(CEntityInstance entity)
     {
-        if (!smokeExists || entity.DesignerName != "smokegrenade_projectile")
+        if (!_smokeExists || entity.DesignerName != "smokegrenade_projectile")
             return;
 
         CSmokeGrenadeProjectile grenade = new(entity.Handle);
@@ -49,7 +49,7 @@ public class Item_Smoke : IItemModule
             if (player == null)
                 return;
 
-            Store_Equipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamID == player.SteamID && p.Type == "smoke");
+            StoreEquipment? item = Instance.GlobalStorePlayerEquipments.FirstOrDefault(p => p.SteamId == player.SteamID && p.Type == "smoke");
             if (item == null)
                 return;
 
@@ -61,7 +61,7 @@ public class Item_Smoke : IItemModule
             }
             else
             {
-                Dictionary<string, string>? itemdata = Item.GetItem(item.UniqueId);
+                var itemdata = Item.GetItem(item.UniqueId);
                 if (itemdata == null)
                     return;
 
