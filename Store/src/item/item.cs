@@ -167,11 +167,8 @@ public static class Item
             return false;
         }
 
-        List<Store_Equipment> currentItems = [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
-            p.SteamID == player.SteamID &&
-            p.Type == itemType &&
-            (p.Slot == int.Parse(item["slot"]) ||
-             itemType == "playerskin" && (item["slot"] == "1" || p.Slot == 1)))];
+        // 根据物品类型采用不同的冲突检测逻辑
+        List<Store_Equipment> currentItems = GetConflictingItems(player, item, itemType);
 
         foreach (Store_Equipment currentItem in currentItems)
         {
@@ -196,6 +193,46 @@ public static class Item
         Server.NextFrame(() => Database.SavePlayerEquipment(player, playerItem));
 
         return true;
+    }
+
+    /// <summary>
+    /// 根据物品类型获取冲突的已装备物品
+    /// </summary>
+    private static List<Store_Equipment> GetConflictingItems(CCSPlayerController player, Dictionary<string, string> item, string itemType)
+    {
+        return itemType switch
+        {
+            // playerskin: 同类型且同slot的物品冲突（队伍限制）
+            "playerskin" => [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
+                p.SteamID == player.SteamID &&
+                p.Type == itemType &&
+                (p.Slot == int.Parse(item["slot"]) || (item["slot"] == "1" || p.Slot == 1)))],
+
+            // customweapon: 同武器类型的物品冲突（基于weapon属性，确保同一武器只能装备一个皮肤）
+            "customweapon" => [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
+            {
+                if (p.SteamID != player.SteamID || p.Type != itemType)
+                    return false;
+                
+                Dictionary<string, string>? equippedItem = GetItem(p.UniqueId);
+                return equippedItem != null && 
+                       equippedItem.TryGetValue("weapon", out string? equippedWeapon) &&
+                       item.TryGetValue("weapon", out string? newWeapon) &&
+                       equippedWeapon == newWeapon;
+            })],
+
+            // equipment: 同类型且同slot的物品冲突
+            "equipment" => [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
+                p.SteamID == player.SteamID &&
+                p.Type == itemType &&
+                p.Slot == int.Parse(item["slot"]))],
+
+            // 其他类型: 默认采用同类型且同slot冲突的逻辑
+            _ => [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
+                p.SteamID == player.SteamID &&
+                p.Type == itemType &&
+                p.Slot == int.Parse(item["slot"]))]
+        };
     }
 
     public static bool Unequip(CCSPlayerController player, Dictionary<string, string> item, bool update)
