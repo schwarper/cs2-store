@@ -261,9 +261,9 @@
       }
     },
     "Wings": {
-      "Wings Test": {
+      "Wings hostage": {
         "uniqueid": "mywings",
-        "model": "characters/nozb1/wings/fortnite/devil_rock/wings_devil_rock.vmdl",
+        "model": "models/hostage/hostage_carry.vmdl",
         "type": "wings",
         "price": "1000",
         "slot": "1"
