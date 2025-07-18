@@ -260,6 +260,15 @@
         "slot": "1"
       }
     },
+    "Wings": {
+      "Wings Test": {
+        "uniqueid": "mywings",
+        "model": "characters/nozb1/wings/fortnite/devil_rock/wings_devil_rock.vmdl",
+        "type": "wings",
+        "price": "1000",
+        "slot": "1"
+      }
+    },
     "Tags": {
       "Chat Color": {
         "Red": {
