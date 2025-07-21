@@ -260,6 +260,15 @@
         "slot": "1"
       }
     },
+    "Wings": {
+      "Wings hostage": {
+        "uniqueid": "mywings",
+        "model": "models/hostage/hostage_carry.vmdl",
+        "type": "wings",
+        "price": "1000",
+        "slot": "1"
+      }
+    },
     "Tags": {
       "Chat Color": {
         "Red": {
