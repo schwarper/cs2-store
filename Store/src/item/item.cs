@@ -167,7 +167,6 @@ public static class Item
             return false;
         }
 
-        // 根据物品类型采用不同的冲突检测逻辑
         List<Store_Equipment> currentItems = GetConflictingItems(player, item, itemType);
 
         foreach (Store_Equipment currentItem in currentItems)
@@ -195,20 +194,15 @@ public static class Item
         return true;
     }
 
-    /// <summary>
-    /// 根据物品类型获取冲突的已装备物品
-    /// </summary>
     private static List<Store_Equipment> GetConflictingItems(CCSPlayerController player, Dictionary<string, string> item, string itemType)
     {
         return itemType switch
         {
-            // playerskin: 同类型且同slot的物品冲突（队伍限制）
             "playerskin" => [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
                 p.SteamID == player.SteamID &&
                 p.Type == itemType &&
                 (p.Slot == int.Parse(item["slot"]) || (item["slot"] == "1" || p.Slot == 1)))],
 
-            // customweapon: 同武器类型的物品冲突（基于weapon属性，确保同一武器只能装备一个皮肤）
             "customweapon" => [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
             {
                 if (p.SteamID != player.SteamID || p.Type != itemType)
@@ -221,13 +215,11 @@ public static class Item
                        equippedWeapon == newWeapon;
             })],
 
-            // equipment: 同类型且同slot的物品冲突
             "equipment" => [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
                 p.SteamID == player.SteamID &&
                 p.Type == itemType &&
                 p.Slot == int.Parse(item["slot"]))],
 
-            // 其他类型: 默认采用同类型且同slot冲突的逻辑
             _ => [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
                 p.SteamID == player.SteamID &&
                 p.Type == itemType &&
