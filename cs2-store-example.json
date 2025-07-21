@@ -255,7 +255,7 @@
       "Chicken": {
         "uniqueid": "mychicken",
         "model": "models/chicken/chicken.vmdl",
-        "type": "pet",
+        "type": "equipment",
         "price": "1000",
         "slot": "1"
       }
