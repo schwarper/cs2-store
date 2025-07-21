@@ -266,7 +266,8 @@
         "model": "models/hostage/hostage_carry.vmdl",
         "type": "wings",
         "price": "1000",
-        "slot": "1"
+        "slot": "1",
+        "animation": ""
       }
     },
     "Tags": {
