@@ -44,7 +44,8 @@ public class Item_Wings : IItemModule
     {
         if (!item.TryGetValue("slot", out var slotStr) || !int.TryParse(slotStr, out var slot) || slot < 0)
             return false;
-        EquipWings(player, item["model"], slot);
+        var animation = item.TryGetValue("animation", out var anim) ? anim : string.Empty;
+        EquipWings(player, item["model"], slot, animation);
         return true;
     }
 
@@ -56,12 +57,12 @@ public class Item_Wings : IItemModule
         return true;
     }
 
-    public static void EquipWings(CCSPlayerController player, string model, int slot)
+    public static void EquipWings(CCSPlayerController player, string model, int slot, string animation = "")
     {
         UnEquipWings(player, slot);
         Server.NextFrame(() =>
         {
-            var entity = CreateWings(player, model);
+            var entity = CreateWings(player, model, animation);
             if (entity != null && entity.IsValid)
             {
                 if (!PlayerWingsEntities.ContainsKey(player))
@@ -83,7 +84,7 @@ public class Item_Wings : IItemModule
             PlayerWingsEntities.Remove(player);
     }
 
-    public static CDynamicProp? CreateWings(CCSPlayerController player, string model)
+    public static CDynamicProp? CreateWings(CCSPlayerController player, string model, string animation = "")
     {
         var pawn = player.PlayerPawn.Value;
         if (pawn == null) return null;
@@ -93,6 +94,10 @@ public class Item_Wings : IItemModule
         entity.SetModel(model);
         entity.DispatchSpawn();
         entity.AcceptInput("FollowEntity", pawn, pawn, "!activator");
+        if (!string.IsNullOrEmpty(animation))
+        {
+            entity.AcceptInput("SetAnimation", value: animation);
+        }
         var origin = pawn.AbsOrigin;
         if (origin != null)
         {
@@ -112,7 +117,8 @@ public class Item_Wings : IItemModule
             var item = Item.GetItem(equip.UniqueId);
             if (item != null && item.TryGetValue("model", out var model))
             {
-                EquipWings(player, model, equip.Slot);
+                var animation = item.TryGetValue("animation", out var anim) ? anim : string.Empty;
+                EquipWings(player, model, equip.Slot, animation);
             }
         }
         return HookResult.Continue;
