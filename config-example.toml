@@ -85,8 +85,8 @@ AmountKill = 1                # Credits earned per kill
 EnableConfirmMenu = true
 
 # Type of menu interface to use
-# Supported values: ConsoleMenu, ChatMenu, CenterHtmlMenu, WasdMenu, ScreenMenu
-MenuType = "ScreenMenu"
+# Supported values: ConsoleMenu, ChatMenu, CenterHtmlMenu, WasdMenu
+MenuType = "WasdMenu"
 
 # Users with this flag can equip items without paying
 # Leave empty to disable VIP privileges
