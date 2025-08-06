@@ -86,7 +86,7 @@ EnableConfirmMenu = true
 
 # Type of menu interface to use
 # Supported values: ConsoleMenu, ChatMenu, CenterHtmlMenu, WasdMenu
-MenuType = "ChatMenu"
+MenuType = "WasdMenu"
 
 # Users with this flag can equip items without paying
 # Leave empty to disable VIP privileges
