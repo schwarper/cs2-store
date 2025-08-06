@@ -232,27 +232,6 @@ public class Item_CustomWeapon : IItemModule
             };
         }
 
-        public static unsafe string GetViewModel(CCSPlayerController player)
-        {
-            return ViewModel(player)?.VMName ?? string.Empty;
-        }
-
-        public static unsafe void SetViewModel(CCSPlayerController player, string model)
-        {
-            ViewModel(player)?.SetModel(model);
-        }
-
-        public static void UpdateModel(CCSPlayerController player, CBasePlayerWeapon weapon, string model, string? worldModel, bool update)
-        {
-            weapon.Globalname = $"{GetViewModel(player)},{model},{worldModel}";
-            weapon.SetModel(!string.IsNullOrEmpty(worldModel) ? worldModel : model);
-
-            if (update)
-            {
-                SetViewModel(player, model);
-            }
-        }
-
         public static void ResetWeapon(CCSPlayerController player, CBasePlayerWeapon weapon, bool update)
         {
             string globalName = weapon.Globalname;
@@ -303,16 +282,65 @@ public class Item_CustomWeapon : IItemModule
                 : (weaponServices.MyWeapons.SingleOrDefault(p => p.Value != null && GetDesignerName(p.Value) == weaponName)?.Value);
         }
 
-        private static unsafe CBaseViewModel? ViewModel(CCSPlayerController player)
+        public static string GetViewModel(CCSPlayerController player)
         {
-            nint? handle = player.PlayerPawn.Value?.ViewModelServices?.Handle;
-            if (handle == null || !handle.HasValue) return null;
+            var entity = ViewModel(player);
+            if (entity == null || !entity.IsValid)
+                return string.Empty;
 
-            CCSPlayer_ViewModelServices viewModelServices = new(handle.Value);
-            nint ptr = viewModelServices.Handle + Schema.GetSchemaOffset("CCSPlayer_ViewModelServices", "m_hViewModel");
-            Span<nint> viewModels = MemoryMarshal.CreateSpan(ref ptr, 3);
+            int modelOffset = Schema.GetSchemaOffset("CBaseEntity", "m_ModelName");
+            if (modelOffset == 0)
+                return string.Empty;
 
-            return new CHandle<CBaseViewModel>(viewModels[0]).Value;
+            var modelPtr = Marshal.ReadIntPtr(entity.Handle + modelOffset);
+            if (modelPtr == IntPtr.Zero)
+                return string.Empty;
+
+            return Marshal.PtrToStringAnsi(modelPtr) ?? string.Empty;
+        }
+
+        public static void SetViewModel(CCSPlayerController player, string model)
+        {
+            var entity = ViewModel(player);
+            if (entity == null || !entity.IsValid)
+                return;
+
+            var modelPtr = Marshal.StringToHGlobalAnsi(model);
+
+            int offset = GameData.GetOffset("CBaseModelEntity_SetModel");
+            if (offset == 0)
+
+                VirtualFunction.CreateVoid<nint, nint>(entity.Handle, offset)(entity.Handle, modelPtr);
+
+            Marshal.FreeHGlobal(modelPtr);
+        }
+
+        public static void UpdateModel(CCSPlayerController player, CBasePlayerWeapon weapon, string model, string? worldModel, bool update)
+        {
+            weapon.Globalname = $"{GetViewModel(player)},{model},{worldModel}";
+            weapon.SetModel(!string.IsNullOrEmpty(worldModel) ? worldModel : model);
+
+            if (update)
+            {
+                SetViewModel(player, model);
+            }
+        }
+
+        private static CBaseEntity? ViewModel(CCSPlayerController player)
+        {
+            var pawn = player.PlayerPawn.Value;
+            if (pawn == null || !pawn.IsValid)
+                return null;
+
+            int offset = Schema.GetSchemaOffset("CBasePlayer", "m_hViewModel");
+            if (offset == 0)
+                return null;
+
+            var handle = Marshal.ReadIntPtr(pawn.Handle + offset);
+            if (handle == IntPtr.Zero)
+                return null;
+
+            return new CHandle<CBaseEntity>(handle).Value;
         }
     }
 

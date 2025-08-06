@@ -21,7 +21,6 @@ public static class Menu
     public static void OpenMenu(CCSPlayerController player, string title, JsonElement elementData, bool inventory, IMenu? prevMenu)
     {
         BaseMenu menu = CreateMenuByType(title);
-        menu.ScreenMenu_ShowResolutionsOption = prevMenu == null;
         menu.PrevMenu = prevMenu;
 
         List<JsonProperty> items = elementData.GetElementJsonProperty(["flag", "team"]);
