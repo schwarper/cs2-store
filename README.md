@@ -151,10 +151,6 @@ public class TestModule : BasePlugin, IItemModule
 
 ![image](https://files.catbox.moe/m47qri.png)
 
-**ScreenMenu**
-
-![image](https://files.catbox.moe/b5ulzj.png)
-
 **WasdMenu**
 
 ![image](https://files.catbox.moe/kogxzp.png)
