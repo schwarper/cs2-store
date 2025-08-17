@@ -3,7 +3,6 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using Store.Extension;
-using System.Security.Cryptography;
 using static Store.Config_Config;
 using static Store.FindTarget;
 using static Store.Store;
@@ -91,35 +90,32 @@ public static class Command
 
         if (Config.Settings.EnableLog)
         {
+            string giverName = player?.PlayerName ?? Instance.Localizer["Console"];
+            string giverLink = player == null ? Instance.Localizer["Console"] : $"https://steamcommunity.com/profiles/{player.SteamID}/";
+            string receiverName;
+            string receiverLink;
+
             if (target.Players.Count > 1)
             {
-                Log.SaveLog(
-                    player?.PlayerName ?? "Console",
-                    player == null
-                        ? "Console"
-                        : $"https://steamcommunity.com/profiles/{player.SteamID}/",
-                    $"@{target.TargetName}", // @all, @t, @ct, @alive
-                    "0",
-                    credits,
-                    Log.LogType.GiveCredit
-                );
+                receiverName = $"@{target.TargetName}";
+                receiverLink = "0";
             }
             else
             {
-                var soloTarget = target.Players.First();
-                Log.SaveLog(
-                    player?.PlayerName ?? "Console",
-                    player == null
-                        ? "Console"
-                        : $"https://steamcommunity.com/profiles/{player.SteamID}/",
-                    soloTarget.PlayerName,
-                    $"https://steamcommunity.com/profiles/{soloTarget.SteamID.ToString()}/",
-                    credits,
-                    Log.LogType.GiveCredit
-                );
+                CCSPlayerController Target = target.Players.First();
+                receiverName = Target.PlayerName;
+                receiverLink = $"https://steamcommunity.com/profiles/{Target.SteamID}/";
             }
+
+            Log.SaveLog(
+                giverName,
+                giverLink,
+                receiverName,
+                receiverLink,
+                credits,
+                Log.LogType.GiveCredit
+            );
         }
-        
 
         Server.PrintToChatAll($"{Config.Settings.Tag}{Instance.Localizer[target.Players.Count == 1 ? "css_givecredits<player>" : "css_givecredits<multiple>", player?.PlayerName ?? "Console", target.TargetName, credits]}");
     }
