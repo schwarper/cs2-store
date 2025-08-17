@@ -126,6 +126,10 @@ SellUsePurchaseCredit = false
 # Enables compatibility adjustments for CS2 fixes
 EnableCs2Fixes = false
 
+# If true, all credit transactions will be logged into daily log files
+# If false, no logs will be saved
+EnableLog = false
+
 # ─────────────────────────────
 
 [Permissions]
