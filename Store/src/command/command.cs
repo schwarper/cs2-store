@@ -88,6 +88,35 @@ public static class Command
             Credits.Give(targetPlayer, credits);
         }
 
+        if (Config.Settings.EnableLog)
+        {
+            string giverName = player?.PlayerName ?? Instance.Localizer["Console"];
+            string giverLink = player == null ? Instance.Localizer["Console"] : $"https://steamcommunity.com/profiles/{player.SteamID}/";
+            string receiverName;
+            string receiverLink;
+
+            if (target.Players.Count > 1)
+            {
+                receiverName = $"@{target.TargetName}";
+                receiverLink = "0";
+            }
+            else
+            {
+                CCSPlayerController Target = target.Players.First();
+                receiverName = Target.PlayerName;
+                receiverLink = $"https://steamcommunity.com/profiles/{Target.SteamID}/";
+            }
+
+            Log.SaveLog(
+                giverName,
+                giverLink,
+                receiverName,
+                receiverLink,
+                credits,
+                Log.LogType.GiveCredit
+            );
+        }
+
         Server.PrintToChatAll($"{Config.Settings.Tag}{Instance.Localizer[target.Players.Count == 1 ? "css_givecredits<player>" : "css_givecredits<multiple>", player?.PlayerName ?? "Console", target.TargetName, credits]}");
     }
 
@@ -96,7 +125,6 @@ public static class Command
     {
         if (player == null)
             return;
-
 
         float currentTime = Server.CurrentTime;
         if (Instance.GlobalGiftTimeout.TryGetValue(player, out float time) && time > currentTime)
@@ -137,6 +165,18 @@ public static class Command
 
         Credits.Give(player, -value);
         Credits.Give(targetPlayer, value);
+
+        if (Config.Settings.EnableLog)
+        {
+            Log.SaveLog(
+               player.PlayerName,
+               $"https://steamcommunity.com/profiles/{player.SteamID}/",
+               targetPlayer.PlayerName,
+               $"https://steamcommunity.com/profiles/{targetPlayer.SteamID}/",
+               value,
+               Log.LogType.GiftCredit
+           );
+        }
 
         Instance.GlobalGiftTimeout[player] = currentTime + 5.0f;
 
