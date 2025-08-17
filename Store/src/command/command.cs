@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using Store.Extension;
+using System.Security.Cryptography;
 using static Store.Config_Config;
 using static Store.FindTarget;
 using static Store.Store;
@@ -88,6 +89,38 @@ public static class Command
             Credits.Give(targetPlayer, credits);
         }
 
+        if (Config.Settings.EnableLog)
+        {
+            if (target.Players.Count > 1)
+            {
+                Log.SaveLog(
+                    player?.PlayerName ?? "Console",
+                    player == null
+                        ? "Console"
+                        : $"https://steamcommunity.com/profiles/{player.SteamID}/",
+                    $"@{target.TargetName}", // @all, @t, @ct, @alive
+                    "0",
+                    credits,
+                    Log.LogType.GiveCredit
+                );
+            }
+            else
+            {
+                var soloTarget = target.Players.First();
+                Log.SaveLog(
+                    player?.PlayerName ?? "Console",
+                    player == null
+                        ? "Console"
+                        : $"https://steamcommunity.com/profiles/{player.SteamID}/",
+                    soloTarget.PlayerName,
+                    $"https://steamcommunity.com/profiles/{soloTarget.SteamID.ToString()}/",
+                    credits,
+                    Log.LogType.GiveCredit
+                );
+            }
+        }
+        
+
         Server.PrintToChatAll($"{Config.Settings.Tag}{Instance.Localizer[target.Players.Count == 1 ? "css_givecredits<player>" : "css_givecredits<multiple>", player?.PlayerName ?? "Console", target.TargetName, credits]}");
     }
 
@@ -96,7 +129,6 @@ public static class Command
     {
         if (player == null)
             return;
-
 
         float currentTime = Server.CurrentTime;
         if (Instance.GlobalGiftTimeout.TryGetValue(player, out float time) && time > currentTime)
@@ -137,6 +169,18 @@ public static class Command
 
         Credits.Give(player, -value);
         Credits.Give(targetPlayer, value);
+
+        if (Config.Settings.EnableLog)
+        {
+            Log.SaveLog(
+               player.PlayerName,
+               $"https://steamcommunity.com/profiles/{player.SteamID}/",
+               targetPlayer.PlayerName,
+               $"https://steamcommunity.com/profiles/{targetPlayer.SteamID}/",
+               value,
+               Log.LogType.GiftCredit
+           );
+        }
 
         Instance.GlobalGiftTimeout[player] = currentTime + 5.0f;
 

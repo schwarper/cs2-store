@@ -142,6 +142,7 @@ public sealed class Config_Settings
     public float ApplyPlayerskinDelay { get; set; }
     public bool SellUsePurchaseCredit { get; set; }
     public bool EnableCs2Fixes { get; set; }
+    public bool EnableLog { get; set; }
 }
 
 public sealed class Config_Permissions
