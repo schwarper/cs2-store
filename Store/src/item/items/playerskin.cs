@@ -150,8 +150,11 @@ public class Item_PlayerSkin : IItemModule
         if (entity == null || !entity.IsValid || player.PlayerPawn.Value is not CCSPlayerPawn playerPawn)
             return;
 
-        Vector _origin = GetFrontPosition(playerPawn.AbsOrigin!, playerPawn.EyeAngles);
-        QAngle modelAngles = new(0, playerPawn.EyeAngles.Y + 180, 0);
+        // Since EyeAngles is not available, we'll use a default angle
+        // 0 degrees should place the model in front of the player
+        QAngle viewAngles = new QAngle(0, 0f, 0);
+        Vector _origin = GetFrontPosition(playerPawn.AbsOrigin!, viewAngles);
+        QAngle modelAngles = new(0, viewAngles.Y + 180, 0);
 
         entity.Spawnflags = 256u;
         entity.Collision.SolidType = SolidType_t.SOLID_VPHYSICS;
