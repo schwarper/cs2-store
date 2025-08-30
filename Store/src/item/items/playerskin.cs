@@ -150,9 +150,7 @@ public class Item_PlayerSkin : IItemModule
         if (entity == null || !entity.IsValid || player.PlayerPawn.Value is not CCSPlayerPawn playerPawn)
             return;
 
-        // Since EyeAngles is not available, we'll use a default angle
-        // 0 degrees should place the model in front of the player
-        QAngle viewAngles = new QAngle(0, 0f, 0);
+        QAngle viewAngles = playerPawn.AbsRotation ?? new QAngle(0, 0, 0);
         Vector _origin = GetFrontPosition(playerPawn.AbsOrigin!, viewAngles);
         QAngle modelAngles = new(0, viewAngles.Y + 180, 0);
 
@@ -200,6 +198,9 @@ public class Item_PlayerSkin : IItemModule
     public static Vector GetFrontPosition(Vector position, QAngle angles, float distance = 100.0f)
     {
         float radYaw = angles.Y * (MathF.PI / 180.0f);
-        return position + new Vector(MathF.Cos(radYaw), MathF.Sin(radYaw), 0) * distance;
+        // 计算玩家正前方的位置，稍微抬高一点避免模型陷入地面
+        Vector frontPos = position + new Vector(MathF.Cos(radYaw), MathF.Sin(radYaw), 0) * distance;
+        frontPos.Z += 10.0f; // 稍微抬高，避免模型陷入地面
+        return frontPos;
     }
 }
