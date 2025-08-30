@@ -198,9 +198,9 @@ public class Item_PlayerSkin : IItemModule
     public static Vector GetFrontPosition(Vector position, QAngle angles, float distance = 100.0f)
     {
         float radYaw = angles.Y * (MathF.PI / 180.0f);
-        // 计算玩家正前方的位置，稍微抬高一点避免模型陷入地面
+        // Calculate the position in front of the player, slightly elevated to avoid the model sinking into the ground
         Vector frontPos = position + new Vector(MathF.Cos(radYaw), MathF.Sin(radYaw), 0) * distance;
-        frontPos.Z += 10.0f; // 稍微抬高，避免模型陷入地面
+        frontPos.Z += 10.0f; // Slightly elevate to avoid the model sinking into the ground
         return frontPos;
     }
 }
