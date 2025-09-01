@@ -59,9 +59,11 @@ public static class MenuBase
                 item.TryGetValue("skin", out string? skn);
                 Item_PlayerSkin.Inspect(player, item["model"], skn);
                 break;
+                /*
             case "customweapon":
                 Item_CustomWeapon.Inspect(player, item["viewmodel"], item["weapon"]);
                 break;
+                */
         }
     }
 

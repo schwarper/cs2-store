@@ -1,4 +1,5 @@
-﻿using CounterStrikeSharp.API;
+﻿/*
+using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
@@ -368,3 +369,4 @@ public class Item_CustomWeapon : IItemModule
         });
     }
 }
+*/
