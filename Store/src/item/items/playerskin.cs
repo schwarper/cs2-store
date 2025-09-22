@@ -150,8 +150,9 @@ public class Item_PlayerSkin : IItemModule
         if (entity == null || !entity.IsValid || player.PlayerPawn.Value is not CCSPlayerPawn playerPawn)
             return;
 
-        Vector _origin = GetFrontPosition(playerPawn.AbsOrigin!, playerPawn.EyeAngles);
-        QAngle modelAngles = new(0, playerPawn.EyeAngles.Y + 180, 0);
+        QAngle playerAngles = new QAngle(0, player.PlayerPawn.Value?.V_angle.Y ?? 0, 0);
+        Vector _origin = GetFrontPosition(playerPawn.AbsOrigin!, playerAngles);
+        QAngle modelAngles = new(0, playerAngles.Y + 180, 0);
 
         entity.Spawnflags = 256u;
         entity.Collision.SolidType = SolidType_t.SOLID_VPHYSICS;
@@ -200,3 +201,4 @@ public class Item_PlayerSkin : IItemModule
         return position + new Vector(MathF.Cos(radYaw), MathF.Sin(radYaw), 0) * distance;
     }
 }
+
