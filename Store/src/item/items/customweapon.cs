@@ -199,12 +199,15 @@ public class Item_CustomWeapon : IItemModule
 
     public class Weapon
     {
+        // Summary: Legacy viewmodel/worldmodel swapping is disabled; animgraph2 uses subclass changes instead.
+        /*
         public enum GlobalNameData
         {
             ViewModelDefault,
             ViewModel,
             WorldModel
         }
+        */
 
         private static readonly Dictionary<nint, string> OldSubclassByHandle = new();
 
@@ -240,6 +243,7 @@ public class Item_CustomWeapon : IItemModule
             return !string.IsNullOrEmpty(weaponName) && !string.IsNullOrEmpty(weaponSubclass);
         }
 
+        /*
         public static string GetFromGlobalName(string globalName, GlobalNameData data)
         {
             string[] globalNameSplit = globalName.Split(',');
@@ -267,6 +271,7 @@ public class Item_CustomWeapon : IItemModule
                 SetViewModel(player, oldModel);
             }
         }
+        */
 
         public static bool HandleEquip(CCSPlayerController player, Dictionary<string, string> item, bool isEquip)
         {
@@ -305,6 +310,7 @@ public class Item_CustomWeapon : IItemModule
                 : (weaponServices.MyWeapons.SingleOrDefault(p => p.Value != null && GetDesignerName(p.Value) == weaponName)?.Value);
         }
 
+        /*
         public static string GetViewModel(CCSPlayerController player)
         {
             var entity = ViewModel(player);
@@ -348,7 +354,9 @@ public class Item_CustomWeapon : IItemModule
                 SetViewModel(player, model);
             }
         }
+        */
 
+        // Summary: Animgraph2 uses ChangeSubclass; keep subclass-based apply path.
         public static void SetSubclass(CBasePlayerWeapon weapon, string oldSubclass, string newSubclass)
         {
             if (string.IsNullOrEmpty(newSubclass))
@@ -373,6 +381,7 @@ public class Item_CustomWeapon : IItemModule
             OldSubclassByHandle.Remove(handle);
         }
 
+        /*
         private static CBaseEntity? ViewModel(CCSPlayerController player)
         {
             var pawn = player.PlayerPawn.Value;
@@ -389,6 +398,7 @@ public class Item_CustomWeapon : IItemModule
 
             return new CHandle<CBaseEntity>(handle).Value;
         }
+        */
     }
 
     public static void Inspect(CCSPlayerController player, string weapon)
