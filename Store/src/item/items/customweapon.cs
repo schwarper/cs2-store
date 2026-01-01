@@ -219,6 +219,7 @@ public class Item_CustomWeapon : IItemModule
             return (weaponDesignerName, weaponIndex) switch
             {
                 var (name, _) when name.Contains("bayonet") => "weapon_knife",
+                ("weapon_deagle", 64) => "weapon_revolver",
                 ("weapon_m4a1", 60) => "weapon_m4a1_silencer",
                 ("weapon_hkp2000", 61) => "weapon_usp_silencer",
                 ("weapon_mp7", 23) => "weapon_mp5sd",
