@@ -4,3 +4,4 @@
 
 # Ignore everything in BuildOutput directory
 BuildOutput/
+shared/

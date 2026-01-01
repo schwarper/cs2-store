@@ -142,7 +142,7 @@ public static class Event
     {
         Item_Smoke.OnEntityCreated(entity);
         Item_GrenadeTrail.OnEntityCreated(entity);
-        //Item_CustomWeapon.OnEntityCreated(entity);
+        Item_CustomWeapon.OnEntityCreated(entity);
     }
 
     private static void OnClientAuthorized(int playerSlot, SteamID steamId)
