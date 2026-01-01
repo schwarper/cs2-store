@@ -86,6 +86,14 @@ public static class Item
 
     public static bool Purchase(CCSPlayerController player, Dictionary<string, string> item)
     {
+        if (Instance.GlobalStorePlayerItems.Any(p =>
+                p.SteamID == player.SteamID &&
+                p.Type == item["type"] &&
+                p.UniqueId == item["uniqueid"]))
+        {
+            return false;
+        }
+
         if (Credits.Get(player) < int.Parse(item["price"]))
         {
             player.PrintToChatMessage("No credits enough");
