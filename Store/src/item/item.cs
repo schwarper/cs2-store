@@ -86,6 +86,14 @@ public static class Item
 
     public static bool Purchase(CCSPlayerController player, Dictionary<string, string> item)
     {
+        if (Instance.GlobalStorePlayerItems.Any(p =>
+                p.SteamID == player.SteamID &&
+                p.Type == item["type"] &&
+                p.UniqueId == item["uniqueid"]))
+        {
+            return false;
+        }
+
         if (Credits.Get(player) < int.Parse(item["price"]))
         {
             player.PrintToChatMessage("No credits enough");
@@ -209,10 +217,10 @@ public static class Item
                     return false;
                 
                 Dictionary<string, string>? equippedItem = GetItem(p.UniqueId);
-                return equippedItem != null && 
+                return equippedItem != null &&
                        equippedItem.TryGetValue("weapon", out string? equippedWeapon) &&
                        item.TryGetValue("weapon", out string? newWeapon) &&
-                       equippedWeapon == newWeapon;
+                       SameWeaponBase(equippedWeapon, newWeapon);
             })],
 
             "equipment" => [.. Instance.GlobalStorePlayerEquipments.FindAll(p =>
@@ -225,6 +233,25 @@ public static class Item
                 p.Type == itemType &&
                 p.Slot == int.Parse(item["slot"]))]
         };
+    }
+
+    private static bool SameWeaponBase(string equippedWeapon, string newWeapon)
+    {
+        if (string.IsNullOrEmpty(equippedWeapon) || string.IsNullOrEmpty(newWeapon))
+        {
+            return false;
+        }
+
+        string equippedBase = GetWeaponBase(equippedWeapon);
+        string newBase = GetWeaponBase(newWeapon);
+
+        return string.Equals(equippedBase, newBase, StringComparison.Ordinal);
+    }
+
+    private static string GetWeaponBase(string weaponSpec)
+    {
+        int idx = weaponSpec.IndexOf(':');
+        return idx > 0 ? weaponSpec[..idx] : weaponSpec;
     }
 
     public static bool Unequip(CCSPlayerController player, Dictionary<string, string> item, bool update)

@@ -1,4 +1,3 @@
-﻿/*
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
@@ -42,17 +41,6 @@ public class Item_CustomWeapon : IItemModule
 
     public void OnServerPrecacheResources(ResourceManifest manifest)
     {
-        List<KeyValuePair<string, Dictionary<string, string>>> items = Item.GetItemsByType("customweapon");
-
-        foreach (KeyValuePair<string, Dictionary<string, string>> item in items)
-        {
-            manifest.AddResource(item.Value["viewmodel"]);
-
-            if (item.Value.TryGetValue("worldmodel", out string? worldmodel) && !string.IsNullOrEmpty(worldmodel))
-            {
-                manifest.AddResource(worldmodel);
-            }
-        }
     }
 
     public bool OnEquip(CCSPlayerController player, Dictionary<string, string> item)
@@ -143,14 +131,18 @@ public class Item_CustomWeapon : IItemModule
         string weaponDesignerName, EntityType entityType, CCSPlayerController player)
     {
         Dictionary<string, string>? itemData = Item.GetItem(equipment.UniqueId);
-        if (itemData == null || !weaponDesignerName.Contains(itemData["weapon"])) return;
+        if (itemData == null) return;
 
-        itemData.TryGetValue("worldmodel", out string? worldModel);
-        worldModel = string.IsNullOrEmpty(worldModel) ? itemData["viewmodel"] : worldModel;
+        if (!Weapon.TryParseWeaponSpec(itemData["weapon"], out string weaponBase, out string weaponSubclass))
+        {
+            return;
+        }
+
+        if (!weaponDesignerName.Equals(weaponBase, StringComparison.Ordinal)) return;
 
         try
         {
-            ApplyModelToEntity(entity, entityType, player, itemData["viewmodel"], worldModel);
+            ApplyModelToEntity(entity, entityType, player, weaponBase, weaponSubclass);
         }
         catch (Exception ex)
         {
@@ -159,7 +151,7 @@ public class Item_CustomWeapon : IItemModule
     }
 
     private static void ApplyModelToEntity(CEntityInstance entity, EntityType entityType,
-        CCSPlayerController player, string viewModel, string worldModel)
+        CCSPlayerController player, string weaponBase, string weaponSubclass)
     {
         switch (entityType)
         {
@@ -167,16 +159,10 @@ public class Item_CustomWeapon : IItemModule
                 CBasePlayerWeapon weapon = entity.As<CBasePlayerWeapon>();
                 if (weapon?.IsValid != true || weapon.OriginalOwnerXuidLow <= 0) return;
 
-                CBasePlayerWeapon? activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
-                Weapon.UpdateModel(player, weapon, viewModel, worldModel, weapon == activeWeapon);
+                Weapon.SetSubclass(weapon, weaponBase, weaponSubclass);
                 break;
 
             case EntityType.Projectile:
-                CBaseCSGrenadeProjectile projectile = entity.As<CBaseCSGrenadeProjectile>();
-                if (projectile?.IsValid == true)
-                {
-                    projectile.SetModel(worldModel);
-                }
                 break;
         }
     }
@@ -186,11 +172,26 @@ public class Item_CustomWeapon : IItemModule
         CCSPlayerController? player = @event.Userid;
         if (player == null) return HookResult.Continue;
 
-        string? globalName = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value?.Globalname;
-        if (!string.IsNullOrEmpty(globalName))
+        CBasePlayerWeapon? activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
+        if (activeWeapon?.IsValid != true) return HookResult.Continue;
+
+        string weaponDesignerName = Weapon.GetDesignerName(activeWeapon);
+
+        List<StoreApi.Store.Store_Equipment> playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
+        foreach (StoreApi.Store.Store_Equipment equipment in playerEquipments)
         {
-            string model = Weapon.GetFromGlobalName(globalName, Weapon.GlobalNameData.ViewModel);
-            Weapon.SetViewModel(player, model);
+            Dictionary<string, string>? itemData = Item.GetItem(equipment.UniqueId);
+            if (itemData == null) continue;
+
+            if (!Weapon.TryParseWeaponSpec(itemData["weapon"], out string weaponBase, out string weaponSubclass))
+            {
+                continue;
+            }
+
+            if (!weaponDesignerName.Equals(weaponBase, StringComparison.Ordinal)) continue;
+
+            Weapon.SetSubclass(activeWeapon, weaponBase, weaponSubclass);
+            break;
         }
 
         return HookResult.Continue;
@@ -198,12 +199,17 @@ public class Item_CustomWeapon : IItemModule
 
     public class Weapon
     {
+        // Summary: Legacy viewmodel/worldmodel swapping is disabled; animgraph2 uses subclass changes instead.
+        /*
         public enum GlobalNameData
         {
             ViewModelDefault,
             ViewModel,
             WorldModel
         }
+        */
+
+        private static readonly Dictionary<nint, string> OldSubclassByHandle = new();
 
         public static string GetDesignerName(CBasePlayerWeapon weapon)
         {
@@ -213,6 +219,7 @@ public class Item_CustomWeapon : IItemModule
             return (weaponDesignerName, weaponIndex) switch
             {
                 var (name, _) when name.Contains("bayonet") => "weapon_knife",
+                ("weapon_deagle", 64) => "weapon_revolver",
                 ("weapon_m4a1", 60) => "weapon_m4a1_silencer",
                 ("weapon_hkp2000", 61) => "weapon_usp_silencer",
                 ("weapon_mp7", 23) => "weapon_mp5sd",
@@ -220,6 +227,24 @@ public class Item_CustomWeapon : IItemModule
             };
         }
 
+        public static bool TryParseWeaponSpec(string weaponSpec, out string weaponName, out string weaponSubclass)
+        {
+            weaponName = string.Empty;
+            weaponSubclass = string.Empty;
+
+            if (string.IsNullOrEmpty(weaponSpec))
+            {
+                return false;
+            }
+
+            string[] parts = weaponSpec.Split(':', 2);
+            weaponName = parts[0].Trim();
+            weaponSubclass = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+
+            return !string.IsNullOrEmpty(weaponName) && !string.IsNullOrEmpty(weaponSubclass);
+        }
+
+        /*
         public static string GetFromGlobalName(string globalName, GlobalNameData data)
         {
             string[] globalNameSplit = globalName.Split(',');
@@ -247,24 +272,27 @@ public class Item_CustomWeapon : IItemModule
                 SetViewModel(player, oldModel);
             }
         }
+        */
 
         public static bool HandleEquip(CCSPlayerController player, Dictionary<string, string> item, bool isEquip)
         {
             if (player.PawnIsAlive)
             {
-                CBasePlayerWeapon? weapon = Get(player, item["weapon"]);
+                if (!TryParseWeaponSpec(item["weapon"], out string weaponBase, out string weaponSubclass))
+                {
+                    return true;
+                }
+
+                CBasePlayerWeapon? weapon = Get(player, weaponBase);
                 if (weapon != null)
                 {
-                    bool equip = weapon == player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
-
                     if (isEquip)
                     {
-                        item.TryGetValue("worldmodel", out string? worldModel);
-                        UpdateModel(player, weapon, item["viewmodel"], worldModel, equip);
+                        SetSubclass(weapon, weaponBase, weaponSubclass);
                     }
                     else
                     {
-                        ResetWeapon(player, weapon, equip);
+                        ResetSubclass(weapon);
                     }
                 }
             }
@@ -283,6 +311,7 @@ public class Item_CustomWeapon : IItemModule
                 : (weaponServices.MyWeapons.SingleOrDefault(p => p.Value != null && GetDesignerName(p.Value) == weaponName)?.Value);
         }
 
+        /*
         public static string GetViewModel(CCSPlayerController player)
         {
             var entity = ViewModel(player);
@@ -326,7 +355,34 @@ public class Item_CustomWeapon : IItemModule
                 SetViewModel(player, model);
             }
         }
+        */
 
+        // Summary: Animgraph2 uses ChangeSubclass; keep subclass-based apply path.
+        public static void SetSubclass(CBasePlayerWeapon weapon, string oldSubclass, string newSubclass)
+        {
+            if (string.IsNullOrEmpty(newSubclass))
+            {
+                return;
+            }
+
+            var handle = weapon.Handle;
+            OldSubclassByHandle[handle] = oldSubclass;
+            weapon.AcceptInput("ChangeSubclass", weapon, weapon, newSubclass);
+        }
+
+        public static void ResetSubclass(CBasePlayerWeapon weapon)
+        {
+            var handle = weapon.Handle;
+            if (!OldSubclassByHandle.TryGetValue(handle, out string? oldSubclass) || string.IsNullOrEmpty(oldSubclass))
+            {
+                return;
+            }
+
+            weapon.AcceptInput("ChangeSubclass", weapon, weapon, oldSubclass);
+            OldSubclassByHandle.Remove(handle);
+        }
+
+        /*
         private static CBaseEntity? ViewModel(CCSPlayerController player)
         {
             var pawn = player.PlayerPawn.Value;
@@ -343,30 +399,32 @@ public class Item_CustomWeapon : IItemModule
 
             return new CHandle<CBaseEntity>(handle).Value;
         }
+        */
     }
 
-    public static void Inspect(CCSPlayerController player, string model, string weapon)
+    public static void Inspect(CCSPlayerController player, string weapon)
     {
         if (player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value is not CBasePlayerWeapon activeWeapon) return;
 
-        if (Weapon.GetDesignerName(activeWeapon) != weapon)
+        if (!Weapon.TryParseWeaponSpec(weapon, out string weaponBase, out string weaponSubclass))
         {
-            player.PrintToChatMessage("You need correct weapon", weapon);
             return;
         }
 
-        string globalName = activeWeapon.Globalname;
-        string oldModel = !string.IsNullOrEmpty(globalName) ? Weapon.GetFromGlobalName(globalName, Weapon.GlobalNameData.ViewModel) : Weapon.GetViewModel(player);
+        if (Weapon.GetDesignerName(activeWeapon) != weaponBase)
+        {
+            player.PrintToChatMessage("You need correct weapon", weaponBase);
+            return;
+        }
 
-        Weapon.SetViewModel(player, model);
+        Weapon.SetSubclass(activeWeapon, weaponBase, weaponSubclass);
 
         Instance.AddTimer(3.0f, () =>
         {
             if (player.IsValid && player.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value == activeWeapon)
             {
-                Weapon.SetViewModel(player, oldModel);
+                Weapon.ResetSubclass(activeWeapon);
             }
         });
     }
 }
-*/

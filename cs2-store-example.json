@@ -239,17 +239,15 @@
       }
     },
     "Custom Weapon": {
-      "AK47": {
-        "Default AK47": {
-          "uniqueid": "defaultak47cw",
-          "viewmodel": "weapons/models/ak47/weapon_rif_ak47.vmdl",
-          "worldmodel": "",
-          "type": "customweapon",
-          "weapon": "weapon_ak47",
-          "price": "1000",
-          "slot": "1"
+        "AK47": {
+          "Default AK47": {
+            "uniqueid": "defaultak47cw",
+            "type": "customweapon",
+            "weapon": "weapon_ak47:weapon_ak47+1550",
+            "price": "1000",
+            "slot": "1"
+          }
         }
-      }
     },
     "Pet": {
       "Chicken": {

@@ -20,31 +20,7 @@ public static class Menu
 
     public static void OpenMenu(CCSPlayerController player, string title, JsonElement elementData, bool inventory, IMenu? prevMenu)
     {
-        BaseMenu menu = CreateMenuByType(title);
-        menu.PrevMenu = prevMenu;
-
-        List<JsonProperty> items = elementData.GetElementJsonProperty(["flag", "team"]);
-        foreach (JsonProperty item in items)
-        {
-            if (item.Value.TryGetProperty("flag", out JsonElement flagElement) && !CheckFlag(player, flagElement.ToString(), true))
-                continue;
-
-            if (item.Value.TryGetProperty("team", out JsonElement teamElement) && player.Team.ToString() != teamElement.ToString())
-                continue;
-
-            if (item.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
-            {
-                menu.AddItems(player, uniqueIdElement, inventory, menu);
-                continue;
-            }
-
-            if (inventory && !Item.PlayerHasAny(player, item.Value))
-                continue;
-
-            string categoryName = GetCategoryName(player, item);
-            menu.AddItem(categoryName, (p, o) => OpenMenu(p, categoryName, item.Value, inventory, menu));
-        }
-
+        BaseMenu menu = BuildMenu(player, title, elementData, inventory, prevMenu);
         menu.Display(player, 0);
     }
 
@@ -86,7 +62,8 @@ public static class Menu
         }
         else if (Item.Purchase(player, item))
         {
-            DisplayItemOption(player, item, inventory, prevMenu);
+            IMenu? refreshedPrevMenu = RefreshPrevMenu(player, item, inventory, prevMenu);
+            DisplayItemOption(player, item, inventory, refreshedPrevMenu);
         }
         else
         {
@@ -97,7 +74,7 @@ public static class Menu
         }
     }
 
-    public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item, bool inventory, IMenu prevMenu)
+    public static void DisplayItemOption(CCSPlayerController player, Dictionary<string, string> item, bool inventory, IMenu? prevMenu)
     {
         BaseMenu menu = CreateMenuByType(Item.GetItemName(player, item));
         menu.PrevMenu = prevMenu;
@@ -167,7 +144,8 @@ public static class Menu
             if (Item.Purchase(p, item))
             {
                 p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundYes}");
-                DisplayItemOption(p, item, inventory, prevMenu);
+                IMenu? refreshedPrevMenu = RefreshPrevMenu(p, item, inventory, prevMenu);
+                DisplayItemOption(p, item, inventory, refreshedPrevMenu);
             }
             else
             {
@@ -198,5 +176,83 @@ public static class Menu
 
             InspectAction(p, item, item["type"]);
         }, "menu_store<inspect>");
+    }
+
+    private static BaseMenu BuildMenu(CCSPlayerController player, string title, JsonElement elementData, bool inventory, IMenu? prevMenu)
+    {
+        BaseMenu menu = CreateMenuByType(title);
+        menu.PrevMenu = prevMenu;
+
+        List<JsonProperty> items = elementData.GetElementJsonProperty(["flag", "team"]);
+        foreach (JsonProperty item in items)
+        {
+            if (item.Value.TryGetProperty("flag", out JsonElement flagElement) && !CheckFlag(player, flagElement.ToString(), true))
+                continue;
+
+            if (item.Value.TryGetProperty("team", out JsonElement teamElement) && player.Team.ToString() != teamElement.ToString())
+                continue;
+
+            if (item.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
+            {
+                menu.AddItems(player, uniqueIdElement, inventory, menu);
+                continue;
+            }
+
+            if (inventory && !Item.PlayerHasAny(player, item.Value))
+                continue;
+
+            string categoryName = GetCategoryName(player, item);
+            menu.AddItem(categoryName, (p, o) => OpenMenu(p, categoryName, item.Value, inventory, menu));
+        }
+
+        return menu;
+    }
+
+    private static IMenu? RefreshPrevMenu(CCSPlayerController player, Dictionary<string, string> item, bool inventory, IMenu? prevMenu)
+    {
+        if (prevMenu == null)
+            return prevMenu;
+
+        if (!item.TryGetValue("uniqueid", out string? uniqueId) || string.IsNullOrEmpty(uniqueId))
+            return prevMenu;
+
+        if (!TryFindCategoryForItem(Instance.Config.Items, null, uniqueId, out JsonElement categoryElement, out string? categoryName))
+            return prevMenu;
+
+        if (string.IsNullOrEmpty(categoryName))
+            return prevMenu;
+
+        string title = Instance.Localizer.ForPlayer(player, categoryName);
+        IMenu? upperMenu = prevMenu.PrevMenu;
+
+        return BuildMenu(player, title, categoryElement, inventory, upperMenu);
+    }
+
+    private static bool TryFindCategoryForItem(JsonElement element, string? elementName, string uniqueId, out JsonElement category, out string? categoryName)
+    {
+        foreach (JsonProperty prop in element.EnumerateObject())
+        {
+            if (prop.Value.ValueKind != JsonValueKind.Object)
+                continue;
+
+            if (prop.Value.TryGetProperty("uniqueid", out JsonElement uniqueIdElement))
+            {
+                if (uniqueIdElement.GetString() == uniqueId)
+                {
+                    category = element;
+                    categoryName = elementName;
+                    return true;
+                }
+            }
+
+            if (TryFindCategoryForItem(prop.Value, prop.Name, uniqueId, out category, out categoryName))
+            {
+                return true;
+            }
+        }
+
+        category = default;
+        categoryName = null;
+        return false;
     }
 }
