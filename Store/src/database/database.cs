@@ -234,6 +234,12 @@ public static class Database
 
                     foreach (Store_Equipment newEquipment in equipments)
                     {
+                        Dictionary<string, string>? itemConfig = Item.GetItem(newEquipment.UniqueId);
+                        if (itemConfig != null && itemConfig.TryGetValue("enable", out string? enable) && enable != "true")
+                        {
+                            continue;
+                        }
+
                         Store_Equipment? existingEquipment = Instance.GlobalStorePlayerEquipments.FirstOrDefault(e => e.SteamID == newEquipment.SteamID && e.UniqueId == newEquipment.UniqueId);
                         if (existingEquipment != null)
                         {

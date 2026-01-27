@@ -67,7 +67,7 @@ public static class PlayerExtensions
         Color originalRender = pawn.Render;
 
         pawn.Render = Color.FromArgb(originalRender.A, color.R, color.G, color.B);
-        pawn.RenderMode = RenderMode_t.kRenderTransColor;
+        pawn.RenderMode = RenderMode_t.kRenderTransAlpha;
         Utilities.SetStateChanged(pawn, "CBaseModelEntity", "m_clrRender");
     }
 

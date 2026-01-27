@@ -165,6 +165,9 @@ public static class Item
     public static bool Equip(CCSPlayerController player, Dictionary<string, string> item)
     {
         string itemType = item["type"];
+        
+        if (item.TryGetValue("enable", out string? enable) && enable != "true")
+            return false;
 
         if (!ItemModuleManager.Modules.TryGetValue(itemType, out IItemModule? type))
             return false;
