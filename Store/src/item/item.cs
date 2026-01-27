@@ -165,10 +165,7 @@ public static class Item
     public static bool Equip(CCSPlayerController player, Dictionary<string, string> item)
     {
         string itemType = item["type"];
-
-        // Check if the item is enabled
-        // 检查是否启用该物品
-        // 169-174
+        
         if (item.TryGetValue("enable", out string? enable) && enable != "true")
             return false;
 
