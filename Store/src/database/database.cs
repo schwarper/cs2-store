@@ -234,6 +234,15 @@ public static class Database
 
                     foreach (Store_Equipment newEquipment in equipments)
                     {
+                        // Check if the item is enabled
+                        // 检查该物品是否启用237-245
+                        Dictionary<string, string>? itemConfig = Item.GetItem(newEquipment.UniqueId);
+                        if (itemConfig != null && itemConfig.TryGetValue("enable", out string? enable) && enable != "true")
+                        {
+                            // Skip this equipment if it's disabled
+                            continue;
+                        }
+
                         Store_Equipment? existingEquipment = Instance.GlobalStorePlayerEquipments.FirstOrDefault(e => e.SteamID == newEquipment.SteamID && e.UniqueId == newEquipment.UniqueId);
                         if (existingEquipment != null)
                         {

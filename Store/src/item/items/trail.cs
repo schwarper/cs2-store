@@ -141,7 +141,7 @@ public class Item_Trail : IItemModule
         if (color == null)
             return;
 
-        beam.RenderMode = RenderMode_t.kRenderTransColor;
+        beam.RenderMode = RenderMode_t.kRenderTransAlpha;
         beam.Width = itemdata.TryGetValue("width", out string? widthValue) && float.TryParse(widthValue, CultureInfo.InvariantCulture, out float width) ? width : 1.0f;
         beam.Render = (Color)color;
 

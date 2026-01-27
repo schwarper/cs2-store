@@ -166,6 +166,12 @@ public static class Item
     {
         string itemType = item["type"];
 
+        // Check if the item is enabled
+        // 检查是否启用该物品
+        // 169-174
+        if (item.TryGetValue("enable", out string? enable) && enable != "true")
+            return false;
+
         if (!ItemModuleManager.Modules.TryGetValue(itemType, out IItemModule? type))
             return false;
 
