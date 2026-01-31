@@ -57,7 +57,6 @@ public static class Command
     }
 
     [CommandHelper(minArgs: 2, "<name, #userid, all @ commands> <credits>", whoCanExecute: CommandUsage.CLIENT_AND_SERVER)]
-    [RequiresPermissions("@css/root")]
     public static void Command_GiveCredits(CCSPlayerController? player, CommandInfo command)
     {
         if (string.IsNullOrEmpty(Config.Permissions.GiveCredits) || !AdminManager.PlayerHasPermissions(player, Config.Permissions.GiveCredits))
