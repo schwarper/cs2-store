@@ -15,6 +15,7 @@
   "No equip because team": "{white}Te predmete ne morete opremiti. Morate biti v ekipi {red}{0} {white}.",
   "You need correct weapon": "{white}Potrebujete {red}{0} {white}za pregled.",
   "Players' credits are refreshed": "Krediti igralcev so bili osveženi.",
+  "You dont have enough money": "{white}Za nakup potrebuješ {red}{1} {white}kreditov. Imaš samo {green}{0} {white}kreditov.",
 
   "t team players": "{green}Zaporniki",
   "ct team players": "{green}Pazniki",
@@ -47,6 +48,7 @@
   "menu_store<no>": "Ne",
   "menu_store<confirm_item>": "{0} - {1} krediti",
   "menu_store<inspect>": "Pregledati",
+  "menu_store<purchase_item>": "Kupi",
 
   "css_credits": "{white}Trenutno imaš {green}{0} {white}kreditov.",
   "css_givecredits<player>": "{blue}{0} {white}je dal {lightblue}{2} kredite {white}igralcu {green}{1}{white}.",

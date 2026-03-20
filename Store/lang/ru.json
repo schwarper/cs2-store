@@ -15,6 +15,7 @@
 	"No equip because team": "{white}Вы не можете экипировать этот предмет. Вы должны быть в команде {red}{0} {white}.",
 	"You need correct weapon": "{white}Вам нужно {red}{0} {white}для осмотра.",
 	"Players' credits are refreshed": "Кредиты игроков обновлены.",
+	"You dont have enough money": "{white}Вам нужно {red}{1} {white}кредитов для покупки. У вас есть только {green}{0} {white}кредитов.",
 
 	"t team players": "{green}Игроки {white}в команде t team",
 	"ct team players": "{green}Игроки {white}в команде ct team",
@@ -47,6 +48,7 @@
 	"menu_store<no>": "Нет",
 	"menu_store<confirm_item>": "{0} - {1} креди",
 	"menu_store<inspect>": "Проверить",
+	"menu_store<purchase_item>": "Купить",
 
 	"css_credits": "{white}У вас {green}{0} {white}кредитов.",
 	"css_givecredits<player>": "{blue}{0} {white}передал {green}{2} кредитов {white}{green}{1}{white}.",

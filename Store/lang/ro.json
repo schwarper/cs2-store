@@ -15,6 +15,7 @@
   "No equip because team": "{white}Nu poți echipa acest articol. Trebuie să fii în echipa {red}{0} {white}.",
   "You need correct weapon": "{white}Ai nevoie de {red}{0} {white}pentru a inspecta.",
   "Players' credits are refreshed": "Creditele jucătorilor au fost reîmprospătate.",
+  "You dont have enough money": "{white}Ai nevoie de {red}{1} {white}credite pentru a cumpăra. Ai doar {green}{0} {white}credite.",
 
   "t team players": "{green}jucători echipa T {white}",
   "ct team players": "{green}jucători echipa CT {white}",
@@ -47,6 +48,7 @@
   "menu_store<no>": "Nu",
   "menu_store<confirm_item>": "{0} - {1} credite",
   "menu_store<inspect>": "Inspecta",
+  "menu_store<purchase_item>": "Cumpără",
 
   "css_credits": "{white}Ai {green}{0} {white}credite.",
   "css_givecredits<player>": "{blue}{0} {white}a dat {green}{2} credite {white}către {green}{1}{white}.",

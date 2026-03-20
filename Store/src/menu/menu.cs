@@ -45,10 +45,10 @@ public static class Menu
         }
         else if (!inventory && !item.IsHidden())
         {
-            menu.AddMenuOption(player, (p, o) => SelectPurchase(p, item, int.Parse(item["price"]) > 0, inventory, prevMenu),
-                Item.CanBuy(player, item) ? DisableOption.None : DisableOption.DisableHideNumber,
-                int.Parse(item["price"]) <= 0 ? "menu_store<purchase1>" : "menu_store<purchase>",
-                Item.GetItemName(player, item), item["price"]);
+            menu.AddMenuOption(player, (p, o) =>
+            {
+                PrepurchaseMenu(p, item, inventory, prevMenu);
+            }, Item.GetItemName(player, item));
         }
     }
 
@@ -157,8 +157,39 @@ public static class Menu
         menu.AddMenuOption(player, (p, o) =>
         {
             p.ExecuteClientCommand($"play {Config.Menu.MenuPressSoundNo}");
-            DisplayStore(p, inventory);
+            prevMenu.Display(p, 0);
+            //DisplayStore(p, inventory);
         }, "menu_store<no>");
+        menu.Display(player, 0);
+    }
+
+    public static void PrepurchaseMenu(CCSPlayerController player, Dictionary<string, string> item, bool inventory, IMenu prevMenu)
+    {
+        BaseMenu menu = CreateMenuByType(Item.GetItemName(player, item));
+        menu.PrevMenu = prevMenu;
+
+        menu.AddMenuOption(player, DisableOption.DisableHideNumber, 
+                int.Parse(item["price"]) <= 0 ? "menu_store<purchase1>" : "menu_store<purchase>",
+                Item.GetItemName(player, item), item["price"]);
+        
+        menu.AddInspectOption(player, item);
+
+        menu.AddMenuOption(player, (p, o) =>
+        {
+            int playerCredits = Credits.Get(player);
+            int itemCredits = int.Parse(item["price"]);
+
+            if (playerCredits >= itemCredits)
+            {
+                SelectPurchase(p, item, itemCredits > 0, inventory, menu);
+            }
+            else
+            {
+                o.PostSelectAction = PostSelectAction.Nothing;
+                p.PrintToChatMessage("You dont have enough money", playerCredits, itemCredits);
+            }
+        }, "menu_store<purchase_item>");
+
         menu.Display(player, 0);
     }
 

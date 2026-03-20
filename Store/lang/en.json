@@ -15,6 +15,7 @@
   "No equip because team": "{white}You cannot equip this item. You need to be in {red}{0} {white}team.",
   "You need correct weapon": "{white}You need {red}{0} {white}to inspect.",
   "Players' credits are refreshed": "Players' credits are refreshed.",
+  "You dont have enough money": "{white}You need {red}{1} {white}credits to purchase. You have only {green}{0} {white}credits.",
 
   "t team players": "{green}t team {white}players",
   "ct team players": "{green}ct team {white}players",
@@ -47,6 +48,7 @@
   "menu_store<no>": "No",
   "menu_store<confirm_item>": "{0} - {1} credits",
   "menu_store<inspect>": "Inspect",
+  "menu_store<purchase_item>":  "Purchase",
 
   "css_credits": "{white}You have {green}{0} {white}credits.",
   "css_givecredits<player>": "{blue}{0} {white}gave {green}{2} credits {white}to {green}{1}{white}.",
