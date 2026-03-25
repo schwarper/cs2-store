@@ -33,6 +33,7 @@ public class Item_PlayerSkin : IItemModule
                 Instance.AddCommand(command, "Turn on playerskins models", Command_Model1);
 
             Instance.RegisterEventHandler<EventPlayerSpawn>(OnPlayerSpawn);
+            Instance.RegisterEventHandler<EventPlayerTeam>(OnPlayerTeam);
             Instance.RegisterEventHandler<EventRoundStart>(OnRoundStart, HookMode.Pre);
         }
     }
@@ -72,14 +73,19 @@ public class Item_PlayerSkin : IItemModule
 
     public static HookResult OnPlayerSpawn(EventPlayerSpawn @event, GameEventInfo info)
     {
-        CCSPlayerController? player = @event.Userid;
-        if (player == null || player.TeamNum < 2)
+        if (@event.Userid is not { } player)
             return HookResult.Continue;
 
-        (string modelname, bool disableleg, string? skin)? modelData = GetModel(player, player.TeamNum);
-        if (modelData.HasValue)
-            player.ChangeModelDelay(modelData.Value.modelname, modelData.Value.disableleg, player.TeamNum, modelData.Value.skin);
+        ChangeModelAfterSpawn(player, player.TeamNum);
+        return HookResult.Continue;
+    }
 
+    public static HookResult OnPlayerTeam(EventPlayerTeam @event, GameEventInfo info)
+    {
+        if (@event.Userid is not { } player)
+            return HookResult.Continue;
+
+        ChangeModelAfterSpawn(player, @event.Team);
         return HookResult.Continue;
     }
 
@@ -88,6 +94,17 @@ public class Item_PlayerSkin : IItemModule
         Instance.InspectList.Clear();
         ForceModelDefault = false;
         return HookResult.Continue;
+    }
+
+    private static void ChangeModelAfterSpawn(CCSPlayerController player, int team)
+    {
+        if (team != (int)CsTeam.Terrorist && team != (int)CsTeam.CounterTerrorist)
+            return;
+
+        (string modelname, bool disableleg, string? skin)? modelData = GetModel(player, team);
+
+        if (modelData.HasValue)
+            player.ChangeModelDelay(modelData.Value.modelname, modelData.Value.disableleg, team, modelData.Value.skin);
     }
 
     private static void Command_Model0(CCSPlayerController? player, CommandInfo info)

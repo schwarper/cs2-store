@@ -49,11 +49,13 @@ public class Item_GrenadeTrail : IItemModule
     {
         if (!_grenadeTrailExists || !entity.DesignerName.EndsWith("_projectile")) return;
 
-        CBaseCSGrenadeProjectile grenade = new(entity.Handle);
-        if (grenade.Handle == IntPtr.Zero) return;
-
-        Server.NextFrame(() =>
+        Server.NextWorldUpdate(() =>
         {
+            if (!entity.IsValid) return;
+
+            CBaseCSGrenadeProjectile grenade = entity.As<CBaseCSGrenadeProjectile>();
+            if (!grenade.IsValid) return;
+
             CBasePlayerController? player = grenade.Thrower.Value?.Controller.Value;
             if (player == null) return;
 
