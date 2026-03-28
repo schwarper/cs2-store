@@ -421,7 +421,7 @@ public class Item_CustomWeapon : IItemModule
 
         Instance.AddTimer(3.0f, () =>
         {
-            if (player.IsValid && player.PlayerPawn.Value.WeaponServices.ActiveWeapon.Value == activeWeapon)
+            if (activeWeapon.IsValid)
             {
                 Weapon.ResetSubclass(activeWeapon);
             }
