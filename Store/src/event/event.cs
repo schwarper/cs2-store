@@ -116,11 +116,9 @@ public static class Event
 
     public static void OnTick()
     {
-        List<CCSPlayerController> players = Utilities.GetPlayers();
-
-        foreach (CCSPlayerController player in players)
+        foreach (var player in Instance.ActivePlayerSlots)
         {
-            if (!player.PawnIsAlive) continue;
+            if (player is null || !player.IsValid || !player.PawnIsAlive) continue;
 
             Item_Bunnyhop.OnTick(player);
         }
@@ -131,8 +129,10 @@ public static class Event
 
         Instance.GlobalTickrate = 0;
 
-        foreach (CCSPlayerController player in players)
+        foreach (var player in Instance.ActivePlayerSlots)
         {
+            if (player is null || !player.IsValid) continue;
+
             Item_Trail.OnTick(player);
             Item_ColoredSkin.OnTick(player);
         }
@@ -172,6 +172,7 @@ public static class Event
         }
 
         Instance.GlobalGiftTimeout[player] = 0;
+        Instance.ActivePlayerSlots[player.Slot] = player;
 
         Database.UpdateVip(player);
 
@@ -197,6 +198,7 @@ public static class Event
         Instance.GlobalStorePlayerItems.RemoveAll(i => i.SteamID == player.SteamID);
         Instance.GlobalStorePlayerEquipments.RemoveAll(e => e.SteamID == player.SteamID);
         Instance.GlobalGiftTimeout.Remove(player);
+        Instance.ActivePlayerSlots[player.Slot] = null;
 
         return HookResult.Continue;
     }
