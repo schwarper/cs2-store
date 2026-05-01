@@ -5,7 +5,7 @@
         "team": "CounterTerrorist",
         "Fernandez Frogman [CT]": {
           "uniqueid": "frogman",
-          "model": "characters/models/ctm_diver/ctm_diver_variantb.vmdl",
+          "model": "agents/models/ctm_diver/ctm_diver_variantb.vmdl",
           "armModel": "",
           "type": "playerskin",
           "price": "1000",
@@ -19,7 +19,7 @@
         "team": "Terrorist",
         "Number K": {
           "uniqueid": "numberk",
-          "model": "characters/models/tm_professional/tm_professional_vari.vmdl",
+          "model": "agents/models/tm_professional/tm_professional_vari.vmdl",
           "armModel": "",
           "type": "playerskin",
           "price": "1000",
@@ -34,7 +34,7 @@
       "flag": "@css/ban,@css/unban,76561199165718810",
       "Lieutenant Rex Krikey [ROOT-ALL]": {
         "uniqueid": "rexkrikey",
-        "model": "characters/models/ctm_diver/ctm_diver_variantc.vmdl",
+        "model": "agents/models/ctm_diver/ctm_diver_variantc.vmdl",
         "armModel": "",
         "type": "playerskin",
         "price": "1000",
