@@ -47,8 +47,8 @@ PlayerSkinsOn = [ "model1", "modelon" ]
 
 [DefaultModels]
 # Default player models for each team. Leave empty if not used.
-Terrorist = [ "characters/models/tm_leet/tm_leet_variantj.vmdl" ]
-CounterTerrorist = [ "characters/models/ctm_fbi/ctm_fbi_variantb.vmdl" ]
+Terrorist = [ "agents/models/tm_leet/tm_leet_variantj.vmdl" ]
+CounterTerrorist = [ "agents/models/ctm_fbi/ctm_fbi_variantb.vmdl" ]
 
 # If true, disables the legs of default models.
 DefaultModelDisableLeg = false
