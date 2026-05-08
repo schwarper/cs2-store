@@ -42,6 +42,8 @@ RefreshPlayersCredits = [ "refreshcredits" ]
 HideTrails = [ "hidetrails" ]
 PlayerSkinsOff = [ "model0", "modeloff" ]
 PlayerSkinsOn = [ "model1", "modelon" ]
+CapStatus = [ "capstatus" ]
+CapReset = [ "capreset" ]
 
 # ─────────────────────────────
 
@@ -132,9 +134,43 @@ EnableLog = false
 
 # ─────────────────────────────
 
+
+[DailyEarnedCreditsCap]
+# Enables daily cap for positive credits earned from gameplay rewards only.
+# Manual/admin/API/other external credits are not capped.
+Enabled = true
+
+# Maximum positive gameplay credits a player can earn during one cap window.
+MaxCreditsPerDay = 70
+
+# Cap window duration in hours. After this duration, earned gameplay credits reset.
+ResetEveryHours = 24
+
+# If true, uses translations from language files for cap messages.
+# If false, uses the custom messages below from config.
+UseLocalizedMessages = true
+
+# If true, sends a one-time message when a player reaches the cap.
+NotifyOnceOnReached = true
+
+# Message when cap is reached. Placeholders: {0}=earned, {1}=max.
+ReachedCapMessage = "{green}You reached the daily gameplay cap ({0}/{1})."
+
+# Message for /capstatus. Placeholders: {0}=earned, {1}=max, {2}=remaining, {3}=time left.
+StatusMessage = "{green}Daily gameplay cap: {0}/{1} earned, {2} remaining, reset in {3}."
+
+# Message shown when /capstatus is used but cap is disabled.
+DisabledStatusMessage = "{yellow}Daily gameplay cap is disabled."
+
+# Message for cap reset command. Placeholder: {0}=target name/group.
+ResetSuccessMessage = "{green}Daily gameplay cap has been reset for {0}."
+
 [Permissions]
 # Required flag to toggle player model (model0/model1) features
 Model0Model1Flag = "@css/root"
 
 # Required flag to access /givecredits command
 GiveCredits = "@css/root"
+
+# Required flag to access /capreset command
+CapReset = "@css/root"

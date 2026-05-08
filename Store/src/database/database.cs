@@ -4,6 +4,7 @@ using CounterStrikeSharp.API.Modules.Admin;
 using Dapper;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
+using System.Globalization;
 using static Store.Config_Config;
 using static Store.Store;
 using static StoreApi.Store;
@@ -12,7 +13,44 @@ namespace Store;
 
 public static class Database
 {
+    private sealed class StorePlayerRow
+    {
+        public ulong SteamID { get; set; }
+        public string PlayerName { get; set; } = string.Empty;
+        public int Credits { get; set; }
+        public DateTime DateOfJoin { get; set; }
+        public DateTime DateOfLastJoin { get; set; }
+        public int DailyGameplayCreditsEarned { get; set; }
+        public string? DailyGameplayCreditsWindowStartText { get; set; }
+    }
+
     public static string GlobalDatabaseConnectionString { get; set; } = string.Empty;
+
+    private static async Task EnsureColumnExistsAsync(MySqlConnection connection, MySqlTransaction transaction, string tableName, string columnName, string columnDefinition)
+    {
+        int exists = await connection.ExecuteScalarAsync<int>(
+            @"
+                SELECT COUNT(*)
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = @TableName
+                  AND COLUMN_NAME = @ColumnName;
+            ",
+            new { TableName = tableName, ColumnName = columnName },
+            transaction: transaction
+        );
+
+        if (exists > 0)
+            return;
+
+        await connection.ExecuteAsync(
+            $@"
+                ALTER TABLE {tableName}
+                ADD COLUMN {columnName} {columnDefinition};
+            ",
+            transaction: transaction
+        );
+    }
 
     public static async Task<MySqlConnection> ConnectAsync()
     {
@@ -63,6 +101,8 @@ public static class Database
                     SteamID BIGINT UNSIGNED NOT NULL,
                     PlayerName VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
                     Credits INT NOT NULL,
+                    DailyGameplayCreditsEarned INT NOT NULL DEFAULT 0,
+                    DailyGameplayCreditsWindowStart DATETIME NULL,
                     DateOfJoin DATETIME NOT NULL,
                     DateOfLastJoin DATETIME NOT NULL,
                     Vip BOOLEAN NOT NULL,
@@ -70,6 +110,9 @@ public static class Database
                     UNIQUE KEY id (id),
                     UNIQUE KEY SteamID (SteamID)
                 );", transaction: transaction);
+
+            await EnsureColumnExistsAsync(connection, transaction, store_players, "DailyGameplayCreditsEarned", "INT NOT NULL DEFAULT 0");
+            await EnsureColumnExistsAsync(connection, transaction, store_players, "DailyGameplayCreditsWindowStart", "DATETIME NULL");
 
             await connection.ExecuteAsync($@"
                 CREATE TABLE IF NOT EXISTS {store_items} (
@@ -162,7 +205,19 @@ public static class Database
                 using MySqlConnection connection = await ConnectAsync();
 
                 SqlMapper.GridReader multiQuery = await connection.QueryMultipleAsync($@"
-                SELECT * FROM {Config.DatabaseConnection.StorePlayersName} WHERE SteamID = @SteamID;
+                SELECT
+                    SteamID,
+                    PlayerName,
+                    Credits,
+                    DateOfJoin,
+                    DateOfLastJoin,
+                    COALESCE(DailyGameplayCreditsEarned, 0) AS DailyGameplayCreditsEarned,
+                    CASE
+                        WHEN DailyGameplayCreditsWindowStart IS NULL THEN NULL
+                        ELSE DATE_FORMAT(DailyGameplayCreditsWindowStart, '%Y-%m-%d %H:%i:%s')
+                    END AS DailyGameplayCreditsWindowStartText
+                FROM {Config.DatabaseConnection.StorePlayersName}
+                WHERE SteamID = @SteamID;
                 SELECT * FROM {Config.DatabaseConnection.StoreItemsName} WHERE SteamID = @SteamID AND(DateOfExpiration > @Now OR DateOfExpiration = '0001-01-01 00:00:00');
                 SELECT * FROM " + Config.DatabaseConnection.StoreEquipments + @" WHERE SteamID = @SteamID"
                 ,
@@ -172,7 +227,46 @@ public static class Database
                     DateTime.Now
                 });
 
-                Store_Player? playerData = await multiQuery.ReadFirstOrDefaultAsync<Store_Player>();
+                StorePlayerRow? playerRow = await multiQuery.ReadFirstOrDefaultAsync<StorePlayerRow>();
+                Store_Player? playerData = null;
+
+                if (playerRow != null)
+                {
+                    DateTime? parsedWindowStart = null;
+
+                    if (!string.IsNullOrWhiteSpace(playerRow.DailyGameplayCreditsWindowStartText))
+                    {
+                        if (DateTime.TryParseExact(
+                                playerRow.DailyGameplayCreditsWindowStartText,
+                                "yyyy-MM-dd HH:mm:ss",
+                                CultureInfo.InvariantCulture,
+                                DateTimeStyles.None,
+                                out DateTime parsedExact))
+                        {
+                            parsedWindowStart = parsedExact;
+                        }
+                        else if (DateTime.TryParse(
+                                     playerRow.DailyGameplayCreditsWindowStartText,
+                                     CultureInfo.InvariantCulture,
+                                     DateTimeStyles.None,
+                                     out DateTime parsedFallback))
+                        {
+                            parsedWindowStart = parsedFallback;
+                        }
+                    }
+
+                    playerData = new Store_Player
+                    {
+                        SteamID = playerRow.SteamID,
+                        PlayerName = playerRow.PlayerName,
+                        Credits = playerRow.Credits,
+                        OriginalCredits = playerRow.Credits,
+                        DateOfJoin = playerRow.DateOfJoin,
+                        DateOfLastJoin = playerRow.DateOfLastJoin,
+                        DailyGameplayCreditsEarned = playerRow.DailyGameplayCreditsEarned,
+                        DailyGameplayCreditsWindowStart = parsedWindowStart
+                    };
+                }
 
                 IEnumerable<Store_Item> items = await multiQuery.ReadAsync<Store_Item>();
 
@@ -188,6 +282,8 @@ public static class Database
                             PlayerName = PlayerName,
                             Credits = Config.Credits["default"].Start,
                             OriginalCredits = Config.Credits["default"].Start,
+                            DailyGameplayCreditsEarned = 0,
+                            DailyGameplayCreditsWindowStart = null,
                             DateOfJoin = DateTime.Now,
                             DateOfLastJoin = DateTime.Now,
                             bPlayerIsLoaded = true,
@@ -205,6 +301,8 @@ public static class Database
                             existingPlayer.PlayerName = playerData.PlayerName;
                             existingPlayer.Credits = Convert.ToInt32(playerData.Credits);
                             existingPlayer.OriginalCredits = existingPlayer.Credits;
+                            existingPlayer.DailyGameplayCreditsEarned = playerData.DailyGameplayCreditsEarned;
+                            existingPlayer.DailyGameplayCreditsWindowStart = playerData.DailyGameplayCreditsWindowStart;
                             existingPlayer.DateOfJoin = playerData.DateOfJoin;
                             existingPlayer.DateOfLastJoin = playerData.DateOfLastJoin;
                             existingPlayer.bPlayerIsLoaded = true;
@@ -304,6 +402,9 @@ public static class Database
         }
 
         int SetCredits = PlayerCredits - PlayerOriginalCredits;
+        Store_Player? storePlayer = Credits.GetStorePlayer(player);
+        int dailyGameplayCreditsEarned = storePlayer?.DailyGameplayCreditsEarned ?? 0;
+        DateTime? dailyGameplayCreditsWindowStart = storePlayer?.DailyGameplayCreditsWindowStart;
 
         ExecuteAsync($@"
                 UPDATE
@@ -311,6 +412,8 @@ public static class Database
                 SET
                     PlayerName = @PlayerName,
                     Credits = GREATEST(Credits + @SetCredits, 0), 
+                    DailyGameplayCreditsEarned = @DailyGameplayCreditsEarned,
+                    DailyGameplayCreditsWindowStart = @DailyGameplayCreditsWindowStart,
                     DateOfJoin = @DateOfJoin, 
                     DateOfLastJoin = @DateOfLastJoin
                 WHERE
@@ -320,6 +423,8 @@ public static class Database
             {
                 player.PlayerName,
                 SetCredits,
+                DailyGameplayCreditsEarned = dailyGameplayCreditsEarned,
+                DailyGameplayCreditsWindowStart = dailyGameplayCreditsWindowStart,
                 DateOfJoin = DateTime.Now,
                 DateOfLastJoin = DateTime.Now,
                 SteamId = player.SteamID,
@@ -406,6 +511,23 @@ public static class Database
             new
             {
                 player.SteamID
+            });
+    }
+
+    public static void ResetDailyGameplayCap(ulong steamId)
+    {
+        ExecuteAsync($@"
+                UPDATE
+                    {Config.DatabaseConnection.StorePlayersName}
+                SET
+                    DailyGameplayCreditsEarned = 0,
+                    DailyGameplayCreditsWindowStart = NULL
+                WHERE
+                    SteamID = @SteamID;
+            ",
+            new
+            {
+                SteamID = steamId
             });
     }
 

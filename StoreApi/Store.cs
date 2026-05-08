@@ -12,6 +12,8 @@ public abstract class Store
         public required string PlayerName { get; set; }
         public int Credits { get; set; }
         public int OriginalCredits { get; set; }
+        public int DailyGameplayCreditsEarned { get; set; }
+        public DateTime? DailyGameplayCreditsWindowStart { get; set; }
         public DateTime DateOfJoin { get; set; }
         public DateTime DateOfLastJoin { get; set; }
         public bool? bPlayerIsLoaded;

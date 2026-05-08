@@ -60,9 +60,9 @@
     "FreePlayerSkin":  "Free Player Skin",
     "CT":  "CT Skins",
     "Fernandez Frogman [CT]":  "*Fernandez Frogman [CT]*",
-    "cap_disabled":  "{white}Daily gameplay cap is disabled.",
-    "cap_status":  "{white}Daily gameplay cap: {green}{0}/{1}{white} earned, {green}{2}{white} remaining, reset in {green}{3}{white}.",
-    "cap_reached":  "{white}You reached the daily gameplay cap ({0}/{1}).",
-    "cap_reset_success":  "{white}Daily gameplay cap has been reset for {green}{0}{white}."
+    "cap_disabled":  "{white}Дневният лимит за игра е изключен.",
+    "cap_status":  "{white}Дневен лимит за игра: {green}{0}/{1}{white} спечелени, остават {green}{2}{white}, нулиране след {green}{3}{white}.",
+    "cap_reached":  "{white}Достигна дневния лимит за игра ({0}/{1}).",
+    "cap_reset_success":  "{white}Дневният лимит за игра беше нулиран за {green}{0}{white}."
 }
 
