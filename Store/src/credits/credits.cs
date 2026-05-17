@@ -1,5 +1,6 @@
 using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Core.Translations;
+using Store.Extension;
 using static Store.Config_Config;
 using static Store.Store;
 using static StoreApi.Store;
@@ -95,14 +96,9 @@ public static class Credits
         if (capConfig.NotifyOnceOnReached &&
             granted > 0 &&
             previousEarned < capConfig.MaxCreditsPerDay &&
-            storePlayer.DailyGameplayCreditsEarned >= capConfig.MaxCreditsPerDay &&
-            (!capConfig.UseLocalizedMessages || !string.IsNullOrWhiteSpace(capConfig.ReachedCapMessage)))
+            storePlayer.DailyGameplayCreditsEarned >= capConfig.MaxCreditsPerDay)
         {
-            string template = capConfig.UseLocalizedMessages
-                ? Instance.Localizer.ForPlayer(player, "cap_reached")
-                : capConfig.ReachedCapMessage;
-
-            player.PrintToChat($"{Config.Settings.Tag}{FormatCapMessage(template, storePlayer.DailyGameplayCreditsEarned, capConfig.MaxCreditsPerDay)}");
+            player.PrintToChatMessage("cap_reached", storePlayer.DailyGameplayCreditsEarned, capConfig.MaxCreditsPerDay);
         }
 
         return granted;

@@ -131,25 +131,13 @@ public static class Command
         Config_DailyEarnedCreditsCap capConfig = Config.DailyEarnedCreditsCap;
         if (!capConfig.Enabled || capConfig.MaxCreditsPerDay <= 0)
         {
-            string disabledMessage = capConfig.UseLocalizedMessages
-                ? Instance.Localizer.ForPlayer(player, "cap_disabled")
-                : capConfig.DisabledStatusMessage;
-
-            if (!string.IsNullOrWhiteSpace(disabledMessage))
-                player.PrintToChat($"{Config.Settings.Tag}{disabledMessage}");
-
+            player.PrintToChatMessage("cap_disabled");
             return;
         }
 
         Credits.GameplayCapStatus status = Credits.GetGameplayCapStatus(player);
         string timeLeft = $"{Math.Max((int)Math.Ceiling(status.TimeUntilReset.TotalHours), 0)}h";
-        string template = capConfig.UseLocalizedMessages
-            ? Instance.Localizer.ForPlayer(player, "cap_status")
-            : capConfig.StatusMessage;
-
-        string message = FormatCapMessage(template, status.EarnedCredits, status.MaxCredits, status.RemainingCredits, timeLeft);
-
-        player.PrintToChat($"{Config.Settings.Tag}{message}");
+        player.PrintToChatMessage("cap_status", status.EarnedCredits, status.MaxCredits, status.RemainingCredits, timeLeft);
     }
 
     [CommandHelper(minArgs: 2, "<name, #userid> <credits>", whoCanExecute: CommandUsage.CLIENT_ONLY)]
@@ -287,15 +275,7 @@ public static class Command
             Credits.ResetGameplayCap(target.StorePlayer);
             Database.ResetDailyGameplayCap(target.StorePlayer.SteamID);
 
-            string template = capConfig.UseLocalizedMessages
-                ? Instance.Localizer["cap_reset_success"]
-                : capConfig.ResetSuccessMessage;
-
-            if (!string.IsNullOrWhiteSpace(template))
-            {
-                Server.PrintToChatAll($"{Config.Settings.Tag}{FormatCapMessage(template, target.TargetName)}");
-            }
-
+            Server.PrintToChatAll($"{Config.Settings.Tag}{Instance.Localizer["cap_reset_success", target.TargetName]}");
             return;
         }
 
@@ -309,14 +289,7 @@ public static class Command
             Database.ResetDailyGameplayCap(storePlayer.SteamID);
         }
 
-        string groupTemplate = capConfig.UseLocalizedMessages
-            ? Instance.Localizer["cap_reset_success"]
-            : capConfig.ResetSuccessMessage;
-
-        if (!string.IsNullOrWhiteSpace(groupTemplate))
-        {
-            Server.PrintToChatAll($"{Config.Settings.Tag}{FormatCapMessage(groupTemplate, target.TargetName)}");
-        }
+        Server.PrintToChatAll($"{Config.Settings.Tag}{Instance.Localizer["cap_reset_success", target.TargetName]}");
     }
 
     [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]
@@ -330,17 +303,5 @@ public static class Command
         Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine($"{Config.Settings.Tag}{Instance.Localizer["Players' credits are refreshed"]}");
         Console.ResetColor();
-    }
-
-    private static string FormatCapMessage(string template, params object[] args)
-    {
-        try
-        {
-            return string.Format(template, args);
-        }
-        catch
-        {
-            return template;
-        }
     }
 }

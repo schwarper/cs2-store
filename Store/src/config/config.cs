@@ -65,10 +65,6 @@ public static class Config_Config
             : [];
 
         Config.Settings.Tag = Config.Settings.Tag.ReplaceColorTags();
-        Config.DailyEarnedCreditsCap.ReachedCapMessage = Config.DailyEarnedCreditsCap.ReachedCapMessage.ReplaceColorTags();
-        Config.DailyEarnedCreditsCap.StatusMessage = Config.DailyEarnedCreditsCap.StatusMessage.ReplaceColorTags();
-        Config.DailyEarnedCreditsCap.DisabledStatusMessage = Config.DailyEarnedCreditsCap.DisabledStatusMessage.ReplaceColorTags();
-        Config.DailyEarnedCreditsCap.ResetSuccessMessage = Config.DailyEarnedCreditsCap.ResetSuccessMessage.ReplaceColorTags();
     }
 }
 
@@ -165,10 +161,5 @@ public sealed class Config_DailyEarnedCreditsCap
     public bool Enabled { get; set; }
     public int MaxCreditsPerDay { get; set; } = 70;
     public int ResetEveryHours { get; set; } = 24;
-    public bool UseLocalizedMessages { get; set; } = true;
     public bool NotifyOnceOnReached { get; set; } = true;
-    public string ReachedCapMessage { get; set; } = "{green}You reached the daily gameplay cap ({0}/{1}).";
-    public string StatusMessage { get; set; } = "{green}Daily gameplay cap: {0}/{1} earned, {2} remaining, reset in {3}.";
-    public string DisabledStatusMessage { get; set; } = "{yellow}Daily gameplay cap is disabled.";
-    public string ResetSuccessMessage { get; set; } = "{green}Daily gameplay cap has been reset for {0}.";
 }
