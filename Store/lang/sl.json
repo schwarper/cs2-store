@@ -69,5 +69,10 @@
 
   "FreePlayerSkin": "Brezplačna skin igralca",
   "CT": "CT Skini",
-  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]"
+  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]",
+
+  "cap_disabled": "{white}Dnevna omejitev igranja je onemogočena.",
+  "cap_status": "{white}Dnevna omejitev igranja: {green}{0}/{1}{white} pridobljenih, {green}{2}{white} preostalih, ponastavitev čez {green}{3}{white}.",
+  "cap_reached": "{white}Dosegli ste dnevno omejitev igranja ({0}/{1}).",
+  "cap_reset_success": "{white}Dnevna omejitev igranja je bila ponastavljena za {green}{0}{white}."
 }

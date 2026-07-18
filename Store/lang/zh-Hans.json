@@ -69,5 +69,10 @@
 
   "FreePlayerSkin": "免费玩家皮肤",
   "CT": "反恐精英",
-  "Fernandez Frogman [CT]": "费尔南德斯蛙人 [CT]"
+  "Fernandez Frogman [CT]": "费尔南德斯蛙人 [CT]",
+
+  "cap_disabled": "{white}每日游玩上限已禁用。",
+  "cap_status": "{white}每日游玩上限：已获得 {green}{0}/{1}{white}，剩余 {green}{2}{white}，将在 {green}{3}{white} 后重置。",
+  "cap_reached": "{white}您已达到每日游玩上限 ({0}/{1})。",
+  "cap_reset_success": "{white}每日游玩上限已为 {green}{0}{white} 重置。"
 }

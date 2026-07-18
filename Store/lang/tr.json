@@ -69,5 +69,10 @@
 
   "FreePlayerSkin": "Ücretsiz Oyuncu Modeli",
   "CT": "CT Modelleri",
-  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]"
+  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]",
+
+  "cap_disabled": "{white}Günlük oyun sınırı devre dışı.",
+  "cap_status": "{white}Günlük oyun sınırı: {green}{0}/{1}{white} kazanıldı, {green}{2}{white} kaldı, sıfırlanmasına {green}{3}{white}.",
+  "cap_reached": "{white}Günlük oyun sınırına ulaştın ({0}/{1}).",
+  "cap_reset_success": "{white}Günlük oyun sınırı {green}{0}{white} için sıfırlandı."
 }

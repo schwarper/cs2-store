@@ -42,6 +42,8 @@ RefreshPlayersCredits = [ "refreshcredits" ]
 HideTrails = [ "hidetrails" ]
 PlayerSkinsOff = [ "model0", "modeloff" ]
 PlayerSkinsOn = [ "model1", "modelon" ]
+CapStatus = [ "capstatus" ]
+CapReset = [ "capreset" ]
 
 # ─────────────────────────────
 
@@ -132,9 +134,27 @@ EnableLog = false
 
 # ─────────────────────────────
 
+
+[DailyEarnedCreditsCap]
+# Enables daily cap for positive credits earned from gameplay rewards only.
+# Manual/admin/API/other external credits are not capped.
+Enabled = true
+
+# Maximum positive gameplay credits a player can earn during one cap window.
+MaxCreditsPerDay = 70
+
+# Cap window duration in hours. After this duration, earned gameplay credits reset.
+ResetEveryHours = 24
+
+# If true, sends a one-time message when a player reaches the cap.
+NotifyOnceOnReached = true
+
 [Permissions]
 # Required flag to toggle player model (model0/model1) features
 Model0Model1Flag = "@css/root"
 
 # Required flag to access /givecredits command
 GiveCredits = "@css/root"
+
+# Required flag to access /capreset command
+CapReset = "@css/root"

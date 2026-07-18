@@ -69,5 +69,10 @@
 
   "FreePlayerSkin": "Skin de jogador grátis",
   "CT": "Skins CT",
-  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]"
+  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]",
+
+  "cap_disabled": "{white}O limite diário de jogo está desativado.",
+  "cap_status": "{white}Limite diário de jogo: {green}{0}/{1}{white} ganho(s), {green}{2}{white} restante(s), reinicia em {green}{3}{white}.",
+  "cap_reached": "{white}Você atingiu o limite diário de jogo ({0}/{1}).",
+  "cap_reset_success": "{white}O limite diário de jogo foi reiniciado para {green}{0}{white}."
 }

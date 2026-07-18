@@ -1,0 +1,78 @@
+﻿{
+  "No matching client": "{white}Няма съвпадащ клиент",
+  "More than one client matched": "{white}Намерени са повече от един съвпадащи клиенти",
+  "Must be an integer": "{white}Въведената стойност трябва да е цяло число",
+  "Must be higher than zero": "{white}Въведената стойност трябва да е по-голяма от нула.",
+  "Must be a steamid": "{white}Въведената стойност трябва да е валиден steamid",
+  "No credits enough": "{white}Нямате достатъчно кредити.",
+  "You are not alive": "{white}Можете да купите това само когато сте живи.",
+  "You are alive": "{white}Можете да купите това само когато сте мъртви.",
+  "No in pistol round": "{white}Не можете да купите този предмет {green}{0} {white} в пистолетния рунд.",
+  "No gift yourself": "{white}Не можете да подарявате кредити на себе си.",
+  "No type found": "{white}Не е намерен тип. {red}{0}",
+  "Gift timeout": "{white}Трябва да изчакате {green}{0} секунди {white}, за да подарите.",
+  "No purchase because team": "{white}Не можете да закупите този предмет. Трябва да сте в отбор {red}{0} {white}.",
+  "No equip because team": "{white}Не можете да екипирате този предмет. Трябва да сте в отбор {red}{0} {white}.",
+  "You need correct weapon": "{white}Трябва ви {red}{0} {white}, за да инспектирате.",
+  "Players' credits are refreshed": "Кредитите на играчите са обновени.",
+  "You dont have enough money": "{white}Нужни са ви {red}{1} {white}кредити за покупка. Имате само {green}{0} {white}кредита.",
+
+  "t team players": "{green}Т отбор {white}играчи",
+  "ct team players": "{green}CT отбор {white}играчи",
+  "alive players": "{green}живи {white}играчи",
+  "all players": "{green}всички {white}играчи",
+  "dead players": "{green}мъртви {white}играчи",
+  "Console": "Конзола",
+
+  "Purchase Succeeded": "{white}Вие {white}купихте {green}{0}{white}.",
+  "Purchase Equip": "{white}Вие {white}екипирахте {green}{0}{white}.",
+  "Purchase Unequip": "{white}Вие {white}разекипирахте {green}{0}{white}.",
+  "Item Sell": "{white}Вие {white}продадохте {green}{0}{white}.",
+  "Godmode expired": "{white}Времето ви за безсмъртие изтече.",
+  "Speed expired": "{white}Времето ви за скорост изтече.",
+  "Hidetrails off": "{white}Вече можете да виждате следи.",
+  "Hidetrails on": "{white}Вече не можете да виждате следи.",
+
+  "menu_store<title>": "Магазин [Вашите кредити: {0}]",
+
+  "menu_store<all_title>": "Общи модели",
+  "menu_store<t_title>": "Т модели",
+  "menu_store<ct_title>": "CT модели",
+  "menu_store<purchase>": "{0} - [{1}]",
+  "menu_store<purchase1>": "{0}",
+  "menu_store<equip>": "ЕКИПИРАЙ",
+  "menu_store<unequip>": "РАЗЕКИПИРАЙ",
+  "menu_store<sell>": "ПРОДАЙ [{0}]",
+  "menu_store<confirm_title>": "Купуване?",
+  "menu_store<yes>": "Да",
+  "menu_store<no>": "Не",
+  "menu_store<confirm_item>": "{0} - {1} кредита",
+  "menu_store<inspect>": "Инспектирай",
+  "menu_store<purchase_item>": "Купи",
+
+  "css_credits": "{white}Имате {green}{0} {white}кредита.",
+  "css_givecredits<player>": "{blue}{0} {white}даде {green}{2} кредита {white}на {green}{1}{white}.",
+  "css_givecredits<steamid>": "{blue}{0} {white}даде {green}{2} кредита {white}на {green}{1}{white}.",
+  "css_givecredits<multiple>": "{blue}{0} {white}даде {green}{2} кредита {white}на {green}{1}{white}.",
+
+  "css_gift<player>": "{white}Изпратихте {green}{1} {white}кредита на {blue}{0}{white}.",
+  "css_gift<target>": "{blue}{0} {white}ви изпрати {green}{1} {white}кредита.",
+
+  "css_reset": "{blue}{0}{white} нулира данните на магазина на {green}{1}{white}.",
+
+  "credits_earned<active>": "{white}Получихте {green}{0} кредита {white}за това, че сте активни в сървъра.",
+  "credits_earned<inactive>": "{white}Получихте {green}{0} кредита {white}за това, че сте неактивни в сървъра.",
+  "credits_earned<kill>": "{white}Получихте {green}{0} кредита {white}за убийство на играч.",
+
+  "css_model0": "{blue}{0}{white} включи принудителните модели на играчи по подразбиране.",
+  "css_model1": "{blue}{0}{white} изключи принудителните модели на играчи по подразбиране.",
+
+  "FreePlayerSkin": "Безплатен скин за играч",
+  "CT": "CT скинове",
+  "Fernandez Frogman [CT]": "*Fernandez Frogman [CT]*",
+
+  "cap_disabled": "{white}Дневният лимит за игра е изключен.",
+  "cap_status": "{white}Дневен лимит за игра: {green}{0}/{1}{white} спечелени, {green}{2}{white} оставащи, нулиране след {green}{3}{white}.",
+  "cap_reached": "{white}Достигнахте дневния лимит за игра ({0}/{1}).",
+  "cap_reset_success": "{white}Дневният лимит за игра беше нулиран за {green}{0}{white}."
+}

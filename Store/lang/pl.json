@@ -69,5 +69,10 @@
 
   "FreePlayerSkin": "Darmowa skórka gracza",
   "CT": "Skórki CT",
-  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]"
+  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]",
+
+  "cap_disabled": "{white}Dzienny limit rozgrywki jest wyłączony.",
+  "cap_status": "{white}Dzienny limit rozgrywki: zdobyto {green}{0}/{1}{white}, pozostało {green}{2}{white}, reset za {green}{3}{white}.",
+  "cap_reached": "{white}Osiągnięto dzienny limit rozgrywki ({0}/{1}).",
+  "cap_reset_success": "{white}Dzienny limit rozgrywki został zresetowany dla {green}{0}{white}."
 }

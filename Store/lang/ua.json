@@ -69,5 +69,10 @@
 
 	"FreePlayerSkin": "Безкоштовний скін гравця",
 	"CT": "Скіни CT",
-	"Fernandez Frogman [CT]": "Фернандес Frogman [CT]"
+	"Fernandez Frogman [CT]": "Фернандес Frogman [CT]",
+
+	"cap_disabled": "{white}Щоденний ліміт гри вимкнено.",
+	"cap_status": "{white}Щоденний ліміт гри: зароблено {green}{0}/{1}{white}, залишилося {green}{2}{white}, скидання через {green}{3}{white}.",
+	"cap_reached": "{white}Ви досягли щоденного ліміту гри ({0}/{1}).",
+	"cap_reset_success": "{white}Щоденний ліміт гри було скинуто для {green}{0}{white}."
 }

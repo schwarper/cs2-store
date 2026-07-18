@@ -80,13 +80,21 @@ public static class Event
         {
             case CsTeam.Terrorist:
             case CsTeam.CounterTerrorist when active > 0:
-                Credits.Give(player, active);
-                player.PrintToChatMessage("credits_earned<active>", active);
-                return true;
+                int activeGranted = Credits.GiveGameplay(player, active);
+                if (activeGranted > 0)
+                {
+                    player.PrintToChatMessage("credits_earned<active>", activeGranted);
+                    return true;
+                }
+                return false;
             case CsTeam.Spectator when inactive > 0:
-                Credits.Give(player, inactive);
-                player.PrintToChatMessage("credits_earned<inactive>", inactive);
-                return true;
+                int inactiveGranted = Credits.GiveGameplay(player, inactive);
+                if (inactiveGranted > 0)
+                {
+                    player.PrintToChatMessage("credits_earned<inactive>", inactiveGranted);
+                    return true;
+                }
+                return false;
             case CsTeam.None:
             default: return false;
         }
@@ -232,8 +240,11 @@ public static class Event
 
         if (amountKill > 0)
         {
-            Credits.Give(attacker, amountKill);
-            attacker.PrintToChat($"{Config.Settings.Tag}{Instance.Localizer["credits_earned<kill>", amountKill]}");
+            int granted = Credits.GiveGameplay(attacker, amountKill);
+            if (granted > 0)
+            {
+                attacker.PrintToChat($"{Config.Settings.Tag}{Instance.Localizer["credits_earned<kill>", granted]}");
+            }
         }
 
         return HookResult.Continue;

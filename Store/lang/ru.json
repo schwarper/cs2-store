@@ -69,5 +69,10 @@
 
 	"FreePlayerSkin": "Бесплатный скин игрока",
 	"CT": "Скины CT",
-	"Fernandez Frogman [CT]": "Фернандес Лягушка [CT]"
+	"Fernandez Frogman [CT]": "Фернандес Лягушка [CT]",
+
+	"cap_disabled": "{white}Ежедневный лимит игры отключен.",
+	"cap_status": "{white}Ежедневный лимит игры: заработано {green}{0}/{1}{white}, осталось {green}{2}{white}, сброс через {green}{3}{white}.",
+	"cap_reached": "{white}Вы достигли ежедневного лимита игры ({0}/{1}).",
+	"cap_reset_success": "{white}Ежедневный лимит игры был сброшен для {green}{0}{white}."
 }

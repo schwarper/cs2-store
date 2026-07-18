@@ -1,5 +1,6 @@
 using CounterStrikeSharp.API;
 using CounterStrikeSharp.API.Core;
+using CounterStrikeSharp.API.Core.Translations;
 using CounterStrikeSharp.API.Modules.Admin;
 using CounterStrikeSharp.API.Modules.Commands;
 using Store.Extension;
@@ -24,7 +25,9 @@ public static class Command
             {config.Gift, ("Gift", Command_Gift)},
             {config.ResetPlayer, ("Reset player's inventory", Command_ResetPlayer)},
             {config.ResetDatabase, ("Reset database", Command_ResetDatabase)},
-            {config.RefreshPlayersCredits, ("Refresh players' credits", Command_RefreshPlayersCredits)}
+            {config.RefreshPlayersCredits, ("Refresh players' credits", Command_RefreshPlayersCredits)},
+            {config.CapStatus, ("Show daily gameplay cap status", Command_CapStatus)},
+            {config.CapReset, ("Reset daily gameplay cap for player(s)", Command_CapReset)}
         };
 
         foreach ((IEnumerable<string> commandList, (string description, CommandInfo.CommandCallback handler)) in commands)
@@ -117,6 +120,24 @@ public static class Command
         }
 
         Server.PrintToChatAll($"{Config.Settings.Tag}{Instance.Localizer[target.Players.Count == 1 ? "css_givecredits<player>" : "css_givecredits<multiple>", player?.PlayerName ?? "Console", target.TargetName, credits]}");
+    }
+
+    [CommandHelper(minArgs: 0, whoCanExecute: CommandUsage.CLIENT_ONLY)]
+    public static void Command_CapStatus(CCSPlayerController? player, CommandInfo command)
+    {
+        if (player == null)
+            return;
+
+        Config_DailyEarnedCreditsCap capConfig = Config.DailyEarnedCreditsCap;
+        if (!capConfig.Enabled || capConfig.MaxCreditsPerDay <= 0)
+        {
+            player.PrintToChatMessage("cap_disabled");
+            return;
+        }
+
+        Credits.GameplayCapStatus status = Credits.GetGameplayCapStatus(player);
+        string timeLeft = $"{Math.Max((int)Math.Ceiling(status.TimeUntilReset.TotalHours), 0)}h";
+        player.PrintToChatMessage("cap_status", status.EarnedCredits, status.MaxCredits, status.RemainingCredits, timeLeft);
     }
 
     [CommandHelper(minArgs: 2, "<name, #userid> <credits>", whoCanExecute: CommandUsage.CLIENT_ONLY)]
@@ -233,6 +254,42 @@ public static class Command
         Database.ResetPlayer(targetPlayer);
 
         Server.PrintToChatAll($"{Config.Settings.Tag}{Instance.Localizer["css_reset", player?.PlayerName ?? "Console", targetPlayer.PlayerName]}");
+    }
+
+    [CommandHelper(minArgs: 1, "<name, #userid, all @ commands>", whoCanExecute: CommandUsage.CLIENT_AND_SERVER)]
+    public static void Command_CapReset(CCSPlayerController? player, CommandInfo command)
+    {
+        if (player != null &&
+            !string.IsNullOrEmpty(Config.Permissions.CapReset) &&
+            !AdminManager.PlayerHasPermissions(player, Config.Permissions.CapReset))
+            return;
+
+        TargetFind target = Find(command, false, true);
+        if (string.IsNullOrEmpty(target.TargetName))
+            return;
+
+        Config_DailyEarnedCreditsCap capConfig = Config.DailyEarnedCreditsCap;
+
+        if (target.StorePlayer != null)
+        {
+            Credits.ResetGameplayCap(target.StorePlayer);
+            Database.ResetDailyGameplayCap(target.StorePlayer.SteamID);
+
+            Server.PrintToChatAll($"{Config.Settings.Tag}{Instance.Localizer["cap_reset_success", target.TargetName]}");
+            return;
+        }
+
+        foreach (CCSPlayerController targetPlayer in target.Players)
+        {
+            var storePlayer = Credits.GetStorePlayer(targetPlayer);
+            if (storePlayer == null)
+                continue;
+
+            Credits.ResetGameplayCap(storePlayer);
+            Database.ResetDailyGameplayCap(storePlayer.SteamID);
+        }
+
+        Server.PrintToChatAll($"{Config.Settings.Tag}{Instance.Localizer["cap_reset_success", target.TargetName]}");
     }
 
     [CommandHelper(whoCanExecute: CommandUsage.SERVER_ONLY)]

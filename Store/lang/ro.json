@@ -69,5 +69,10 @@
 
   "FreePlayerSkin": "Skin gratuit pentru jucător",
   "CT": "Skin-uri CT",
-  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]"
+  "Fernandez Frogman [CT]": "Fernandez Frogman [CT]",
+
+  "cap_disabled": "{white}Limita zilnică de joc este dezactivată.",
+  "cap_status": "{white}Limită zilnică de joc: {green}{0}/{1}{white} obținut(e), {green}{2}{white} rămas(e), se resetează în {green}{3}{white}.",
+  "cap_reached": "{white}Ai atins limita zilnică de joc ({0}/{1}).",
+  "cap_reset_success": "{white}Limita zilnică de joc a fost resetată pentru {green}{0}{white}."
 }

@@ -48,7 +48,7 @@
   "menu_store<no>": "No",
   "menu_store<confirm_item>": "{0} - {1} credits",
   "menu_store<inspect>": "Inspect",
-  "menu_store<purchase_item>":  "Purchase",
+  "menu_store<purchase_item>": "Purchase",
 
   "css_credits": "{white}You have {green}{0} {white}credits.",
   "css_givecredits<player>": "{blue}{0} {white}gave {green}{2} credits {white}to {green}{1}{white}.",
@@ -69,5 +69,10 @@
 
   "FreePlayerSkin": "Free Player Skin",
   "CT": "CT Skins",
-  "Fernandez Frogman [CT]": "*Fernandez Frogman [CT]*"
+  "Fernandez Frogman [CT]": "*Fernandez Frogman [CT]*",
+
+  "cap_disabled": "{white}Daily gameplay cap is disabled.",
+  "cap_status": "{white}Daily gameplay cap: {green}{0}/{1}{white} earned, {green}{2}{white} remaining, reset in {green}{3}{white}.",
+  "cap_reached": "{white}You reached the daily gameplay cap ({0}/{1}).",
+  "cap_reset_success": "{white}Daily gameplay cap has been reset for {green}{0}{white}."
 }

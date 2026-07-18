@@ -55,6 +55,7 @@ public static class Config_Config
         Config.Menu = model.GetSection<Config_Menu>("Menu") ?? new();
         Config.Settings = model.GetSection<Config_Settings>("Settings") ?? new();
         Config.Permissions = model.GetSection<Config_Permissions>("Permissions") ?? new();
+        Config.DailyEarnedCreditsCap = model.GetSection<Config_DailyEarnedCreditsCap>("DailyEarnedCreditsCap") ?? new();
         Config.Credits = model.TryGetValue("Credits", out object creditsObj) && creditsObj is TomlTable creditsTable
             ? creditsTable.ToDictionary(
                 kv => kv.Key,
@@ -76,6 +77,7 @@ public sealed class Cfg
     public Config_Menu Menu { get; set; } = new();
     public Config_Settings Settings { get; set; } = new();
     public Config_Permissions Permissions { get; set; } = new();
+    public Config_DailyEarnedCreditsCap DailyEarnedCreditsCap { get; set; } = new();
 }
 
 public sealed class Config_DatabaseConnection
@@ -103,6 +105,8 @@ public sealed class Config_Commands
     public List<string> HideTrails { get; set; } = [];
     public List<string> PlayerSkinsOff { get; set; } = [];
     public List<string> PlayerSkinsOn { get; set; } = [];
+    public List<string> CapStatus { get; set; } = ["capstatus"];
+    public List<string> CapReset { get; set; } = ["capreset"];
 }
 
 public sealed class Config_DefaultModels
@@ -149,4 +153,13 @@ public sealed class Config_Permissions
 {
     public string Model0Model1Flag { get; set; } = string.Empty;
     public string GiveCredits { get; set; } = string.Empty;
+    public string CapReset { get; set; } = "@css/root";
+}
+
+public sealed class Config_DailyEarnedCreditsCap
+{
+    public bool Enabled { get; set; }
+    public int MaxCreditsPerDay { get; set; } = 70;
+    public int ResetEveryHours { get; set; } = 24;
+    public bool NotifyOnceOnReached { get; set; } = true;
 }
