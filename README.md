@@ -39,6 +39,21 @@ To activate:
   ```css_plugins load cs2-store``` (Load the plugin)  
   ```css_plugins reload Store``` (Reload after changes)  
 
+### Custom weapon subclasses
+
+Custom weapons use AnimGraph2 VData subclasses:
+
+```json
+{
+  "type": "customweapon",
+  "weapon": "weapon_ak47:weapon_ak47+1550"
+}
+```
+
+- `weapon` is `base weapon:custom VData subclass`.
+- The standard numeric item definition is restored automatically on unequip (`7` for AK-47, `42`/`59` for the team knife, and so on).
+- The target model and VData must be authored for the current AnimGraph2 first-person skeleton. A legacy or mismatched model can still produce broken hands or duplicate gloves even when the plugin state is correct.
+
 #### 🎥 Installation Video  
 Watch the step-by-step guide:  
 [Installation Guide](https://files.catbox.moe/uzadjw.mp4)

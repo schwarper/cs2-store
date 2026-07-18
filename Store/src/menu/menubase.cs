@@ -60,7 +60,7 @@ public static class MenuBase
                 Item_PlayerSkin.Inspect(player, item["model"], skn);
                 break;
             case "customweapon":
-                Item_CustomWeapon.Inspect(player, item["weapon"]);
+                Item_CustomWeapon.Inspect(player, item);
                 break;
         }
     }
