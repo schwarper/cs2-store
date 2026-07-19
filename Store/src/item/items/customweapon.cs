@@ -3,6 +3,7 @@ using CounterStrikeSharp.API.Core;
 using CounterStrikeSharp.API.Modules.Memory;
 using CounterStrikeSharp.API.Modules.Utils;
 using Store.Extension;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using static Store.Store;
 using static StoreApi.Store;
@@ -37,7 +38,10 @@ public class Item_CustomWeapon : IItemModule
         }
     }
 
-    public void OnMapStart() { }
+    public void OnMapStart()
+    {
+        Weapon.ClearSubclassStates();
+    }
 
     public void OnServerPrecacheResources(ResourceManifest manifest)
     {
@@ -60,6 +64,11 @@ public class Item_CustomWeapon : IItemModule
         if (!IsRelevantEntity(entity, out EntityType entityType)) return;
 
         Server.NextWorldUpdate(() => ProcessEntity(entity, entityType));
+    }
+
+    public static void OnEntityDeleted(CEntityInstance entity)
+    {
+        Weapon.ForgetSubclassState(entity.Handle);
     }
 
     private static bool IsRelevantEntity(CEntityInstance entity, out EntityType entityType)
@@ -159,7 +168,8 @@ public class Item_CustomWeapon : IItemModule
                 CBasePlayerWeapon weapon = entity.As<CBasePlayerWeapon>();
                 if (weapon?.IsValid != true || weapon.OriginalOwnerXuidLow <= 0) return;
 
-                Weapon.SetSubclass(weapon, weaponBase, weaponSubclass);
+                string baseSubclass = Weapon.ResolveBaseSubclass(weapon, weaponBase, player.TeamNum);
+                Weapon.SetSubclass(weapon, weaponBase, baseSubclass, weaponSubclass);
                 break;
 
             case EntityType.Projectile:
@@ -175,7 +185,7 @@ public class Item_CustomWeapon : IItemModule
         CBasePlayerWeapon? activeWeapon = player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value;
         if (activeWeapon?.IsValid != true) return HookResult.Continue;
 
-        string weaponDesignerName = Weapon.GetDesignerName(activeWeapon);
+        Weapon.FinishInactivePreviews(player, activeWeapon);
 
         List<StoreApi.Store.Store_Equipment> playerEquipments = Item.GetPlayerEquipments(player, "customweapon");
         foreach (StoreApi.Store.Store_Equipment equipment in playerEquipments)
@@ -188,9 +198,10 @@ public class Item_CustomWeapon : IItemModule
                 continue;
             }
 
-            if (!weaponDesignerName.Equals(weaponBase, StringComparison.Ordinal)) continue;
+            if (!Weapon.MatchesWeapon(activeWeapon, weaponBase, weaponSubclass)) continue;
 
-            Weapon.SetSubclass(activeWeapon, weaponBase, weaponSubclass);
+            string baseSubclass = Weapon.ResolveBaseSubclass(activeWeapon, weaponBase, player.TeamNum);
+            Weapon.SetSubclass(activeWeapon, weaponBase, baseSubclass, weaponSubclass);
             break;
         }
 
@@ -209,7 +220,65 @@ public class Item_CustomWeapon : IItemModule
         }
         */
 
-        private static readonly Dictionary<nint, string> OldSubclassByHandle = new();
+        private sealed class SubclassState(string weaponName, string baseSubclass)
+        {
+            public string WeaponName { get; } = weaponName;
+            public string BaseSubclass { get; } = baseSubclass;
+            public string? EquippedSubclass { get; set; }
+            public string AppliedSubclass { get; set; } = string.Empty;
+            public long OperationId { get; set; }
+        }
+
+        private static readonly Dictionary<nint, SubclassState> SubclassStates = new();
+        private const float InspectPreviewDuration = 3.0f;
+        private const int MaxGraphWaitUpdates = 16;
+        private static readonly Dictionary<string, ushort> DefaultDefinitionIndexes = new(StringComparer.Ordinal)
+        {
+            ["weapon_deagle"] = 1,
+            ["weapon_elite"] = 2,
+            ["weapon_fiveseven"] = 3,
+            ["weapon_glock"] = 4,
+            ["weapon_ak47"] = 7,
+            ["weapon_aug"] = 8,
+            ["weapon_awp"] = 9,
+            ["weapon_famas"] = 10,
+            ["weapon_g3sg1"] = 11,
+            ["weapon_galilar"] = 13,
+            ["weapon_m249"] = 14,
+            ["weapon_m4a1"] = 16,
+            ["weapon_mac10"] = 17,
+            ["weapon_p90"] = 19,
+            ["weapon_mp7"] = 33,
+            ["weapon_mp5sd"] = 23,
+            ["weapon_ump45"] = 24,
+            ["weapon_xm1014"] = 25,
+            ["weapon_bizon"] = 26,
+            ["weapon_mag7"] = 27,
+            ["weapon_negev"] = 28,
+            ["weapon_sawedoff"] = 29,
+            ["weapon_tec9"] = 30,
+            ["weapon_taser"] = 31,
+            ["weapon_hkp2000"] = 32,
+            ["weapon_mp9"] = 34,
+            ["weapon_nova"] = 35,
+            ["weapon_p250"] = 36,
+            ["weapon_scar20"] = 38,
+            ["weapon_sg556"] = 39,
+            ["weapon_ssg08"] = 40,
+            ["weapon_flashbang"] = 43,
+            ["weapon_hegrenade"] = 44,
+            ["weapon_smokegrenade"] = 45,
+            ["weapon_molotov"] = 46,
+            ["weapon_decoy"] = 47,
+            ["weapon_incgrenade"] = 48,
+            ["weapon_c4"] = 49,
+            ["weapon_healthshot"] = 57,
+            ["weapon_m4a1_silencer"] = 60,
+            ["weapon_usp_silencer"] = 61,
+            ["weapon_cz75a"] = 63,
+            ["weapon_revolver"] = 64
+        };
+        private static long _nextOperationId;
 
         public static string GetDesignerName(CBasePlayerWeapon weapon)
         {
@@ -242,6 +311,24 @@ public class Item_CustomWeapon : IItemModule
             weaponSubclass = parts.Length > 1 ? parts[1].Trim() : string.Empty;
 
             return !string.IsNullOrEmpty(weaponName) && !string.IsNullOrEmpty(weaponSubclass);
+        }
+
+        public static string ResolveBaseSubclass(CBasePlayerWeapon weapon, string fallback, int teamNum)
+        {
+            if (fallback == "weapon_knife")
+            {
+                return teamNum == (int)CsTeam.Terrorist ? "59" : "42";
+            }
+
+            if (DefaultDefinitionIndexes.TryGetValue(fallback, out ushort defaultDefinitionIndex))
+            {
+                return defaultDefinitionIndex.ToString(CultureInfo.InvariantCulture);
+            }
+
+            ushort definitionIndex = weapon.AttributeManager.Item.ItemDefinitionIndex;
+            return definitionIndex > 0
+                ? definitionIndex.ToString(CultureInfo.InvariantCulture)
+                : fallback;
         }
 
         /*
@@ -283,16 +370,17 @@ public class Item_CustomWeapon : IItemModule
                     return true;
                 }
 
-                CBasePlayerWeapon? weapon = Get(player, weaponBase);
+                CBasePlayerWeapon? weapon = Get(player, weaponBase, weaponSubclass);
                 if (weapon != null)
                 {
+                    string baseSubclass = ResolveBaseSubclass(weapon, weaponBase, player.TeamNum);
                     if (isEquip)
                     {
-                        SetSubclass(weapon, weaponBase, weaponSubclass);
+                        SetSubclass(weapon, weaponBase, baseSubclass, weaponSubclass);
                     }
                     else
                     {
-                        ResetSubclass(weapon);
+                        ResetSubclass(weapon, weaponBase, baseSubclass);
                     }
                 }
             }
@@ -300,15 +388,29 @@ public class Item_CustomWeapon : IItemModule
             return true;
         }
 
-        private static CBasePlayerWeapon? Get(CCSPlayerController player, string weaponName)
+        private static CBasePlayerWeapon? Get(CCSPlayerController player, string weaponName, string weaponSubclass)
         {
             CPlayer_WeaponServices? weaponServices = player.PlayerPawn?.Value?.WeaponServices;
             if (weaponServices == null) return null;
 
             CBasePlayerWeapon? activeWeapon = weaponServices.ActiveWeapon?.Value;
-            return activeWeapon != null && GetDesignerName(activeWeapon) == weaponName
+            return activeWeapon?.IsValid == true && MatchesWeapon(activeWeapon, weaponName, weaponSubclass)
                 ? activeWeapon
-                : (weaponServices.MyWeapons.SingleOrDefault(p => p.Value != null && GetDesignerName(p.Value) == weaponName)?.Value);
+                : weaponServices.MyWeapons.FirstOrDefault(p => p.Value?.IsValid == true && MatchesWeapon(p.Value, weaponName, weaponSubclass))?.Value;
+        }
+
+        public static bool MatchesWeapon(CBasePlayerWeapon weapon, string weaponName, string? weaponSubclass = null)
+        {
+            if (SubclassStates.TryGetValue(weapon.Handle, out SubclassState? state))
+            {
+                return string.Equals(state.WeaponName, weaponName, StringComparison.Ordinal);
+            }
+
+            string designerName = GetDesignerName(weapon);
+            return string.Equals(designerName, weaponName, StringComparison.Ordinal) ||
+                   (!string.IsNullOrEmpty(weaponSubclass) &&
+                    string.Equals(designerName, weaponSubclass, StringComparison.Ordinal)) ||
+                   designerName.StartsWith(weaponName + "+", StringComparison.Ordinal);
         }
 
         /*
@@ -357,29 +459,287 @@ public class Item_CustomWeapon : IItemModule
         }
         */
 
-        // Summary: Animgraph2 uses ChangeSubclass; keep subclass-based apply path.
-        public static void SetSubclass(CBasePlayerWeapon weapon, string oldSubclass, string newSubclass)
+        // Animgraph2 custom weapons are VData subclasses. Keep the original subclass
+        // stable for the complete lifetime of the entity: equip and inspect can overlap.
+        public static void SetSubclass(CBasePlayerWeapon weapon, string weaponName, string oldSubclass, string newSubclass)
         {
-            if (string.IsNullOrEmpty(newSubclass))
+            if (!weapon.IsValid || string.IsNullOrWhiteSpace(oldSubclass) || string.IsNullOrWhiteSpace(newSubclass))
             {
                 return;
             }
 
             var handle = weapon.Handle;
-            OldSubclassByHandle[handle] = oldSubclass;
-            weapon.AcceptInput("ChangeSubclass", weapon, weapon, newSubclass);
+            SubclassState state = GetOrCreateSubclassState(handle, weaponName, oldSubclass);
+            state.EquippedSubclass = newSubclass;
+            long operationId = BeginOperation(state);
+            ApplySubclassSafely(weapon, state, newSubclass, operationId);
         }
 
-        public static void ResetSubclass(CBasePlayerWeapon weapon)
+        public static void ResetSubclass(CBasePlayerWeapon weapon, string weaponName, string fallbackBaseSubclass)
         {
-            var handle = weapon.Handle;
-            if (!OldSubclassByHandle.TryGetValue(handle, out string? oldSubclass) || string.IsNullOrEmpty(oldSubclass))
+            if (!weapon.IsValid || string.IsNullOrWhiteSpace(fallbackBaseSubclass))
             {
                 return;
             }
 
-            weapon.AcceptInput("ChangeSubclass", weapon, weapon, oldSubclass);
-            OldSubclassByHandle.Remove(handle);
+            SubclassState state = GetOrCreateSubclassState(weapon.Handle, weaponName, fallbackBaseSubclass);
+            state.EquippedSubclass = null;
+            long operationId = BeginOperation(state);
+            ApplySubclassSafely(weapon, state, state.BaseSubclass, operationId, true);
+        }
+
+        public static long PreviewSubclass(CBasePlayerWeapon weapon, string weaponName, string oldSubclass,
+            string previewSubclass, bool keepPreviewEquipped)
+        {
+            if (!weapon.IsValid || string.IsNullOrWhiteSpace(oldSubclass) || string.IsNullOrWhiteSpace(previewSubclass))
+            {
+                return 0;
+            }
+
+            SubclassState state = GetOrCreateSubclassState(weapon.Handle, weaponName, oldSubclass);
+            if (keepPreviewEquipped)
+            {
+                state.EquippedSubclass = previewSubclass;
+            }
+
+            long operationId = BeginOperation(state);
+            ApplySubclassSafely(weapon, state, previewSubclass, operationId, afterApply: () =>
+                Instance.AddTimer(InspectPreviewDuration, () => FinishPreview(weapon, operationId)));
+            return operationId;
+        }
+
+        public static void FinishPreview(CBasePlayerWeapon weapon, long operationId)
+        {
+            if (operationId == 0 || !weapon.IsValid ||
+                !SubclassStates.TryGetValue(weapon.Handle, out SubclassState? state) ||
+                state.OperationId != operationId)
+            {
+                return;
+            }
+
+            RestorePreview(weapon, state);
+        }
+
+        public static void FinishInactivePreviews(CCSPlayerController player, CBasePlayerWeapon activeWeapon)
+        {
+            CPlayer_WeaponServices? weaponServices = player.PlayerPawn?.Value?.WeaponServices;
+            if (weaponServices == null)
+            {
+                return;
+            }
+
+            foreach (CHandle<CBasePlayerWeapon> weaponHandle in weaponServices.MyWeapons)
+            {
+                CBasePlayerWeapon? weapon = weaponHandle.Value;
+                if (weapon?.IsValid != true || weapon.Handle == activeWeapon.Handle ||
+                    !SubclassStates.TryGetValue(weapon.Handle, out SubclassState? state) ||
+                    state.EquippedSubclass != null)
+                {
+                    continue;
+                }
+
+                RestorePreview(weapon, state);
+            }
+        }
+
+        private static void RestorePreview(CBasePlayerWeapon weapon, SubclassState state)
+        {
+            string restoreSubclass = state.EquippedSubclass ?? state.BaseSubclass;
+            long restoreOperationId = BeginOperation(state);
+            ApplySubclassSafely(
+                weapon,
+                state,
+                restoreSubclass,
+                restoreOperationId,
+                state.EquippedSubclass == null);
+        }
+
+        public static void ForgetSubclassState(nint handle)
+        {
+            SubclassStates.Remove(handle);
+        }
+
+        public static void ClearSubclassStates()
+        {
+            SubclassStates.Clear();
+        }
+
+        private static SubclassState GetOrCreateSubclassState(nint handle, string weaponName, string baseSubclass)
+        {
+            if (!SubclassStates.TryGetValue(handle, out SubclassState? state))
+            {
+                state = new SubclassState(weaponName, baseSubclass);
+                SubclassStates[handle] = state;
+            }
+
+            return state;
+        }
+
+        private static long NextOperationId()
+        {
+            return ++_nextOperationId;
+        }
+
+        private static long BeginOperation(SubclassState state)
+        {
+            long operationId = NextOperationId();
+            state.OperationId = operationId;
+            return operationId;
+        }
+
+        private static void ApplySubclassSafely(CBasePlayerWeapon weapon, SubclassState state,
+            string subclass, long operationId, bool removeStateAfterApply = false, Action? afterApply = null,
+            int graphWaitUpdates = 0, bool deferToWorldUpdate = true)
+        {
+            if (deferToWorldUpdate)
+            {
+                Server.NextWorldUpdate(() =>
+                    ApplySubclassSafely(
+                        weapon,
+                        state,
+                        subclass,
+                        operationId,
+                        removeStateAfterApply,
+                        afterApply,
+                        graphWaitUpdates,
+                        false));
+                return;
+            }
+
+            if (!weapon.IsValid ||
+                !SubclassStates.TryGetValue(weapon.Handle, out SubclassState? currentState) ||
+                !ReferenceEquals(currentState, state) ||
+                state.OperationId != operationId)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(state.AppliedSubclass) && IsWeaponAlreadyUsingSubclass(weapon, subclass))
+            {
+                state.AppliedSubclass = subclass;
+            }
+
+            if (string.Equals(state.AppliedSubclass, subclass, StringComparison.Ordinal))
+            {
+                CompleteSubclassOperation(weapon, state, operationId, removeStateAfterApply, afterApply);
+                return;
+            }
+
+            if (IsInspectActive(weapon))
+            {
+                Server.NextWorldUpdate(() =>
+                    ApplySubclassSafely(
+                        weapon,
+                        state,
+                        subclass,
+                        operationId,
+                        removeStateAfterApply,
+                        afterApply,
+                        graphWaitUpdates,
+                        false));
+                return;
+            }
+
+            if (IsInspectBlockedUntilGraphUpdate(weapon) && graphWaitUpdates < MaxGraphWaitUpdates)
+            {
+                Server.NextWorldUpdate(() =>
+                    ApplySubclassSafely(
+                        weapon,
+                        state,
+                        subclass,
+                        operationId,
+                        removeStateAfterApply,
+                        afterApply,
+                        graphWaitUpdates + 1,
+                        false));
+                return;
+            }
+
+            BlockInspectUntilGraphUpdate(weapon);
+            weapon.InitiallyPopulateInterpHistory = true;
+            weapon.AcceptInput("ChangeSubclass", weapon, weapon, subclass);
+            state.AppliedSubclass = subclass;
+            CompleteSubclassOperation(weapon, state, operationId, removeStateAfterApply, afterApply);
+        }
+
+        private static void CompleteSubclassOperation(CBasePlayerWeapon weapon, SubclassState state,
+            long operationId, bool removeStateAfterApply, Action? afterApply)
+        {
+            afterApply?.Invoke();
+
+            if (removeStateAfterApply && state.OperationId == operationId)
+            {
+                SubclassStates.Remove(weapon.Handle);
+            }
+        }
+
+        private static bool IsWeaponAlreadyUsingSubclass(CBasePlayerWeapon weapon, string subclass)
+        {
+            if (ushort.TryParse(subclass, NumberStyles.Integer, CultureInfo.InvariantCulture,
+                    out ushort definitionIndex))
+            {
+                return weapon.AttributeManager.Item.ItemDefinitionIndex == definitionIndex;
+            }
+
+            return string.Equals(weapon.DesignerName, subclass, StringComparison.Ordinal) ||
+                   string.Equals(GetDesignerName(weapon), subclass, StringComparison.Ordinal);
+        }
+
+        private static bool IsInspectActive(CBasePlayerWeapon weapon)
+        {
+            CCSWeaponBase csWeapon = weapon.As<CCSWeaponBase>();
+            if (!csWeapon.IsValid)
+            {
+                return false;
+            }
+
+            WeaponGameplayAnimState animationState = csWeapon.WeaponGameplayAnimState;
+            return csWeapon.InspectPending ||
+                   csWeapon.InspectCancelCompleteTime > Server.CurrentTime ||
+                   animationState == WeaponGameplayAnimState.WPN_ANIMSTATE_INSPECT ||
+                   animationState == WeaponGameplayAnimState.WPN_ANIMSTATE_INSPECT_OUTRO;
+        }
+
+        private static bool IsInspectBlockedUntilGraphUpdate(CBasePlayerWeapon weapon)
+        {
+            return TryGetWeaponGraphServices(weapon, out _, out CCSPlayer_WeaponServices weaponServices) &&
+                   weaponServices.BlockInspectUntilNextGraphUpdate;
+        }
+
+        private static void BlockInspectUntilGraphUpdate(CBasePlayerWeapon weapon)
+        {
+            if (!TryGetWeaponGraphServices(
+                    weapon,
+                    out CCSPlayerPawn pawn,
+                    out CCSPlayer_WeaponServices weaponServices) ||
+                weaponServices.BlockInspectUntilNextGraphUpdate)
+            {
+                return;
+            }
+
+            weaponServices.BlockInspectUntilNextGraphUpdate = true;
+            Utilities.SetStateChanged(
+                pawn,
+                "CCSPlayer_WeaponServices",
+                "m_bBlockInspectUntilNextGraphUpdate");
+        }
+
+        private static bool TryGetWeaponGraphServices(CBasePlayerWeapon weapon, out CCSPlayerPawn pawn,
+            out CCSPlayer_WeaponServices weaponServices)
+        {
+            pawn = null!;
+            weaponServices = null!;
+
+            CCSPlayerPawn? ownerPawn = FindTarget.FindTargetFromWeapon(weapon)?.PlayerPawn.Value;
+            CPlayer_WeaponServices? baseWeaponServices = ownerPawn?.WeaponServices;
+            if (ownerPawn?.IsValid != true || baseWeaponServices == null)
+            {
+                return false;
+            }
+
+            pawn = ownerPawn;
+            weaponServices = baseWeaponServices.As<CCSPlayer_WeaponServices>();
+            return weaponServices != null;
         }
 
         /*
@@ -402,29 +762,24 @@ public class Item_CustomWeapon : IItemModule
         */
     }
 
-    public static void Inspect(CCSPlayerController player, string weapon)
+    public static void Inspect(CCSPlayerController player, Dictionary<string, string> item)
     {
         if (player.PlayerPawn.Value?.WeaponServices?.ActiveWeapon.Value is not CBasePlayerWeapon activeWeapon) return;
 
-        if (!Weapon.TryParseWeaponSpec(weapon, out string weaponBase, out string weaponSubclass))
+        if (!item.TryGetValue("weapon", out string? weapon) ||
+            !Weapon.TryParseWeaponSpec(weapon, out string weaponBase, out string weaponSubclass))
         {
             return;
         }
 
-        if (Weapon.GetDesignerName(activeWeapon) != weaponBase)
+        if (!Weapon.MatchesWeapon(activeWeapon, weaponBase, weaponSubclass))
         {
             player.PrintToChatMessage("You need correct weapon", weaponBase);
             return;
         }
 
-        Weapon.SetSubclass(activeWeapon, weaponBase, weaponSubclass);
-
-        Instance.AddTimer(3.0f, () =>
-        {
-            if (activeWeapon.IsValid)
-            {
-                Weapon.ResetSubclass(activeWeapon);
-            }
-        });
+        string baseSubclass = Weapon.ResolveBaseSubclass(activeWeapon, weaponBase, player.TeamNum);
+        bool itemIsEquipped = Item.PlayerUsing(player, item["type"], item["uniqueid"]);
+        Weapon.PreviewSubclass(activeWeapon, weaponBase, baseSubclass, weaponSubclass, itemIsEquipped);
     }
 }

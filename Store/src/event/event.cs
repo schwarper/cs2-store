@@ -20,6 +20,7 @@ public static class Event
         Instance.RemoveListener<OnServerPrecacheResources>(OnServerPrecacheResources);
         Instance.RemoveListener<OnTick>(OnTick);
         Instance.RemoveListener<OnEntityCreated>(OnEntityCreated);
+        Instance.RemoveListener<OnEntityDeleted>(OnEntityDeleted);
         Instance.RemoveListener<OnClientAuthorized>(OnClientAuthorized);
         Instance.RemoveListener<CheckTransmit>(OnCheckTransmit);
     }
@@ -30,6 +31,7 @@ public static class Event
         Instance.RegisterListener<OnServerPrecacheResources>(OnServerPrecacheResources);
         Instance.RegisterListener<OnTick>(OnTick);
         Instance.RegisterListener<OnEntityCreated>(OnEntityCreated);
+        Instance.RegisterListener<OnEntityDeleted>(OnEntityDeleted);
         Instance.RegisterListener<OnClientAuthorized>(OnClientAuthorized);
         Instance.RegisterListener<CheckTransmit>(OnCheckTransmit);
 
@@ -143,6 +145,11 @@ public static class Event
         Item_Smoke.OnEntityCreated(entity);
         Item_GrenadeTrail.OnEntityCreated(entity);
         Item_CustomWeapon.OnEntityCreated(entity);
+    }
+
+    public static void OnEntityDeleted(CEntityInstance entity)
+    {
+        Item_CustomWeapon.OnEntityDeleted(entity);
     }
 
     private static void OnClientAuthorized(int playerSlot, SteamID steamId)
